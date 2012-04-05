@@ -14,7 +14,7 @@ public class mod_MAtmos_forModLoader extends Ha3Util_ModLoader
 	@Override
 	public String getVersion()
 	{
-		return "r12 for 1.1.x";
+		return "r13 for 1.2.6";
 		
 	}
 	

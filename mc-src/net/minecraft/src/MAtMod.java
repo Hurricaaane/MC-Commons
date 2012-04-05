@@ -26,7 +26,7 @@ import eu.ha3.mc.mod.Ha3Moddable;
 public class MAtMod extends Ha3Moddable implements Ha3Personalizable
 {
 	final static public Logger LOGGER = Logger.getLogger("MAtmos");
-	final public int VERSION = 12;
+	final public int VERSION = 13; // Remember to change the thing on mod_Matmos_forModLoader
 	
 	private Properties config;
 	

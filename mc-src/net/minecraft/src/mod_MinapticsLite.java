@@ -696,7 +696,7 @@ public class mod_MinapticsLite extends BaseMod
 	@Override
 	public String getVersion()
 	{
-		return "r10 for 1.1.x";
+		return "r13 for 1.2.6";
 		
 	}
 	
