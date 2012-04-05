@@ -69,8 +69,7 @@ public class MAtProcessorFrequent extends MAtProcessorModel
 		setValue(9, (w.canBlockSeeTheSky(x, y, z) ? 1 : 0));
 		
 		// Get if Player is un the Nether
-		setValue(10, (player.dimension == -1 ? 1
-				: 0));
+		setValue(10, (player.dimension == -1 ? 1 : 0));
 		
 		// Get the Skylight level subtracted (the amount of light stripped from Skylight)
 		setValue(11, w.skylightSubtracted);
@@ -79,19 +78,32 @@ public class MAtProcessorFrequent extends MAtProcessorModel
 		
 		// Get if Player is inside of Water material
 		setValue(19, player.isWet() ? 1 : 0);
+		
+		// Get if Player X (Floored (Double) Player X, casted into to Integer)
 		setValue(20, x);
+		
+		// Get if Player Z (Floored (Double) Player Z, casted into to Integer)
 		setValue(21, z);
+		
+		// Get if Player is on Ground
 		setValue(22, player.onGround ? 1 : 0);
-		setValue(23, player.getAir()); // air (oxygen)
+		
+		// Get Player oxygen amount (Integer)
+		setValue(23, player.getAir());
+		
+		// Get Player health amount (Integer)
 		setValue(24, player.health);
+		
+		// Get Player dimension (Integer)
 		setValue(25, player.dimension);
+		
 		setValue(26, w.canBlockSeeTheSky(x, y, z)
 				&& !(w.getTopSolidOrLiquidBlock(x, z) > y) ? 1 : 0);
 		setValue(27, w.getTopSolidOrLiquidBlock(x, z));
 		setValue(28, w.getTopSolidOrLiquidBlock(x, z) - y);
-		// 29
-		// 30
-		// 31
+		
+		// [29,31] : (RELAXED)
+
 		setValue(32, player.inventory.getCurrentItem() != null
 				? player.inventory.getCurrentItem().itemID : -1);
 		//setValue( 32, player.getHeldItem() != null ? player.getHeldItem().itemID : -1 );
