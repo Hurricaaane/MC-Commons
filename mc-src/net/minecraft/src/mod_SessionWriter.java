@@ -16,6 +16,16 @@ import net.minecraft.client.Minecraft;
  * ----------------------------------------------------------------------------
  */
 
+/**
+ * This writes the login session values into a file, as a very simplistic way to
+ * enable mod testing on servers in testing phases (i.e. eclipse debug mode).<br>
+ * <br>
+ * 
+ * Only works on Windows, because the author works on Windows...
+ * 
+ * @author Hurry
+ * 
+ */
 public class mod_SessionWriter extends BaseMod
 {
 	mod_SessionWriter()
@@ -98,8 +108,7 @@ public class mod_SessionWriter extends BaseMod
 	@Override
 	public void load()
 	{
-		// TODO Auto-generated method stub
-		
+		return; // Do nothing
 	}
 	
 }
