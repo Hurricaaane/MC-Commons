@@ -39,27 +39,45 @@ public class MAtProcessorFrequent extends MAtProcessorModel
 		int my = (int) Math.round(player.motionY * 1000);
 		int mz = (int) Math.round(player.motionZ * 1000);
 		
+		// Get the Sky Light value
 		setValue(0, w.getSavedLightValue(EnumSkyBlock.Sky, x, y, z));
+		
+		// Get the Artificial Light value
 		setValue(1, w.getSavedLightValue(EnumSkyBlock.Block, x, y, z));
+		
+		// Get the Block Light value
 		setValue(2, w.getBlockLightValue(x, y, z));
+		
+		// Get the World Time modulo 24KL
 		setValue(3, (int) (worldinfo.getWorldTime() % 24000L));
+		
+		// Get the Altitude (Y)
 		setValue(4, y);
-		//
+		
+		// 5 : (RELAXED)
+		
+		// Get if Is in Water
 		setValue(6, (player.isInWater() ? 1 : 0));
+		
+		// Get if It's Raining
 		setValue(7, (worldinfo.isRaining() ? 1 : 0));
+		
+		// Get if It's Thundering (regardless of rain)
 		setValue(8, (worldinfo.isThundering() ? 1 : 0));
+		
+		// Get if the Current block player is on is exposed to the sky
 		setValue(9, (w.canBlockSeeTheSky(x, y, z) ? 1 : 0));
-		setValue(10, (/*w.worldProvider.isNether*/player.dimension == -1 ? 1
+		
+		// Get if Player is un the Nether
+		setValue(10, (player.dimension == -1 ? 1
 				: 0));
+		
+		// Get the Skylight level subtracted (the amount of light stripped from Skylight)
 		setValue(11, w.skylightSubtracted);
-		//
-		//
-		//
-		//
-		//
-		//
-		//
-		// ---- / --- // / / setValue( 19, (player.isInsideOfMaterial(Material.water) ? 1 : 0) );
+		
+		// [12,18] (RELAXED)
+		
+		// Get if Player is inside of Water material
 		setValue(19, player.isWet() ? 1 : 0);
 		setValue(20, x);
 		setValue(21, z);
@@ -82,10 +100,10 @@ public class MAtProcessorFrequent extends MAtProcessorModel
 		setValue(35, mz);
 		setValue(36, y >= 1 && y < mod().corn().util().getWorldHeight()
 				? getTranslatedBlockId(mc.theWorld
-				.getBlockId(x, y - 1, z)) : -1); //FIXME difference in Altitude notion
+						.getBlockId(x, y - 1, z)) : -1); //FIXME difference in Altitude notion
 		setValue(37, y >= 2 && y < mod().corn().util().getWorldHeight()
 				? getTranslatedBlockId(mc.theWorld
-				.getBlockId(x, y - 2, z)) : -1); //FIXME difference in Altitude notion
+						.getBlockId(x, y - 2, z)) : -1); //FIXME difference in Altitude notion
 		setValue(38, mod().corn().util().getClientTick());
 		setValue(39, player.isBurning() ? 1 : 0); // XXX ERROR NOW IS A PRIVATE VALUE
 		setValue(40, player.swingProgressInt);
