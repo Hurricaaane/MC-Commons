@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head><title>MAtmos</title></head>
+<body>
+<h1>MAtmos</h1>
+
+<h2>Quick info</h2>
+<p>
+	<ul>
+		<li><a href="http://www.minecraftforum.net/topic/75440-v125-risugamis-mods-everything-updated/">ModLoader</a> must be installed.</li>
+		<li>MAtmos doesn't alter any base classes.</li>
+		<li>MAtmos is pretty much compatible with any other mod.</li>
+		<li>MAtmos will perfectly run on public servers <em style="border-bottom: 1px dotted black;"><acronym title="In fact MAtmos can't be installed on servers so we don't care anyway">regardless of whether the server has MAtmos installed or not</acronym></em>.</li>
+		
+	</ul>
+	
+</p>
+<h2>Installing</h2>
+<p>
+	<ul>
+		<li>Make sure <strong>ModLoader</strong> is installed.</li>
+		<li>Open .minecraft/ folder</li>
+		<li>Open MAtmos_r__x_y_z.zip (the file you've downloaded)</li>
+		<li>Select everything in the archive</li>
+		<li>Drag and drop all the selected files into the .minecraft/ folder</li>
+		<li><strong>IF YOU DO THIS, DO <span style="color: red">NOT</span> PUT THE FILES IN THE MINECRAFT.JAR FOR PETE'S SAKE!</strong></li>
+	</ul>
+</p>
+<div style="margin: auto; text-align: center;">
+	<iframe width="640" height="480" src="http://www.youtube.com/embed/Yp9T4fTxVuk" frameborder="0" allowfullscreen></iframe>
+</div>
+
+<h2>Customizing MAtmos</h2>
+<h3>In weapon_interactions, add sword/item sounds for custom items from other mods</h3>
+<h4>Must-do</h4>
+<p>
+	<ul>
+		<li>Figure out the item ID of the custom item</li>
+		<li>Open matmos_expansions_r7/ folder</li>
+		<li>Remove interactions_weapons.xrl to prevent conflicts</li>
+		<li>Open matmos_internal/storage folder</li>
+		<li>Copy interactions_weapons.xrl.xmlo</li>
+		<li>Paste it in matmos_expansions_r7/</li>
+		<li>Rename the file you've just pasted to "interactions_weapons_custom.xml"</li>
+	</ul>
+</p>
+<h4>Using a text editor</h4>
+<p>
+		<li>Open the file "interactions_weapons_custom.xml" with a text editor</li>
+		<li>Observe the lists between line 2 and line 91</li>
+		<li>Find the appropriate list to add the itemID of your custom item</li>
+		<li>Add a constant value to that list using the same scheme, with your custom item ID</li>
+		<li>Save</li>
+	</ul>
+</p>
+<h4>Using MAtmos Designer</h4>
+<p>
+		<li>Open the file "interactions_weapons_custom.xml" with MAtmos Designer</li>
+		<li>Go to the "Lists" tab</li>
+		<li>Find your appropriate list</li>
+		<li>Add a constant value to that list with your custom item ID, following MAtmos Designer instructions</li>
+		<li>Save</li>
+	</ul>
+</p>
+
+</body>
+</html>
