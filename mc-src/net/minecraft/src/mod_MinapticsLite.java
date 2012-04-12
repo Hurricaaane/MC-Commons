@@ -293,7 +293,8 @@ public class mod_MinapticsLite extends BaseMod
 			//int height = screenRes.getScaledHeight();
 			
 			int msg1width = mc.fontRenderer.getStringWidth( msg1 );
-			mc.fontRenderer.func_50103_a(msg1, (width - msg1width) / 2, 10,
+			mc.fontRenderer.drawStringWithShadow(msg1, (width - msg1width) / 2,
+					10,
 					0xffffff);
 			
 		}
@@ -320,20 +321,23 @@ public class mod_MinapticsLite extends BaseMod
 			int height = screenRes.getScaledHeight();
 			
 			int msg1width = mc.fontRenderer.getStringWidth( msg1 );
-			mc.fontRenderer.func_50103_a(msg1, (width - msg1width) / 2,
+			mc.fontRenderer.drawStringWithShadow(msg1, (width - msg1width) / 2,
 					height / 2 + 10, 0xffffff);
 			
 			int msg2width = mc.fontRenderer.getStringWidth( msg2 );
-			mc.fontRenderer.func_50103_a(msg2, (width - msg2width) / 2, height
+			mc.fontRenderer.drawStringWithShadow(msg2, (width - msg2width) / 2,
+					height
 					/ 2 + 10 + height / 32, 0xffff00);
 			
 			int msgupwidth = mc.fontRenderer.getStringWidth( msgup );
-			mc.fontRenderer.func_50103_a(msgup, (width - msgupwidth) / 2,
+			mc.fontRenderer.drawStringWithShadow(msgup,
+					(width - msgupwidth) / 2,
 					height
 					/ 2 + 10 - height / 8, 0xffff00);
 			
 			int msgdownwidth = mc.fontRenderer.getStringWidth( msgdown );
-			mc.fontRenderer.func_50103_a(msgdown, (width - msgdownwidth) / 2,
+			mc.fontRenderer.drawStringWithShadow(msgdown,
+					(width - msgdownwidth) / 2,
 					height / 2 + 10 + height / 8, 0xffff00);
 			
 			//String movemouse = "Move your mouse around, press Zoom key to finish.";

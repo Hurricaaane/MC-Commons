@@ -140,3 +140,13 @@ mc-src/net/minecraft/src/UnexpectedThrowable.java
 mc-src/net/minecraft/src/Vec3D.java
 mc-src/net/minecraft/src/WatchableObject.java
 mc-src/Start.java
+mc-src/net/minecraft/src/mod_MineLittlePony.java
+mc-src/net/minecraft/src/pm_*
+mc-src/net/minecraft/src/AniParams.java
+mc-src/net/minecraft/src/BlueReflection.java
+mc-src/net/minecraft/src/CheckOnlinePonySkin.java
+mc-src/net/minecraft/src/pma_*
+mc-src/net/minecraft/src/PlaneRenderer.java
+mc-src/net/minecraft/src/Pony.java
+mc-src/net/minecraft/src/PMAPI.java
+mc-src/net/minecraft/src/PostHttp.java

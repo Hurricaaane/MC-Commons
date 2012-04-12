@@ -55,11 +55,11 @@ public class MAtScroller extends Ha3Scroller
 		int uwidth = width("_");
 		int uposx = (scrWidth - uwidth) / 2 + width(msgd) / 2;
 		
-		mc.fontRenderer.func_50103_a(msgd, uposx + uwidth * 2,
+		mc.fontRenderer.drawStringWithShadow(msgd, uposx + uwidth * 2,
 				scrHeight / 2,
 				0xffffff);
 		
-		mc.fontRenderer.func_50103_a(msgper, uposx + uwidth * 2,
+		mc.fontRenderer.drawStringWithShadow(msgper, uposx + uwidth * 2,
 				scrHeight / 2 + 10, 255 << 16
 				| ((int) (200 + 55 * (doneValue < 1 ? 1
 						: (4 - doneValue) / 3F))) << 8);
@@ -68,7 +68,7 @@ public class MAtScroller extends Ha3Scroller
 		{
 			float glocount = mod.corn().util().getClientTick() + fspan;
 			int blink = (int) (200 + 55 * (Math.sin(glocount * Math.PI * 0.07) + 1) / 2F);
-			mc.fontRenderer.func_50103_a("<Look up/down>", uposx
+			mc.fontRenderer.drawStringWithShadow("<Look up/down>", uposx
 					+ uwidth * 2, scrHeight / 2 + 10 * 2, blink << 16
 					| blink << 8 | blink);
 			
@@ -80,10 +80,10 @@ public class MAtScroller extends Ha3Scroller
 			
 		}
 		
-		mc.fontRenderer.func_50103_a(msgup, uposx + uwidth * 2,
+		mc.fontRenderer.drawStringWithShadow(msgup, uposx + uwidth * 2,
 				scrHeight / 2 - scrHeight / 6 + 3, 0xffff00);
 		
-		mc.fontRenderer.func_50103_a(msgdown, uposx + uwidth * 2,
+		mc.fontRenderer.drawStringWithShadow(msgdown, uposx + uwidth * 2,
 				scrHeight / 2 + scrHeight / 6 + 3,
 				0xffff00);
 		
@@ -95,7 +95,7 @@ public class MAtScroller extends Ha3Scroller
 					/ (ucount);
 			double pirx = Math.cos(Math.PI * perx);
 			
-			mc.fontRenderer.func_50103_a("_", uposx, scrHeight / 2
+			mc.fontRenderer.drawStringWithShadow("_", uposx, scrHeight / 2
 					+ (int) Math.floor(pirx * scrHeight / 6), 0xffff00);
 			
 		}
