@@ -3,7 +3,7 @@ package net.minecraft.src;
 import eu.ha3.mc.mod.Ha3Mod;
 import eu.ha3.mc.mod.Ha3ModCore;
 
-public class LrzModCore implements Ha3ModCore
+public class LrzModCore extends Ha3ModCore
 {
 	private LrzMod mod;
 	private Ha3Utility utility;
