@@ -47,9 +47,16 @@ public abstract class Ha3Util_ModLoader extends net.minecraft.src.BaseMod
 	}
 	
 	@Override
-	public void modsLoaded()
+	public void receiveChatPacket(String contents)
 	{
-		mod.manager().communicateManagerReady();
+		mod.manager().communicateChat(contents);
+		
+	}
+	
+	@Override
+	public void receiveCustomPacket(Packet250CustomPayload packet)
+	{
+		mod.manager().communicatePluginChannelPacket(packet);
 		
 	}
 	
