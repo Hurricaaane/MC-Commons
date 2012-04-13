@@ -184,7 +184,7 @@ public class Ha3ModManager_ModLoader implements Ha3ModManager
 	@Override
 	public void subscribeToPluginChannel(String channel)
 	{
-		// TODO Auto-generated method stub
+		ModLoader.registerPacketChannel((BaseMod) mod.reference(), channel);
 		
 	}
 	
