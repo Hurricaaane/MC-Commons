@@ -1,5 +1,7 @@
 package net.minecraft.src;
 
+import java.nio.charset.Charset;
+
 import eu.ha3.mc.mod.Ha3Mod;
 import eu.ha3.mc.mod.Ha3ModPrivateAccessException;
 
@@ -89,6 +91,29 @@ public class Ha3Utility
 	public int getWorldHeight()
 	{
 		return WORLD_HEIGHT;
+		
+	}
+	
+	public void sendCustomPacket(String channel, String contents)
+	{
+		Packet250CustomPayload packet = new Packet250CustomPayload();
+		packet.channel = channel;
+		packet.data = contents.getBytes(Charset.forName("UTF8"));
+		packet.length = packet.data.length;
+		
+		mod.manager().getMinecraft().getSendQueue().addToSendQueue(packet);
+		
+	}
+	
+	public void registerOutgoingPluginChannel(String channel)
+	{
+		sendCustomPacket("REGISTER", channel);
+		
+	}
+	
+	public void unregisterOutgoingPluginChannel(String channel)
+	{
+		sendCustomPacket("UNREGISTER", channel);
 		
 	}
 	
