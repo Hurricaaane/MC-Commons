@@ -17,4 +17,24 @@ public interface Sheet
 	public boolean isTrue(String sheet, String index, String compareFunction,
 			String value);
 	
+	/**
+	 * Implementations need to trigger this when the Sheet is fully updated.
+	 * 
+	 */
+	public void signalUpdate();
+	
+	/**
+	 * Adds an update listener.
+	 * 
+	 * @param listener
+	 */
+	public void addUpdateListener(UpdateListener listener);
+	
+	/**
+	 * Removes an update listener.
+	 * 
+	 * @param listener
+	 */
+	public void removeUpdateListener(UpdateListener listener);
+	
 }

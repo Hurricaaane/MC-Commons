@@ -15,6 +15,8 @@ public interface Knowledge
 	 */
 	public void addSheet(String name, Sheet sheetFormat);
 	
+	public void removeSheet(String name);
+	
 	/**
 	 * A condition.<br>
 	 * <br>
@@ -36,6 +38,8 @@ public interface Knowledge
 			String compareFunction,
 			String value);
 	
+	public void removeCondition(String name);
+	
 	/**
 	 * A set (of conditions).<br>
 	 * <br>
@@ -52,6 +56,8 @@ public interface Knowledge
 	public void addSet(String name, List<String> isTrue,
 			List<String> isFalse);
 	
+	public void removeSet(String name);
+	
 	/**
 	 * A machine. It needs at least a working battery (condition set) to be on,
 	 * but all the brakes must be off for it to run.<br>
@@ -67,5 +73,9 @@ public interface Knowledge
 	 *            of them is on.
 	 */
 	public void addMachine(String name, List<String> fuels, List<String> brakes);
+	
+	public void removeMachine(String name);
+	
+	public void evaluate();
 	
 }
