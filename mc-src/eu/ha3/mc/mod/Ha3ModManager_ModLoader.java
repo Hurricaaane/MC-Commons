@@ -4,12 +4,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.src.BaseMod;
 import net.minecraft.src.KeyBinding;
 import net.minecraft.src.ModLoader;
+import net.minecraft.src.Packet250CustomPayload;
 
 public class Ha3ModManager_ModLoader implements Ha3ModManager
 {
 	private Ha3Mod mod;
 	private Minecraft mc;
 	private boolean usesFrame;
+	private boolean usesChatPackets;
 	
 	//private boolean usesKeyBindingEvent;
 	
@@ -171,5 +173,41 @@ public class Ha3ModManager_ModLoader implements Ha3ModManager
 		}
 		
 					}
+	
+	@Override
+	public void setReceivesChat(boolean enable)
+	{
+		usesChatPackets = enable;
+		
+	}
+	
+	@Override
+	public void subscribeToPluginChannel(String channel)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public boolean getReceivesChat()
+	{
+		return usesChatPackets;
+		
+	}
+	
+	@Override
+	public void communicatePluginChannelPacket(Packet250CustomPayload packet)
+	{
+		mod.core().doPluginChannelPacket(packet);
+		
+	}
+	
+	@Override
+	public void communicateChat(String contents)
+	{
+		if (usesChatPackets)
+			mod.core().doChat(contents);
+		
+	}
 	
 }
