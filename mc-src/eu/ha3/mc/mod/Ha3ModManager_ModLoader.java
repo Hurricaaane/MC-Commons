@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.src.BaseMod;
 import net.minecraft.src.KeyBinding;
 import net.minecraft.src.ModLoader;
+import net.minecraft.src.Packet;
 import net.minecraft.src.Packet250CustomPayload;
 
 public class Ha3ModManager_ModLoader implements Ha3ModManager
@@ -182,7 +183,7 @@ public class Ha3ModManager_ModLoader implements Ha3ModManager
 	}
 	
 	@Override
-	public void subscribeToPluginChannel(String channel)
+	public void subscribeIncomingChannel(String channel)
 	{
 		ModLoader.registerPacketChannel((BaseMod) mod.reference(), channel);
 		
@@ -196,7 +197,7 @@ public class Ha3ModManager_ModLoader implements Ha3ModManager
 	}
 	
 	@Override
-	public void communicatePluginChannelPacket(Packet250CustomPayload packet)
+	public void communicateIncomingChannelPacket(Packet250CustomPayload packet)
 	{
 		mod.core().doPluginChannelPacket(packet);
 		
@@ -207,6 +208,27 @@ public class Ha3ModManager_ModLoader implements Ha3ModManager
 	{
 		if (usesChatPackets)
 			mod.core().doChat(contents);
+		
+	}
+	
+	@Override
+	public void subscribeOutgoingChannel(String channel)
+	{
+		// Do nothing. ModLoader doesn't handle that.
+		
+	}
+	
+	@Override
+	public void pushOutgoingChannel(Packet250CustomPayload packet)
+	{
+		ModLoader.sendPacket(packet);
+		
+	}
+	
+	@Override
+	public void pushPacket(Packet packet)
+	{
+		ModLoader.sendPacket(packet);
 		
 	}
 	

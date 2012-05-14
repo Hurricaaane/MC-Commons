@@ -56,7 +56,7 @@ public abstract class Ha3Util_ModLoader extends net.minecraft.src.BaseMod
 	@Override
 	public void receiveCustomPacket(Packet250CustomPayload packet)
 	{
-		mod.manager().communicatePluginChannelPacket(packet);
+		mod.manager().communicateIncomingChannelPacket(packet);
 		
 	}
 	
