@@ -23,7 +23,7 @@ import eu.ha3.mc.mod.Ha3ModCore;
  * ----------------------------------------------------------------------------
  */
 
-public class MAtModCore implements Ha3ModCore, Ha3Personalizable
+public class MAtModCore extends Ha3ModCore implements Ha3Personalizable
 {
 	private MAtMod mod;
 	private Ha3Utility utility;
