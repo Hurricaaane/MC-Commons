@@ -6,14 +6,14 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
 /*
-* ----------------------------------------------------------------------------
-* "THE COLA-WARE LICENSE" (Revision 0):
-* Hurricaaane wrote this file. As long as you retain this notice you
-* can do whatever you want with this stuff. If we meet some day, and you think
-* this stuff is worth it, you can buy me a cola in return
-* Georges "Hurricaaane" Yam
-* ----------------------------------------------------------------------------
-*/
+ * ----------------------------------------------------------------------------
+ * "THE COLA-WARE LICENSE" (Revision 0):
+ * Hurricaaane wrote this file. As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a cola in return
+ * Georges "Hurricaaane" Yam
+ * ----------------------------------------------------------------------------
+ */
 
 public class MAtmosEventTimed extends MAtmosDescriptible
 {
@@ -60,7 +60,19 @@ public class MAtmosEventTimed extends MAtmosDescriptible
 		if (machine.knowledge.events.containsKey(event))
 			machine.knowledge.events.get(event).playSound(volMod, pitchMod);
 		
-		nextPlayTime = machine.knowledge.getTimeMillis() + (long)((delayMin + machine.knowledge.random.nextFloat() * (delayMax - delayMin)) * 1000);
+		if ((delayMin == delayMax) && (delayMin > 0))
+		{
+			while (nextPlayTime < machine.knowledge.getTimeMillis())
+			{
+				nextPlayTime = nextPlayTime + (long) (delayMin * 1000);
+				
+			}
+			
+		}
+		else
+			nextPlayTime = machine.knowledge.getTimeMillis()
+			+ (long) ((delayMin + machine.knowledge.random.nextFloat()
+					* (delayMax - delayMin)) * 1000);
 		
 	}
 	public void restart()
@@ -73,12 +85,13 @@ public class MAtmosEventTimed extends MAtmosDescriptible
 		
 	}
 	
+	@Override
 	public String serialize(XMLEventWriter eventWriter) throws XMLStreamException
 	{
 		XMLEventFactory eventFactory = XMLEventFactory.newInstance();
 		XMLEvent ret = eventFactory.createDTD("\n");
 		XMLEvent tab = eventFactory.createDTD("\t");
-
+		
 		eventWriter.add(tab);
 		eventWriter.add(eventFactory.createStartElement("", "", "eventtimed"));
 		eventWriter.add(ret);
