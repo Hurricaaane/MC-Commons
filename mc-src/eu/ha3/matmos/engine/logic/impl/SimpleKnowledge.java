@@ -1,16 +1,9 @@
 package eu.ha3.matmos.engine.logic.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import eu.ha3.matmos.engine.logic.Condition;
-import eu.ha3.matmos.engine.logic.Knowledge;
-import eu.ha3.matmos.engine.logic.Sheet;
-
-public class SimpleKnowledge implements Knowledge
+public class SimpleKnowledge /*implements Knowledge*/
 {
-	private Map<String, Sheet> sheets;
+	/*private Map<String, Sheet> sheets;
 	private Map<String, Condition> conditions;
 	private Map<String, Sheet> sets;
 	private Map<String, Sheet> machines;
@@ -87,6 +80,6 @@ public class SimpleKnowledge implements Knowledge
 	{
 		machines.remove(name);
 		
-	}
+	}*/
 	
 }

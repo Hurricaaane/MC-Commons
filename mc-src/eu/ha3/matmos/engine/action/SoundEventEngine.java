@@ -2,7 +2,7 @@ package eu.ha3.matmos.engine.action;
 
 public interface SoundEventEngine
 {
-	public void setSoundEngine(SoundEngine soundEngine);
+	/*public void setSoundEngine(SoundEngine soundEngine);
 
 	public void addReaction(String machine, MachineAction action, String sound);
 	
@@ -11,5 +11,5 @@ public interface SoundEventEngine
 	
 	public void addBender(String controller, String sound, String benderType,
 			String benderParams);
-	
+	 */
 }
