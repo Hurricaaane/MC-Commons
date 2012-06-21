@@ -73,10 +73,11 @@ public class MinapticsLite extends HaddonImpl implements SupportsFrameEvents, Su
 	{
 	}
 	
+	@Override
 	@SuppressWarnings("static-access")
 	public void onLoad()
 	{
-		mc = ModLoader.getMinecraftInstance();
+		mc = manager().getMinecraft();
 		keyManager = new Ha3KeyManager();
 		
 		smootherIntensityWhenIdle = 4F;
@@ -143,21 +144,13 @@ public class MinapticsLite extends HaddonImpl implements SupportsFrameEvents, Su
 	{
 		try
 		{
-			ModLoader.setPrivateValue(net.minecraft.src.EntityRenderer.class,
+			util().setPrivateValue(net.minecraft.src.EntityRenderer.class,
 					mc.entityRenderer, 24, value);
-			ModLoader.setPrivateValue(net.minecraft.src.EntityRenderer.class,
+			util().setPrivateValue(net.minecraft.src.EntityRenderer.class,
 					mc.entityRenderer, 25, value);
 			
 		}
-		catch (IllegalArgumentException e)
-		{
-			e.printStackTrace();
-		}
-		catch (SecurityException e)
-		{
-			e.printStackTrace();
-		}
-		catch (NoSuchFieldException e)
+		catch (PrivateAccessException e)
 		{
 			e.printStackTrace();
 		}
@@ -251,6 +244,7 @@ public class MinapticsLite extends HaddonImpl implements SupportsFrameEvents, Su
 		
 	}
 	
+	@Override
 	public void onTick()
 	{
 		keyManager.handleRuntime();
@@ -282,7 +276,7 @@ public class MinapticsLite extends HaddonImpl implements SupportsFrameEvents, Su
 		if (!isSmootherSettingEvent)
 			return;
 		
-		if (!ModLoader.isGUIOpen(null))
+		if (!util().isCurrentScreen(null))
 		{
 			String msg1 = "Close your menu to start tweaking Minaptics.";
 			
@@ -351,11 +345,11 @@ public class MinapticsLite extends HaddonImpl implements SupportsFrameEvents, Su
 	
 	void zoomDoBefore()
 	{
-		if (!ModLoader.isGUIOpen(net.minecraft.src.GuiChat.class))
+		if (!util().isCurrentScreen(net.minecraft.src.GuiChat.class))
 		{
-			if (!ModLoader.isGUIOpen(net.minecraft.src.GuiInventory.class)
-					&& !ModLoader
-					.isGUIOpen(net.minecraft.src.GuiContainerCreative.class))
+			if (!util().isCurrentScreen(net.minecraft.src.GuiInventory.class)
+					&& !util().isCurrentScreen(
+							net.minecraft.src.GuiContainerCreative.class))
 			{
 				if (isSmootherSettingEvent)
 				{
