@@ -43,7 +43,7 @@ public class mod_Navstrate extends BaseMod
 	
 	mod_Navstrate()
 	{
-		isOn = true;
+		isOn = false;
 		needsRebuffering = true;
 		bufferSize = 256;
 		
@@ -86,15 +86,15 @@ public class mod_Navstrate extends BaseMod
 		gatherer = new NavstrateGatherer();
 		gatherer.setDaemon(true);
 		gatherer.setCaller(this);
-		gatherer.setSleepTime(25);
+		gatherer.setSleepTime(8);
 		gatherer.prepareAnalysis(writeData, x, y, z, stepLimit);
 		gatherer.start();
-		System.out.println("start.");
+		//System.out.println("start.");
 	}
 	
 	public synchronized void finishSnapshot()
 	{
-		System.out.println("done.");
+		//System.out.println("done.");
 		gatherer = null;
 	}
 	

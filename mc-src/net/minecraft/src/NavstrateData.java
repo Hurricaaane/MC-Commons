@@ -122,22 +122,34 @@ public class NavstrateData
 			iter.set(newArray);
 			intArraySwapper = oldArray;
 			
-			for (int k = 0; k < zSize; k++)
+			try
 			{
-				if ((k < kShift) || ((kShift + k) > zSize))
-					for (int i = 0; i < xSize; i++)
-						newArray[k * xSize + i] = 0;
-				else
-					for (int i = 0; i < xSize; i++)
-					{
-						if ((i < iShift) || ((iShift + i) > xSize))
+				for (int k = 0; k < zSize; k++)
+				{
+					if ((k < kShift) || ((kShift + k) > zSize))
+						for (int i = 0; i < xSize; i++)
 							newArray[k * xSize + i] = 0;
-						
-						else
-							newArray[k * xSize + i] = oldArray[(k - kShift) * xSize + (i - iShift)];
-						
-					}
-				
+					else
+						for (int i = 0; i < xSize; i++)
+						{
+							if ((i < iShift) || ((iShift + i) > xSize))
+								newArray[k * xSize + i] = 0;
+							
+							else
+							{
+								newArray[k * xSize + i] = oldArray[(k - kShift)
+								                                   * xSize + (i - iShift)];
+								
+							}
+							
+						}
+					
+				}
+			}
+			catch (Exception e)
+			{
+				//System.out.println(iShift);
+				//System.out.println(kShift);
 			}
 			
 		}
