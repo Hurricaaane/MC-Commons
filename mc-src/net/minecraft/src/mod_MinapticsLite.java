@@ -38,6 +38,7 @@ public class mod_MinapticsLite extends BaseMod
 	float fovLevelTransition;
 	float fovLevelSetup;
 	boolean fovLevelTransitionning;
+	float minZoomField;
 	float maxZoomField;
 	boolean disableSmootherEvenDuringZooming;
 	
@@ -75,6 +76,7 @@ public class mod_MinapticsLite extends BaseMod
 		zoomKey = 15; // TAB
 		fovLevel = 0.3F;
 		zoomDuration = 300;
+		minZoomField = 0.001F;
 		maxZoomField = 0.65F;
 		smootherIntensity = 0.5F;
 		
@@ -415,8 +417,8 @@ public class mod_MinapticsLite extends BaseMod
 				
 				fovLevelSetup = fovLevel - diffPitch * 0.5F;
 				
-				if (fovLevelSetup < 0.001F)
-					fovLevelSetup = 0.001F;
+				if (fovLevelSetup < minZoomField)
+					fovLevelSetup = minZoomField;
 				
 				else if (fovLevelSetup > maxZoomField)
 					fovLevelSetup = maxZoomField;
@@ -609,6 +611,11 @@ public class mod_MinapticsLite extends BaseMod
 						maxZoomField = parseFloat(as[1]);
 						
 					}
+					if (as[0].equals("minimumzoomfield"))
+					{
+						minZoomField = parseFloat(as[1]);
+						
+					}
 					if(as[0].equals("smootherlevel"))
 					{
 						smootherLevel = parseFloat(as[1]);
@@ -677,6 +684,8 @@ public class mod_MinapticsLite extends BaseMod
 			printwriter.println((new StringBuilder("smoothershape:")).append(smootherIntensity).toString());
 			printwriter.println((new StringBuilder("zoomduration:")).append(zoomDuration).toString());
 			printwriter.println((new StringBuilder("maximumzoomfield:")).append(maxZoomField).toString());
+			printwriter.println((new StringBuilder("minimumzoomfield:"))
+					.append(minZoomField).toString());
 			printwriter
 			.println((new StringBuilder("smootherintensitywhenidle:"))
 					.append(smootherIntensityWhenIdle).toString());
