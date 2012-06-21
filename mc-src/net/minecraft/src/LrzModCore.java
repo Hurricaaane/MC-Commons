@@ -30,7 +30,7 @@ public class LrzModCore extends Ha3ModCore
 	@Override
 	public void doFrame(float fspan)
 	{
-		/*if (utility.getClientTick() % 50 != 0)
+		if (utility.getClientTick() % 50 != 0)
 			return;
 		
 		EntityPlayer player = mod.manager().getMinecraft().thePlayer;
@@ -43,7 +43,7 @@ public class LrzModCore extends Ha3ModCore
 			
 			worldCache.save();
 			
-		}*/
+		}
 		
 	}
 	
