@@ -17,7 +17,8 @@ public class MAtProcessorContact extends MAtProcessorModel
 {
 	private int contactSum[];
 	
-	MAtProcessorContact(MAtMod modIn, MAtmosData dataIn, String normalNameIn,
+	MAtProcessorContact(MAtMod modIn, MAtmosData dataIn,
+			String normalNameIn,
 			String deltaNameIn)
 			{
 		super(modIn, dataIn, normalNameIn, deltaNameIn);
@@ -49,7 +50,7 @@ public class MAtProcessorContact extends MAtProcessorModel
 		for (int k = 0; k < 12; k++)
 		{
 			ny = y + (k > 7 ? k - 9 : k % 2);
-			if (ny >= 0 && ny < mod().corn().util().getWorldHeight())
+			if (ny >= 0 && ny < mod().util().getWorldHeight())
 			{
 				nx = x + (k < 4 ? (k < 2 ? -1 : 1) : 0);
 				nz = z + ((k > 3) && (k < 8) ? (k < 6 ? -1 : 1) : 0);

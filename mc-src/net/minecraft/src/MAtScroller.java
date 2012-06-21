@@ -28,10 +28,10 @@ public class MAtScroller extends Ha3Scroller
 	private boolean knowsHowToUse;
 	private float doneValue;
 	
-	public MAtScroller(MAtUserControl userControlIn, MAtMod modIn)
+	public MAtScroller(MAtUserControl userControlIn, MAtMod mod2)
 	{
-		super(modIn.manager());
-		mod = modIn;
+		super(mod2.manager());
+		mod = mod2;
 		
 		knowsHowToUse = false;
 		
@@ -66,7 +66,7 @@ public class MAtScroller extends Ha3Scroller
 		
 		if (!knowsHowToUse)
 		{
-			float glocount = mod.corn().util().getClientTick() + fspan;
+			float glocount = mod.util().getClientTick() + fspan;
 			int blink = (int) (200 + 55 * (Math.sin(glocount * Math.PI * 0.07) + 1) / 2F);
 			mc.fontRenderer.drawStringWithShadow("<Look up/down>", uposx
 					+ uwidth * 2, scrHeight / 2 + 10 * 2, blink << 16
@@ -130,7 +130,7 @@ public class MAtScroller extends Ha3Scroller
 			float posY = (float) ply.posY;
 			float posZ = (float) ply.posZ;
 			
-			mod.corn().sound().playSoundViaManager("random.click", posX, posY,
+			mod.sound().playSoundViaManager("random.click", posX, posY,
 					posZ, hgn, res);
 			
 		}

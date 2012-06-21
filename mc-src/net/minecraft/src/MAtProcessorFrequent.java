@@ -16,7 +16,8 @@ import eu.ha3.matmos.engine.MAtmosData;
 public class MAtProcessorFrequent extends MAtProcessorModel
 {
 	
-	MAtProcessorFrequent(MAtMod modIn, MAtmosData dataIn, String normalNameIn,
+	MAtProcessorFrequent(MAtMod modIn, MAtmosData dataIn,
+			String normalNameIn,
 			String deltaNameIn)
 			{
 		super(modIn, dataIn, normalNameIn, deltaNameIn);
@@ -103,20 +104,20 @@ public class MAtProcessorFrequent extends MAtProcessorModel
 		setValue(28, w.getTopSolidOrLiquidBlock(x, z) - y);
 		
 		// [29,31] : (RELAXED)
-
+		
 		setValue(32, player.inventory.getCurrentItem() != null
 				? player.inventory.getCurrentItem().itemID : -1);
 		//setValue( 32, player.getHeldItem() != null ? player.getHeldItem().itemID : -1 );
 		setValue(33, mx);
 		setValue(34, my);
 		setValue(35, mz);
-		setValue(36, y >= 1 && y < mod().corn().util().getWorldHeight()
+		setValue(36, y >= 1 && y < mod().util().getWorldHeight()
 				? getTranslatedBlockId(mc.theWorld
 						.getBlockId(x, y - 1, z)) : -1); //FIXME difference in Altitude notion
-		setValue(37, y >= 2 && y < mod().corn().util().getWorldHeight()
+		setValue(37, y >= 2 && y < mod().util().getWorldHeight()
 				? getTranslatedBlockId(mc.theWorld
 						.getBlockId(x, y - 2, z)) : -1); //FIXME difference in Altitude notion
-		setValue(38, mod().corn().util().getClientTick());
+		setValue(38, mod().util().getClientTick());
 		setValue(39, player.isBurning() ? 1 : 0); // XXX ERROR NOW IS A PRIVATE VALUE
 		setValue(40, player.swingProgressInt);
 		setValue(41, player.isSwinging ? 1 : 0);

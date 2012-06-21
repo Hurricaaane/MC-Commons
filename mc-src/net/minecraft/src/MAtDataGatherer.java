@@ -57,9 +57,9 @@ public class MAtDataGatherer
 	private long lastLargeScanZ;
 	private int lastLargeScanPassed;
 	
-	MAtDataGatherer(MAtMod modIn)
+	MAtDataGatherer(MAtMod mAtmosHaddon)
 	{
-		mod = modIn;
+		mod = mAtmosHaddon;
 		
 	}
 	

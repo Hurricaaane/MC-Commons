@@ -17,14 +17,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.client.Minecraft;
 
 /*
-* ----------------------------------------------------------------------------
-* "THE COLA-WARE LICENSE" (Revision 0):
-* Hurricaaane wrote this file. As long as you retain this notice you
-* can do whatever you want with this stuff. If we meet some day, and you think
-* this stuff is worth it, you can buy me a cola in return
-* Georges "Hurricaaane" Yam
-* ----------------------------------------------------------------------------
-*/
+ * ----------------------------------------------------------------------------
+ * "THE COLA-WARE LICENSE" (Revision 0):
+ * Hurricaaane wrote this file. As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a cola in return
+ * Georges "Hurricaaane" Yam
+ * ----------------------------------------------------------------------------
+ */
 
 public class MAtExpansionLoader
 {
@@ -41,9 +41,9 @@ public class MAtExpansionLoader
 	private boolean canBuildKnowledge;
 	private List<MAtExpansionEventListener> eventListeners;
 	
-	MAtExpansionLoader(MAtMod modIn)
+	MAtExpansionLoader(MAtMod mAtmosHaddon)
 	{
-		this.mod = modIn;
+		this.mod = mAtmosHaddon;
 		this.canBuildKnowledge = false;
 		
 		this.expansions = new ConcurrentHashMap<String, MAtExpansion>();
@@ -54,9 +54,9 @@ public class MAtExpansionLoader
 		this.eventListeners = new ArrayList<MAtExpansionEventListener>();
 		
 		expansionsFolder = new File(Minecraft.getMinecraftDir(),
-		"matmos_expansions_r7/");
+				"matmos_expansions_r7/");
 		onlineStorageFolder = new File(Minecraft.getMinecraftDir(),
-		"matmos_internal/storage/");
+				"matmos_internal/storage/");
 		
 		if (!expansionsFolder.exists())
 			expansionsFolder.mkdirs();
@@ -78,8 +78,8 @@ public class MAtExpansionLoader
 	
 	private synchronized void renewExpansionProngs(MAtExpansion expansion)
 	{
-		expansion.setSoundManager(mod.corn().soundManager());
-		expansion.setData(mod.corn().dataGatherer().getData());
+		expansion.setSoundManager(mod.soundManager());
+		expansion.setData(mod.dataGatherer().getData());
 		
 	}
 	
@@ -180,7 +180,7 @@ public class MAtExpansionLoader
 			return;
 		
 		String form = expansions.get(userDefinedIdentifier)
-		.getDocumentStringForm();
+				.getDocumentStringForm();
 		
 		if (form != null)
 		{
@@ -287,7 +287,7 @@ public class MAtExpansionLoader
 	{
 		// This is not called at all for expansions that are
 		// set by the user not to load
-		if (mod.corn().isRunning())
+		if (mod.isRunning())
 			expansions.get(userDefinedIdentifier).turnOn();
 		
 		else
@@ -303,7 +303,7 @@ public class MAtExpansionLoader
 		// TODO Separate boolean for user defined preferences
 		for (MAtExpansion expansion : expansions.values())
 		{
-			if (mod.corn().isRunning())
+			if (mod.isRunning())
 				expansion.turnOn(); // Turn on contains a "build knowledge if needed".
 			
 			else

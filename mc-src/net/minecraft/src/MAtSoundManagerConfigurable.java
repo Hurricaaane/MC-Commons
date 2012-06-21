@@ -15,7 +15,7 @@ import net.minecraft.client.Minecraft;
 import paulscode.sound.SoundSystem;
 import eu.ha3.matmos.engine.MAtmosSoundManager;
 import eu.ha3.mc.convenience.Ha3Personalizable;
-import eu.ha3.mc.mod.Ha3ModPrivateAccessException;
+import eu.ha3.mc.haddon.PrivateAccessException;
 
 /*
  * ----------------------------------------------------------------------------
@@ -57,9 +57,9 @@ Ha3Personalizable
 	
 	private Properties config;
 	
-	public MAtSoundManagerConfigurable(MAtMod modIn)
+	public MAtSoundManagerConfigurable(MAtMod mAtmosHaddon)
 	{
-		mod = modIn;
+		mod = mAtmosHaddon;
 		
 		soundVolume = defSoundVolume;
 		musicVolume = defMusicVolume;
@@ -83,7 +83,7 @@ Ha3Personalizable
 	
 	public SoundSystem sndSystem()
 	{
-		return mod.corn().sound().getSoundSystem();
+		return mod.sound().getSoundSystem();
 		
 	}
 	
@@ -264,7 +264,7 @@ Ha3Personalizable
 			nz = nz + (float) (Math.sin(angle) * meta);
 			
 			//mc.sndManager.playSound(equivalent, nx, ny, nz, actualVolume, pitch);
-			mod.corn().sound().playSound(equivalent, nx, ny, nz, actualVolume,
+			mod.sound().playSound(equivalent, nx, ny, nz, actualVolume,
 					pitch, 0, 0F);
 		}
 		else
@@ -277,7 +277,7 @@ Ha3Personalizable
 			//
 			
 			ny = ny + 2048;
-			mod.corn().sound().playSound(equivalent, nx, ny, nz, actualVolume,
+			mod.sound().playSound(equivalent, nx, ny, nz, actualVolume,
 					pitch, 0, 0F);
 			//mc.sndManager.playSoundFX(equivalent, volume * customVolumeMod, pitch);
 			
@@ -316,7 +316,7 @@ Ha3Personalizable
 			//System.out.println(getSound(path));
 			String poolName = getSound(path);
 			SoundPoolEntry soundpoolentry;
-			soundpoolentry = ((SoundPool) (mod.manager().getPrivateValue(
+			soundpoolentry = ((SoundPool) (mod.util().getPrivateValue(
 					net.minecraft.src.SoundManager.class, mod.manager()
 					.getMinecraft().sndManager, 1)))
 					.getRandomSoundFromSoundPool(poolName);
@@ -346,7 +346,7 @@ Ha3Personalizable
 			return true;
 			
 		}
-		catch (Ha3ModPrivateAccessException e)
+		catch (PrivateAccessException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -11,14 +11,14 @@ import net.minecraft.client.Minecraft;
 import eu.ha3.mc.convenience.Ha3Options;
 
 /*
-* ----------------------------------------------------------------------------
-* "THE COLA-WARE LICENSE" (Revision 0):
-* Hurricaaane wrote this file. As long as you retain this notice you
-* can do whatever you want with this stuff. If we meet some day, and you think
-* this stuff is worth it, you can buy me a cola in return
-* Georges "Hurricaaane" Yam
-* ----------------------------------------------------------------------------
-*/
+ * ----------------------------------------------------------------------------
+ * "THE COLA-WARE LICENSE" (Revision 0):
+ * Hurricaaane wrote this file. As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a cola in return
+ * Georges "Hurricaaane" Yam
+ * ----------------------------------------------------------------------------
+ */
 
 public class MAtOptions extends Ha3Options
 {
@@ -26,14 +26,14 @@ public class MAtOptions extends Ha3Options
 	
 	private File propertiesFile;
 	
-	public MAtOptions(MAtMod mod)
+	public MAtOptions(MAtMod mAtmosHaddon)
 	{
 		super();
 		
-		this.mod = mod;
+		this.mod = mAtmosHaddon;
 		
 		propertiesFile = new File(Minecraft.getMinecraftDir(),
-		"matmos_options.cfg");
+				"matmos_options.cfg");
 		
 	}
 	
@@ -69,12 +69,12 @@ public class MAtOptions extends Ha3Options
 				saveOptions();
 				
 			}
-
+			
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
-
+			
 		}
 		
 	}

@@ -46,10 +46,10 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 	
 	private Properties config;
 	
-	MAtUpdateNotifier(MAtMod mod)
+	MAtUpdateNotifier(MAtMod mAtmosHaddon)
 	{
-		this.mod = mod;
-		defLastFound = mod.VERSION;
+		this.mod = mAtmosHaddon;
+		defLastFound = mAtmosHaddon.VERSION;
 		
 		lastFound = defLastFound;
 		displayCount = defDisplayCount;
@@ -129,7 +129,7 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 					displayRemaining = displayRemaining - 1;
 					
 					int vc = maxvn - mod.VERSION;
-					mod.corn().printChat(Ha3Utility.COLOR_GOLD,
+					mod.printChat(Ha3Utility.COLOR_GOLD,
 							"A ",
 							Ha3Utility.COLOR_WHITE, "r" + maxvn,
 							Ha3Utility.COLOR_GOLD,
@@ -138,7 +138,7 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 							" version" + (vc > 1 ? "s" : "") + " late).");
 					
 					if (displayRemaining > 0)
-						mod.corn().printChat(Ha3Utility.COLOR_GRAY,
+						mod.printChat(Ha3Utility.COLOR_GRAY,
 								"This message will display ",
 								Ha3Utility.COLOR_WHITE,
 								displayRemaining,
@@ -148,8 +148,7 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 										+ ".");
 					
 					else
-						mod.corn()
-						.printChat(Ha3Utility.COLOR_GRAY,
+						mod.printChat(Ha3Utility.COLOR_GRAY,
 								"You won't be notified anymore until a newer version.");
 					
 					needsSave = true;
@@ -157,7 +156,7 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 				}
 				
 				if (needsSave)
-					mod.corn().options().saveOptions();
+					mod.options().saveOptions();
 				
 			}
 			

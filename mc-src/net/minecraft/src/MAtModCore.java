@@ -1,17 +1,6 @@
 package net.minecraft.src;
 
 
-import java.io.File;
-import java.io.FileWriter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
-import net.minecraft.client.Minecraft;
-import eu.ha3.mc.convenience.Ha3Personalizable;
-import eu.ha3.mc.convenience.Ha3Signal;
-import eu.ha3.mc.mod.Ha3Mod;
-import eu.ha3.mc.mod.Ha3ModCore;
 
 /*
  * ----------------------------------------------------------------------------
@@ -23,8 +12,9 @@ import eu.ha3.mc.mod.Ha3ModCore;
  * ----------------------------------------------------------------------------
  */
 
-public class MAtModCore extends Ha3ModCore implements Ha3Personalizable
+public class MAtModCore /*extends Ha3ModCore implements Ha3Personalizable*/
 {
+	/*
 	private MAtMod mod;
 	private Ha3Utility utility;
 	private Ha3SoundCommunicator sndComm;
@@ -252,7 +242,7 @@ public class MAtModCore extends Ha3ModCore implements Ha3Personalizable
 		//printChat(Ha3Utility.COLOR_BRIGHTGREEN, "Loading...");
 		startRunning();
 		
-	}
+	}*/
 	
 	/*@Override
 	public void unload()
@@ -261,7 +251,7 @@ public class MAtModCore extends Ha3ModCore implements Ha3Personalizable
 		
 	}*/
 	
-	@Override
+	/*@Override
 	public void doFrame(float fspan)
 	{
 		int tick = utility.getClientTick();
@@ -387,14 +377,14 @@ public class MAtModCore extends Ha3ModCore implements Ha3Personalizable
 		expansionLoader.signalStatusChange();
 		MAtMod.LOGGER.fine("Stopped.");
 		
-		createDataDump();
-		
-		/*printChat(Ha3Utility.COLOR_YELLOW, "Stopped. Press ",
+		createDataDump();*/
+	
+	/*printChat(Ha3Utility.COLOR_YELLOW, "Stopped. Press ",
 				Ha3Utility.COLOR_WHITE,
 				userControl.getKeyBindingMainFriendlyName(),
 				Ha3Utility.COLOR_YELLOW, " to re-enable.");*/
-		
-	}
+	
+	/*}
 	
 	public void createDataDump()
 	{
@@ -559,6 +549,6 @@ public class MAtModCore extends Ha3ModCore implements Ha3Personalizable
 		
 		return options;
 		
-	}
+	}*/
 	
 }

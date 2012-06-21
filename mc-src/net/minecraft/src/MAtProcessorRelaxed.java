@@ -22,7 +22,8 @@ public class MAtProcessorRelaxed extends MAtProcessorModel
 	private Map<String, Integer> biomeHash;
 	private Random random;
 	
-	MAtProcessorRelaxed(MAtMod modIn, MAtmosData dataIn, String normalNameIn,
+	MAtProcessorRelaxed(MAtMod modIn, MAtmosData dataIn,
+			String normalNameIn,
 			String deltaNameIn)
 			{
 		super(modIn, dataIn, normalNameIn, deltaNameIn);
