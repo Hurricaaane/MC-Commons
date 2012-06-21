@@ -9,6 +9,10 @@ import java.io.PrintWriter;
 
 import net.minecraft.client.Minecraft;
 import eu.ha3.mc.convenience.Ha3KeyManager;
+import eu.ha3.mc.haddon.PrivateAccessException;
+import eu.ha3.mc.haddon.SupportsFrameEvents;
+import eu.ha3.mc.haddon.SupportsKeyEvents;
+import eu.ha3.mc.haddon.SupportsTickEvents;
 
 /*
  * ----------------------------------------------------------------------------
@@ -20,7 +24,7 @@ import eu.ha3.mc.convenience.Ha3KeyManager;
  * ----------------------------------------------------------------------------
  */
 
-public class mod_MinapticsLite extends BaseMod
+public class MinapticsLite extends HaddonImpl implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents
 {
 	Minecraft mc;
 	KeyBinding zoomKeyBinding;
@@ -64,9 +68,13 @@ public class mod_MinapticsLite extends BaseMod
 	
 	boolean isSmootherSettingEvent;
 	
+	@Override
+	public void onInitialize()
+	{
+	}
 	
 	@SuppressWarnings("static-access")
-	public mod_MinapticsLite()
+	public void onLoad()
 	{
 		mc = ModLoader.getMinecraftInstance();
 		keyManager = new Ha3KeyManager();
@@ -107,37 +115,27 @@ public class mod_MinapticsLite extends BaseMod
 		fovLevelSetup = fovLevel;
 		
 		zoomKeyBinding = new KeyBinding("key.zoom", zoomKey);
-		
-		ModLoader.registerKey(this, zoomKeyBinding, true);
-		ModLoader.addLocalization("key.zoom", "Zoom");
+		manager().addKeyBinding(zoomKeyBinding, "Zoom");
 		
 		keyManager.addKeyBinding(zoomKeyBinding, new MinapticsLiteZoomBinding(
 				this));
-		
-		// The 3rd param determines it's it's a "frame" think
-		ModLoader.setInGameHook(this, true, false);
 		
 		updateSmootherStatus();
 		
 		try
 		{
-			ModLoader.setPrivateValue(net.minecraft.src.EntityRenderer.class,
+			util().setPrivateValue(net.minecraft.src.EntityRenderer.class,
 					mc.entityRenderer, 7, mouseFilterXAxis);
-			ModLoader.setPrivateValue(net.minecraft.src.EntityRenderer.class,
+			util().setPrivateValue(net.minecraft.src.EntityRenderer.class,
 					mc.entityRenderer, 8, mouseFilterYAxis);
 		}
-		catch (IllegalArgumentException e)
+		catch (PrivateAccessException e)
 		{
 			e.printStackTrace();
 		}
-		catch (SecurityException e)
-		{
-			e.printStackTrace();
-		}
-		catch (NoSuchFieldException e)
-		{
-			e.printStackTrace();
-		}
+		
+		manager().hookFrameEvents(true);
+		manager().hookTickEvents(true);
 		
 	}
 	
@@ -169,19 +167,17 @@ public class mod_MinapticsLite extends BaseMod
 	}
 	
 	@Override
-	public boolean onTickInGame(float fspan, Minecraft game) //Actually "OnRenderFrameInGame"
+	public void onFrame(float semi) //Actually "OnRenderFrameInGame"
 	{
-		if (mc.theWorld.worldInfo.getWorldTime() != lastWorldTime)
+		/*if (mc.theWorld.worldInfo.getWorldTime() != lastWorldTime)
 		{
 			tickThink();
 			lastWorldTime = mc.theWorld.worldInfo.getWorldTime();
 			
-		}
+		}*/
 		
 		displayThink();
 		runtimeThink();
-		
-		return true;
 		
 	}
 	
@@ -210,7 +206,7 @@ public class mod_MinapticsLite extends BaseMod
 	
 	
 	@Override
-	public void keyboardEvent(KeyBinding event)
+	public void onKey(KeyBinding event)
 	{
 		keyManager.handleKeyDown(event);
 		
@@ -255,7 +251,7 @@ public class mod_MinapticsLite extends BaseMod
 		
 	}
 	
-	public void tickThink()
+	public void onTick()
 	{
 		keyManager.handleRuntime();
 		
@@ -703,20 +699,6 @@ public class mod_MinapticsLite extends BaseMod
 			exception.printStackTrace();
 			
 		}
-		
-	}
-	
-	@Override
-	public String getVersion()
-	{
-		return "r13 for 1.2.6";
-		
-	}
-	
-	@Override
-	public void load()
-	{
-		// TODO Auto-generated method stub
 		
 	}
 	

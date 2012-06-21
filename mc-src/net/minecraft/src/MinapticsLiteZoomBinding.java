@@ -14,9 +14,9 @@ import eu.ha3.mc.convenience.Ha3KeyActions;
 
 public class MinapticsLiteZoomBinding implements Ha3KeyActions
 {
-	mod_MinapticsLite mod;
+	MinapticsLite mod;
 	
-	MinapticsLiteZoomBinding(mod_MinapticsLite mod)
+	MinapticsLiteZoomBinding(MinapticsLite mod)
 	{
 		super();
 		this.mod = mod;
@@ -27,7 +27,7 @@ public class MinapticsLiteZoomBinding implements Ha3KeyActions
 	public void doBefore()
 	{
 		(mod).zoomDoBefore();
-
+		
 	}
 	
 	@Override
