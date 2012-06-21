@@ -7,7 +7,8 @@ public class mod_Lowrizon extends Ha3Util_ModLoader
 	@Override
 	Ha3Mod instantiateMod()
 	{
-		return new LrzMod();
+		return new DisabledHa3Mod();
+		//return new LrzMod();
 		
 	}
 	
