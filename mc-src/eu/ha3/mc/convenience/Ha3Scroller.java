@@ -1,10 +1,10 @@
 package eu.ha3.mc.convenience;
 
-import eu.ha3.mc.mod.Ha3ModManager;
+import eu.ha3.mc.haddon.Manager;
 
 public abstract class Ha3Scroller
 {
-	private Ha3ModManager manager;
+	private Manager manager;
 	
 	private boolean isRunning;
 	
@@ -20,8 +20,8 @@ public abstract class Ha3Scroller
 	protected abstract void doStart();
 	
 	protected abstract void doStop();
-
-	public Ha3Scroller(Ha3ModManager managerIn)
+	
+	public Ha3Scroller(Manager managerIn)
 	{
 		manager = managerIn;
 		pitchBase = 0;
@@ -29,7 +29,7 @@ public abstract class Ha3Scroller
 		
 	}
 	
-	public Ha3ModManager manager()
+	public Manager manager()
 	{
 		return manager;
 		
@@ -79,7 +79,7 @@ public abstract class Ha3Scroller
 		pitchBase = manager.getMinecraft().thePlayer.rotationPitch;
 		
 		doStart();
-
+		
 	}
 	
 	public void stop()
@@ -90,7 +90,7 @@ public abstract class Ha3Scroller
 		isRunning = false;
 		
 		doStop();
-
+		
 	}
 	
 	public boolean isRunning()
