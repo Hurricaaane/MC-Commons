@@ -124,7 +124,7 @@ SupportsKeyEvents, Ha3Personalizable
 		arbitraryPool = new HashMap<String, Object>();
 		
 		sndComm = new Ha3SoundCommunicator(this, "MAtmos_");
-
+		
 		userControl = new MAtUserControl(this);
 		dataGatherer = new MAtDataGatherer(this);
 		expansionLoader = new MAtExpansionLoader(this);
@@ -444,23 +444,9 @@ SupportsKeyEvents, Ha3Personalizable
 	@Override
 	public void onFrame(float semi)
 	{
-		int tick = util().getClientTick();
-		if (util().getClientTick() != lastTick)
-		{
-			lastTick = tick;
-			onTick();
-			
-		}
-		
-		doFrame(semi);
-		
-	}
-	
-	private void doFrame(float fspan)
-	{
 		if (!fatalError)
 		{
-			userControl.frameRoutine(fspan);
+			userControl.frameRoutine(semi);
 			
 			if (isRunning)
 			{
