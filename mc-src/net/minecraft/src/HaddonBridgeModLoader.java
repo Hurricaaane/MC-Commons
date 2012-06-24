@@ -40,7 +40,7 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 		haddon.setManager(this);
 		
 		supportsTick = haddon instanceof SupportsTickEvents;
-		supportsFrame = haddon instanceof SupportsTickEvents;
+		supportsFrame = haddon instanceof SupportsFrameEvents;
 		supportsChat = haddon instanceof SupportsChatEvents;
 		supportsKey = haddon instanceof SupportsKeyEvents;
 		
@@ -181,7 +181,7 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 	{
 		if (!supportsKey)
 			return;
-
+		
 		((SupportsKeyEvents) haddon).onKey(event);
 		
 	}
