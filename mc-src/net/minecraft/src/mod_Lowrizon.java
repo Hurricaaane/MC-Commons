@@ -5,23 +5,7 @@ public class mod_Lowrizon extends HaddonBridgeModLoader
 {
 	public mod_Lowrizon()
 	{
-		super(new HaddonImpl() {
-			
-			@Override
-			public void onLoad()
-			{
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onInitialize()
-			{
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		//return new DisabledHa3Mod();
+		super(new DisabledHaddon());
 		//return new LrzMod();
 		
 	}
