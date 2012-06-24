@@ -14,6 +14,9 @@ public class HaddonUtilityImpl implements Utility
 	{
 		this.manager = manager;
 		
+		// Initialize field modifiers
+		HaddonUtilitySingleton.getInstance();
+		
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -22,33 +25,8 @@ public class HaddonUtilityImpl implements Utility
 			Object instanceToPerformOn, int zeroOffsets)
 					throws PrivateAccessException
 					{
-		try
-		{
-			return ModLoader.getPrivateValue(classToPerformOn,
-					instanceToPerformOn, zeroOffsets);
-		}
-		catch (IllegalArgumentException e)
-		{
-			e.printStackTrace();
-			throw new PrivateAccessException(
-					"getPrivateValue has failed: IllegalArgument");
-			
-		}
-		catch (SecurityException e)
-		{
-			e.printStackTrace();
-			throw new PrivateAccessException(
-					"getPrivateValue has failed: Security");
-			
-		}
-		catch (NoSuchFieldException e)
-		{
-			e.printStackTrace();
-			throw new PrivateAccessException(
-					"getPrivateValue has failed: NoSuchField");
-			
-		}
-		
+		return HaddonUtilitySingleton.getInstance().getPrivateValue(
+				classToPerformOn, instanceToPerformOn, zeroOffsets);
 					}
 	
 	@SuppressWarnings("rawtypes")
@@ -57,39 +35,79 @@ public class HaddonUtilityImpl implements Utility
 			Object instanceToPerformOn, int zeroOffsets, Object newValue)
 					throws PrivateAccessException
 					{
+		HaddonUtilitySingleton.getInstance().setPrivateValue(classToPerformOn,
+				instanceToPerformOn, zeroOffsets, newValue);
+					}
+	
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Object getPrivateValue(Class classToPerformOn,
+			Object instanceToPerformOn, String obfPriority, int zeroOffsetsDebug)
+					throws PrivateAccessException
+					{
+		Object ret;
 		try
 		{
-			ModLoader.setPrivateValue(classToPerformOn, instanceToPerformOn,
-					zeroOffsets, newValue);
-		}
-		catch (IllegalArgumentException e)
-		{
-			e.printStackTrace();
-			throw new PrivateAccessException(
-					"setPrivateValue has failed: IllegalArgument");
+			ret = HaddonUtilitySingleton.getInstance().getPrivateValueViaName(
+					classToPerformOn, instanceToPerformOn, obfPriority);
 			
 		}
-		catch (SecurityException e)
+		catch (Exception e)
 		{
-			e.printStackTrace();
-			throw new PrivateAccessException(
-					"setPrivateValue has failed: Security");
-			
-		}
-		catch (NoSuchFieldException e)
-		{
-			e.printStackTrace();
-			throw new PrivateAccessException(
-					"setPrivateValue has failed: NoSuchField");
+			ret = HaddonUtilitySingleton.getInstance().getPrivateValue(
+					classToPerformOn, instanceToPerformOn, zeroOffsetsDebug); // This throws a PrivateAccessException
 			
 		}
 		
+		return ret;
+					}
+	
+	@SuppressWarnings("rawtypes")
+	@Override
+	public void setPrivateValue(Class classToPerformOn,
+			Object instanceToPerformOn, String obfPriority,
+			int zeroOffsetsDebug, Object newValue)
+					throws PrivateAccessException
+					{
+		try
+		{
+			HaddonUtilitySingleton.getInstance().setPrivateValueViaName(
+					classToPerformOn, instanceToPerformOn, obfPriority,
+					newValue);
+			
+		}
+		catch (Exception e)
+		{
+			HaddonUtilitySingleton.getInstance().setPrivateValue(
+					classToPerformOn, instanceToPerformOn, zeroOffsetsDebug,
+					newValue); // This throws a PrivateAccessException
+			
+		}
 					}
 	
 	@Override
 	public int getWorldHeight()
 	{
 		return WORLD_HEIGHT;
+		
+	}
+	
+	@Override
+	public int getClientTick()
+	{
+		try
+		{
+			// XXX: IMPL_UPDATE_OBF
+			return (Integer) getPrivateValue(
+					net.minecraft.client.Minecraft.class, manager
+					.getMinecraft(), 26); // private int ticksRan;
+		}
+		catch (PrivateAccessException e)
+		{
+			e.printStackTrace();
+			return -1;
+			
+		}
 		
 	}
 	
@@ -124,25 +142,6 @@ public class HaddonUtilityImpl implements Utility
 	}
 	
 	@Override
-	public int getClientTick()
-	{
-		try
-		{
-			// XXX: IMPL_UPDATE_OBF
-			return (Integer) getPrivateValue(
-					net.minecraft.client.Minecraft.class, manager
-					.getMinecraft(), 26); // private int ticksRan;
-		}
-		catch (PrivateAccessException e)
-		{
-			e.printStackTrace();
-			return -1;
-			
-		}
-		
-	}
-	
-	@Override
 	public void printChat(Object... args)
 	{
 		if (manager.getMinecraft().thePlayer == null)
@@ -157,47 +156,4 @@ public class HaddonUtilityImpl implements Utility
 		
 	}
 	
-	@SuppressWarnings("rawtypes")
-	@Override
-	public Object getPrivateValue(Class classToPerformOn,
-			Object instanceToPerformOn, String obfPriority, int zeroOffsetsDebug)
-					throws PrivateAccessException
-					{
-		Object ret;
-		try
-		{
-			ret = ModLoader.getPrivateValue(classToPerformOn,
-					instanceToPerformOn, obfPriority);
-			
-		}
-		catch (Exception e)
-		{
-			ret = getPrivateValue(classToPerformOn, instanceToPerformOn,
-					zeroOffsetsDebug); // This throws a PrivateAccessException
-			
-		}
-		
-		return ret;
-					}
-	
-	@SuppressWarnings("rawtypes")
-	@Override
-	public void setPrivateValue(Class classToPerformOn,
-			Object instanceToPerformOn, String obfPriority,
-			int zeroOffsetsDebug, Object newValue)
-					throws PrivateAccessException
-					{
-		try
-		{
-			ModLoader.setPrivateValue(classToPerformOn, instanceToPerformOn,
-					obfPriority, newValue);
-			
-		}
-		catch (Exception e)
-		{
-			setPrivateValue(classToPerformOn, instanceToPerformOn,
-					zeroOffsetsDebug, newValue); // This throws a PrivateAccessException
-			
-		}
-					}
 }
