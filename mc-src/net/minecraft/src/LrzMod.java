@@ -1,27 +1,23 @@
 package net.minecraft.src;
 
-import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import eu.ha3.mc.mod.Ha3Moddable;
+import eu.ha3.mc.haddon.SupportsFrameEvents;
 
-public class LrzMod extends Ha3Moddable
+public class LrzMod extends HaddonImpl implements SupportsFrameEvents
 {
 	final static public Logger LOGGER = Logger.getLogger("Lowrizon");
 	final public int VERSION = 0;
-	
-	private Properties config;
 	
 	private ConsoleHandler conMod;
 	private ConsoleHandler conEngine;
 	
 	LrzMod()
 	{
-		setCore(new LrzModCore());
 		Formatter formatter = new Formatter() {
 			@Override
 			public String format(LogRecord record)
@@ -45,9 +41,40 @@ public class LrzMod extends Ha3Moddable
 		
 	}
 	
-	LrzModCore corn()
+	private LrzWorldCacheI worldCache;
+	
+	@Override
+	public void onLoad()
 	{
-		return (LrzModCore) core();
+		manager().hookFrameEvents(true);
+		
+		worldCache = new LrzWorldCache(8, 64, "poland", this);
 		
 	}
+	
+	@Override
+	public void onFrame(float fspan)
+	{
+		if (util().getClientTick() % 50 != 0)
+			return;
+		
+		EntityPlayer player = manager().getMinecraft().thePlayer;
+		if (player != null)
+		{
+			for (int i = -6; i < 6; i++)
+				for (int j = -6; j < 6; j++)
+					worldCache.requestAverage((int) player.posX + i * 16,
+							(int) player.posZ + j * 16);
+			
+			worldCache.save();
+			
+		}
+		
+	}
+	
+	@Override
+	public void onInitialize()
+	{
+	}
+	
 }

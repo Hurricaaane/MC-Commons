@@ -1,13 +1,27 @@
 package net.minecraft.src;
 
-import eu.ha3.mc.mod.Ha3Mod;
 
-public class mod_Lowrizon extends Ha3Util_ModLoader
+public class mod_Lowrizon extends HaddonBridgeModLoader
 {
-	@Override
-	Ha3Mod instantiateMod()
+	public mod_Lowrizon()
 	{
-		return new DisabledHa3Mod();
+		super(new HaddonImpl() {
+			
+			@Override
+			public void onLoad()
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onInitialize()
+			{
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		//return new DisabledHa3Mod();
 		//return new LrzMod();
 		
 	}

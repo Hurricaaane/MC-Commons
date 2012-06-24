@@ -106,7 +106,7 @@ public class LrzSnap implements LrzSnapI
 		
 		LrzMagI mag = mags[iMag][jMag];
 		
-		int tick = worldCache.mod().corn().util().getClientTick();
+		int tick = worldCache.mod().util().getClientTick();
 		if (mag.hasTimeout(tick))
 		{
 			boolean gathered = gatherChunk(iMag, jMag);
@@ -130,7 +130,7 @@ public class LrzSnap implements LrzSnapI
 							split), jMag
 							* split
 							+ modulus((worldZ / (LrzWorldCache.CHUNK_SIZE / split)),
-							split)) & 0xFF;
+									split)) & 0xFF;
 			
 		}
 		else
