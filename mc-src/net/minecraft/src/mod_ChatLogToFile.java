@@ -12,12 +12,10 @@ import net.minecraft.client.Minecraft;
 public class mod_ChatLogToFile extends BaseMod
 {
 	private File file;
-	private boolean canWrite;
 	
 	public mod_ChatLogToFile()
 	{
 		file = null;
-		canWrite = true;
 		
 	}
 	
@@ -50,8 +48,6 @@ public class mod_ChatLogToFile extends BaseMod
 					+ System.currentTimeMillis() + ")");
 			writer.println("========================");
 			writer.close();
-			
-			canWrite = true;
 			
 		}
 		catch (Exception e)
