@@ -259,13 +259,17 @@ public class mod_Navstrate extends BaseMod
 		
 		mc.renderEngine.createTextureFromBytes(intArray, bufferSize, bufferSize, bufferedImage);
 		
-		GL11.glEnable(3042 /*GL_BLEND*/);
-		GL11.glDisable(3008 /*GL_ALPHA_TEST*/);
-		GL11.glDisable(3553 /*GL_TEXTURE_2D*/);
-		GL11.glBlendFunc(770, 771);
-		//GL11.glShadeModel(7424 /*GL_FLAT*/);
-		
-		drawQuad(screenXshift, screenYshift, screenXshift + width, screenYshift + tall);
+		if (true)
+		{
+			GL11.glEnable(3042 /*GL_BLEND*/);
+			GL11.glDisable(3008 /*GL_ALPHA_TEST*/);
+			GL11.glDisable(3553 /*GL_TEXTURE_2D*/);
+			GL11.glBlendFunc(770, 771);
+			//GL11.glShadeModel(7424 /*GL_FLAT*/);
+			
+			drawQuad(screenXshift, screenYshift, screenXshift + width, screenYshift + tall);
+			
+		}
 		
 		GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
 		GL11.glBindTexture(3553, bufferedImage);
@@ -293,25 +297,91 @@ public class mod_Navstrate extends BaseMod
 			EntityPlayer player = (EntityPlayer) iter.next();
 			int xWorldShift = (int) (px - player.posX);
 			int zWorldShift = (int) (pz - player.posZ);
+			
+			float yaw = (float) (((-90 + player.rotationYaw) / 360F) * Math.PI * 2);
+			
 			if (xWorldShift < width / 2 && zWorldShift < tall / 2)
 			{
-				int alpha = 192 - (int) (128 * (Math.abs(py - player.posY) / 8));
-				if (alpha < 0)
-					alpha = 0;
-				float yaw = (float) (((-90 + player.rotationYaw) / 360F) * Math.PI * 2);
-				float xA = (float) Math.cos(yaw + Math.PI / 4) * radii;
-				float yA = (float) Math.sin(yaw + Math.PI / 4) * radii;
-				float xB = (float) Math.cos(yaw - Math.PI / 4) * radii;
-				float yB = (float) Math.sin(yaw - Math.PI / 4) * radii;
-				
 				Tessellator tessellator = Tessellator.instance;
-				tessellator.startDrawing(4);
-				tessellator.setColorRGBA(0, 255, 255, alpha);
-				tessellator.addVertex(centerX + xWorldShift, centerY + zWorldShift, 0.0D);
-				tessellator.setColorRGBA(0, 255, 0, 0);
-				tessellator.addVertex(centerX + xA + xWorldShift, centerY + yA + zWorldShift, 0.0D);
-				tessellator.addVertex(centerX + xB + xWorldShift, centerY + yB + zWorldShift, 0.0D);
-				tessellator.draw();
+				{
+					int alpha = 192 - (int) (128 * (Math.abs(py - player.posY) / 8));
+					if (alpha < 0)
+						alpha = 0;
+					
+					float xA = (float) Math.cos(yaw + Math.PI / 4) * radii;
+					float yA = (float) Math.sin(yaw + Math.PI / 4) * radii;
+					float xB = (float) Math.cos(yaw - Math.PI / 4) * radii;
+					float yB = (float) Math.sin(yaw - Math.PI / 4) * radii;
+					
+					tessellator.startDrawing(4);
+					tessellator.setColorRGBA(0, 255, 255, alpha);
+					tessellator.addVertex(centerX + xWorldShift, centerY + zWorldShift, 0.0D);
+					tessellator.setColorRGBA(0, 255, 0, 0);
+					tessellator.addVertex(centerX + xA + xWorldShift, centerY + yA + zWorldShift, 0.0D);
+					tessellator.addVertex(centerX + xB + xWorldShift, centerY + yB + zWorldShift, 0.0D);
+					tessellator.draw();
+				}
+				
+				if (player != mc.thePlayer)
+				{
+					{
+						int radix = tall / 15;
+						
+						float xA = (float) Math.cos(yaw + Math.PI / 4) * radix;
+						float yA = (float) Math.sin(yaw + Math.PI / 4) * radix;
+						float xB = (float) Math.cos(yaw - Math.PI / 4) * radix;
+						float yB = (float) Math.sin(yaw - Math.PI / 4) * radix;
+						
+						tessellator.startDrawing(4);
+						tessellator.setColorRGBA(192, 192, 255, 255);
+						tessellator.addVertex(centerX + xWorldShift, centerY
+								+ zWorldShift, 0.0D);
+						tessellator.setColorRGBA(128, 128, 255, 128);
+						tessellator.addVertex(centerX + xA + xWorldShift, centerY
+								+ yA + zWorldShift, 0.0D);
+						tessellator.addVertex(centerX + xB + xWorldShift, centerY
+								+ yB + zWorldShift, 0.0D);
+						tessellator.draw();
+						
+					}
+					
+					{
+						float radix = tall / 25;
+						
+						int alpha = (int) (128 * (Math.abs(py - player.posY) / 8));
+						if (alpha > 128)
+							alpha = 128;
+						
+						float inv = 1f;
+						if (py > player.posY)
+							inv = -1f;
+						
+						float ber = 0.9f;
+						
+						tessellator.startDrawing(4);
+						tessellator.setColorRGBA(255, 255, 0,
+ (alpha * 0));
+						tessellator.addVertex(centerX + xWorldShift, centerY
+								- inv
+								* radix * 0.5
+								+ zWorldShift, 0.0D);
+						tessellator.setColorRGBA(255, 255, 0, alpha);
+						if (inv > 0)
+							tessellator.addVertex(centerX - radix + xWorldShift,
+									centerY + inv * radix * ber
+									+ zWorldShift, 0.0D);
+						tessellator.addVertex(centerX + radix + xWorldShift,
+								centerY + inv * radix * ber
+								+ zWorldShift, 0.0D);
+						if (inv < 0)
+							tessellator.addVertex(
+									centerX - radix + xWorldShift, centerY
+									+ inv * radix * ber + zWorldShift,
+									0.0D);
+						tessellator.draw();
+					}
+					
+				}
 				
 			}
 			
@@ -376,7 +446,7 @@ public class mod_Navstrate extends BaseMod
 		
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawingQuads();
-		tessellator.setColorRGBA(0, 0, 0, 64);
+		tessellator.setColorRGBA(0, 0, 0, 32);
 		tessellator.addVertex(i, l, 0.0D);
 		tessellator.addVertex(k, l, 0.0D);
 		tessellator.addVertex(k, j, 0.0D);
