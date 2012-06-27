@@ -34,12 +34,18 @@ Ha3KeyActions
 	private float desiredPitch;
 	private float desiredYaw;
 	
+	private float modifiedDesiredPitch;
+	private float modifiedDesiredYaw;
+	
 	private boolean wasEnabled;
 	private KeyBinding bind;
 	
 	private Ha3KeyManager keyManager;
 	private boolean viewAsDirection;
 	private boolean lockPlayerDirection;
+	
+	private boolean activate;
+	private int previousTPmode;
 	
 	@Override
 	public void onInitialize()
@@ -48,12 +54,14 @@ Ha3KeyActions
 		lockPlayerDirection = true;
 		viewAsDirection = false;
 		
+		previousTPmode = 0;
+		
 	}
 	
 	@Override
 	public void onLoad()
 	{
-		bind = new KeyBinding("key.quickthirdperson", 29);
+		bind = new KeyBinding("key.quickthirdperson", 47);
 		manager().addKeyBinding(bind, "QTP Forward");
 		manager().hookFrameEvents(true);
 		manager().hookTickEvents(true);
@@ -66,23 +74,37 @@ Ha3KeyActions
 	{
 		Minecraft mc = manager().getMinecraft();
 		
-		boolean shouldEnable = mc.gameSettings.thirdPersonView == 2;
+		int tpMode = mc.gameSettings.thirdPersonView;
+		boolean shouldEnable = activate && (tpMode > 0)
+				&& (tpMode == previousTPmode);
+		previousTPmode = mc.gameSettings.thirdPersonView;
 		
 		manager().getMinecraft().gameSettings.debugCamEnable = shouldEnable;
 		
 		if (!shouldEnable)
 		{
 			wasEnabled = false;
+			activate = false;
 			return;
 			
 		}
+		
+		if (tpMode == 1)
+			thirdPersonAlgorithmA();
+		else if (tpMode == 2)
+			thirdPersonAlgorithmB();
+		
+	}
+	
+	private void thirdPersonAlgorithmA()
+	{
 		
 		if (!wasEnabled)
 		{
 			wasEnabled = true;
 			
 			copyDirection();
-
+			
 			resetDesiredAngles(directivePitch, directiveYaw);
 			
 		}
@@ -95,7 +117,7 @@ Ha3KeyActions
 		{
 			copyViewToDirection();
 			viewAsDirection = false;
-
+			
 		}
 		
 		if (lockPlayerDirection)
@@ -132,10 +154,72 @@ Ha3KeyActions
 		
 	}
 	
+	private void thirdPersonAlgorithmB()
+	{
+		
+		if (!wasEnabled)
+		{
+			wasEnabled = true;
+			
+			copyDirection();
+			
+			resetDesiredAngles(directivePitch, directiveYaw);
+			
+		}
+		
+		if (util().isCurrentScreen(null))
+			gatherDesiredAngles();
+		
+		if (viewAsDirection)
+		{
+			copyViewToDirection();
+			applyDirection();
+			viewAsDirection = false;
+			
+		}
+		
+		if (lockPlayerDirection)
+		{
+			similarizeDirection();
+			applyDirection();
+		}
+		else
+			applyDirection();
+		
+		float viewOffsetsYaw = 180f;
+		
+		try
+		{
+			// debugCamYaw;
+			// prevDebugCamYaw;
+			// debugCamPitch;
+			// prevDebugCamPitch;
+			
+			util().setPrivateValue(EntityRenderer.class,
+					manager().getMinecraft().entityRenderer, "t", 15,
+					desiredYaw + viewOffsetsYaw);
+			util().setPrivateValue(EntityRenderer.class,
+					manager().getMinecraft().entityRenderer, "u", 16,
+					desiredYaw + viewOffsetsYaw);
+			util().setPrivateValue(EntityRenderer.class,
+					manager().getMinecraft().entityRenderer, "v", 17,
+					desiredPitch);
+			util().setPrivateValue(EntityRenderer.class,
+					manager().getMinecraft().entityRenderer, "w", 18,
+					desiredPitch);
+		}
+		catch (PrivateAccessException e)
+		{
+			e.printStackTrace();
+		}
+		
+	}
+	
 	private void copyViewToDirection()
 	{
 		directivePitch = desiredPitch;
 		directiveYaw = desiredYaw;
+		normalizeDirectivePitch();
 		
 	}
 	
@@ -160,9 +244,35 @@ Ha3KeyActions
 		
 		directivePitch = ply.rotationPitch;
 		directiveYaw = ply.rotationYaw;
+		normalizeDirectivePitch();
 		
 	}
 	
+	private void similarizeDirection()
+	{
+		if (!wasEnabled)
+			return;
+		
+		directivePitch -= modifiedDesiredPitch;
+		directiveYaw += modifiedDesiredYaw;
+		normalizeDirectivePitch();
+		
+	}
+	
+	private void normalizeDirectivePitch()
+	{
+		if (directivePitch < -90F)
+		{
+			directivePitch = -90F;
+		}
+		
+		if (directivePitch > 90F)
+		{
+			directivePitch = 90F;
+		}
+		
+	}
+
 	private void gatherDesiredAngles()
 	{
 		Minecraft mc = manager().getMinecraft();
@@ -191,10 +301,12 @@ Ha3KeyActions
 	
 	private void setDesiredAngles(float par1, float par2)
 	{
-		float f = desiredPitch;
-		float f1 = desiredYaw;
-		desiredYaw += par1 * 0.14999999999999999D;
-		desiredPitch -= par2 * 0.14999999999999999D;
+		//float f = desiredPitch;
+		//float f1 = desiredYaw;
+		modifiedDesiredPitch = par2 * 0.15f;
+		modifiedDesiredYaw = par1 * 0.15f;
+		desiredPitch -= modifiedDesiredPitch;
+		desiredYaw += modifiedDesiredYaw;
 		
 		if (desiredPitch < -90F)
 		{
@@ -239,6 +351,8 @@ Ha3KeyActions
 	@Override
 	public void doBefore()
 	{
+		activate = true;
+		
 	}
 	
 	@Override
