@@ -63,14 +63,12 @@ public class HaddonUtilitySingleton
 		}
 		catch (IllegalArgumentException e)
 		{
-			e.printStackTrace();
 			throw new PrivateAccessException(
 					"getPrivateValue has failed: IllegalArgument");
 			
 		}
 		catch (SecurityException e)
 		{
-			e.printStackTrace();
 			throw new PrivateAccessException(
 					"getPrivateValue has failed: Security");
 			
@@ -105,14 +103,12 @@ public class HaddonUtilitySingleton
 		}
 		catch (IllegalArgumentException e)
 		{
-			e.printStackTrace();
 			throw new PrivateAccessException(
 					"setPrivateValue has failed: IllegalArgument");
 			
 		}
 		catch (SecurityException e)
 		{
-			e.printStackTrace();
 			throw new PrivateAccessException(
 					"setPrivateValue has failed: Security");
 			
@@ -140,21 +136,18 @@ public class HaddonUtilitySingleton
 		}
 		catch (IllegalArgumentException e)
 		{
-			e.printStackTrace();
 			throw new PrivateAccessException(
 					"getPrivateValue has failed: IllegalArgument");
 			
 		}
 		catch (SecurityException e)
 		{
-			e.printStackTrace();
 			throw new PrivateAccessException(
 					"getPrivateValue has failed: Security");
 			
 		}
 		catch (NoSuchFieldException e)
 		{
-			e.printStackTrace();
 			throw new PrivateAccessException(
 					"getPrivateValue has failed: NoSuchField");
 			
@@ -188,21 +181,18 @@ public class HaddonUtilitySingleton
 		}
 		catch (IllegalArgumentException e)
 		{
-			e.printStackTrace();
 			throw new PrivateAccessException(
 					"setPrivateValue has failed: IllegalArgument");
 			
 		}
 		catch (SecurityException e)
 		{
-			e.printStackTrace();
 			throw new PrivateAccessException(
 					"setPrivateValue has failed: Security");
 			
 		}
 		catch (NoSuchFieldException e)
 		{
-			e.printStackTrace();
 			throw new PrivateAccessException(
 					"setPrivateValue has failed: NoSuchField");
 			

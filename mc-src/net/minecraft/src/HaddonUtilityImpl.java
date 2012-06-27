@@ -76,7 +76,7 @@ public class HaddonUtilityImpl implements Utility
 					newValue);
 			
 		}
-		catch (Exception e)
+		catch (PrivateAccessException e)
 		{
 			HaddonUtilitySingleton.getInstance().setPrivateValue(
 					classToPerformOn, instanceToPerformOn, zeroOffsetsDebug,
