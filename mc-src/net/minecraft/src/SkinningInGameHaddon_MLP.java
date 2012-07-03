@@ -10,24 +10,25 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.Display;
 
+import eu.ha3.mc.convenience.Ha3EdgeModel;
+import eu.ha3.mc.convenience.Ha3EdgeTrigger;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
 import eu.ha3.mc.haddon.SupportsTickEvents;
 
-public class SkinningInGame extends HaddonImpl implements SupportsTickEvents,
+public class SkinningInGameHaddon_MLP extends HaddonImpl implements
+SupportsTickEvents,
 SupportsFrameEvents
 {
 	private boolean canWork;
 	private boolean isCaptureEnabled;
 	
-	private boolean bindingIsDown;
+	private Ha3EdgeTrigger bindTrigger;
+	
 	private boolean previousFocusState;
 	
-	@Override
-	public void onInitialize()
-	{
-	}
+	private Pony pony;
 	
 	@Override
 	public void onLoad()
@@ -36,6 +37,19 @@ SupportsFrameEvents
 		{
 			canWork = Class.forName("net.minecraft.src.RenderPony", false, this
 					.getClass().getClassLoader()) != null;
+			bindTrigger = new Ha3EdgeTrigger(new Ha3EdgeModel() {
+				@Override
+				public void onTrueEdge()
+				{
+					toggleCaptureState();
+				}
+				
+				@Override
+				public void onFalseEdge()
+				{
+				}
+				
+			});
 			manager().hookTickEvents(true);
 			
 		}
@@ -46,25 +60,21 @@ SupportsFrameEvents
 		
 	}
 	
-	//private String location;
-	private Pony pony;
-	
+	@SuppressWarnings("static-access")
 	public void refreshCurrentPlayerSkin()
 	{
 		checkPonySkin(getMyPony(), new File(manager().getMinecraft()
 				.getMinecraftDir(), "/pony_edit.png"));
-		/*checkPonySkin(getMyPony(), (net.minecraft.client.Minecraft.class)
-				.getResource("/pony_edit.png"));*/
 		
 	}
 	
-	public Pony getMyPony()
+	private Pony getMyPony()
 	{
 		return getPonyOf(manager().getMinecraft().thePlayer.username);
 		
 	}
 	
-	public Pony getPonyOf(String playerName)
+	private Pony getPonyOf(String playerName)
 	{
 		return Pony.getPonyFromRegistry(playerName,
 				manager().getMinecraft().renderEngine);
@@ -73,21 +83,8 @@ SupportsFrameEvents
 	
 	public void checkPonySkin(Pony pony, URL url)
 	{
-		//HttpURLConnection httpurlconnection = null;
-		
 		try
 		{
-			/*httpurlconnection = (HttpURLConnection) url.openConnection();
-			httpurlconnection.setDoInput(true);
-			httpurlconnection.setDoOutput(false);
-			httpurlconnection.connect();
-			
-			if (httpurlconnection.getResponseCode() / 100 == 4)
-			{
-				failPonySkin();
-				return;
-			}*/
-			
 			InputStream is = url.openStream();
 			
 			checkPonySkin(pony, is);
@@ -101,7 +98,7 @@ SupportsFrameEvents
 		
 	}
 	
-	public void checkPonySkin(Pony pony, File file)
+	private void checkPonySkin(Pony pony, File file)
 	{
 		try
 		{
@@ -115,7 +112,7 @@ SupportsFrameEvents
 		
 	}
 	
-	public void checkPonySkin(Pony ponyIn, InputStream instream)
+	private void checkPonySkin(Pony ponyIn, InputStream instream)
 	{
 		pony = ponyIn;
 		
@@ -167,7 +164,7 @@ SupportsFrameEvents
 		
 	}
 	
-	public void checkOnlinePlayerSkin()
+	private void checkOnlinePlayerSkin()
 	{
 		String skinUrl = "http://s3.amazonaws.com/MinecraftSkins/"
 				+ manager().getMinecraft().thePlayer.username + ".png";
@@ -187,27 +184,8 @@ SupportsFrameEvents
 	@Override
 	public void onTick()
 	{
-		/*System.out.println(getMyPony().texture
-				+ " "
-				+ manager().getMinecraft().thePlayer.texture);
-		System.out.println(getMyPony().skinUrl + " "
-				+ manager().getMinecraft().thePlayer.skinUrl);*/
-		
-		if (Keyboard.isKeyDown(29) && Keyboard.isKeyDown(42)
-				&& Keyboard.isKeyDown(25))
-		{
-			if (!bindingIsDown)
-			{
-				toggleCaptureState();
-				bindingIsDown = true;
-				
-			}
-			
-		}
-		else if (bindingIsDown)
-		{
-			bindingIsDown = false;
-		}
+		// ctrl shift P
+		bindTrigger.signalState(util().areKeysDown(29, 42, 25));
 		
 		if (isCaptureEnabled)
 		{
@@ -216,9 +194,18 @@ SupportsFrameEvents
 			if (isRefreshTick)
 				refreshCurrentPlayerSkin();
 			
-			if (previousFocusState != manager().getMinecraft().inGameHasFocus)
+			if (!Display.isActive()
+					&& util().isCurrentScreen(
+							net.minecraft.src.GuiIngameMenu.class))
 			{
-				previousFocusState = manager().getMinecraft().inGameHasFocus;
+				manager().getMinecraft().displayGuiScreen(
+						new SkinningInGamePauseGUI());
+				
+			}
+			
+			if (previousFocusState != Display.isActive())
+			{
+				previousFocusState = Display.isActive();
 				
 				if (!isRefreshTick && previousFocusState == true)
 					refreshCurrentPlayerSkin();
