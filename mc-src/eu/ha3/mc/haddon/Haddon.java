@@ -2,12 +2,13 @@ package eu.ha3.mc.haddon;
 
 public interface Haddon
 {
-	/**
+	// This has been moved to a SupportsInitialization
+	/*
 	 * Triggered after Utility and Manager have been bound and after the addon
 	 * interfaces have been evaluated (eu.ha3.mc.haddon.Supports*).
 	 * 
 	 */
-	public void onInitialize();
+	//public void onInitialize();
 	
 	/**
 	 * Triggered depending on the Manager implementation during the addon
