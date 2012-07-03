@@ -72,9 +72,4 @@ public class LrzMod extends HaddonImpl implements SupportsFrameEvents
 		
 	}
 	
-	@Override
-	public void onInitialize()
-	{
-	}
-	
 }

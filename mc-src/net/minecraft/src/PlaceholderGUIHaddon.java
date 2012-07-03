@@ -8,11 +8,6 @@ SupportsKeyEvents
 	private KeyBinding bind;
 	
 	@Override
-	public void onInitialize()
-	{
-	}
-	
-	@Override
 	public void onLoad()
 	{
 		bind = new KeyBinding("", 13);

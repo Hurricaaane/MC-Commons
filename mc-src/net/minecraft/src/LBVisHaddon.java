@@ -40,12 +40,6 @@ SupportsChatEvents
 	}
 	
 	@Override
-	public void onInitialize()
-	{
-		
-	}
-	
-	@Override
 	public void onLoad()
 	{
 		manager().hookTickEvents(true);

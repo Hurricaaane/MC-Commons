@@ -105,13 +105,6 @@ SupportsKeyEvents, Ha3Personalizable
 	}
 	
 	@Override
-	public void onInitialize()
-	{
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
 	public void onLoad()
 	{
 		isRunning = false;

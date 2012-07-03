@@ -8,6 +8,7 @@ import eu.ha3.mc.haddon.Haddon;
 import eu.ha3.mc.haddon.Manager;
 import eu.ha3.mc.haddon.SupportsChatEvents;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
+import eu.ha3.mc.haddon.SupportsInitialization;
 import eu.ha3.mc.haddon.SupportsKeyEvents;
 import eu.ha3.mc.haddon.SupportsTickEvents;
 import eu.ha3.mc.haddon.Utility;
@@ -48,7 +49,8 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 		
 		lastTick = -1;
 		
-		haddon.onInitialize();
+		if (haddon instanceof SupportsInitialization)
+			((SupportsInitialization) haddon).onInitialize();
 		
 	}
 	

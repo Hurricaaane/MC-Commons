@@ -69,11 +69,6 @@ public class MinapticsLite extends HaddonImpl implements SupportsFrameEvents, Su
 	boolean isSmootherSettingEvent;
 	
 	@Override
-	public void onInitialize()
-	{
-	}
-	
-	@Override
 	@SuppressWarnings("static-access")
 	public void onLoad()
 	{
