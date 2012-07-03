@@ -22,8 +22,8 @@ public interface Manager
 	/**
 	 * Enable or disable the Tick events.
 	 * 
-	 * If the addon doesn't implement SupportsTickEvents, the method will fail
-	 * silently.
+	 * If the addon doesn't implement SupportsTickEvents, the method will throw
+	 * a UnsupportedInterfaceException.
 	 * 
 	 * @param enable
 	 */
@@ -32,8 +32,8 @@ public interface Manager
 	/**
 	 * Enable or disable the Frame events.
 	 * 
-	 * If the addon doesn't implement SupportsTickEvents, the method will fail
-	 * silently.
+	 * If the addon doesn't implement SupportsTickEvents, the method will throw
+	 * a UnsupportedInterfaceException.
 	 * 
 	 * @param enable
 	 */
@@ -42,8 +42,8 @@ public interface Manager
 	/**
 	 * Enable or disable the Chat events.
 	 * 
-	 * If the addon doesn't implement SupportsTickEvents, the method will fail
-	 * silently.
+	 * If the addon doesn't implement SupportsTickEvents, the method will throw
+	 * a UnsupportedInterfaceException.
 	 * 
 	 * @param enable
 	 */
@@ -61,5 +61,5 @@ public interface Manager
 	public void addRenderable(Class renderable, Object renderer);
 	
 	public void addKeyBinding(KeyBinding keyBindingIn, String localization);
-
+	
 }
