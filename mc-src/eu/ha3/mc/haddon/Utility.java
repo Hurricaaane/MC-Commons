@@ -104,4 +104,6 @@ public interface Utility
 	
 	public void printChat(Object... args);
 	
+	public boolean areKeysDown(int... args);
+	
 }

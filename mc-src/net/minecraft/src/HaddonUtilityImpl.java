@@ -1,5 +1,7 @@
 package net.minecraft.src;
 
+import org.lwjgl.input.Keyboard;
+
 import eu.ha3.mc.haddon.Manager;
 import eu.ha3.mc.haddon.PrivateAccessException;
 import eu.ha3.mc.haddon.Utility;
@@ -153,6 +155,20 @@ public class HaddonUtilityImpl implements Utility
 			builder.append(o);
 		}
 		manager.getMinecraft().thePlayer.addChatMessage(builder.toString());
+		
+	}
+	
+	@Override
+	public boolean areKeysDown(int... args)
+	{
+		for (int arg : args)
+		{
+			if (!Keyboard.isKeyDown(arg))
+				return false;
+			
+		}
+		
+		return true;
 		
 	}
 	
