@@ -24,7 +24,7 @@ TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 0. You just DO WHAT THE FUCK YOU WANT TO.
  */
 
-public class QuickThirdPerson extends HaddonImpl implements
+public class QuickThirdPersonHaddon extends HaddonImpl implements
 SupportsFrameEvents, SupportsKeyEvents, SupportsTickEvents,
 Ha3KeyActions
 {
@@ -48,7 +48,7 @@ Ha3KeyActions
 	private int previousTPmode;
 	
 	@Override
-	public void onInitialize()
+	public void onLoad()
 	{
 		keyManager = new Ha3KeyManager();
 		lockPlayerDirection = true;
@@ -56,11 +56,6 @@ Ha3KeyActions
 		
 		previousTPmode = 0;
 		
-	}
-	
-	@Override
-	public void onLoad()
-	{
 		bind = new KeyBinding("key.quickthirdperson", 47);
 		manager().addKeyBinding(bind, "QTP Forward");
 		manager().hookFrameEvents(true);
@@ -272,7 +267,7 @@ Ha3KeyActions
 		}
 		
 	}
-
+	
 	private void gatherDesiredAngles()
 	{
 		Minecraft mc = manager().getMinecraft();
