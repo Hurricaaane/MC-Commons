@@ -296,8 +296,6 @@ Ha3KeyActions
 	
 	private void setDesiredAngles(float par1, float par2)
 	{
-		//float f = desiredPitch;
-		//float f1 = desiredYaw;
 		modifiedDesiredPitch = par2 * 0.15f;
 		modifiedDesiredYaw = par1 * 0.15f;
 		desiredPitch -= modifiedDesiredPitch;
@@ -313,9 +311,6 @@ Ha3KeyActions
 			desiredPitch = 90F;
 		}
 		
-		//prevRotationPitch += desiredAnglesPitch - f;
-		//prevRotationYaw += desiredAnglesYaw - f1;
-		
 	}
 	
 	@Override
@@ -323,14 +318,6 @@ Ha3KeyActions
 	{
 		if (event != bind)
 			return;
-		
-		if (wasEnabled)
-		{
-			//directivePitch = desiredPitch;
-			//directiveYaw = desiredYaw;
-			//System.out.println(event.pressed + " " + event.isPressed());
-			
-		}
 		
 		keyManager.handleKeyDown(event);
 		
