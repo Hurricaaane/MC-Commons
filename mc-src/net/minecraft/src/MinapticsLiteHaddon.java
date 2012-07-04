@@ -26,12 +26,12 @@ import eu.ha3.mc.haddon.SupportsTickEvents;
 
 public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents
 {
-	Minecraft mc;
-	KeyBinding zoomKeyBinding;
-	Ha3KeyManager keyManager;
+	private Minecraft mc;
 	
-	MinapticsLiteMouseFilter mouseFilterXAxis;
-	MinapticsLiteMouseFilter mouseFilterYAxis;
+	private Ha3KeyManager keyManager;
+	
+	private MinapticsLiteMouseFilter mouseFilterXAxis;
+	private MinapticsLiteMouseFilter mouseFilterYAxis;
 	
 	final int zoomSafetyVariableRestore = 150;
 	
@@ -110,9 +110,8 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 		fovLevelTransition = fovLevel;
 		fovLevelSetup = fovLevel;
 		
-		zoomKeyBinding = new KeyBinding("key.zoom", zoomKey);
+		KeyBinding zoomKeyBinding = new KeyBinding("key.zoom", zoomKey);
 		manager().addKeyBinding(zoomKeyBinding, "Zoom");
-		
 		keyManager.addKeyBinding(zoomKeyBinding, new MinapticsLiteZoomBinding(
 				this));
 		
@@ -140,9 +139,9 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 		try
 		{
 			util().setPrivateValue(net.minecraft.src.EntityRenderer.class,
-					mc.entityRenderer, 24, value);
+					mc.entityRenderer, "M", 24, value);
 			util().setPrivateValue(net.minecraft.src.EntityRenderer.class,
-					mc.entityRenderer, 25, value);
+					mc.entityRenderer, "N", 25, value);
 			
 		}
 		catch (PrivateAccessException e)
@@ -155,15 +154,8 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 	}
 	
 	@Override
-	public void onFrame(float semi) //Actually "OnRenderFrameInGame"
+	public void onFrame(float semi)
 	{
-		/*if (mc.theWorld.worldInfo.getWorldTime() != lastWorldTime)
-		{
-			tickThink();
-			lastWorldTime = mc.theWorld.worldInfo.getWorldTime();
-			
-		}*/
-		
 		displayThink();
 		runtimeThink();
 		
@@ -182,10 +174,10 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 		{
 			float fov = 70F;
 			fov += mc.gameSettings.fovSetting * 40F;
-			if(mc.thePlayer.isInsideOfMaterial(Material.water))
-			{
+			
+			if (mc.thePlayer.isInsideOfMaterial(Material.water))
 				fov = (fov * 60F) / 70F;
-			}
+			
 			setCameraZoom((1F - doChangeFOV(1F)) * -1 * fov);
 			
 		}
@@ -199,6 +191,7 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 		keyManager.handleKeyDown(event);
 		
 	}
+	
 	void zoomToggle()
 	{
 		isZoomed = !isZoomed;
@@ -327,16 +320,9 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 					(width - msgdownwidth) / 2,
 					height / 2 + 10 + height / 8, 0xffff00);
 			
-			//String movemouse = "Move your mouse around, press Zoom key to finish.";
-			
-			//int movemousewidth = mc.fontRenderer.getStringWidth( movemouse );
-			//mc.fontRenderer.drawStringWithShadow(movemouse, (width - movemousewidth) / 2, 10 + height / 16, 0xffff00);
-			
 		}
 		
 	}
-	
-	
 	
 	void zoomDoBefore()
 	{
@@ -432,12 +418,6 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 			fovLevelTransitionning = false;
 			
 		}
-		//else // NO NO NO.
-		//{
-		//updateSmootherStatus();
-		//saveOptions();
-		
-		//}
 		
 		eventNum++;
 		
@@ -459,11 +439,14 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 		
 	}
 	
-	public boolean shouldChangeFOV() {
+	public boolean shouldChangeFOV()
+	{
 		return (isZoomed || ((System.currentTimeMillis() - zoomTime) < zoomDuration));
 		
 	}
-	public float doChangeFOV(float inFov) {
+	
+	public float doChangeFOV(float inFov)
+	{
 		float baseLevel;
 		float delta = (System.currentTimeMillis() - lastTime) / 1000F;
 		
@@ -493,18 +476,13 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 		
 	}
 	
-	
-	/*public boolean shouldSmoothCamera()
-	{
-		return isZoomed;
-		
-	}*/
 	public void doForceSmoothCamera()
 	{
 		doForceSmoothCameraXAxis();
 		doForceSmoothCameraYAxis();
 		
 	}
+	
 	public void doForceSmoothCameraXAxis()
 	{
 		float f2 = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
@@ -520,6 +498,7 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 		mouseFilterXAxis.force(cSmooth);
 		
 	}
+	
 	public void doForceSmoothCameraYAxis()
 	{
 		float f2 = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
@@ -542,22 +521,27 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 		doLetSmoothCameraYAxis();
 		
 	}
+
 	public void doLetSmoothCameraXAxis()
 	{
 		mouseFilterXAxis.let();
 		
 	}
+
 	public void doLetSmoothCameraYAxis()
 	{
 		mouseFilterYAxis.let();
 		
 	}
 	
-	public boolean shouldChangeSensitivity() {
+	public boolean shouldChangeSensitivity()
+	{
 		return isZoomed;
 		
 	}
-	public float doChangeSensitivity(float f1) {
+	
+	public float doChangeSensitivity(float f1)
+	{
 		return f1 * (float)Math.max(0.5, fovLevelSetup);
 		
 	}
@@ -566,7 +550,7 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 	{
 		try
 		{
-			if(!optionsFile.exists())
+			if (!optionsFile.exists())
 			{
 				return;
 			}
