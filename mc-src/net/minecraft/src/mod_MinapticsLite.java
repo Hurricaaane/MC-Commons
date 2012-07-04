@@ -5,7 +5,7 @@ public class mod_MinapticsLite extends HaddonBridgeModLoader
 {
 	public mod_MinapticsLite()
 	{
-		super(new MinapticsLite());
+		super(new MinapticsLiteHaddon());
 		
 	}
 	

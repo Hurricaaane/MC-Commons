@@ -24,7 +24,7 @@ import eu.ha3.mc.haddon.SupportsTickEvents;
  * ----------------------------------------------------------------------------
  */
 
-public class MinapticsLite extends HaddonImpl implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents
+public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents
 {
 	Minecraft mc;
 	KeyBinding zoomKeyBinding;
