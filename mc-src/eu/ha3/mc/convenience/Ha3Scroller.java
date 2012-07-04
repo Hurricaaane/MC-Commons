@@ -29,6 +29,12 @@ public abstract class Ha3Scroller
 		
 	}
 	
+	protected Minecraft getMinecraft()
+	{
+		return minecraft;
+		
+	}
+
 	public float getInitialPitch()
 	{
 		return pitchBase;

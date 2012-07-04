@@ -30,7 +30,7 @@ public class MAtScroller extends Ha3Scroller
 	
 	public MAtScroller(MAtUserControl userControlIn, MAtMod mod2)
 	{
-		super(mod2.manager());
+		super(mod2.manager().getMinecraft());
 		mod = mod2;
 		
 		knowsHowToUse = false;
@@ -42,7 +42,7 @@ public class MAtScroller extends Ha3Scroller
 	{
 		String msgper;
 		
-		Minecraft mc = manager().getMinecraft();
+		Minecraft mc = getMinecraft();
 		
 		msgper = (int) Math.floor(doneValue * 100) + "%";
 		
