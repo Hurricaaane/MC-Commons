@@ -1,9 +1,5 @@
 package net.minecraft.src;
 
-import java.nio.charset.Charset;
-
-import eu.ha3.mc.mod.Ha3Mod;
-import eu.ha3.mc.mod.Ha3ModPrivateAccessException;
 
 /*
  * ----------------------------------------------------------------------------
@@ -33,103 +29,5 @@ public class Ha3Utility
 	final public static String COLOR_PINK = "§d";
 	final public static String COLOR_YELLOW = "§e";
 	final public static String COLOR_WHITE = "§f";
-	
-	final private static int WORLD_HEIGHT = 256;
-	
-	private Ha3Mod mod;
-	
-	public Ha3Utility(Ha3Mod modIn)
-	{
-		mod = modIn;
-		
-	}
-	
-	public Object getCurrentScreen()
-	{
-		return mod.manager().getMinecraft().currentScreen;
-		
-	}
-	
-	@SuppressWarnings("rawtypes")
-	public boolean isCurrentScreen(final Class classtype)
-	{
-		Object current = getCurrentScreen();
-		
-		if (classtype == null)
-			return current == null;
-		
-		if (current == null)
-			return false;
-		
-		return classtype.isInstance(current);
-		
-	}
-	
-	public void closeCurrentScreen()
-	{
-		mod.manager().getMinecraft().displayGuiScreen(null);
-		
-	}
-	
-	public int getClientTick()
-	{
-		try
-		{
-			return (Integer) mod.manager().getPrivateValue(
-					net.minecraft.client.Minecraft.class,
-					mod.manager().getMinecraft(), 26); // private int ticksRan;
-		}
-		catch (Ha3ModPrivateAccessException e)
-		{
-			e.printStackTrace();
-			return -1;
-			
-		}
-		
-	}
-	
-	public int getWorldHeight()
-	{
-		return WORLD_HEIGHT;
-		
-	}
-	
-	public void sendCustomPacket(String channel, String contents)
-	{
-		Packet250CustomPayload packet = new Packet250CustomPayload();
-		packet.channel = channel;
-		packet.data = contents.getBytes(Charset.forName("UTF8"));
-		packet.length = packet.data.length;
-		
-		mod.manager().getMinecraft().getSendQueue().addToSendQueue(packet);
-		
-	}
-	
-	public void registerOutgoingPluginChannel(String channel)
-	{
-		sendCustomPacket("REGISTER", channel);
-		
-	}
-	
-	public void unregisterOutgoingPluginChannel(String channel)
-	{
-		sendCustomPacket("UNREGISTER", channel);
-		
-	}
-	
-	public void printChat(Object... args)
-	{
-		if (mod.manager().getMinecraft().thePlayer == null)
-			return;
-		
-		StringBuilder builder = new StringBuilder();
-		for (Object o : args)
-		{
-			builder.append(o);
-		}
-		mod.manager().getMinecraft().thePlayer.addChatMessage(builder
-				.toString());
-		
-	}
 	
 }
