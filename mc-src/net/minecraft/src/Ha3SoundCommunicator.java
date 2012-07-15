@@ -53,6 +53,12 @@ public class Ha3SoundCommunicator
 		
 	}
 	
+	/**
+	 * Calling this creates a thread if the sound communicator is not yet ready.
+	 * 
+	 * @param onSuccess
+	 * @param onFailure
+	 */
 	public void load(Ha3Signal onSuccess, Ha3Signal onFailure)
 	{
 		if (!isUseable())
