@@ -14,6 +14,7 @@ import org.lwjgl.opengl.Display;
 
 import eu.ha3.mc.convenience.Ha3EdgeModel;
 import eu.ha3.mc.convenience.Ha3EdgeTrigger;
+import eu.ha3.mc.convenience.Ha3StaticUtilities;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
 import eu.ha3.mc.haddon.SupportsTickEvents;
 
@@ -33,10 +34,10 @@ SupportsFrameEvents
 	@Override
 	public void onLoad()
 	{
-		try
+		if (Ha3StaticUtilities.classExists("net.minecraft.Pony", this)
+				|| Ha3StaticUtilities.classExists("net.minecraft.src.Pony",
+						this))
 		{
-			canWork = Class.forName("net.minecraft.src.Pony", false, this
-					.getClass().getClassLoader()) != null;
 			bindTrigger = new Ha3EdgeTrigger(new Ha3EdgeModel() {
 				@Override
 				public void onTrueEdge()
@@ -51,12 +52,9 @@ SupportsFrameEvents
 				
 			});
 			manager().hookTickEvents(true);
-			
 		}
-		catch (ClassNotFoundException e)
-		{
+		else
 			System.out.println("MLP is not installed?");
-		}
 		
 	}
 	
