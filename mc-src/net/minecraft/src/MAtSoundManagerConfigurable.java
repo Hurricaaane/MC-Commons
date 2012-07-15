@@ -322,7 +322,7 @@ Ha3Personalizable
 			//System.out.println(getSound(path));
 			String poolName = getSound(path);
 			SoundPoolEntry soundpoolentry;
-			soundpoolentry = ((SoundPool) (mod.util().getPrivateValue(
+			soundpoolentry = ((SoundPool) (mod.util().getPrivateValueLiteral(
 					net.minecraft.src.SoundManager.class, mod.manager()
 							.getMinecraft().sndManager, "b", 1)))
 					.getRandomSoundFromSoundPool(poolName);

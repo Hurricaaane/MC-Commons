@@ -129,16 +129,16 @@ Ha3KeyActions
 			// debugCamPitch;
 			// prevDebugCamPitch;
 			
-			util().setPrivateValue(EntityRenderer.class,
+			util().setPrivateValueLiteral(EntityRenderer.class,
 					manager().getMinecraft().entityRenderer, "t", 15,
 					desiredYaw + viewOffsetsYaw);
-			util().setPrivateValue(EntityRenderer.class,
+			util().setPrivateValueLiteral(EntityRenderer.class,
 					manager().getMinecraft().entityRenderer, "u", 16,
 					desiredYaw + viewOffsetsYaw);
-			util().setPrivateValue(EntityRenderer.class,
+			util().setPrivateValueLiteral(EntityRenderer.class,
 					manager().getMinecraft().entityRenderer, "v", 17,
 					desiredPitch);
-			util().setPrivateValue(EntityRenderer.class,
+			util().setPrivateValueLiteral(EntityRenderer.class,
 					manager().getMinecraft().entityRenderer, "w", 18,
 					desiredPitch);
 		}
@@ -190,16 +190,16 @@ Ha3KeyActions
 			// debugCamPitch;
 			// prevDebugCamPitch;
 			
-			util().setPrivateValue(EntityRenderer.class,
+			util().setPrivateValueLiteral(EntityRenderer.class,
 					manager().getMinecraft().entityRenderer, "t", 15,
 					desiredYaw + viewOffsetsYaw);
-			util().setPrivateValue(EntityRenderer.class,
+			util().setPrivateValueLiteral(EntityRenderer.class,
 					manager().getMinecraft().entityRenderer, "u", 16,
 					desiredYaw + viewOffsetsYaw);
-			util().setPrivateValue(EntityRenderer.class,
+			util().setPrivateValueLiteral(EntityRenderer.class,
 					manager().getMinecraft().entityRenderer, "v", 17,
 					desiredPitch);
-			util().setPrivateValue(EntityRenderer.class,
+			util().setPrivateValueLiteral(EntityRenderer.class,
 					manager().getMinecraft().entityRenderer, "w", 18,
 					desiredPitch);
 		}

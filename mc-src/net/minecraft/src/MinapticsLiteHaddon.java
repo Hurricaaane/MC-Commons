@@ -144,9 +144,9 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 	{
 		try
 		{
-			util().setPrivateValue(net.minecraft.src.EntityRenderer.class,
+			util().setPrivateValueLiteral(net.minecraft.src.EntityRenderer.class,
 					mc.entityRenderer, "M", 24, value);
-			util().setPrivateValue(net.minecraft.src.EntityRenderer.class,
+			util().setPrivateValueLiteral(net.minecraft.src.EntityRenderer.class,
 					mc.entityRenderer, "N", 25, value);
 			
 		}

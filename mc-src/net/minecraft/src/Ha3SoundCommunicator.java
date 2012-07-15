@@ -102,7 +102,7 @@ public class Ha3SoundCommunicator
 	{
 		if (sndSystem == null)
 			sndSystem = (SoundSystem) mod.getManager().getUtility()
-			.getPrivateValue(
+			.getPrivateValueLiteral(
 					net.minecraft.src.SoundManager.class,
 							mod.getManager().getMinecraft().sndManager, "a", 0);
 		

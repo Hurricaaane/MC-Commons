@@ -59,7 +59,7 @@ public class HaddonUtilityImpl implements Utility
 	
 	@SuppressWarnings("rawtypes")
 	@Override
-	public Object getPrivateValue(Class classToPerformOn,
+	public Object getPrivateValueLiteral(Class classToPerformOn,
 			Object instanceToPerformOn, String obfPriority, int zeroOffsetsDebug)
 					throws PrivateAccessException
 					{
@@ -82,7 +82,7 @@ public class HaddonUtilityImpl implements Utility
 	
 	@SuppressWarnings("rawtypes")
 	@Override
-	public void setPrivateValue(Class classToPerformOn,
+	public void setPrivateValueLiteral(Class classToPerformOn,
 			Object instanceToPerformOn, String obfPriority,
 			int zeroOffsetsDebug, Object newValue)
 					throws PrivateAccessException

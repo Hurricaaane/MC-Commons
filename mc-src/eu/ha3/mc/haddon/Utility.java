@@ -72,7 +72,7 @@ public interface Utility
 	 * @throws PrivateAccessException
 	 *             When the method fails twice
 	 */
-	public Object getPrivateValue(Class classToPerformOn,
+	public Object getPrivateValueLiteral(Class classToPerformOn,
 			Object instanceToPerformOn, String obfPriority,
 			int zeroOffsetsDebug) throws PrivateAccessException;
 	
@@ -94,7 +94,7 @@ public interface Utility
 	 * @throws PrivateAccessException
 	 *             When the method fails twice
 	 */
-	public void setPrivateValue(Class classToPerformOn,
+	public void setPrivateValueLiteral(Class classToPerformOn,
 			Object instanceToPerformOn, String obfPriority,
 			int zeroOffsetsDebug, Object newValue)
 					throws PrivateAccessException;
