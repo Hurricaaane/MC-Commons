@@ -318,7 +318,7 @@ Ha3Personalizable
 			SoundPoolEntry soundpoolentry;
 			soundpoolentry = ((SoundPool) (mod.util().getPrivateValue(
 					net.minecraft.src.SoundManager.class, mod.manager()
-					.getMinecraft().sndManager, 1)))
+							.getMinecraft().sndManager, "b", 1)))
 					.getRandomSoundFromSoundPool(poolName);
 			
 			if (soundpoolentry != null)

@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import eu.ha3.matmos.engine.MAtmosLogger;
 import eu.ha3.mc.convenience.Ha3Personalizable;
 import eu.ha3.mc.convenience.Ha3Signal;
+import eu.ha3.mc.convenience.Ha3StaticUtilities;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
 import eu.ha3.mc.haddon.SupportsKeyEvents;
 import eu.ha3.mc.haddon.SupportsTickEvents;
@@ -32,7 +33,6 @@ SupportsKeyEvents, Ha3Personalizable
 	private Ha3SoundCommunicator sndComm;
 	
 	private final boolean defBypassResourceLoaderWait = true;
-	private final boolean defAsyncLoad = true;
 	private final boolean defAllowDump = true;
 	private boolean bypassResourceLoaderWait;
 	private boolean allowDump;
@@ -46,8 +46,6 @@ SupportsKeyEvents, Ha3Personalizable
 	private MAtSoundManagerConfigurable soundManager;
 	
 	private boolean isRunning;
-	private int lastTick;
-	
 	private Map<String, Object> arbitraryPool;
 	
 	private boolean isReady;
@@ -227,7 +225,24 @@ SupportsKeyEvents, Ha3Personalizable
 		MAtMod.LOGGER
 		.info("SoundCommunicator loaded (after " + diffs + " s.).");
 		
-		if (!bypassResourceLoaderWait)
+		if (Ha3StaticUtilities.classExists(
+				"soundpacks.ThreadDownloadResources", this)
+				&& !Ha3StaticUtilities.classExists(
+						"soundpacks.LetMAtmosIgnoreOverride", this))
+		{
+			MAtMod.LOGGER
+			.warning("SoundPack addon has been detected. MAtmos will not attempt load sounds on its own at all.");
+			
+		}
+		else if (Ha3StaticUtilities.classExists(
+				"eu.ha3.mc.external.se.MAtmosOverride_BlockResourceLoader",
+				this))
+		{
+			MAtMod.LOGGER
+			.warning("A generic resource recource loader blocker has been detected. MAtmos will not attempt load sounds on its own at all.");
+			
+		}
+		else if (!bypassResourceLoaderWait)
 		{
 			new MAtResourceReloader(this, new Ha3Signal() {
 				
@@ -244,7 +259,7 @@ SupportsKeyEvents, Ha3Personalizable
 		else
 		{
 			MAtMod.LOGGER
-					.info("Bypassing Resource Reloader threaded wait. This may cause issues.");
+			.info("Bypassing Resource Reloader threaded wait. This may cause issues.");
 			
 			new MAtResourceReloader(this, null).reloadResources();
 			sndCommLoaded();
@@ -568,8 +583,6 @@ SupportsKeyEvents, Ha3Personalizable
 		options.setProperty("debug.logger.engine.use", "0");
 		options.setProperty("core.init.bypassresourcereloaderwait.use",
 				defBypassResourceLoaderWait ? "1" : "0");
-		options.setProperty("core.init.asyncstart.use", defAsyncLoad ? "1"
-				: "0");
 		options.setProperty("core.data.dump.use", defAllowDump ? "1" : "0");
 		
 		return options;
