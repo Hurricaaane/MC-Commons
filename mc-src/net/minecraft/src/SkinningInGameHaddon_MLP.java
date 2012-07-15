@@ -35,7 +35,7 @@ SupportsFrameEvents
 	{
 		try
 		{
-			canWork = Class.forName("net.minecraft.src.RenderPony", false, this
+			canWork = Class.forName("net.minecraft.src.Pony", false, this
 					.getClass().getClassLoader()) != null;
 			bindTrigger = new Ha3EdgeTrigger(new Ha3EdgeModel() {
 				@Override
