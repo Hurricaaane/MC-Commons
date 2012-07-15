@@ -35,7 +35,6 @@ SupportsKeyEvents, Ha3Personalizable
 	private final boolean defAsyncLoad = true;
 	private final boolean defAllowDump = true;
 	private boolean bypassResourceLoaderWait;
-	private boolean asyncLoad;
 	private boolean allowDump;
 	
 	private MAtUserControl userControl;
@@ -107,11 +106,12 @@ SupportsKeyEvents, Ha3Personalizable
 	@Override
 	public void onLoad()
 	{
+		long beginTime = System.currentTimeMillis();
+		
 		isRunning = false;
 		isReady = false;
 		
 		bypassResourceLoaderWait = defBypassResourceLoaderWait;
-		asyncLoad = defAsyncLoad;
 		allowDump = defAllowDump;
 		
 		arbitraryPool = new HashMap<String, Object>();
@@ -131,6 +131,10 @@ SupportsKeyEvents, Ha3Personalizable
 		
 		doLoad();
 		
+		MAtMod.LOGGER.info("Took "
+				+ (Math.floor(System.currentTimeMillis() - beginTime) / 1000f)
+				+ " seconds to load MAtmos.");
+		
 	}
 	
 	public void doLoad()
@@ -149,8 +153,8 @@ SupportsKeyEvents, Ha3Personalizable
 		options.registerPersonalizable(soundManager);
 		options.registerPersonalizable(updateNotifier);
 		options.loadOptions(); // TODO Options
+		
 		sndComm.load(new Ha3Signal() {
-			
 			@Override
 			public void signal()
 			{
@@ -240,7 +244,7 @@ SupportsKeyEvents, Ha3Personalizable
 		else
 		{
 			MAtMod.LOGGER
-			.info("Bypassing Resource Reloader. This may cause issues.");
+					.info("Bypassing Resource Reloader threaded wait. This may cause issues.");
 			
 			new MAtResourceReloader(this, null).reloadResources();
 			sndCommLoaded();
@@ -263,28 +267,13 @@ SupportsKeyEvents, Ha3Personalizable
 		// options.loadPostSndComms();
 		// soundManager.load();
 		
-		// XXX TEMPORARY FIX: DISABLED ASYNCHRONOUS LOADING COMPLETELY
-		if (false && asyncLoad)
-		{
-			Thread t = new Thread() {
-				@Override
-				public void run()
-				{
-					expansionLoader.signalBuildKnowledge();
-					
-				}
-			};
-			t.start();
-		}
-		else
-			expansionLoader.signalBuildKnowledge();
+		expansionLoader.signalBuildKnowledge();
 		
 		phase = MAtModPhase.READY;
 		
 		isReady = true;
 		MAtMod.LOGGER.info("Ready.");
 		
-		//printChat(Ha3Utility.COLOR_BRIGHTGREEN, "Loading...");
 		startRunning();
 		
 	}
@@ -342,11 +331,6 @@ SupportsKeyEvents, Ha3Personalizable
 		MAtMod.LOGGER.fine("Stopped.");
 		
 		createDataDump();
-		
-		/*printChat(Ha3Utility.COLOR_YELLOW, "Stopped. Press ",
-				Ha3Utility.COLOR_WHITE,
-				userControl.getKeyBindingMainFriendlyName(),
-				Ha3Utility.COLOR_YELLOW, " to re-enable.");*/
 		
 	}
 	
@@ -535,16 +519,6 @@ SupportsKeyEvents, Ha3Personalizable
 				
 			}
 			{
-				String query = "core.init.asyncstart.use";
-				if (options.containsKey(query))
-				{
-					String prop = options.getProperty(query);
-					asyncLoad = Integer.parseInt(prop) == 1 ? true : false;
-					config.put(query, prop);
-				}
-				
-			}
-			{
 				String query = "core.data.dump.use";
 				if (options.containsKey(query))
 				{
@@ -575,7 +549,6 @@ SupportsKeyEvents, Ha3Personalizable
 		
 		config.setProperty("core.init.bypassresourcereloaderwait.use",
 				bypassResourceLoaderWait ? "1" : "0");
-		config.setProperty("core.init.asyncstart.use", asyncLoad ? "1" : "0");
 		config.setProperty("core.data.dump.use", allowDump ? "1" : "0");
 		
 		return config;
