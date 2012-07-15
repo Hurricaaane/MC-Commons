@@ -64,6 +64,8 @@ public class MAtExpansionLoader
 		if (!onlineStorageFolder.exists())
 			onlineStorageFolder.mkdirs();
 		
+		tasks = new ArrayList<Runnable>();
+
 	}
 	
 	public synchronized void renewProngs()
@@ -331,6 +333,24 @@ public class MAtExpansionLoader
 	
 	public void dataRoutine()
 	{
+		if (!tasks.isEmpty())
+		{
+			for (Runnable runnable : tasks)
+			{
+				try
+				{
+					runnable.run();
+					
+				}
+				catch (Exception e)
+				{
+				}
+				
+			}
+			tasks.clear();
+			
+		}
+
 		for (MAtExpansion expansion : expansions.values())
 		{
 			expansion.dataRoutine();
@@ -458,4 +478,12 @@ public class MAtExpansionLoader
 		
 	}
 	
+	private List<Runnable> tasks;
+	
+	public void putTask(Runnable runnable)
+	{
+		tasks.add(runnable);
+		
+	}
+
 }
