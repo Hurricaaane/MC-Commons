@@ -1,7 +1,11 @@
 package net.minecraft.src;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -214,6 +218,75 @@ SupportsKeyEvents, Ha3Personalizable
 		
 	}
 	
+	private String getFirstBlocker()
+	{
+		this.manager().getMinecraft();
+		File folder = new File(Minecraft.getMinecraftDir(),
+				"matmos_audiomodlike_blacklist/");
+		
+		if (!folder.exists())
+			return null;
+		
+		for (File file : folder.listFiles())
+		{
+			if (file.getName().endsWith(".list"))
+			{
+				BufferedReader reader;
+				try
+				{
+					reader = new BufferedReader(new FileReader(file));
+					try
+					{
+						String line;
+						while ((line = reader.readLine()) != null)
+						{
+							String[] contents = line.split("\t");
+							if ((contents.length > 0) && (contents[0].length() > 0))
+							{
+								if (Ha3StaticUtilities.classExists(contents[0],
+										this))
+								{
+									if (contents.length > 1)
+										return contents[1];
+									else
+										return "A blocker was detected.";
+									
+								}
+								
+							}
+							
+						}
+						
+					}
+					catch (IOException e)
+					{
+						
+					}
+					finally
+					{
+						try
+						{
+							reader.close();
+						}
+						catch (IOException e)
+						{
+						}
+						
+					}
+				}
+				catch (FileNotFoundException e1)
+				{
+					e1.printStackTrace();
+				}
+				
+			}
+			
+		}
+		
+		return null;
+		
+	}
+	
 	private void sndCommLoadFinishedPhaseOne()
 	{
 		phase = MAtModPhase.RESOURCE_LOADER;
@@ -225,21 +298,12 @@ SupportsKeyEvents, Ha3Personalizable
 		MAtMod.LOGGER
 		.info("SoundCommunicator loaded (after " + diffs + " s.).");
 		
-		if (Ha3StaticUtilities.classExists(
-				"soundpacks.ThreadDownloadResources", this)
-				&& !Ha3StaticUtilities.classExists(
-						"soundpacks.LetMAtmosIgnoreOverride", this))
+		String firstBlocker = getFirstBlocker();
+		if (firstBlocker != null)
 		{
+			MAtMod.LOGGER.warning(firstBlocker);
 			MAtMod.LOGGER
-			.warning("SoundPack addon has been detected. MAtmos will not attempt load sounds on its own at all.");
-			
-		}
-		else if (Ha3StaticUtilities.classExists(
-				"eu.ha3.mc.external.se.MAtmosOverride_BlockResourceLoader",
-				this))
-		{
-			MAtMod.LOGGER
-			.warning("A generic resource recource loader blocker has been detected. MAtmos will not attempt load sounds on its own at all.");
+			.warning("MAtmos will not attempt load sounds on its own at all.");
 			
 		}
 		else if (!bypassResourceLoaderWait)
