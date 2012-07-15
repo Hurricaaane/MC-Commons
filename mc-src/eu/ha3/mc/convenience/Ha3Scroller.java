@@ -39,33 +39,33 @@ public abstract class Ha3Scroller
 	
 	public Ha3Scroller(Minecraft managerIn)
 	{
-		minecraft = managerIn;
-		pitchBase = 0;
-		pitchGlobal = 0;
+		this.minecraft = managerIn;
+		this.pitchBase = 0;
+		this.pitchGlobal = 0;
 		
 	}
 	
 	protected Minecraft getMinecraft()
 	{
-		return minecraft;
+		return this.minecraft;
 		
 	}
-
+	
 	public float getInitialPitch()
 	{
-		return pitchBase;
+		return this.pitchBase;
 		
 	}
 	
 	public float getPitch()
 	{
-		return pitchGlobal;
+		return this.pitchGlobal;
 		
 	}
 	
 	public void draw(float fspan)
 	{
-		if (!isRunning)
+		if (!this.isRunning)
 			return;
 		
 		doDraw(fspan);
@@ -74,12 +74,12 @@ public abstract class Ha3Scroller
 	
 	public void routine()
 	{
-		if (!isRunning)
+		if (!this.isRunning)
 			return;
 		
 		doRoutineBefore();
 		
-		pitchGlobal = minecraft.thePlayer.rotationPitch;
+		this.pitchGlobal = this.minecraft.thePlayer.rotationPitch;
 		
 		doRoutineAfter();
 		
@@ -87,12 +87,12 @@ public abstract class Ha3Scroller
 	
 	public void start()
 	{
-		if (isRunning)
+		if (this.isRunning)
 			return;
 		
-		isRunning = true;
+		this.isRunning = true;
 		
-		pitchBase = minecraft.thePlayer.rotationPitch;
+		this.pitchBase = this.minecraft.thePlayer.rotationPitch;
 		
 		doStart();
 		
@@ -100,10 +100,10 @@ public abstract class Ha3Scroller
 	
 	public void stop()
 	{
-		if (!isRunning)
+		if (!this.isRunning)
 			return;
 		
-		isRunning = false;
+		this.isRunning = false;
 		
 		doStop();
 		
@@ -111,7 +111,7 @@ public abstract class Ha3Scroller
 	
 	public boolean isRunning()
 	{
-		return isRunning;
+		return this.isRunning;
 		
 	}
 	

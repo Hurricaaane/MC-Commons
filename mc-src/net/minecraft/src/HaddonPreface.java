@@ -29,8 +29,8 @@ public class HaddonPreface extends HaddonImpl implements SupportsTickEvents
 	
 	private HaddonPreface()
 	{
-		defined = false;
-		trigger = new Ha3EdgeTrigger(new Ha3EdgeModel() {
+		this.defined = false;
+		this.trigger = new Ha3EdgeTrigger(new Ha3EdgeModel() {
 			
 			@Override
 			public void onTrueEdge()
@@ -54,7 +54,7 @@ public class HaddonPreface extends HaddonImpl implements SupportsTickEvents
 	
 	public boolean isDefined()
 	{
-		return defined;
+		return this.defined;
 		
 	}
 	
@@ -63,7 +63,7 @@ public class HaddonPreface extends HaddonImpl implements SupportsTickEvents
 		if (isDefined())
 			return;
 		
-		defined = true;
+		this.defined = true;
 		System.out.println("HaddonPreface is now defined.");
 		
 	}
@@ -78,7 +78,7 @@ public class HaddonPreface extends HaddonImpl implements SupportsTickEvents
 	@Override
 	public void onTick()
 	{
-		trigger.signalState(util().areKeysDown(29, 42, 35));
+		this.trigger.signalState(util().areKeysDown(29, 42, 35));
 		System.out.println("ff");
 		
 	}

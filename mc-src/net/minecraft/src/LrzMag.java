@@ -37,7 +37,7 @@ public class LrzMag implements LrzMagI
 	@Override
 	public void markGathered()
 	{
-		gathered = true;
+		this.gathered = true;
 		
 	}
 	
@@ -57,13 +57,13 @@ public class LrzMag implements LrzMagI
 	@Override
 	public boolean isGathered()
 	{
-		return gathered;
+		return this.gathered;
 	}
 	
 	@Override
 	public boolean hasTimeout(int current)
 	{
-		return current > timeout;
+		return current > this.timeout;
 	}
 	
 }

@@ -20,7 +20,7 @@ public class LBChange
 {
 	public int getInformativeRank()
 	{
-		return informativeRank;
+		return this.informativeRank;
 	}
 	
 	public void setInformativeRank(int informativeRank)
@@ -30,7 +30,7 @@ public class LBChange
 	
 	public String getAuthor()
 	{
-		return author;
+		return this.author;
 	}
 	
 	public void setAuthor(String author)
@@ -40,17 +40,17 @@ public class LBChange
 	
 	public String getRawDate()
 	{
-		return date;
+		return this.date;
 	}
 	
 	public void setRawDate(String date)
 	{
 		this.date = date;
 	}
-
+	
 	public String getAction()
 	{
-		return action;
+		return this.action;
 	}
 	
 	public void setAction(String action)
@@ -60,7 +60,7 @@ public class LBChange
 	
 	public int getX()
 	{
-		return x;
+		return this.x;
 	}
 	
 	public void setX(int x)
@@ -70,7 +70,7 @@ public class LBChange
 	
 	public int getY()
 	{
-		return y;
+		return this.y;
 	}
 	
 	public void setY(int y)
@@ -80,7 +80,7 @@ public class LBChange
 	
 	public int getZ()
 	{
-		return z;
+		return this.z;
 	}
 	
 	public void setZ(int z)
@@ -98,18 +98,19 @@ public class LBChange
 	
 	public LBChange()
 	{
-		informativeRank = -1;
-		author = "";
-		action = "";
-		date = "";
+		this.informativeRank = -1;
+		this.author = "";
+		this.action = "";
+		this.date = "";
 		
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "(" + informativeRank + ") " + author + " " + action + " at "
-				+ x + ":" + y + ":" + z;
+		return "("
+			+ this.informativeRank + ") " + this.author + " " + this.action + " at " + this.x + ":" + this.y + ":"
+			+ this.z;
 		
 	}
 	

@@ -45,14 +45,14 @@ public class Ha3EdgeTrigger
 	 */
 	public Ha3EdgeTrigger(Ha3EdgeModel model, boolean initialState)
 	{
-		triggerModel = model;
-		currentState = initialState;
+		this.triggerModel = model;
+		this.currentState = initialState;
 		
 	}
 	
 	public boolean getCurrentState()
 	{
-		return currentState;
+		return this.currentState;
 		
 	}
 	
@@ -64,13 +64,17 @@ public class Ha3EdgeTrigger
 	 */
 	public boolean signalState(boolean state)
 	{
-		if (state != currentState)
+		if (state != this.currentState)
 		{
-			currentState = state;
+			this.currentState = state;
 			if (state)
-				triggerModel.onTrueEdge();
+			{
+				this.triggerModel.onTrueEdge();
+			}
 			else
-				triggerModel.onFalseEdge();
+			{
+				this.triggerModel.onFalseEdge();
+			}
 			
 			return true;
 			

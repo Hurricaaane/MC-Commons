@@ -1,6 +1,5 @@
 package net.minecraft.src;
 
-
 import org.lwjgl.input.Keyboard;
 
 import eu.ha3.mc.convenience.Ha3KeyManager;
@@ -35,45 +34,47 @@ public class MAtUserControl
 	
 	public MAtUserControl(MAtMod mAtmosHaddon)
 	{
-		mod = mAtmosHaddon;
+		this.mod = mAtmosHaddon;
 		
 	}
 	
 	public void load()
 	{
 		// Prepare key bindings
-		keyBindingMain = new KeyBinding("key.matmos", 65);
-		keyManager = new Ha3KeyManager();
+		this.keyBindingMain = new KeyBinding("key.matmos", 65);
+		this.keyManager = new Ha3KeyManager();
 		
-		mod.manager().addKeyBinding(keyBindingMain, "MAtmos");
-		keyManager.addKeyBinding(keyBindingMain, new MAtKeyMain(this));
+		this.mod.manager().addKeyBinding(this.keyBindingMain, "MAtmos");
+		this.keyManager.addKeyBinding(this.keyBindingMain, new MAtKeyMain(this));
 		
 		// Prepare scroller
-		scroller = new MAtScroller(this, mod);
+		this.scroller = new MAtScroller(this, this.mod);
 		
 	}
 	
 	public String getKeyBindingMainFriendlyName()
 	{
-		if (keyBindingMain == null)
+		if (this.keyBindingMain == null)
 			return "undefined";
 		
-		return Keyboard.getKeyName(keyBindingMain.keyCode);
+		return Keyboard.getKeyName(this.keyBindingMain.keyCode);
 	}
 	
 	public void tickRoutine()
 	{
-		keyManager.handleRuntime();
+		this.keyManager.handleRuntime();
 		
-		scroller.routine();
-		if (scroller.isRunning())
+		this.scroller.routine();
+		if (this.scroller.isRunning())
 		{
-			if (!scrollModeIsMusic)
-				mod.soundManager().setCustomSoundVolume(
-						scroller.getValue());
+			if (!this.scrollModeIsMusic)
+			{
+				this.mod.soundManager().setCustomSoundVolume(this.scroller.getValue());
+			}
 			else
-				mod.soundManager().setCustomMusicVolume(
-						scroller.getValue());
+			{
+				this.mod.soundManager().setCustomMusicVolume(this.scroller.getValue());
+			}
 			
 		}
 		
@@ -81,13 +82,13 @@ public class MAtUserControl
 	
 	public void frameRoutine(float fspan)
 	{
-		scroller.draw(fspan);
+		this.scroller.draw(fspan);
 		
 	}
 	
 	public void communicateKeyBindingEvent(KeyBinding event)
 	{
-		keyManager.handleKeyDown(event);
+		this.keyManager.handleKeyDown(event);
 		
 	}
 	
@@ -102,22 +103,20 @@ public class MAtUserControl
 	
 	public void beginHold()
 	{
-		if (mod.isRunning() && mod.util().isCurrentScreen(null))
+		if (this.mod.isRunning() && this.mod.util().isCurrentScreen(null))
 		{
-			scrollModeIsMusic = false;
-			scroller.start(scrollModeIsMusic);
+			this.scrollModeIsMusic = false;
+			this.scroller.start(this.scrollModeIsMusic);
 			
 		}
-		else if (mod.isRunning()
-				&& (mod.util().isCurrentScreen(
-						net.minecraft.src.GuiInventory.class) || mod
-						.util().isCurrentScreen(
-								net.minecraft.src.GuiContainerCreative.class)))
+		else if (this.mod.isRunning()
+			&& (this.mod.util().isCurrentScreen(net.minecraft.src.GuiInventory.class) || this.mod
+				.util().isCurrentScreen(net.minecraft.src.GuiContainerCreative.class)))
 		{
-			mod.util().closeCurrentScreen();
+			this.mod.util().closeCurrentScreen();
 			
-			scrollModeIsMusic = true;
-			scroller.start(scrollModeIsMusic);
+			this.scrollModeIsMusic = true;
+			this.scroller.start(this.scrollModeIsMusic);
 			
 		}
 		
@@ -125,41 +124,35 @@ public class MAtUserControl
 	
 	public void printUnusualMessages()
 	{
-		if (!mod.isReady())
+		if (!this.mod.isReady())
 		{
-			MAtModPhase phase = mod.getPhase();
-			if (!mod.isFatalError())
+			MAtModPhase phase = this.mod.getPhase();
+			if (!this.mod.isFatalError())
 			{
 				switch (phase)
 				{
 				case CONSTRUCTING:
-					mod.printChat(Ha3Utility.COLOR_GOLD,
-							"Still loading... ", Ha3Utility.COLOR_GRAY,
-							"(Waiting for the sound engine to be ready)");
+					this.mod.printChat(
+						Ha3Utility.COLOR_GOLD, "Still loading... ", Ha3Utility.COLOR_GRAY,
+						"(Waiting for the sound engine to be ready)");
 					break;
 				case RESOURCE_LOADER:
-					mod.printChat(Ha3Utility.COLOR_GOLD,
-							"Still loading... ", Ha3Utility.COLOR_GRAY,
-							"(Minecraft is downloading sounds)");
-					mod
-					.printChatShort(
-							Ha3Utility.COLOR_WHITE,
-							"This can take from seconds to 5 minutes in average, depending on your network speed.");
-					mod
-					.printChatShort(Ha3Utility.COLOR_GRAY,
-							"If you're offline, it will unlock after 20 seconds.");
-					mod
-					.printChatShort(
-							Ha3Utility.COLOR_WHITE,
-							"This usually happens after reinstalling Minecraft.");
-					mod.printChatShort(Ha3Utility.COLOR_WHITE,
-							"(Remember to install MAtmos sounds!)");
+					this.mod.printChat(
+						Ha3Utility.COLOR_GOLD, "Still loading... ", Ha3Utility.COLOR_GRAY,
+						"(Minecraft is downloading sounds)");
+					this.mod.printChatShort(
+						Ha3Utility.COLOR_WHITE,
+						"This can take from seconds to 5 minutes in average, depending on your network speed.");
+					this.mod.printChatShort(
+						Ha3Utility.COLOR_GRAY, "If you're offline, it will unlock after 20 seconds.");
+					this.mod.printChatShort(
+						Ha3Utility.COLOR_WHITE, "This usually happens after reinstalling Minecraft.");
+					this.mod.printChatShort(Ha3Utility.COLOR_WHITE, "(Remember to install MAtmos sounds!)");
 					break;
 				case FINAL_PHASE:
-					mod.printChat(Ha3Utility.COLOR_GOLD,
-							"Still loading... ",
-							Ha3Utility.COLOR_GRAY,
-							"(MAtmos is preparing the ambience generator)");
+					this.mod.printChat(
+						Ha3Utility.COLOR_GOLD, "Still loading... ", Ha3Utility.COLOR_GRAY,
+						"(MAtmos is preparing the ambience generator)");
 					break;
 				}
 				
@@ -169,15 +162,14 @@ public class MAtUserControl
 				switch (phase)
 				{
 				case NOT_INITIALIZED:
-					mod.printChat(Ha3Utility.COLOR_GOLD,
-							"MAtmos will not load due to a fatal error. ",
-							Ha3Utility.COLOR_GRAY,
-							"(Some MAtmos modules are not initialized)");
+					this.mod.printChat(
+						Ha3Utility.COLOR_GOLD, "MAtmos will not load due to a fatal error. ", Ha3Utility.COLOR_GRAY,
+						"(Some MAtmos modules are not initialized)");
 					break;
 				case SOUNDCOMMUNICATOR_FAILURE:
-					mod.printChat(Ha3Utility.COLOR_GOLD,
-							"Still loading... ", Ha3Utility.COLOR_GRAY,
-							"(Could not retreive Minecraft sound engine)");
+					this.mod.printChat(
+						Ha3Utility.COLOR_GOLD, "Still loading... ", Ha3Utility.COLOR_GRAY,
+						"(Could not retreive Minecraft sound engine)");
 					break;
 				}
 				
@@ -188,39 +180,33 @@ public class MAtUserControl
 	
 	public void signalShortPress()
 	{
-		if (mod.isRunning())
+		if (this.mod.isRunning())
 		{
-			if (!hasFirstHit
- && mod.expansionLoader().getLoadingCount() > 0)
+			if (!this.hasFirstHit && this.mod.expansionLoader().getLoadingCount() > 0)
 			{
-				int glc = mod.expansionLoader().getLoadingCount();
-				mod.printChat(
-						Ha3Utility.COLOR_GOLD,
-						"Warning: " + glc + " expansion"
-								+ (glc > 1 ? "s are" : " is")
-								+ " still loading.");
-				mod.printChatShort(Ha3Utility.COLOR_GOLD, "Press ",
-						Ha3Utility.COLOR_WHITE,
-						this.getKeyBindingMainFriendlyName(),
-						Ha3Utility.COLOR_GOLD, " to stop MAtmos.");
+				int glc = this.mod.expansionLoader().getLoadingCount();
+				this.mod.printChat(Ha3Utility.COLOR_GOLD, "Warning: "
+					+ glc + " expansion" + (glc > 1 ? "s are" : " is") + " still loading.");
+				this.mod.printChatShort(
+					Ha3Utility.COLOR_GOLD, "Press ", Ha3Utility.COLOR_WHITE, getKeyBindingMainFriendlyName(),
+					Ha3Utility.COLOR_GOLD, " to stop MAtmos.");
 				
 			}
 			else
 			{
-				mod.stopRunning();
-				mod.printChat(Ha3Utility.COLOR_YELLOW,
-						"Stopped. Press ", Ha3Utility.COLOR_WHITE,
-						this.getKeyBindingMainFriendlyName(),
-						Ha3Utility.COLOR_YELLOW, " to re-enable.");
+				this.mod.stopRunning();
+				this.mod.printChat(
+					Ha3Utility.COLOR_YELLOW, "Stopped. Press ", Ha3Utility.COLOR_WHITE,
+					getKeyBindingMainFriendlyName(), Ha3Utility.COLOR_YELLOW, " to re-enable.");
 			}
-			hasFirstHit = true;
+			this.hasFirstHit = true;
 			
 		}
 		
-		else if (mod.isReady())
+		else if (this.mod.isReady())
 		{
-			mod.printChat(Ha3Utility.COLOR_BRIGHTGREEN, "Loading...");
-			mod.startRunning();
+			this.mod.printChat(Ha3Utility.COLOR_BRIGHTGREEN, "Loading...");
+			this.mod.startRunning();
 			
 		}
 		
@@ -230,18 +216,17 @@ public class MAtUserControl
 	
 	public void endHold()
 	{
-		if (scroller.isRunning())
+		if (this.scroller.isRunning())
 		{
-			scroller.stop();
-			mod.options().saveOptions();
+			this.scroller.stop();
+			this.mod.options().saveOptions();
 			
 		}
 		
-		if (!mod.isRunning() && mod.isReady())
+		if (!this.mod.isRunning() && this.mod.isReady())
 		{
-			mod.printChat(Ha3Utility.COLOR_BRIGHTGREEN,
-					"Reloading expansions...");
-			mod.reloadAndStart();
+			this.mod.printChat(Ha3Utility.COLOR_BRIGHTGREEN, "Reloading expansions...");
+			this.mod.reloadAndStart();
 			
 		}
 		

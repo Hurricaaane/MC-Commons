@@ -43,102 +43,112 @@ public class MAtScanVolumetricModel
 	
 	MAtScanVolumetricModel(MAtMod mod2)
 	{
-		mod = mod2;
-		pipeline = null;
-		isScanning = false;
+		this.mod = mod2;
+		this.pipeline = null;
+		this.isScanning = false;
 		
 	}
 	
 	void setPipeline(MAtScanCoordsOps pipelineIn)
 	{
-		pipeline = pipelineIn;
+		this.pipeline = pipelineIn;
 		
 	}
 	
-	void startScan(long x, long y, long z, long xsizeIn, long ysizeIn,
-			long zsizeIn, long opspercallIn, Ha3Signal onDoneIn) //throws MAtScannerTooLargeException
+	void startScan(
+		long x, long y, long z, long xsizeIn, long ysizeIn, long zsizeIn, long opspercallIn, Ha3Signal onDoneIn) //throws MAtScannerTooLargeException
 	{
-		if (isScanning)
+		if (this.isScanning)
 			return;
 		
-		if (pipeline == null)
+		if (this.pipeline == null)
 			return;
 		
 		if (opspercallIn <= 0)
 			throw new IllegalArgumentException();
 		
-		int worldHeight = mod.util().getWorldHeight();
+		int worldHeight = this.mod.util().getWorldHeight();
 		
 		if (ysizeIn > worldHeight)
+		{
 			ysizeIn = worldHeight;
-		//throw new MAtScannerTooLargeException();
+			//throw new MAtScannerTooLargeException();
+		}
 		
-		xsize = xsizeIn;
-		ysize = ysizeIn;
-		zsize = zsizeIn;
+		this.xsize = xsizeIn;
+		this.ysize = ysizeIn;
+		this.zsize = zsizeIn;
 		
-		y = y - ysize / 2;
+		y = y - this.ysize / 2;
 		
 		if (y < 0)
+		{
 			y = 0;
-		else if (y > (worldHeight - ysize))
-			y = worldHeight - ysize;
+		}
+		else if (y > worldHeight - this.ysize)
+		{
+			y = worldHeight - this.ysize;
+		}
 		
-		xstart = x - xsize / 2;
-		ystart = y; // ((y - ysize / 2)) already done before
-		zstart = z - zsize / 2;
-		opspercall = opspercallIn;
+		this.xstart = x - this.xsize / 2;
+		this.ystart = y; // ((y - ysize / 2)) already done before
+		this.zstart = z - this.zsize / 2;
+		this.opspercall = opspercallIn;
 		
-		progress = 0;
-		finality = xsize * ysize * zsize;
+		this.progress = 0;
+		this.finality = this.xsize * this.ysize * this.zsize;
 		
-		pipeline.begin();
-		isScanning = true;
+		this.pipeline.begin();
+		this.isScanning = true;
 		
 	}
 	
 	void routine()
 	{
-		if (!isScanning)
+		if (!this.isScanning)
 			return;
 		
 		long ops = 0;
 		long x, y, z;
-		while ((ops < opspercall) && (progress < finality))
+		while (ops < this.opspercall && this.progress < this.finality)
 		{
 			// TODO Optimize this
-			x = xstart + progress % xsize;
-			z = zstart + (progress / xsize) % zsize;
-			y = ystart + (progress / xsize / zsize);
+			x = this.xstart + this.progress % this.xsize;
+			z = this.zstart + this.progress / this.xsize % this.zsize;
+			y = this.ystart + this.progress / this.xsize / this.zsize;
 			
-			pipeline.input(x, y, z);
+			this.pipeline.input(x, y, z);
 			
 			ops++;
-			progress++;
+			this.progress++;
 			
 		}
 		
-		if (progress >= finality)
+		if (this.progress >= this.finality)
+		{
 			scanDoneEvent();
+		}
 		
 	}
 	
 	void stopScan()
 	{
-		isScanning = false;
+		this.isScanning = false;
 		
 	}
 	
 	private void scanDoneEvent()
 	{
-		if (!isScanning)
+		if (!this.isScanning)
 			return;
 		
-		pipeline.finish();
+		this.pipeline.finish();
 		stopScan();
 		
-		if (onDone != null)
-			onDone.signal();
+		if (this.onDone != null)
+		{
+			this.onDone.signal();
+		}
 		
 	}
 	

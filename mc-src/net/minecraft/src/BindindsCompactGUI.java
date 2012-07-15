@@ -33,18 +33,17 @@ public class BindindsCompactGUI extends GuiScreen
 	/** The ID of the button that has been pressed. */
 	private int buttonId;
 	
-	public BindindsCompactGUI(GuiScreen par1GuiScreen,
-			GameSettings par2GameSettings)
+	public BindindsCompactGUI(GuiScreen par1GuiScreen, GameSettings par2GameSettings)
 	{
-		screenTitle = "Controls";
-		buttonId = -1;
-		parentScreen = par1GuiScreen;
-		options = par2GameSettings;
+		this.screenTitle = "Controls";
+		this.buttonId = -1;
+		this.parentScreen = par1GuiScreen;
+		this.options = par2GameSettings;
 	}
 	
 	private int func_20080_j()
 	{
-		return width / 2 - 155;
+		return this.width / 2 - 155;
 	}
 	
 	/**
@@ -57,16 +56,15 @@ public class BindindsCompactGUI extends GuiScreen
 		StringTranslate stringtranslate = StringTranslate.getInstance();
 		int i = func_20080_j();
 		
-		for (int j = 0; j < options.keyBindings.length; j++)
+		for (int j = 0; j < this.options.keyBindings.length; j++)
 		{
-			controlList.add(new GuiSmallButton(j, i + (j % 2) * 160, height
-					/ 12 + 16 * (j >> 1), 70, 20, options
-					.getOptionDisplayString(j)));
+			this.controlList.add(new GuiSmallButton(
+				j, i + j % 2 * 160, this.height / 12 + 16 * (j >> 1), 70, 20, this.options.getOptionDisplayString(j)));
 		}
 		
-		controlList.add(new GuiButton(200, width / 2 - 100, height / 6 + 168,
-				stringtranslate.translateKey("gui.done")));
-		screenTitle = stringtranslate.translateKey("controls.title");
+		this.controlList.add(new GuiButton(200, this.width / 2 - 100, this.height / 6 + 168, stringtranslate
+			.translateKey("gui.done")));
+		this.screenTitle = stringtranslate.translateKey("controls.title");
 	}
 	
 	/**
@@ -76,22 +74,21 @@ public class BindindsCompactGUI extends GuiScreen
 	@Override
 	protected void actionPerformed(GuiButton par1GuiButton)
 	{
-		for (int i = 0; i < options.keyBindings.length; i++)
+		for (int i = 0; i < this.options.keyBindings.length; i++)
 		{
-			((GuiButton) controlList.get(i)).displayString = options
-					.getOptionDisplayString(i);
+			((GuiButton) this.controlList.get(i)).displayString = this.options.getOptionDisplayString(i);
 		}
 		
 		if (par1GuiButton.id == 200)
 		{
-			mc.displayGuiScreen(parentScreen);
+			this.mc.displayGuiScreen(this.parentScreen);
 		}
 		else
 		{
-			buttonId = par1GuiButton.id;
-			par1GuiButton.displayString = (new StringBuilder()).append("> ")
-					.append(options.getOptionDisplayString(par1GuiButton.id))
-					.append(" <").toString();
+			this.buttonId = par1GuiButton.id;
+			par1GuiButton.displayString =
+				new StringBuilder()
+					.append("> ").append(this.options.getOptionDisplayString(par1GuiButton.id)).append(" <").toString();
 		}
 	}
 	
@@ -101,12 +98,12 @@ public class BindindsCompactGUI extends GuiScreen
 	@Override
 	protected void mouseClicked(int par1, int par2, int par3)
 	{
-		if (buttonId >= 0)
+		if (this.buttonId >= 0)
 		{
-			options.setKeyBinding(buttonId, -100 + par3);
-			((GuiButton) controlList.get(buttonId)).displayString = options
-					.getOptionDisplayString(buttonId);
-			buttonId = -1;
+			this.options.setKeyBinding(this.buttonId, -100 + par3);
+			((GuiButton) this.controlList.get(this.buttonId)).displayString =
+				this.options.getOptionDisplayString(this.buttonId);
+			this.buttonId = -1;
 			KeyBinding.resetKeyBindingArrayAndHash();
 		}
 		else
@@ -122,12 +119,12 @@ public class BindindsCompactGUI extends GuiScreen
 	@Override
 	protected void keyTyped(char par1, int par2)
 	{
-		if (buttonId >= 0)
+		if (this.buttonId >= 0)
 		{
-			options.setKeyBinding(buttonId, par2);
-			((GuiButton) controlList.get(buttonId)).displayString = options
-					.getOptionDisplayString(buttonId);
-			buttonId = -1;
+			this.options.setKeyBinding(this.buttonId, par2);
+			((GuiButton) this.controlList.get(this.buttonId)).displayString =
+				this.options.getOptionDisplayString(this.buttonId);
+			this.buttonId = -1;
 			KeyBinding.resetKeyBindingArrayAndHash();
 		}
 		else
@@ -143,23 +140,22 @@ public class BindindsCompactGUI extends GuiScreen
 	public void drawScreen(int par1, int par2, float par3)
 	{
 		drawDefaultBackground();
-		drawCenteredString(fontRenderer, screenTitle, width / 2, 5, 0xffffff);
+		drawCenteredString(this.fontRenderer, this.screenTitle, this.width / 2, 5, 0xffffff);
 		int i = func_20080_j();
 		
-		for (int j = 0; j < options.keyBindings.length; j++)
+		for (int j = 0; j < this.options.keyBindings.length; j++)
 		{
 			boolean flag = false;
 			int k = 0;
 			
 			do
 			{
-				if (k >= options.keyBindings.length)
+				if (k >= this.options.keyBindings.length)
 				{
 					break;
 				}
 				
-				if (k != j
-						&& options.keyBindings[j].keyCode == options.keyBindings[k].keyCode)
+				if (k != j && this.options.keyBindings[j].keyCode == this.options.keyBindings[k].keyCode)
 				{
 					flag = true;
 					break;
@@ -170,25 +166,23 @@ public class BindindsCompactGUI extends GuiScreen
 			
 			k = j;
 			
-			if (buttonId == j)
+			if (this.buttonId == j)
 			{
-				((GuiButton) controlList.get(k)).displayString = "\247f> \247e??? \247f<";
+				((GuiButton) this.controlList.get(k)).displayString = "\247f> \247e??? \247f<";
 			}
 			else if (flag)
 			{
-				((GuiButton) controlList.get(k)).displayString = (new StringBuilder())
-						.append("\247c").append(
-								options.getOptionDisplayString(k)).toString();
+				((GuiButton) this.controlList.get(k)).displayString =
+					new StringBuilder().append("\247c").append(this.options.getOptionDisplayString(k)).toString();
 			}
 			else
 			{
-				((GuiButton) controlList.get(k)).displayString = options
-						.getOptionDisplayString(k);
+				((GuiButton) this.controlList.get(k)).displayString = this.options.getOptionDisplayString(k);
 			}
 			
-			drawString(fontRenderer, options.getKeyBindingDescription(j), i
-					+ (j % 2) * 160 + 70 + 6, height / 12 + 16 * (j >> 1) + 7,
-					-1);
+			drawString(
+				this.fontRenderer, this.options.getKeyBindingDescription(j), i + j % 2 * 160 + 70 + 6, this.height
+					/ 12 + 16 * (j >> 1) + 7, -1);
 		}
 		
 		super.drawScreen(par1, par2, par3);

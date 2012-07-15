@@ -34,9 +34,7 @@ import eu.ha3.mc.haddon.SupportsTickEvents;
   0. You just DO WHAT THE FUCK YOU WANT TO.
  */
 
-public class SkinningInGameHaddon_MLP extends HaddonImpl implements
-SupportsTickEvents,
-SupportsFrameEvents
+public class SkinningInGameHaddon_MLP extends HaddonImpl implements SupportsTickEvents, SupportsFrameEvents
 {
 	private boolean canWork;
 	private boolean isCaptureEnabled;
@@ -51,10 +49,9 @@ SupportsFrameEvents
 	public void onLoad()
 	{
 		if (Ha3StaticUtilities.classExists("Pony", this)
-				|| Ha3StaticUtilities.classExists("net.minecraft.src.Pony",
-						this))
+			|| Ha3StaticUtilities.classExists("net.minecraft.src.Pony", this))
 		{
-			bindTrigger = new Ha3EdgeTrigger(new Ha3EdgeModel() {
+			this.bindTrigger = new Ha3EdgeTrigger(new Ha3EdgeModel() {
 				@Override
 				public void onTrueEdge()
 				{
@@ -70,15 +67,16 @@ SupportsFrameEvents
 			manager().hookTickEvents(true);
 		}
 		else
+		{
 			System.out.println("MLP is not installed?");
+		}
 		
 	}
 	
 	@SuppressWarnings("static-access")
 	public void refreshCurrentPlayerSkin()
 	{
-		checkPonySkin(getMyPony(), new File(manager().getMinecraft()
-				.getMinecraftDir(), "/pony_edit.png"));
+		checkPonySkin(getMyPony(), new File(manager().getMinecraft().getMinecraftDir(), "/pony_edit.png"));
 		
 	}
 	
@@ -90,8 +88,7 @@ SupportsFrameEvents
 	
 	private Pony getPonyOf(String playerName)
 	{
-		return Pony.getPonyFromRegistry(playerName,
-				manager().getMinecraft().renderEngine);
+		return Pony.getPonyFromRegistry(playerName, manager().getMinecraft().renderEngine);
 		
 	}
 	
@@ -128,31 +125,31 @@ SupportsFrameEvents
 	
 	private void checkPonySkin(Pony ponyIn, InputStream instream)
 	{
-		pony = ponyIn;
+		this.pony = ponyIn;
 		
 		try
 		{
 			BufferedImage bufferedimage = ImageIO.read(instream);
-			pony.checkSkin(bufferedimage);
+			this.pony.checkSkin(bufferedimage);
 			
-			if (!pony.isPonySkin)
+			if (!this.pony.isPonySkin)
 			{
-				pony.isPony = true;
-				pony.isPegasus = pony.backgroundIsPegasus;
-				pony.isUnicorn = pony.backgroundIsUnicorn;
-				pony.wantTail = pony.backgroundWantTail;
-				pony.isMale = pony.backgroundIsMale;
-				pony.advancedTexturing = pony.backgroundAdvancedTexturing;
+				this.pony.isPony = true;
+				this.pony.isPegasus = this.pony.backgroundIsPegasus;
+				this.pony.isUnicorn = this.pony.backgroundIsUnicorn;
+				this.pony.wantTail = this.pony.backgroundWantTail;
+				this.pony.isMale = this.pony.backgroundIsMale;
+				this.pony.advancedTexturing = this.pony.backgroundAdvancedTexturing;
 				
 			}
 			else
 			{
-				pony.isPonySkin = false;
-				pony.texture = "/pony_edit.png";
+				this.pony.isPonySkin = false;
+				this.pony.texture = "/pony_edit.png";
 				
 				RenderEngine re = manager().getMinecraft().renderEngine;
-				re.setupTexture(bufferedimage, re.getTexture(pony.texture));
-				pony.skinUrl = null;
+				re.setupTexture(bufferedimage, re.getTexture(this.pony.texture));
+				this.pony.skinUrl = null;
 				
 			}
 			
@@ -168,7 +165,9 @@ SupportsFrameEvents
 			try
 			{
 				if (instream != null)
+				{
 					instream.close();
+				}
 			}
 			catch (IOException e)
 			{
@@ -180,9 +179,9 @@ SupportsFrameEvents
 	
 	private void checkOnlinePlayerSkin()
 	{
-		String skinUrl = "http://s3.amazonaws.com/MinecraftSkins/"
-				+ manager().getMinecraft().thePlayer.username + ".png";
-		(new CheckOnlinePonySkin(getMyPony(), skinUrl)).start();
+		String skinUrl =
+			"http://s3.amazonaws.com/MinecraftSkins/" + manager().getMinecraft().thePlayer.username + ".png";
+		new CheckOnlinePonySkin(getMyPony(), skinUrl).start();
 		
 	}
 	
@@ -190,8 +189,10 @@ SupportsFrameEvents
 	{
 		System.out.println("Failed to read a player texture");
 		
-		if (pony != null)
-			pony.isPonySkin = false;
+		if (this.pony != null)
+		{
+			this.pony.isPonySkin = false;
+		}
 		
 	}
 	
@@ -199,30 +200,31 @@ SupportsFrameEvents
 	public void onTick()
 	{
 		// ctrl shift P
-		bindTrigger.signalState(util().areKeysDown(29, 42, 25));
+		this.bindTrigger.signalState(util().areKeysDown(29, 42, 25));
 		
-		if (isCaptureEnabled)
+		if (this.isCaptureEnabled)
 		{
 			boolean isRefreshTick = util().getClientTick() % 30 == 0;
 			
 			if (isRefreshTick)
-				refreshCurrentPlayerSkin();
-			
-			if (!Display.isActive()
-					&& util().isCurrentScreen(
-							net.minecraft.src.GuiIngameMenu.class))
 			{
-				manager().getMinecraft().displayGuiScreen(
-						new SkinningInGamePauseGUI());
+				refreshCurrentPlayerSkin();
+			}
+			
+			if (!Display.isActive() && util().isCurrentScreen(net.minecraft.src.GuiIngameMenu.class))
+			{
+				manager().getMinecraft().displayGuiScreen(new SkinningInGamePauseGUI());
 				
 			}
 			
-			if (previousFocusState != Display.isActive())
+			if (this.previousFocusState != Display.isActive())
 			{
-				previousFocusState = Display.isActive();
+				this.previousFocusState = Display.isActive();
 				
-				if (!isRefreshTick && previousFocusState == true)
+				if (!isRefreshTick && this.previousFocusState == true)
+				{
 					refreshCurrentPlayerSkin();
+				}
 				
 			}
 			
@@ -232,20 +234,24 @@ SupportsFrameEvents
 	
 	private void toggleCaptureState()
 	{
-		if (!isCaptureEnabled)
+		if (!this.isCaptureEnabled)
+		{
 			enableCaptureState();
+		}
 		else
+		{
 			disableCaptureState();
+		}
 		
 	}
 	
 	public void enableCaptureState()
 	{
-		if (isCaptureEnabled)
+		if (this.isCaptureEnabled)
 			return;
-		isCaptureEnabled = true;
+		this.isCaptureEnabled = true;
 		
-		previousFocusState = true;
+		this.previousFocusState = true;
 		
 		refreshCurrentPlayerSkin();
 		manager().hookFrameEvents(true);
@@ -254,9 +260,9 @@ SupportsFrameEvents
 	
 	public void disableCaptureState()
 	{
-		if (!isCaptureEnabled)
+		if (!this.isCaptureEnabled)
 			return;
-		isCaptureEnabled = false;
+		this.isCaptureEnabled = false;
 		
 		checkOnlinePlayerSkin();
 		manager().hookFrameEvents(false);
@@ -266,8 +272,7 @@ SupportsFrameEvents
 	@Override
 	public void onFrame(float semi)
 	{
-		manager().getMinecraft().fontRenderer.drawStringWithShadow(
-				"Pony edit mode", 2, 2, 0xffff00);
+		manager().getMinecraft().fontRenderer.drawStringWithShadow("Pony edit mode", 2, 2, 0xffff00);
 	}
 	
 }

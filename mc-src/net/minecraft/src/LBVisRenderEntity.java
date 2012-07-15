@@ -25,17 +25,17 @@ public class LBVisRenderEntity extends Entity
 		super(par1World);
 		
 		this.haddon = haddon;
-
-		ignoreFrustumCheck = true;
+		
+		this.ignoreFrustumCheck = true;
 		
 	}
 	
 	@Override
 	public void onEntityUpdate()
 	{
-		EntityPlayer ply = haddon.getManager().getMinecraft().thePlayer;
+		EntityPlayer ply = this.haddon.getManager().getMinecraft().thePlayer;
 		
-		this.setPosition(ply.posX, ply.posY, ply.posZ);
+		setPosition(ply.posX, ply.posY, ply.posZ);
 		
 	}
 	
@@ -52,4 +52,5 @@ public class LBVisRenderEntity extends Entity
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound nbttagcompound)
 	{
-	}}
+	}
+}

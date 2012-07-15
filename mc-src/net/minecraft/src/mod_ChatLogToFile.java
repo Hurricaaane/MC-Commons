@@ -31,7 +31,7 @@ public class mod_ChatLogToFile extends BaseMod
 	
 	public mod_ChatLogToFile()
 	{
-		file = null;
+		this.file = null;
 		
 	}
 	
@@ -46,22 +46,21 @@ public class mod_ChatLogToFile extends BaseMod
 	{
 		try
 		{
-			file = new File(Minecraft.getMinecraftDir(), "chatlog.txt");
-			if (!file.exists())
-				file.createNewFile();
+			this.file = new File(Minecraft.getMinecraftDir(), "chatlog.txt");
+			if (!this.file.exists())
+			{
+				this.file.createNewFile();
+			}
 			
 			Calendar currentDate = Calendar.getInstance();
-			SimpleDateFormat formatter = new SimpleDateFormat(
-					"yyyy-MM-dd HH:mm:ss");
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String dateNow = formatter.format(currentDate.getTime());
 			
-			PrintWriter writer = new PrintWriter(new FileWriter(file, true));
+			PrintWriter writer = new PrintWriter(new FileWriter(this.file, true));
 			writer.println();
 			writer.println();
 			writer.println("========================");
-			writer.println("Starting new session on: "
-					+ dateNow + " ("
-					+ System.currentTimeMillis() + ")");
+			writer.println("Starting new session on: " + dateNow + " (" + System.currentTimeMillis() + ")");
 			writer.println("========================");
 			writer.close();
 			
@@ -80,7 +79,7 @@ public class mod_ChatLogToFile extends BaseMod
 		PrintWriter writer;
 		try
 		{
-			writer = new PrintWriter(new FileWriter(file, true));
+			writer = new PrintWriter(new FileWriter(this.file, true));
 			writer.println(contents);
 			writer.close();
 			

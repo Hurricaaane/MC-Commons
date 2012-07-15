@@ -27,21 +27,21 @@ public abstract class MAtScanCoordsPipeline implements MAtScanCoordsOps
 	
 	MAtScanCoordsPipeline(MAtMod mod2, MAtmosData dataIn)
 	{
-		mod = mod2;
-		data = dataIn;
-		next = null;
+		this.mod = mod2;
+		this.data = dataIn;
+		this.next = null;
 		
 	}
 	
 	public MAtMod mod()
 	{
-		return mod;
+		return this.mod;
 		
 	}
 	
 	public MAtmosData data()
 	{
-		return data;
+		return this.data;
 		
 	}
 	
@@ -53,11 +53,14 @@ public abstract class MAtScanCoordsPipeline implements MAtScanCoordsOps
 	
 	public void append(MAtScanCoordsPipeline operator)
 	{
-		if (next == null)
-			next = operator;
-		
+		if (this.next == null)
+		{
+			this.next = operator;
+		}
 		else
-			next.append(operator);
+		{
+			this.next.append(operator);
+		}
 		
 	}
 	
@@ -66,8 +69,10 @@ public abstract class MAtScanCoordsPipeline implements MAtScanCoordsOps
 	{
 		doBegin();
 		
-		if (next != null)
-			next.begin();
+		if (this.next != null)
+		{
+			this.next.begin();
+		}
 		
 	}
 	
@@ -76,8 +81,10 @@ public abstract class MAtScanCoordsPipeline implements MAtScanCoordsOps
 	{
 		doFinish();
 		
-		if (next != null)
-			next.finish();
+		if (this.next != null)
+		{
+			this.next.finish();
+		}
 		
 	}
 	
@@ -86,8 +93,10 @@ public abstract class MAtScanCoordsPipeline implements MAtScanCoordsOps
 	{
 		doInput(x, y, z);
 		
-		if (next != null)
-			next.input(x, y, z);
+		if (this.next != null)
+		{
+			this.next.input(x, y, z);
+		}
 		
 	}
 	

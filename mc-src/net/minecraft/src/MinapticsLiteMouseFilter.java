@@ -27,37 +27,39 @@ public class MinapticsLiteMouseFilter extends MouseFilter
 	
 	public MinapticsLiteMouseFilter()
 	{
-		forceMode = false;
-		forceValue = 0F;
+		this.forceMode = false;
+		this.forceValue = 0F;
 	}
 	
 	public void force(float value)
 	{
-		forceMode = true;
-		forceValue = value;
+		this.forceMode = true;
+		this.forceValue = value;
 		
 	}
 	
 	public void let()
 	{
-		forceMode = false;
+		this.forceMode = false;
 		
 	}
 	
 	@Override
 	public float func_22386_a(float f, float f1)
 	{
-		if (forceMode)
-			f1 = forceValue;
-		
-		field_22388_a += f;
-		f = (field_22388_a - field_22387_b) * f1;
-		field_22389_c = field_22389_c + (f - field_22389_c) * 0.5F;
-		if (f > 0.0F && f > field_22389_c || f < 0.0F && f < field_22389_c)
+		if (this.forceMode)
 		{
-			f = field_22389_c;
+			f1 = this.forceValue;
 		}
-		field_22387_b += f;
+		
+		this.field_22388_a += f;
+		f = (this.field_22388_a - this.field_22387_b) * f1;
+		this.field_22389_c = this.field_22389_c + (f - this.field_22389_c) * 0.5F;
+		if (f > 0.0F && f > this.field_22389_c || f < 0.0F && f < this.field_22389_c)
+		{
+			f = this.field_22389_c;
+		}
+		this.field_22387_b += f;
 		return f;
 		
 	}

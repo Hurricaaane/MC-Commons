@@ -21,7 +21,7 @@ import net.minecraft.src.KeyBinding;
 class Ha3KeyBinding
 {
 	final int tolerence = 2;
-
+	
 	private int time;
 	private int diffKey;
 	private boolean pending;
@@ -34,48 +34,51 @@ class Ha3KeyBinding
 		this.mckeybinding = mckeyIn;
 		this.keyactions = keyactionsIn;
 		
-		time = 0;
-		diffKey = 0;
-		pending = false;
+		this.time = 0;
+		this.diffKey = 0;
+		this.pending = false;
 		
 	}
 	
 	KeyBinding getKeyBinding()
 	{
-		return mckeybinding;
+		return this.mckeybinding;
 		
 	}
 	
 	void handleBefore()
 	{
-		if (time == 0)
-			keyactions.doBefore();
+		if (this.time == 0)
+		{
+			this.keyactions.doBefore();
+		}
 		
-		pending = true;
-		diffKey = 0;
-		time++;
+		this.pending = true;
+		this.diffKey = 0;
+		this.time++;
 		
 	}
 	
 	void handle()
 	{
-		if (!pending) return;
+		if (!this.pending)
+			return;
 		
 		// This gets incremented, and reset if button is pressed (HandleBefore)
-		diffKey++;
+		this.diffKey++;
 		
 		// tolerence because don't know which will get executed first (keypress or think)
-		if (diffKey > tolerence)
+		if (this.diffKey > this.tolerence)
 		{
-			keyactions.doAfter(time);
+			this.keyactions.doAfter(this.time);
 			
-			pending = false;
-			time = 0;
+			this.pending = false;
+			this.time = 0;
 			
 		}
 		else
 		{
-			keyactions.doDuring(time);
+			this.keyactions.doDuring(this.time);
 			
 		}
 		

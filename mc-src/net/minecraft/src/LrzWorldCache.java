@@ -40,16 +40,13 @@ public class LrzWorldCache implements LrzWorldCacheI
 	private Map<Integer, Map<Integer, LrzSnapI>> snaps;
 	private LrzMod mod;
 	
-	public LrzWorldCache(int split, int sidecount, String worldIdentifier,
-			LrzMod mod)
+	public LrzWorldCache(int split, int sidecount, String worldIdentifier, LrzMod mod)
 	{
 		this.mod = mod;
 		this.SPLIT = split;
 		this.SIDECOUNT = sidecount;
 		this.worldIdentifier = worldIdentifier;
-		this.cacheDataDirectory = new File(
-				mod.manager().getMinecraft().mcDataDir, this.worldIdentifier
-				+ "/");
+		this.cacheDataDirectory = new File(mod.manager().getMinecraft().mcDataDir, this.worldIdentifier + "/");
 		
 		this.snaps = new HashMap<Integer, Map<Integer, LrzSnapI>>();
 		
@@ -58,21 +55,21 @@ public class LrzWorldCache implements LrzWorldCacheI
 	@Override
 	public LrzMod mod()
 	{
-		return mod;
+		return this.mod;
 		
 	}
 	
 	@Override
 	public int getSplit()
 	{
-		return SPLIT;
+		return this.SPLIT;
 		
 	}
 	
 	@Override
 	public int getSideCount()
 	{
-		return SIDECOUNT;
+		return this.SIDECOUNT;
 	}
 	
 	@Override
@@ -82,19 +79,21 @@ public class LrzWorldCache implements LrzWorldCacheI
 		int snapB = chunkToSnapCoord(worldToChunkCoord(worldZ));
 		
 		LrzSnapI snap = pickSnap(snapA, snapB);
-		return snap.requestAverage(worldX - snapA * LrzWorldCache.CHUNK_SIZE
-				* this.SIDECOUNT, worldZ - snapB * this.SIDECOUNT
-				* LrzWorldCache.CHUNK_SIZE * this.SIDECOUNT);
+		return snap.requestAverage(worldX - snapA * LrzWorldCache.CHUNK_SIZE * this.SIDECOUNT, worldZ
+			- snapB * this.SIDECOUNT * LrzWorldCache.CHUNK_SIZE * this.SIDECOUNT);
 		
 	}
 	
 	@Override
 	public boolean save()
 	{
-		if (!cacheDataDirectory.exists())
-			cacheDataDirectory.mkdirs();
+		if (!this.cacheDataDirectory.exists())
+		{
+			this.cacheDataDirectory.mkdirs();
+		}
 		
-		for (Map<Integer, LrzSnapI> maps : snaps.values())
+		for (Map<Integer, LrzSnapI> maps : this.snaps.values())
+		{
 			for (LrzSnapI snap : maps.values())
 			{
 				if (snap.hasChanged())
@@ -147,6 +146,7 @@ public class LrzWorldCache implements LrzWorldCacheI
 				}
 				
 			}
+		}
 		
 		return false;
 	}
@@ -159,22 +159,22 @@ public class LrzWorldCache implements LrzWorldCacheI
 	
 	private int worldToChunkCoord(int worldCoordinate)
 	{
-		return sane(((float) worldCoordinate) / CHUNK_SIZE);
+		return sane((float) worldCoordinate / CHUNK_SIZE);
 		
 	}
 	
 	private int chunkToSnapCoord(int chunkCoordinate)
 	{
-		return sane(((float) chunkCoordinate) / SIDECOUNT);
+		return sane((float) chunkCoordinate / this.SIDECOUNT);
 		
 	}
 	
 	private boolean isSnapCached(int snapCoordA, int snapCoordB)
 	{
-		if (!snaps.containsKey(snapCoordA))
+		if (!this.snaps.containsKey(snapCoordA))
 			return false;
 		
-		return snaps.get(snapCoordA).containsKey(snapCoordB);
+		return this.snaps.get(snapCoordA).containsKey(snapCoordB);
 		
 	}
 	
@@ -183,13 +183,17 @@ public class LrzWorldCache implements LrzWorldCacheI
 		LrzSnapI snap = null;
 		
 		if (isSnapCached(snapCoordA, snapCoordB))
-			snap = snaps.get(snapCoordA).get(snapCoordB);
-		
+		{
+			snap = this.snaps.get(snapCoordA).get(snapCoordB);
+		}
 		else if (isSnapOnDisk(snapCoordA, snapCoordB))
+		{
 			snap = cacheSnapFromDisk(snapCoordA, snapCoordB);
-		
+		}
 		else
+		{
 			snap = cacheEmptySnap(snapCoordA, snapCoordB);
+		}
 		
 		return snap;
 		
@@ -200,21 +204,22 @@ public class LrzWorldCache implements LrzWorldCacheI
 		LrzSnapI snap = null;
 		snap = new LrzSnap(this, snapCoordA, snapCoordB);
 		
-		if (!snaps.containsKey(snapCoordA))
+		if (!this.snaps.containsKey(snapCoordA))
 		{
 			Map<Integer, LrzSnapI> inMap = new HashMap<Integer, LrzSnapI>();
 			
-			snaps.put(snapCoordA, inMap);
+			this.snaps.put(snapCoordA, inMap);
 			
 			inMap.put(snapCoordB, snap);
 			
 		}
 		else
 		{
-			LrzSnapI old = snaps.get(snapCoordA).put(snapCoordB, snap);
+			LrzSnapI old = this.snaps.get(snapCoordA).put(snapCoordB, snap);
 			if (old != null)
-				LrzMod.LOGGER
-				.severe("Caching a new Snap over an existing one! This should never happen");
+			{
+				LrzMod.LOGGER.severe("Caching a new Snap over an existing one! This should never happen");
+			}
 			
 		}
 		
@@ -224,22 +229,19 @@ public class LrzWorldCache implements LrzWorldCacheI
 	
 	private File getBufferFile(int snapCoordA, int snapCoordB)
 	{
-		return new File(cacheDataDirectory, "snap." + snapCoordA + "."
-				+ snapCoordB + ".png");
+		return new File(this.cacheDataDirectory, "snap." + snapCoordA + "." + snapCoordB + ".png");
 		
 	}
 	
 	private File getMetaFile(int snapCoordA, int snapCoordB)
 	{
-		return new File(cacheDataDirectory, "snap." + snapCoordA + "."
-				+ snapCoordB + ".meta");
+		return new File(this.cacheDataDirectory, "snap." + snapCoordA + "." + snapCoordB + ".meta");
 		
 	}
 	
 	private boolean isSnapOnDisk(int snapCoordA, int snapCoordB)
 	{
-		return (getBufferFile(snapCoordA, snapCoordB).exists() && getMetaFile(
-				snapCoordA, snapCoordB).exists());
+		return getBufferFile(snapCoordA, snapCoordB).exists() && getMetaFile(snapCoordA, snapCoordB).exists();
 		
 	}
 	
@@ -262,9 +264,9 @@ public class LrzWorldCache implements LrzWorldCacheI
 			
 			BufferedImage bufferedImage = ImageIO.read(bufferedImageFile);
 			
-			if (bufferedImage.getWidth() != SIDECOUNT * SPLIT)
+			if (bufferedImage.getWidth() != this.SIDECOUNT * this.SPLIT)
 				throw new LrzInvalidDataException();
-			if (bufferedImage.getHeight() != SIDECOUNT * SPLIT)
+			if (bufferedImage.getHeight() != this.SIDECOUNT * this.SPLIT)
 				throw new LrzInvalidDataException();
 			//if (bufferedImage.getType() != BufferedImage.TYPE_INT_ARGB)
 			//	throw new LrzInvalidDataException();
@@ -293,4 +295,3 @@ public class LrzWorldCache implements LrzWorldCacheI
 	}
 	
 }
-

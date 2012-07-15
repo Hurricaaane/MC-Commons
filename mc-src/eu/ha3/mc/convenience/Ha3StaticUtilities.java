@@ -31,8 +31,7 @@ public class Ha3StaticUtilities
 		boolean canWork = false;
 		try
 		{
-			canWork = Class.forName(className, false, context.getClass()
-					.getClassLoader()) != null;
+			canWork = Class.forName(className, false, context.getClass().getClassLoader()) != null;
 			
 		}
 		catch (ClassNotFoundException e)

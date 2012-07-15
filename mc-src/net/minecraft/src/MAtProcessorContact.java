@@ -23,19 +23,19 @@ public class MAtProcessorContact extends MAtProcessorModel
 {
 	private int contactSum[];
 	
-	MAtProcessorContact(MAtMod modIn, MAtmosData dataIn,
-			String normalNameIn,
-			String deltaNameIn)
-			{
+	MAtProcessorContact(MAtMod modIn, MAtmosData dataIn, String normalNameIn, String deltaNameIn)
+	{
 		super(modIn, dataIn, normalNameIn, deltaNameIn);
-		contactSum = new int[MAtDataGatherer.COUNT_WORLD_BLOCKS];
+		this.contactSum = new int[MAtDataGatherer.COUNT_WORLD_BLOCKS];
 		
-			}
+	}
 	
 	private void emptyContact()
 	{
-		for (int i = 0; i < contactSum.length; i++)
-			contactSum[i] = 0;
+		for (int i = 0; i < this.contactSum.length; i++)
+		{
+			this.contactSum[i] = 0;
+		}
 		
 	}
 	
@@ -58,20 +58,23 @@ public class MAtProcessorContact extends MAtProcessorModel
 			ny = y + (k > 7 ? k - 9 : k % 2);
 			if (ny >= 0 && ny < mod().util().getWorldHeight())
 			{
-				nx = x + (k < 4 ? (k < 2 ? -1 : 1) : 0);
-				nz = z + ((k > 3) && (k < 8) ? (k < 6 ? -1 : 1) : 0);
+				nx = x + (k < 4 ? k < 2 ? -1 : 1 : 0);
+				nz = z + (k > 3 && k < 8 ? k < 6 ? -1 : 1 : 0);
 				
-				int id = mod().manager().getMinecraft().theWorld.getBlockId(nx,
-						ny, nz);
-				if ((id < contactSum.length) || (id >= 0))
-					contactSum[id] = contactSum[id] + 1;
+				int id = mod().manager().getMinecraft().theWorld.getBlockId(nx, ny, nz);
+				if (id < this.contactSum.length || id >= 0)
+				{
+					this.contactSum[id] = this.contactSum[id] + 1;
+				}
 				
 			}
 			
 		}
 		
-		for (int i = 0; i < contactSum.length; i++)
-			setValue(i, contactSum[i]);
+		for (int i = 0; i < this.contactSum.length; i++)
+		{
+			setValue(i, this.contactSum[i]);
+		}
 		
 	}
 	

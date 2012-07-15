@@ -40,9 +40,8 @@ import eu.ha3.mc.haddon.SupportsTickEvents;
   0. You just DO WHAT THE FUCK YOU WANT TO.
  */
 
-public class MAtMod extends HaddonImpl implements SupportsFrameEvents,
-SupportsTickEvents,
-SupportsKeyEvents, Ha3Personalizable
+public class MAtMod extends HaddonImpl
+	implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents, Ha3Personalizable
 {
 	final static public Logger LOGGER = Logger.getLogger("MAtmos");
 	final public int VERSION = 13; // Remember to change the thing on mod_Matmos_forModLoader
@@ -82,42 +81,41 @@ SupportsKeyEvents, Ha3Personalizable
 			@Override
 			public String format(LogRecord record)
 			{
-				return "(" + record.getLoggerName() + " : " + record.getLevel()
-						+ ") " + record.getMessage() + "\n";
+				return "(" + record.getLoggerName() + " : " + record.getLevel() + ") " + record.getMessage() + "\n";
 			}
 		};
-		conMod = new ConsoleHandler();
-		conMod.setFormatter(formatter);
+		this.conMod = new ConsoleHandler();
+		this.conMod.setFormatter(formatter);
 		
-		conEngine = new ConsoleHandler();
-		conEngine.setFormatter(formatter);
+		this.conEngine = new ConsoleHandler();
+		this.conEngine.setFormatter(formatter);
 		
 		// TODO Customizable level
 		Level levelMod = Level.INFO;
-		MAtMod.LOGGER.addHandler(conMod);
+		MAtMod.LOGGER.addHandler(this.conMod);
 		MAtMod.LOGGER.setUseParentHandlers(false);
 		MAtMod.LOGGER.setLevel(levelMod);
-		conMod.setLevel(levelMod);
+		this.conMod.setLevel(levelMod);
 		
 		Level levelEngine = Level.INFO;
-		MAtmosLogger.LOGGER.addHandler(conEngine);
+		MAtmosLogger.LOGGER.addHandler(this.conEngine);
 		MAtmosLogger.LOGGER.setUseParentHandlers(false);
 		MAtmosLogger.LOGGER.setLevel(levelEngine);
-		conEngine.setLevel(levelEngine);
+		this.conEngine.setLevel(levelEngine);
 		
 	}
 	
 	public void setModLogger(Level lvl)
 	{
 		MAtMod.LOGGER.setLevel(lvl);
-		conMod.setLevel(lvl);
+		this.conMod.setLevel(lvl);
 		
 	}
 	
 	public void setEngineLogger(Level lvl)
 	{
 		MAtmosLogger.LOGGER.setLevel(lvl);
-		conEngine.setLevel(lvl);
+		this.conEngine.setLevel(lvl);
 		
 	}
 	
@@ -126,23 +124,23 @@ SupportsKeyEvents, Ha3Personalizable
 	{
 		long beginTime = System.currentTimeMillis();
 		
-		isRunning = false;
-		isReady = false;
+		this.isRunning = false;
+		this.isReady = false;
 		
-		bypassResourceLoaderWait = defBypassResourceLoaderWait;
-		allowDump = defAllowDump;
+		this.bypassResourceLoaderWait = this.defBypassResourceLoaderWait;
+		this.allowDump = this.defAllowDump;
 		
-		arbitraryPool = new HashMap<String, Object>();
+		this.arbitraryPool = new HashMap<String, Object>();
 		
-		sndComm = new Ha3SoundCommunicator(this, "MAtmos_");
+		this.sndComm = new Ha3SoundCommunicator(this, "MAtmos_");
 		
-		userControl = new MAtUserControl(this);
-		dataGatherer = new MAtDataGatherer(this);
-		expansionLoader = new MAtExpansionLoader(this);
-		options = new MAtOptions(this);
-		updateNotifier = new MAtUpdateNotifier(this);
+		this.userControl = new MAtUserControl(this);
+		this.dataGatherer = new MAtDataGatherer(this);
+		this.expansionLoader = new MAtExpansionLoader(this);
+		this.options = new MAtOptions(this);
+		this.updateNotifier = new MAtUpdateNotifier(this);
 		
-		soundManager = new MAtSoundManagerConfigurable(this);
+		this.soundManager = new MAtSoundManagerConfigurable(this);
 		
 		manager().hookFrameEvents(true);
 		manager().hookTickEvents(true);
@@ -150,29 +148,27 @@ SupportsKeyEvents, Ha3Personalizable
 		doLoad();
 		
 		MAtMod.LOGGER.info("Took "
-				+ (Math.floor(System.currentTimeMillis() - beginTime) / 1000f)
-				+ " seconds to load MAtmos.");
+			+ Math.floor(System.currentTimeMillis() - beginTime) / 1000f + " seconds to load MAtmos.");
 		
 	}
 	
 	public void doLoad()
 	{
-		phase = MAtModPhase.CONSTRUCTING;
+		this.phase = MAtModPhase.CONSTRUCTING;
 		
 		MAtMod.LOGGER.info("Constructing.");
 		
-		arbitraryPool.put("sndcomm_startload", new Long(System
-				.currentTimeMillis()));
-		userControl.load();
-		dataGatherer.load();
+		this.arbitraryPool.put("sndcomm_startload", new Long(System.currentTimeMillis()));
+		this.userControl.load();
+		this.dataGatherer.load();
 		// note: soundManager needs to be loaded post sndcomms
 		
-		options.registerPersonalizable(this);
-		options.registerPersonalizable(soundManager);
-		options.registerPersonalizable(updateNotifier);
-		options.loadOptions(); // TODO Options
+		this.options.registerPersonalizable(this);
+		this.options.registerPersonalizable(this.soundManager);
+		this.options.registerPersonalizable(this.updateNotifier);
+		this.options.loadOptions(); // TODO Options
 		
-		sndComm.load(new Ha3Signal() {
+		this.sndComm.load(new Ha3Signal() {
 			@Override
 			public void signal()
 			{
@@ -189,56 +185,53 @@ SupportsKeyEvents, Ha3Personalizable
 			}
 		});
 		
-		expansionLoader.renewProngs();
-		expansionLoader.loadExpansions();
+		this.expansionLoader.renewProngs();
+		this.expansionLoader.loadExpansions();
 		
 	}
 	
 	public MAtSoundManagerConfigurable soundManager()
 	{
-		return soundManager;
+		return this.soundManager;
 		
 	}
 	
 	public MAtDataGatherer dataGatherer()
 	{
-		return dataGatherer;
+		return this.dataGatherer;
 		
 	}
 	
 	public MAtOptions options()
 	{
-		return options;
+		return this.options;
 		
 	}
 	
 	// XXX Blatant design.
 	public MAtExpansionLoader expansionLoader()
 	{
-		return expansionLoader;
+		return this.expansionLoader;
 		
 	}
 	
 	private void sndCommFailed()
 	{
-		long diff = (System.currentTimeMillis() - (Long) arbitraryPool
-				.get("sndcomm_startload"));
+		long diff = System.currentTimeMillis() - (Long) this.arbitraryPool.get("sndcomm_startload");
 		float diffs = diff / 1000F;
 		
-		phase = MAtModPhase.SOUNDCOMMUNICATOR_FAILURE;
-		MAtMod.LOGGER.severe("CRITICAL Error with SoundCommunicator (after "
-				+ diffs + " s.). Will not load.");
+		this.phase = MAtModPhase.SOUNDCOMMUNICATOR_FAILURE;
+		MAtMod.LOGGER.severe("CRITICAL Error with SoundCommunicator (after " + diffs + " s.). Will not load.");
 		
-		fatalError = true;
-		phase = MAtModPhase.SOUNDCOMMUNICATOR_FAILURE;
+		this.fatalError = true;
+		this.phase = MAtModPhase.SOUNDCOMMUNICATOR_FAILURE;
 		
 	}
 	
 	private String getFirstBlocker()
 	{
-		this.manager().getMinecraft();
-		File folder = new File(Minecraft.getMinecraftDir(),
-				"matmos_audiomodlike_blacklist/");
+		manager().getMinecraft();
+		File folder = new File(Minecraft.getMinecraftDir(), "matmos_audiomodlike_blacklist/");
 		
 		if (!folder.exists())
 			return null;
@@ -257,10 +250,9 @@ SupportsKeyEvents, Ha3Personalizable
 						while ((line = reader.readLine()) != null)
 						{
 							String[] contents = line.split("\t");
-							if ((contents.length > 0) && (contents[0].length() > 0))
+							if (contents.length > 0 && contents[0].length() > 0)
 							{
-								if (Ha3StaticUtilities.classExists(contents[0],
-										this))
+								if (Ha3StaticUtilities.classExists(contents[0], this))
 								{
 									if (contents.length > 1)
 										return contents[1];
@@ -305,25 +297,22 @@ SupportsKeyEvents, Ha3Personalizable
 	
 	private void sndCommLoadFinishedPhaseOne()
 	{
-		phase = MAtModPhase.RESOURCE_LOADER;
+		this.phase = MAtModPhase.RESOURCE_LOADER;
 		
-		long diff = (System.currentTimeMillis() - (Long) arbitraryPool
-				.get("sndcomm_startload"));
+		long diff = System.currentTimeMillis() - (Long) this.arbitraryPool.get("sndcomm_startload");
 		float diffs = diff / 1000F;
 		
-		MAtMod.LOGGER
-		.info("SoundCommunicator loaded (after " + diffs + " s.).");
+		MAtMod.LOGGER.info("SoundCommunicator loaded (after " + diffs + " s.).");
 		
 		String firstBlocker = getFirstBlocker();
 		if (firstBlocker != null)
 		{
 			MAtMod.LOGGER.warning(firstBlocker);
-			MAtMod.LOGGER
-			.warning("MAtmos will not attempt load sounds on its own at all.");
+			MAtMod.LOGGER.warning("MAtmos will not attempt load sounds on its own at all.");
 			sndCommLoaded();
 			
 		}
-		else if (!bypassResourceLoaderWait)
+		else if (!this.bypassResourceLoaderWait)
 		{
 			new MAtResourceReloader(this, new Ha3Signal() {
 				
@@ -339,8 +328,7 @@ SupportsKeyEvents, Ha3Personalizable
 		}
 		else
 		{
-			MAtMod.LOGGER
-			.info("Bypassing Resource Reloader threaded wait. This may cause issues.");
+			MAtMod.LOGGER.info("Bypassing Resource Reloader threaded wait. This may cause issues.");
 			
 			new MAtResourceReloader(this, null).reloadResources();
 			sndCommLoaded();
@@ -351,23 +339,21 @@ SupportsKeyEvents, Ha3Personalizable
 	
 	private void sndCommLoaded()
 	{
-		phase = MAtModPhase.FINAL_PHASE;
+		this.phase = MAtModPhase.FINAL_PHASE;
 		
-		long diff = (System.currentTimeMillis() - (Long) arbitraryPool
-				.get("sndcomm_startload"));
+		long diff = System.currentTimeMillis() - (Long) this.arbitraryPool.get("sndcomm_startload");
 		float diffs = diff / 1000F;
 		
-		MAtMod.LOGGER.info("ResourceReloader finished (after " + diffs
-				+ " s.).");
+		MAtMod.LOGGER.info("ResourceReloader finished (after " + diffs + " s.).");
 		
 		// options.loadPostSndComms();
 		// soundManager.load();
 		
-		expansionLoader.signalBuildKnowledge();
+		this.expansionLoader.signalBuildKnowledge();
 		
-		phase = MAtModPhase.READY;
+		this.phase = MAtModPhase.READY;
 		
-		isReady = true;
+		this.isReady = true;
 		MAtMod.LOGGER.info("Ready.");
 		
 		startRunning();
@@ -376,17 +362,17 @@ SupportsKeyEvents, Ha3Personalizable
 	
 	public void reloadAndStart()
 	{
-		if (!isReady)
+		if (!this.isReady)
 			return;
 		
-		if (isRunning)
+		if (this.isRunning)
 			return;
 		
 		new Thread() {
 			@Override
 			public void run()
 			{
-				expansionLoader.loadExpansions();
+				MAtMod.this.expansionLoader.loadExpansions();
 				
 			}
 		}.start();
@@ -396,34 +382,34 @@ SupportsKeyEvents, Ha3Personalizable
 	
 	public void startRunning()
 	{
-		if (!isReady)
+		if (!this.isReady)
 			return;
 		
-		if (isRunning)
+		if (this.isRunning)
 			return;
 		
-		isRunning = true;
+		this.isRunning = true;
 		
 		//printChat(Ha3Utility.COLOR_BRIGHTGREEN, "Loading...");
 		
 		MAtMod.LOGGER.fine("Loading...");
-		expansionLoader.signalStatusChange();
+		this.expansionLoader.signalStatusChange();
 		MAtMod.LOGGER.fine("Loaded.");
 		
 	}
 	
 	public void stopRunning()
 	{
-		if (!isReady)
+		if (!this.isReady)
 			return;
 		
-		if (!isRunning)
+		if (!this.isRunning)
 			return;
 		
-		isRunning = false;
+		this.isRunning = false;
 		
 		MAtMod.LOGGER.fine("Stopping...");
-		expansionLoader.signalStatusChange();
+		this.expansionLoader.signalStatusChange();
 		MAtMod.LOGGER.fine("Stopped.");
 		
 		createDataDump();
@@ -432,7 +418,7 @@ SupportsKeyEvents, Ha3Personalizable
 	
 	public void createDataDump()
 	{
-		if (!allowDump)
+		if (!this.allowDump)
 			return;
 		
 		MAtMod.LOGGER.fine("Dumping data.");
@@ -479,51 +465,51 @@ SupportsKeyEvents, Ha3Personalizable
 	
 	public Ha3SoundCommunicator sound()
 	{
-		return sndComm;
+		return this.sndComm;
 		
 	}
 	
 	public boolean isReady()
 	{
-		return isReady;
+		return this.isReady;
 		
 	}
 	
 	public boolean isRunning()
 	{
-		return isRunning;
+		return this.isRunning;
 		
 	}
 	
 	public boolean isFatalError()
 	{
-		return fatalError;
+		return this.fatalError;
 		
 	}
 	
 	public MAtModPhase getPhase()
 	{
-		return phase;
+		return this.phase;
 		
 	}
 	
 	@Override
 	public void onKey(KeyBinding event)
 	{
-		userControl.communicateKeyBindingEvent(event);
+		this.userControl.communicateKeyBindingEvent(event);
 		
 	}
 	
 	@Override
 	public void onFrame(float semi)
 	{
-		if (!fatalError)
+		if (!this.fatalError)
 		{
-			userControl.frameRoutine(semi);
+			this.userControl.frameRoutine(semi);
 			
-			if (isRunning)
+			if (this.isRunning)
 			{
-				expansionLoader.soundRoutine();
+				this.expansionLoader.soundRoutine();
 				
 			}
 			
@@ -534,28 +520,27 @@ SupportsKeyEvents, Ha3Personalizable
 	@Override
 	public void onTick()
 	{
-		if (!fatalError)
+		if (!this.fatalError)
 		{
-			userControl.tickRoutine();
-			if (isRunning)
+			this.userControl.tickRoutine();
+			if (this.isRunning)
 			{
-				dataGatherer.tickRoutine();
-				expansionLoader.dataRoutine();
+				this.dataGatherer.tickRoutine();
+				this.expansionLoader.dataRoutine();
 				
 			}
 			
 		}
-		else if (!userKnowsFatalError)
+		else if (!this.userKnowsFatalError)
 		{
-			userKnowsFatalError = true;
-			printChat(Ha3Utility.COLOR_YELLOW,
-					"A fatal error has occured. MAtmos will not load.");
+			this.userKnowsFatalError = true;
+			printChat(Ha3Utility.COLOR_YELLOW, "A fatal error has occured. MAtmos will not load.");
 			
 		}
-		if (!firstTickPassed)
+		if (!this.firstTickPassed)
 		{
-			firstTickPassed = true;
-			updateNotifier.attempt();
+			this.firstTickPassed = true;
+			this.updateNotifier.attempt();
 			
 		}
 		
@@ -564,8 +549,10 @@ SupportsKeyEvents, Ha3Personalizable
 	@Override
 	public void inputOptions(Properties options)
 	{
-		if (config == null)
-			config = createDefaultOptions();
+		if (this.config == null)
+		{
+			this.config = createDefaultOptions();
+		}
 		
 		try
 		{
@@ -575,10 +562,9 @@ SupportsKeyEvents, Ha3Personalizable
 				{
 					String prop = options.getProperty(query);
 					int lvl = Integer.parseInt(prop);
-					setModLogger(lvl == 0 ? Level.INFO : lvl == 1 ? Level.FINE
-							: lvl == 2 ? Level.FINER : lvl == 3 ? Level.FINEST
-									: Level.INFO);
-					config.put(query, prop);
+					setModLogger(lvl == 0 ? Level.INFO : lvl == 1 ? Level.FINE : lvl == 2 ? Level.FINER : lvl == 3
+						? Level.FINEST : Level.INFO);
+					this.config.put(query, prop);
 				}
 				
 			}
@@ -588,10 +574,9 @@ SupportsKeyEvents, Ha3Personalizable
 				{
 					String prop = options.getProperty(query);
 					int lvl = Integer.parseInt(prop);
-					setEngineLogger(lvl == 0 ? Level.INFO : lvl == 1
-							? Level.FINE : lvl == 2 ? Level.FINER : lvl == 3
-							? Level.FINEST : Level.INFO);
-					config.put(query, prop);
+					setEngineLogger(lvl == 0 ? Level.INFO : lvl == 1 ? Level.FINE : lvl == 2 ? Level.FINER : lvl == 3
+						? Level.FINEST : Level.INFO);
+					this.config.put(query, prop);
 				}
 				
 			}
@@ -608,9 +593,8 @@ SupportsKeyEvents, Ha3Personalizable
 				if (options.containsKey(query))
 				{
 					String prop = options.getProperty(query);
-					bypassResourceLoaderWait = Integer.parseInt(prop) == 1
-							? true : false;
-					config.put(query, prop);
+					this.bypassResourceLoaderWait = Integer.parseInt(prop) == 1 ? true : false;
+					this.config.put(query, prop);
 				}
 				
 			}
@@ -619,8 +603,8 @@ SupportsKeyEvents, Ha3Personalizable
 				if (options.containsKey(query))
 				{
 					String prop = options.getProperty(query);
-					allowDump = Integer.parseInt(prop) == 1 ? true : false;
-					config.put(query, prop);
+					this.allowDump = Integer.parseInt(prop) == 1 ? true : false;
+					this.config.put(query, prop);
 				}
 				
 			}
@@ -636,18 +620,17 @@ SupportsKeyEvents, Ha3Personalizable
 	@Override
 	public Properties outputOptions()
 	{
-		if (config == null)
+		if (this.config == null)
 			return createDefaultOptions();
 		
 		// XXX Options do not change if changed due to code.
 		//config.setProperty("debug.logger.mod.use", "0");
 		//config.setProperty("debug.logger.engine.use", "0");
 		
-		config.setProperty("core.init.bypassresourcereloaderwait.use",
-				bypassResourceLoaderWait ? "1" : "0");
-		config.setProperty("core.data.dump.use", allowDump ? "1" : "0");
+		this.config.setProperty("core.init.bypassresourcereloaderwait.use", this.bypassResourceLoaderWait ? "1" : "0");
+		this.config.setProperty("core.data.dump.use", this.allowDump ? "1" : "0");
 		
-		return config;
+		return this.config;
 	}
 	
 	@Override
@@ -662,9 +645,8 @@ SupportsKeyEvents, Ha3Personalizable
 		Properties options = new Properties();
 		options.setProperty("debug.logger.mod.use", "0");
 		options.setProperty("debug.logger.engine.use", "0");
-		options.setProperty("core.init.bypassresourcereloaderwait.use",
-				defBypassResourceLoaderWait ? "1" : "0");
-		options.setProperty("core.data.dump.use", defAllowDump ? "1" : "0");
+		options.setProperty("core.init.bypassresourcereloaderwait.use", this.defBypassResourceLoaderWait ? "1" : "0");
+		options.setProperty("core.data.dump.use", this.defAllowDump ? "1" : "0");
 		
 		return options;
 		

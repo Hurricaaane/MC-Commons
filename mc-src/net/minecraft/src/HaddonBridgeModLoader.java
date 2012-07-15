@@ -56,30 +56,35 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 		this.utility = new HaddonUtilityImpl(this);
 		haddon.setManager(this);
 		
-		supportsTick = haddon instanceof SupportsTickEvents;
-		supportsFrame = haddon instanceof SupportsFrameEvents;
-		supportsChat = haddon instanceof SupportsChatEvents;
-		supportsKey = haddon instanceof SupportsKeyEvents;
+		this.supportsTick = haddon instanceof SupportsTickEvents;
+		this.supportsFrame = haddon instanceof SupportsFrameEvents;
+		this.supportsChat = haddon instanceof SupportsChatEvents;
+		this.supportsKey = haddon instanceof SupportsKeyEvents;
 		
-		impl_continueTicking = supportsTick || supportsFrame;
+		this.impl_continueTicking = this.supportsTick || this.supportsFrame;
 		
-		lastTick = -1;
+		this.lastTick = -1;
 		
 		if (haddon instanceof SupportsInitialization)
+		{
 			((SupportsInitialization) haddon).onInitialize();
+		}
 		
 	}
 	
 	@Override
 	public void load()
 	{
-		haddon.onLoad();
+		this.haddon.onLoad();
 		
-		if (supportsTick && !supportsFrame)
+		if (this.supportsTick && !this.supportsFrame)
+		{
 			ModLoader.setInGameHook(this, true, true);
-		
-		else if (supportsFrame)
+		}
+		else if (this.supportsFrame)
+		{
 			ModLoader.setInGameHook(this, true, false);
+		}
 		
 	}
 	
@@ -93,63 +98,65 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 	@Override
 	public boolean onTickInGame(float semi, Minecraft minecraft)
 	{
-		if (supportsTick && tickEnabled)
+		if (this.supportsTick && this.tickEnabled)
 		{
-			int tick = utility.getClientTick();
-			if (tick != lastTick)
+			int tick = this.utility.getClientTick();
+			if (tick != this.lastTick)
 			{
-				((SupportsTickEvents) haddon).onTick();
-				lastTick = tick;
+				((SupportsTickEvents) this.haddon).onTick();
+				this.lastTick = tick;
 				
 			}
 			
 		}
 		
-		if (supportsFrame && frameEnabled)
+		if (this.supportsFrame && this.frameEnabled)
 		{
-			((SupportsFrameEvents) haddon).onFrame(semi);
+			((SupportsFrameEvents) this.haddon).onFrame(semi);
 			
 		}
 		
-		return impl_continueTicking;
+		return this.impl_continueTicking;
 		
 	}
 	
 	@Override
 	public void receiveChatPacket(String contents)
 	{
-		if (supportsChat && chatEnabled)
-			((SupportsChatEvents) haddon).onChat(contents);
+		if (this.supportsChat && this.chatEnabled)
+		{
+			((SupportsChatEvents) this.haddon).onChat(contents);
+		}
 		
 	}
 	
 	@Override
 	public void hookTickEvents(boolean enable)
 	{
-		if (!supportsTick)
+		if (!this.supportsTick)
 			return;
 		
-		tickEnabled = enable;
+		this.tickEnabled = enable;
 		
 	}
 	
 	@Override
 	public void hookFrameEvents(boolean enable)
 	{
-		if (!supportsFrame)
+		if (!this.supportsFrame)
 			return;
 		
-		frameEnabled = enable;
+		this.frameEnabled = enable;
 		
 	}
 	
 	@Override
 	public void hookChatEvents(boolean enable)
 	{
-		if (!supportsChat)
+		if (!this.supportsChat)
 			return;
 		
-		chatEnabled = enable;
+		this.chatEnabled = enable;
 		
 	}
 	
@@ -162,7 +169,7 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 	@Override
 	public Utility getUtility()
 	{
-		return utility;
+		return this.utility;
 		
 	}
 	
@@ -170,10 +177,12 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 	@Override
 	public void addRenderable(Class renderable, Object renderer)
 	{
-		if (renderPairs == null)
-			renderPairs = new HashMap<Object, Object>();
+		if (this.renderPairs == null)
+		{
+			this.renderPairs = new HashMap<Object, Object>();
+		}
 		
-		renderPairs.put(renderable, renderer);
+		this.renderPairs.put(renderable, renderer);
 		
 	}
 	
@@ -181,8 +190,10 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 	@Override
 	public void addRenderer(Map map)
 	{
-		if (renderPairs != null)
-			map.putAll(renderPairs);
+		if (this.renderPairs != null)
+		{
+			map.putAll(this.renderPairs);
+		}
 		
 	}
 	
@@ -197,10 +208,10 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 	@Override
 	public void keyboardEvent(KeyBinding event)
 	{
-		if (!supportsKey)
+		if (!this.supportsKey)
 			return;
 		
-		((SupportsKeyEvents) haddon).onKey(event);
+		((SupportsKeyEvents) this.haddon).onKey(event);
 		
 	}
 	

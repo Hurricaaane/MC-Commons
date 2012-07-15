@@ -1,6 +1,5 @@
 package net.minecraft.src;
 
-
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -33,8 +32,7 @@ import eu.ha3.mc.haddon.PrivateAccessException;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class MAtSoundManagerConfigurable implements MAtmosSoundManager,
-Ha3Personalizable
+public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Personalizable
 {
 	// XXX Implement me: Does not do anything and sndcomms is down
 	
@@ -65,67 +63,67 @@ Ha3Personalizable
 	
 	public MAtSoundManagerConfigurable(MAtMod mAtmosHaddon)
 	{
-		mod = mAtmosHaddon;
+		this.mod = mAtmosHaddon;
 		
-		soundVolume = defSoundVolume;
-		musicVolume = defMusicVolume;
-		musicVolUsesMinecraft = defMusicVolUsesMinecraft;
+		this.soundVolume = this.defSoundVolume;
+		this.musicVolume = this.defMusicVolume;
+		this.musicVolUsesMinecraft = this.defMusicVolUsesMinecraft;
 		
-		nbTokens = 0;
-		random = new Random(System.currentTimeMillis());
-		soundequivalences = new HashMap<String, String>();
-		tokenPaths = new ArrayList<String>();
-		tokenSetFirst = new ArrayList<Boolean>();
-		tokenURL = new ArrayList<URL>();
-		tokenVolume = new ArrayList<Float>();
-		paulsCodeBug_markForFadeIn = new HashMap<String, Float>();
-		sourcesAsMusic = new ArrayList<String>();
+		this.nbTokens = 0;
+		this.random = new Random(System.currentTimeMillis());
+		this.soundequivalences = new HashMap<String, String>();
+		this.tokenPaths = new ArrayList<String>();
+		this.tokenSetFirst = new ArrayList<Boolean>();
+		this.tokenURL = new ArrayList<URL>();
+		this.tokenVolume = new ArrayList<Float>();
+		this.paulsCodeBug_markForFadeIn = new HashMap<String, Float>();
+		this.sourcesAsMusic = new ArrayList<String>();
 		
-		settingsVolume = 0F;
-		settingsMusicVolume = 0F;
-		previousMusicVolume = 0F;
+		this.settingsVolume = 0F;
+		this.settingsMusicVolume = 0F;
+		this.previousMusicVolume = 0F;
 		
 	}
 	
 	public SoundSystem sndSystem()
 	{
-		return mod.sound().getSoundSystem();
+		return this.mod.sound().getSoundSystem();
 		
 	}
 	
 	public void setCustomSoundVolume(float modifier)
 	{
-		soundVolume = modifier;
+		this.soundVolume = modifier;
 		
 	}
 	
 	public float getCustomSoundVolume()
 	{
-		return soundVolume;
+		return this.soundVolume;
 		
 	}
 	
 	public void setCustomMusicVolume(float mod)
 	{
-		musicVolume = mod;
+		this.musicVolume = mod;
 		
 	}
 	
 	public float getCustomMusicVolume()
 	{
-		return musicVolume;
+		return this.musicVolume;
 		
 	}
 	
 	public void setMusicVolumeIsBasedOffMinecraft(boolean use)
 	{
-		musicVolUsesMinecraft = use;
+		this.musicVolUsesMinecraft = use;
 		
 	}
 	
 	public boolean getMusicVolumeIsBasedOffMinecraft()
 	{
-		return musicVolUsesMinecraft;
+		return this.musicVolUsesMinecraft;
 		
 	}
 	
@@ -134,64 +132,57 @@ Ha3Personalizable
 	{
 		updateSettingsVolume();
 		
-		if (paulsCodeBug_markForFadeIn.size() != 0)
+		if (this.paulsCodeBug_markForFadeIn.size() != 0)
 		{
-			for (Iterator<Entry<String, Float>> iter = paulsCodeBug_markForFadeIn
-					.entrySet().iterator(); iter.hasNext();)
+			for (Iterator<Entry<String, Float>> iter = this.paulsCodeBug_markForFadeIn.entrySet().iterator(); iter
+				.hasNext();)
 			{
 				Entry<String, Float> entry = iter.next();
-				sndSystem().setVolume(entry.getKey(),
-						entry.getValue()
-						* settingsVolume);
+				sndSystem().setVolume(entry.getKey(), entry.getValue() * this.settingsVolume);
 				
 			}
-			paulsCodeBug_markForFadeIn.clear();
+			this.paulsCodeBug_markForFadeIn.clear();
 			
 		}
 	}
 	
 	private void updateSettingsVolume()
 	{
-		Minecraft mc = mod.manager().getMinecraft();
-		boolean changedSettings = settingsVolume != mc.gameSettings.soundVolume;
+		Minecraft mc = this.mod.manager().getMinecraft();
+		boolean changedSettings = this.settingsVolume != mc.gameSettings.soundVolume;
 		
 		if (changedSettings)
-			settingsVolume = mc.gameSettings.soundVolume;
+		{
+			this.settingsVolume = mc.gameSettings.soundVolume;
+		}
 		
-		if (musicVolUsesMinecraft)
+		if (this.musicVolUsesMinecraft)
 		{
 			float currentMusicVolume = mc.gameSettings.musicVolume;
-			if (changedSettings || (currentMusicVolume != settingsMusicVolume))
+			if (changedSettings || currentMusicVolume != this.settingsMusicVolume)
 			{
-				for (Iterator<String> iter = sourcesAsMusic.iterator(); iter
-						.hasNext();)
+				for (Iterator<String> iter = this.sourcesAsMusic.iterator(); iter.hasNext();)
 				{
-					sndSystem().setVolume(iter.next(),
-							currentMusicVolume
-							* settingsVolume);
+					sndSystem().setVolume(iter.next(), currentMusicVolume * this.settingsVolume);
 					
 				}
 				
 			}
-			settingsMusicVolume = currentMusicVolume;
+			this.settingsMusicVolume = currentMusicVolume;
 			
 		}
 		else
 		{
-			if (changedSettings
-					|| (getCustomMusicVolume() != previousMusicVolume))
+			if (changedSettings || getCustomMusicVolume() != this.previousMusicVolume)
 			{
-				for (Iterator<String> iter = sourcesAsMusic.iterator(); iter
-						.hasNext();)
+				for (Iterator<String> iter = this.sourcesAsMusic.iterator(); iter.hasNext();)
 				{
-					sndSystem().setVolume(iter.next(),
-							getCustomMusicVolume()
-							* settingsVolume);
+					sndSystem().setVolume(iter.next(), getCustomMusicVolume() * this.settingsVolume);
 					
 				}
 				
 			}
-			previousMusicVolume = getCustomMusicVolume();
+			this.previousMusicVolume = getCustomMusicVolume();
 			
 		}
 		
@@ -207,16 +198,13 @@ Ha3Personalizable
 	@SuppressWarnings("static-access")
 	String getSound(String soundPath)
 	{
-		if (soundequivalences.containsKey(soundPath))
-			return soundequivalences.get(soundPath);
+		if (this.soundequivalences.containsKey(soundPath))
+			return this.soundequivalences.get(soundPath);
 		
-		File soundFile = new File(mod.manager().getMinecraft()
-				.getMinecraftDir()
-				+ "/resources",
-				soundPath);
+		File soundFile = new File(this.mod.manager().getMinecraft().getMinecraftDir() + "/resources", soundPath);
 		
 		// FIXME DO IT BETTER
-		String path = (new StringBuilder()).append(soundPath).toString();
+		String path = new StringBuilder().append(soundPath).toString();
 		int j = path.indexOf("/");
 		int t = path.indexOf(".");
 		String quant = path.substring(j + 1, t);
@@ -232,11 +220,12 @@ Ha3Personalizable
 		dotted = dotted.replaceAll("8", "");
 		dotted = dotted.replaceAll("9", "");
 		
-		soundequivalences.put(soundPath, dotted);
+		this.soundequivalences.put(soundPath, dotted);
 		
 		if (!soundFile.exists())
-			MAtMod.LOGGER.warning("File " + soundPath + " is missing " + " ("
-					+ dotted + ")");
+		{
+			MAtMod.LOGGER.warning("File " + soundPath + " is missing " + " (" + dotted + ")");
+		}
 		
 		//System.out.println("File " + soundPath + (soundFile.exists()?" exists":" is missing") + " (" + dotted + ")");
 		
@@ -247,7 +236,7 @@ Ha3Personalizable
 	@Override
 	public void playSound(String path, float volume, float pitch, int meta)
 	{
-		Minecraft mc = mod.manager().getMinecraft();
+		Minecraft mc = this.mod.manager().getMinecraft();
 		float nx = (float) mc.thePlayer.posX;
 		float ny = (float) mc.thePlayer.posY;
 		float nz = (float) mc.thePlayer.posZ;
@@ -255,8 +244,8 @@ Ha3Personalizable
 		String equivalent = getSound(path);
 		
 		// FIXME: Doesn't play if musicVolUsesMinecraft is true and the music volume is low...
-		float actualVolume = volume == 0 ? (musicVolUsesMinecraft
-				? settingsMusicVolume : getCustomMusicVolume()) : volume
+		float actualVolume =
+			volume == 0 ? this.musicVolUsesMinecraft ? this.settingsMusicVolume : getCustomMusicVolume() : volume
 				* getCustomSoundVolume();
 		
 		if (actualVolume == 0) //TODO Check if okay
@@ -264,17 +253,16 @@ Ha3Personalizable
 		
 		if (meta > 0)
 		{
-			double angle = random.nextFloat() * 2 * Math.PI;
+			double angle = this.random.nextFloat() * 2 * Math.PI;
 			nx = nx + (float) (Math.cos(angle) * meta);
-			ny = ny + random.nextFloat() * meta * 0.2F - meta * 0.01F;
+			ny = ny + this.random.nextFloat() * meta * 0.2F - meta * 0.01F;
 			nz = nz + (float) (Math.sin(angle) * meta);
 			
 			//mc.sndManager.playSound(equivalent, nx, ny, nz, actualVolume, pitch);
-			mod.sound().playSound(equivalent, nx, ny, nz, actualVolume,
-					pitch, 0, 0F);
+			this.mod.sound().playSound(equivalent, nx, ny, nz, actualVolume, pitch, 0, 0F);
 		}
 		else
-			//if meta == 0
+		//if meta == 0
 		{
 			// NOTE: playSoundFX from Minecraft SoundManager
 			//   does NOT work. Must use playSoundFX Proxy
@@ -283,8 +271,7 @@ Ha3Personalizable
 			//
 			
 			ny = ny + 2048;
-			mod.sound().playSound(equivalent, nx, ny, nz, actualVolume,
-					pitch, 0, 0F);
+			this.mod.sound().playSound(equivalent, nx, ny, nz, actualVolume, pitch, 0, 0F);
 			//mc.sndManager.playSoundFX(equivalent, volume * customVolumeMod, pitch);
 			
 		}
@@ -294,13 +281,13 @@ Ha3Personalizable
 	@Override
 	public synchronized int getNewStreamingToken() // TODO Sync?
 	{
-		int token = nbTokens;
-		nbTokens = nbTokens + 1;
+		int token = this.nbTokens;
+		this.nbTokens = this.nbTokens + 1;
 		
-		tokenPaths.add("");
-		tokenSetFirst.add(false);
-		tokenURL.add(null);
-		tokenVolume.add(0F);
+		this.tokenPaths.add("");
+		this.tokenSetFirst.add(false);
+		this.tokenURL.add(null);
+		this.tokenVolume.add(0F);
 		
 		//System.out.println(token);
 		
@@ -308,38 +295,37 @@ Ha3Personalizable
 	}
 	
 	@Override
-	public synchronized boolean setupStreamingToken(int token, String path,
-			float volume,
-			float pitch)
+	public synchronized boolean setupStreamingToken(int token, String path, float volume, float pitch)
 	{
 		try
 		{
 			String sourceName = "MATMOS_SRM_" + token;
 			
-			tokenPaths.set(token, path);
+			this.tokenPaths.set(token, path);
 			
 			cacheSound(path);
 			//System.out.println(getSound(path));
 			String poolName = getSound(path);
 			SoundPoolEntry soundpoolentry;
-			soundpoolentry = ((SoundPool) (mod.util().getPrivateValueLiteral(
-					net.minecraft.src.SoundManager.class, mod.manager()
-							.getMinecraft().sndManager, "b", 1)))
+			soundpoolentry =
+				((SoundPool) this.mod.util().getPrivateValueLiteral(
+					net.minecraft.src.SoundManager.class, this.mod.manager().getMinecraft().sndManager, "b", 1))
 					.getRandomSoundFromSoundPool(poolName);
 			
 			if (soundpoolentry != null)
 			{
 				if (volume == 0)
-					sourcesAsMusic.add(sourceName);
+				{
+					this.sourcesAsMusic.add(sourceName);
+				}
 				
-				tokenURL.set(token, soundpoolentry.soundUrl);
-				tokenVolume.set(token, volume);
+				this.tokenURL.set(token, soundpoolentry.soundUrl);
+				this.tokenVolume.set(token, volume);
 				
 				//System.out.println(sourceName + " " + soundpoolentry.soundUrl
 				//+ " " + path);
 				
-				sndSystem().newStreamingSource(true, sourceName,
-						soundpoolentry.soundUrl, path, true, 0, 0, 0, 0, 0);
+				sndSystem().newStreamingSource(true, sourceName, soundpoolentry.soundUrl, path, true, 0, 0, 0, 0, 0);
 				sndSystem().setTemporary(sourceName, false);
 				sndSystem().setPitch(sourceName, pitch);
 				//sndSystem.setVolume(sourceName, volume * settingsVolume);
@@ -362,35 +348,39 @@ Ha3Personalizable
 	}
 	
 	@Override
-	public synchronized void startStreaming(int token, float fadeDuration,
-			int timesToPlay)
+	public synchronized void startStreaming(int token, float fadeDuration, int timesToPlay)
 	{
 		String sourceName = "MATMOS_SRM_" + token;
 		
-		if (tokenSetFirst.get(token) == false)
+		if (this.tokenSetFirst.get(token) == false)
 		{
-			tokenSetFirst.set(token, true);
+			this.tokenSetFirst.set(token, true);
 			
 			if (timesToPlay == 0)
+			{
 				sndSystem().setLooping(sourceName, true);
-			
+			}
 			else
+			{
 				sndSystem().setLooping(sourceName, false);
+			}
 			
 		}
 		
 		// pcSystem.rewind(sourceName);
 		
-		float volume = tokenVolume.get(token);
+		float volume = this.tokenVolume.get(token);
 		float playVolume;
 		
 		if (volume == 0)
-			playVolume = settingsVolume
-			* (musicVolUsesMinecraft ? settingsMusicVolume
-					: getCustomMusicVolume());
-		
+		{
+			playVolume =
+				this.settingsVolume * (this.musicVolUsesMinecraft ? this.settingsMusicVolume : getCustomMusicVolume());
+		}
 		else
-			playVolume = volume * settingsVolume * getCustomSoundVolume();
+		{
+			playVolume = volume * this.settingsVolume * getCustomSoundVolume();
+		}
 		
 		if (fadeDuration == 0)
 		{
@@ -416,11 +406,10 @@ Ha3Personalizable
 			
 			// Disabled version:
 			
-			String path = tokenPaths.get(token);
+			String path = this.tokenPaths.get(token);
 			sndSystem().setVolume(sourceName, playVolume);
 			sndSystem().play(sourceName);
-			sndSystem().fadeOutIn(sourceName, tokenURL.get(token), path, 1,
-					((long) fadeDuration) * 1000L);
+			sndSystem().fadeOutIn(sourceName, this.tokenURL.get(token), path, 1, (long) fadeDuration * 1000L);
 			
 		}
 		
@@ -432,12 +421,14 @@ Ha3Personalizable
 		String sourceName = "MATMOS_SRM_" + token;
 		
 		if (fadeDuration == 0)
+		{
 			//sndSystem.fadeOut(sourceName, null, 0);
 			sndSystem().stop(sourceName);
-		
+		}
 		else
-			sndSystem()
-			.fadeOut(sourceName, null, ((long) fadeDuration) * 1000L);
+		{
+			sndSystem().fadeOut(sourceName, null, (long) fadeDuration * 1000L);
+		}
 		
 	}
 	
@@ -459,9 +450,10 @@ Ha3Personalizable
 		
 		sndSystem().removeSource(sourceName);
 		
-		sourcesAsMusic.remove(sourceName);
+		this.sourcesAsMusic.remove(sourceName);
 		
 	}
+	
 	/*
 	public void addLocator(int i, MAtCustomSheet cs)
 	{
@@ -472,8 +464,10 @@ Ha3Personalizable
 	@Override
 	public void inputOptions(Properties options)
 	{
-		if (config == null)
-			config = createDefaultOptions();
+		if (this.config == null)
+		{
+			this.config = createDefaultOptions();
+		}
 		
 		try
 		{
@@ -483,7 +477,7 @@ Ha3Personalizable
 				{
 					String prop = options.getProperty(query);
 					setCustomSoundVolume(Float.parseFloat(prop));
-					config.put(query, prop);
+					this.config.put(query, prop);
 				}
 				
 			}
@@ -493,7 +487,7 @@ Ha3Personalizable
 				{
 					String prop = options.getProperty(query);
 					setCustomMusicVolume(Float.parseFloat(prop));
-					config.put(query, prop);
+					this.config.put(query, prop);
 				}
 				
 			}
@@ -502,9 +496,8 @@ Ha3Personalizable
 				if (options.containsKey(query))
 				{
 					String prop = options.getProperty(query);
-					setMusicVolumeIsBasedOffMinecraft(Integer.parseInt(prop) == 1
-							? true : false);
-					config.put(query, prop);
+					setMusicVolumeIsBasedOffMinecraft(Integer.parseInt(prop) == 1 ? true : false);
+					this.config.put(query, prop);
 				}
 				
 			}
@@ -520,15 +513,14 @@ Ha3Personalizable
 	@Override
 	public Properties outputOptions()
 	{
-		if (config == null)
+		if (this.config == null)
 			return createDefaultOptions();
 		
-		config.setProperty("volume.generic.value", "" + getCustomSoundVolume());
-		config.setProperty("volume.music.value", "" + getCustomMusicVolume());
-		config.setProperty("volume.music.minecraft.use",
-				getMusicVolumeIsBasedOffMinecraft() ? "1" : "0");
+		this.config.setProperty("volume.generic.value", "" + getCustomSoundVolume());
+		this.config.setProperty("volume.music.value", "" + getCustomMusicVolume());
+		this.config.setProperty("volume.music.minecraft.use", getMusicVolumeIsBasedOffMinecraft() ? "1" : "0");
 		
-		return config;
+		return this.config;
 	}
 	
 	@Override
@@ -541,10 +533,9 @@ Ha3Personalizable
 	private Properties createDefaultOptions()
 	{
 		Properties options = new Properties();
-		options.setProperty("volume.generic.value", "" + defSoundVolume);
-		options.setProperty("volume.music.value", "" + defMusicVolume);
-		options.setProperty("volume.music.minecraft.use",
-				defMusicVolUsesMinecraft ? "1" : "0");
+		options.setProperty("volume.generic.value", "" + this.defSoundVolume);
+		options.setProperty("volume.music.value", "" + this.defMusicVolume);
+		options.setProperty("volume.music.minecraft.use", this.defMusicVolUsesMinecraft ? "1" : "0");
 		
 		return options;
 		

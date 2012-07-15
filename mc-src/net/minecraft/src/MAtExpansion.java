@@ -19,7 +19,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -89,7 +88,7 @@ public class MAtExpansion
 		
 		try
 		{
-			documentBuilder = dbf.newDocumentBuilder();
+			this.documentBuilder = dbf.newDocumentBuilder();
 			
 		}
 		catch (ParserConfigurationException e)
@@ -104,36 +103,40 @@ public class MAtExpansion
 	
 	public void setSoundManager(MAtmosSoundManager soundManager)
 	{
-		knowledge.setSoundManager(soundManager);
+		this.knowledge.setSoundManager(soundManager);
 		
 	}
 	
 	public void setData(MAtmosData data)
 	{
-		knowledge.setData(data);
+		this.knowledge.setData(data);
 		
 	}
 	
 	public void inputStructure(InputStream stream)
 	{
-		hasStructure = false;
+		this.hasStructure = false;
 		try
 		{
-			document = documentBuilder.parse(stream);
-			NodeList explist = document.getElementsByTagName("expansion");
+			this.document = this.documentBuilder.parse(stream);
+			NodeList explist = this.document.getElementsByTagName("expansion");
 			if (explist.getLength() == 1)
 			{
 				Node exp = explist.item(0);
 				
-				String name = xpath.evaluate("./name", exp);
-				String desc = xpath.evaluate("./description", exp);
-				String dataFreq = xpath.evaluate("./data", exp);
+				String name = this.xpath.evaluate("./name", exp);
+				String desc = this.xpath.evaluate("./description", exp);
+				String dataFreq = this.xpath.evaluate("./data", exp);
 				
 				if (name != null)
+				{
 					this.docName = name;
+				}
 				
 				if (desc != null)
+				{
 					this.docDescription = desc;
+				}
 				
 				if (dataFreq != null)
 				{
@@ -141,10 +144,11 @@ public class MAtExpansion
 					{
 						this.dataFrequency = Integer.parseInt(dataFreq);
 						if (this.dataFrequency < 1)
+						{
 							this.dataFrequency = 1;
+						}
 						
-						MAtMod.LOGGER.fine("Set " + this.userDefinedIdentifier
-								+ " frequency to " + this.dataFrequency);
+						MAtMod.LOGGER.fine("Set " + this.userDefinedIdentifier + " frequency to " + this.dataFrequency);
 						
 					}
 					catch (NumberFormatException e)
@@ -157,25 +161,24 @@ public class MAtExpansion
 				
 			}
 			
-			hasStructure = true;
+			this.hasStructure = true;
 			
 		}
 		catch (SAXException e)
 		{
-			error = MAtExpansionError.COULD_NOT_PARSE_XML;
+			this.error = MAtExpansionError.COULD_NOT_PARSE_XML;
 			e.printStackTrace();
 			
 		}
 		catch (IOException e)
 		{
-			error = MAtExpansionError.COULD_NOT_PARSE_XML;
+			this.error = MAtExpansionError.COULD_NOT_PARSE_XML;
 			e.printStackTrace();
 			
 		}
 		catch (XPathExpressionException e)
 		{
-			MAtMod.LOGGER.warning("Error with XPath on expansion "
-					+ userDefinedIdentifier);
+			MAtMod.LOGGER.warning("Error with XPath on expansion " + this.userDefinedIdentifier);
 			e.printStackTrace();
 			
 		}
@@ -184,24 +187,22 @@ public class MAtExpansion
 	
 	public void buildKnowledge()
 	{
-		if (document == null)
+		if (this.document == null)
 			return;
 		
-		if (!hasStructure)
+		if (!this.hasStructure)
 			return;
 		
 		try
 		{
-			knowledge.patchKnowledge();
+			this.knowledge.patchKnowledge();
 			// loadKnowledge returns the validity of the knowledge
-			isReady = MAtmosUtilityLoader.getInstance().loadKnowledge(
-					knowledge,
-					document, false);
+			this.isReady = MAtmosUtilityLoader.getInstance().loadKnowledge(this.knowledge, this.document, false);
 			
 		}
 		catch (MAtmosException e)
 		{
-			error = MAtExpansionError.COULD_NOT_MAKE_KNOWLEDGE;
+			this.error = MAtExpansionError.COULD_NOT_MAKE_KNOWLEDGE;
 			e.printStackTrace();
 			
 		}
@@ -210,26 +211,30 @@ public class MAtExpansion
 	
 	public void soundRoutine()
 	{
-		if (isReady)
-			knowledge.soundRoutine();
+		if (this.isReady)
+		{
+			this.knowledge.soundRoutine();
+		}
 		
 	}
 	
 	public void dataRoutine()
 	{
-		if (isReady)
+		if (this.isReady)
 		{
-			if (dataFrequency > 1)
+			if (this.dataFrequency > 1)
 			{
-				if (dataCyclic == 0)
-					knowledge.dataRoutine();
+				if (this.dataCyclic == 0)
+				{
+					this.knowledge.dataRoutine();
+				}
 				
-				dataCyclic = (dataCyclic + 1) % dataFrequency;
+				this.dataCyclic = (this.dataCyclic + 1) % this.dataFrequency;
 				
 			}
 			else
 			{
-				knowledge.dataRoutine();
+				this.knowledge.dataRoutine();
 				
 			}
 			
@@ -239,43 +244,43 @@ public class MAtExpansion
 	
 	public MAtExpansionError getError()
 	{
-		return error;
+		return this.error;
 		
 	}
 	
 	public String getUserDefinedName()
 	{
-		return userDefinedIdentifier;
+		return this.userDefinedIdentifier;
 		
 	}
 	
 	public String getName()
 	{
-		return docName;
+		return this.docName;
 		
 	}
 	
 	public String getDescription()
 	{
-		return docDescription;
+		return this.docDescription;
 		
 	}
 	
 	public boolean isRunning()
 	{
-		return knowledge.isTurnedOn();
+		return this.knowledge.isTurnedOn();
 		
 	}
 	
 	public boolean isReady()
 	{
-		return isReady;
+		return this.isReady;
 		
 	}
 	
 	public boolean hasStructure()
 	{
-		return hasStructure;
+		return this.hasStructure;
 		
 	}
 	
@@ -285,20 +290,24 @@ public class MAtExpansion
 		if (isRunning())
 			return;
 		
-		if (!isReady && hasStructure)
-			this.buildKnowledge();
+		if (!this.isReady && this.hasStructure)
+		{
+			buildKnowledge();
+		}
 		
-		if (isReady)
-			knowledge.turnOn();
+		if (this.isReady)
+		{
+			this.knowledge.turnOn();
+		}
 		
 	}
 	
 	public void turnOff()
 	{
-		if (!isReady || !isRunning())
+		if (!this.isReady || !isRunning())
 			return;
 		
-		knowledge.turnOff();
+		this.knowledge.turnOff();
 		
 	}
 	
@@ -310,7 +319,7 @@ public class MAtExpansion
 	
 	public String getDocumentStringForm()
 	{
-		if (document == null)
+		if (this.document == null)
 			return null;
 		
 		/*DOMImplementationLS domImplementation = (DOMImplementationLS) document
@@ -324,10 +333,8 @@ public class MAtExpansion
 		
 		try
 		{
-			Transformer transformer = TransformerFactory.newInstance()
-			.newTransformer();
-			transformer.transform(new DOMSource(document), new StreamResult(
-					output));
+			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			transformer.transform(new DOMSource(this.document), new StreamResult(output));
 		}
 		catch (TransformerConfigurationException e)
 		{
@@ -353,7 +360,7 @@ public class MAtExpansion
 	{
 		try
 		{
-			System.out.println(knowledge.createXML());
+			System.out.println(this.knowledge.createXML());
 		}
 		catch (XMLStreamException e)
 		{
@@ -365,8 +372,8 @@ public class MAtExpansion
 	
 	public void patchKnowledge()
 	{
-		knowledge.patchKnowledge();
-		isReady = false;
+		this.knowledge.patchKnowledge();
+		this.isReady = false;
 		
 	}
 	

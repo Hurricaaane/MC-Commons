@@ -1,27 +1,29 @@
 package net.minecraft.src;
 
 import java.lang.reflect.Field;
+import java.util.logging.Logger;
 
 import eu.ha3.mc.haddon.PrivateAccessException;
 
 /*
-            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
-                    Version 2, December 2004 
+            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+                    Version 2, December 2004
 
- Copyright (C) 2004 Sam Hocevar <sam@hocevar.net> 
+ Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
 
- Everyone is permitted to copy and distribute verbatim or modified 
- copies of this license document, and changing it is allowed as long 
- as the name is changed. 
+ Everyone is permitted to copy and distribute verbatim or modified
+ copies of this license document, and changing it is allowed as long
+ as the name is changed.
 
-            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
-   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION 
+            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 
-  0. You just DO WHAT THE FUCK YOU WANT TO. 
-*/
+  0. You just DO WHAT THE FUCK YOU WANT TO.
+ */
 
 public class HaddonUtilitySingleton
 {
+	final static public Logger LOGGER = Logger.getLogger("HaddonUtilitySingleton");
 	private static final HaddonUtilitySingleton instance = new HaddonUtilitySingleton();
 	
 	private Field fieldMod;
@@ -30,19 +32,16 @@ public class HaddonUtilitySingleton
 	{
 		try
 		{
-			fieldMod = (java.lang.reflect.Field.class)
-					.getDeclaredField("modifiers");
-			fieldMod.setAccessible(true);
+			this.fieldMod = java.lang.reflect.Field.class.getDeclaredField("modifiers");
+			this.fieldMod.setAccessible(true);
 		}
 		catch (SecurityException e)
 		{
-			throw new RuntimeException(
-					"haddonUtility critical failure: Security");
+			throw new RuntimeException("haddonUtility critical failure: Security");
 		}
 		catch (NoSuchFieldException e)
 		{
-			throw new RuntimeException(
-					"haddonUtility critical failure: NoSuchField");
+			throw new RuntimeException("haddonUtility critical failure: NoSuchField");
 		}
 		
 	}
@@ -55,15 +54,14 @@ public class HaddonUtilitySingleton
 	
 	public Field getFieldModifiers()
 	{
-		return fieldMod;
+		return this.fieldMod;
 		
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public Object getPrivateValue(Class classToPerformOn,
-			Object instanceToPerformOn, int zeroOffsets)
-					throws PrivateAccessException
-					{
+	public Object getPrivateValue(Class classToPerformOn, Object instanceToPerformOn, int zeroOffsets)
+		throws PrivateAccessException
+	{
 		try
 		{
 			Field field = classToPerformOn.getDeclaredFields()[zeroOffsets];
@@ -73,39 +71,35 @@ public class HaddonUtilitySingleton
 		}
 		catch (IllegalAccessException illegalaccessexception)
 		{
-			throw new RuntimeException(
-					"getPrivateValue critical failure: IllegalAccess");
+			throw new RuntimeException("getPrivateValue critical failure: IllegalAccess");
 			
 		}
 		catch (IllegalArgumentException e)
 		{
-			throw new PrivateAccessException(
-					"getPrivateValue has failed: IllegalArgument");
+			throw new PrivateAccessException("getPrivateValue has failed: IllegalArgument");
 			
 		}
 		catch (SecurityException e)
 		{
-			throw new PrivateAccessException(
-					"getPrivateValue has failed: Security");
+			throw new PrivateAccessException("getPrivateValue has failed: Security");
 			
 		}
 		
-					}
+	}
 	
 	@SuppressWarnings("rawtypes")
-	public void setPrivateValue(Class classToPerformOn,
-			Object instanceToPerformOn, int zeroOffsets, Object newValue)
-					throws PrivateAccessException
-					{
+	public void setPrivateValue(Class classToPerformOn, Object instanceToPerformOn, int zeroOffsets, Object newValue)
+		throws PrivateAccessException
+	{
 		try
 		{
 			Field field = classToPerformOn.getDeclaredFields()[zeroOffsets];
 			field.setAccessible(true);
-			int j = fieldMod.getInt(field);
+			int j = this.fieldMod.getInt(field);
 			
 			if ((j & 0x10) != 0)
 			{
-				fieldMod.setInt(field, j & 0xffffffef);
+				this.fieldMod.setInt(field, j & 0xffffffef);
 			}
 			
 			field.set(instanceToPerformOn, newValue);
@@ -113,30 +107,26 @@ public class HaddonUtilitySingleton
 		}
 		catch (IllegalAccessException illegalaccessexception)
 		{
-			throw new RuntimeException(
-					"getPrivateValue critical failure: IllegalAccess");
+			throw new RuntimeException("getPrivateValue critical failure: IllegalAccess");
 			
 		}
 		catch (IllegalArgumentException e)
 		{
-			throw new PrivateAccessException(
-					"setPrivateValue has failed: IllegalArgument");
+			throw new PrivateAccessException("setPrivateValue has failed: IllegalArgument");
 			
 		}
 		catch (SecurityException e)
 		{
-			throw new PrivateAccessException(
-					"setPrivateValue has failed: Security");
+			throw new PrivateAccessException("setPrivateValue has failed: Security");
 			
 		}
 		
-					}
+	}
 	
 	@SuppressWarnings("rawtypes")
-	public Object getPrivateValueViaName(Class classToPerformOn,
-			Object instanceToPerformOn, String obf)
-					throws PrivateAccessException
-					{
+	public Object getPrivateValueViaName(Class classToPerformOn, Object instanceToPerformOn, String obf)
+		throws PrivateAccessException
+	{
 		try
 		{
 			Field field = classToPerformOn.getDeclaredField(obf);
@@ -146,74 +136,71 @@ public class HaddonUtilitySingleton
 		}
 		catch (IllegalAccessException illegalaccessexception)
 		{
-			throw new RuntimeException(
-					"getPrivateValue critical failure: IllegalAccess");
+			throw new RuntimeException("getPrivateValue critical failure: IllegalAccess");
 			
 		}
 		catch (IllegalArgumentException e)
 		{
-			throw new PrivateAccessException(
-					"getPrivateValue has failed: IllegalArgument");
+			LOGGER.fine("getPrivateValue has failed: IllegalArgument on field " + obf);
+			throw new PrivateAccessException("getPrivateValue has failed: IllegalArgument");
 			
 		}
 		catch (SecurityException e)
 		{
-			throw new PrivateAccessException(
-					"getPrivateValue has failed: Security");
+			LOGGER.fine("getPrivateValue has failed: Security on field " + obf);
+			throw new PrivateAccessException("getPrivateValue has failed: Security");
 			
 		}
 		catch (NoSuchFieldException e)
 		{
-			throw new PrivateAccessException(
-					"getPrivateValue has failed: NoSuchField");
+			LOGGER.fine("getPrivateValue has failed: NoSuchField on field " + obf);
+			throw new PrivateAccessException("getPrivateValue has failed: NoSuchField");
 			
 		}
 		
-					}
+	}
 	
 	@SuppressWarnings("rawtypes")
-	public void setPrivateValueViaName(Class classToPerformOn,
-			Object instanceToPerformOn, String obf, Object newValue)
-					throws PrivateAccessException
-					{
+	public void setPrivateValueViaName(Class classToPerformOn, Object instanceToPerformOn, String obf, Object newValue)
+		throws PrivateAccessException
+	{
 		try
 		{
 			Field field = classToPerformOn.getDeclaredField(obf);
 			field.setAccessible(true);
-			int j = fieldMod.getInt(field);
+			int j = this.fieldMod.getInt(field);
 			
 			if ((j & 0x10) != 0)
 			{
-				fieldMod.setInt(field, j & 0xffffffef);
+				this.fieldMod.setInt(field, j & 0xffffffef);
 			}
 			
 			field.set(instanceToPerformOn, newValue);
 		}
 		catch (IllegalAccessException illegalaccessexception)
 		{
-			throw new RuntimeException(
-					"getPrivateValue critical failure: IllegalAccess");
+			throw new RuntimeException("getPrivateValue critical failure: IllegalAccess");
 			
 		}
 		catch (IllegalArgumentException e)
 		{
-			throw new PrivateAccessException(
-					"setPrivateValue has failed: IllegalArgument");
+			LOGGER.fine("setPrivateValue has failed: IllegalArgument on field " + obf);
+			throw new PrivateAccessException("setPrivateValue has failed: IllegalArgument");
 			
 		}
 		catch (SecurityException e)
 		{
-			throw new PrivateAccessException(
-					"setPrivateValue has failed: Security");
+			LOGGER.fine("setPrivateValue has failed: Security on field " + obf);
+			throw new PrivateAccessException("setPrivateValue has failed: Security");
 			
 		}
 		catch (NoSuchFieldException e)
 		{
-			throw new PrivateAccessException(
-					"setPrivateValue has failed: NoSuchField");
+			LOGGER.fine("setPrivateValue has failed: NoSuchField on field " + obf);
+			throw new PrivateAccessException("setPrivateValue has failed: NoSuchField");
 			
 		}
 		
-					}
+	}
 	
 }

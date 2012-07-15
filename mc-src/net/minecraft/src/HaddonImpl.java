@@ -27,7 +27,7 @@ public abstract class HaddonImpl implements Haddon
 	@Override
 	public Manager getManager()
 	{
-		return manager;
+		return this.manager;
 	}
 	
 	@Override
@@ -44,7 +44,7 @@ public abstract class HaddonImpl implements Haddon
 	 */
 	public Utility util()
 	{
-		return this.getManager().getUtility();
+		return getManager().getUtility();
 		
 	}
 	
@@ -55,7 +55,7 @@ public abstract class HaddonImpl implements Haddon
 	 */
 	public Manager manager()
 	{
-		return this.getManager();
+		return getManager();
 		
 	}
 	

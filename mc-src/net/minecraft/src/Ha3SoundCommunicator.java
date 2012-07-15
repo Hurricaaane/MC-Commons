@@ -39,7 +39,7 @@ public class Ha3SoundCommunicator
 	{
 		this.mod = haddon;
 		this.prefix = prefix;
-		maxIDs = 256;
+		this.maxIDs = 256;
 		
 	}
 	
@@ -48,14 +48,13 @@ public class Ha3SoundCommunicator
 		if (max <= 0)
 			throw new IllegalArgumentException();
 		
-		maxIDs = max;
+		this.maxIDs = max;
 		
 	}
 	
-	
 	public boolean isUseable()
 	{
-		return (sndSystem != null) && (sndManager != null);
+		return this.sndSystem != null && this.sndManager != null;
 		
 	}
 	
@@ -69,9 +68,8 @@ public class Ha3SoundCommunicator
 	{
 		if (!isUseable())
 		{
-			soundThread = new Ha3SoundThread(this, onSuccess,
-					onFailure);
-			soundThread.start();
+			this.soundThread = new Ha3SoundThread(this, onSuccess, onFailure);
+			this.soundThread.start();
 			
 		}
 		
@@ -79,92 +77,91 @@ public class Ha3SoundCommunicator
 	
 	public boolean loadSoundManager()
 	{
-		if (sndManager == null)
-			sndManager = mod.getManager().getMinecraft().sndManager;
+		if (this.sndManager == null)
+		{
+			this.sndManager = this.mod.getManager().getMinecraft().sndManager;
+		}
 		
-		return (sndManager != null);
+		return this.sndManager != null;
 		
 	}
 	
 	public SoundSystem getSoundSystem()
 	{
-		return sndSystem;
+		return this.sndSystem;
 		
 	}
 	
 	public SoundManager getSoundManager()
 	{
-		return sndManager;
+		return this.sndManager;
 		
 	}
 	
 	public boolean loadSoundSystem() throws PrivateAccessException
 	{
-		if (sndSystem == null)
-			sndSystem = (SoundSystem) mod.getManager().getUtility()
-			.getPrivateValueLiteral(
-					net.minecraft.src.SoundManager.class,
-							mod.getManager().getMinecraft().sndManager, "a", 0);
+		if (this.sndSystem == null)
+		{
+			this.sndSystem =
+				(SoundSystem) this.mod
+					.getManager()
+					.getUtility()
+					.getPrivateValueLiteral(
+						net.minecraft.src.SoundManager.class, this.mod.getManager().getMinecraft().sndManager, "a", 0);
+		}
 		
-		return (sndSystem != null);
+		return this.sndSystem != null;
 		
 	}
 	
-	public void playSoundViaManager(String sound, float x, float y, float z,
-			float vol, float pitch)
+	public void playSoundViaManager(String sound, float x, float y, float z, float vol, float pitch)
 	{
 		if (!isUseable())
 			return;
 		
-		sndManager.playSound(sound, x, y, z, vol, pitch);
+		this.sndManager.playSound(sound, x, y, z, vol, pitch);
 		
 	}
 	
-	public void playSound(String sound, float x, float y, float z, float vol,
-			float pitch)
+	public void playSound(String sound, float x, float y, float z, float vol, float pitch)
 	{
 		if (!isUseable())
 			return;
 		
 		try
 		{
-			// Private value is: GameSettings options;
-			// XXX Get rid of private value getting on runtime
-			
-			float soundVolume = ((GameSettings) mod.getManager().getUtility()
-					.getPrivateValue(
-							net.minecraft.src.SoundManager.class, sndManager, 5)).soundVolume;
+			float soundVolume = this.mod.getManager().getMinecraft().gameSettings.soundVolume;
 			
 			if (soundVolume == 0.0F)
-			{
 				return;
-			}
 			
 			// Private value is: SoundPool soundPoolSounds;
 			// XXX Get rid of private value getting on runtime
-			SoundPoolEntry soundpoolentry = ((SoundPool) mod.getManager()
-					.getUtility()
-					.getPrivateValue(net.minecraft.src.SoundManager.class,
-							sndManager, 1)).getRandomSoundFromSoundPool(sound);
+			SoundPoolEntry soundpoolentry =
+				((SoundPool) this.mod
+					.getManager().getUtility()
+					.getPrivateValueLiteral(net.minecraft.src.SoundManager.class, this.sndManager, "b", 1))
+					.getRandomSoundFromSoundPool(sound);
 			if (soundpoolentry != null && vol > 0.0F)
 			{
-				lastSoundID = (lastSoundID + 1) % maxIDs;
-				String sourceName = prefix + lastSoundID;
+				this.lastSoundID = (this.lastSoundID + 1) % this.maxIDs;
+				String sourceName = this.prefix + this.lastSoundID;
 				float rollf = 16F;
 				if (vol > 1.0F)
 				{
 					rollf *= vol;
 				}
-				sndSystem.newSource(vol > 1.0F, sourceName,
-						soundpoolentry.soundUrl, soundpoolentry.soundName,
-						false, x, y, z, 2, rollf);
-				sndSystem.setPitch(sourceName, pitch);
+				this.sndSystem
+					.newSource(
+						vol > 1.0F, sourceName, soundpoolentry.soundUrl, soundpoolentry.soundName, false, x, y, z, 2,
+						rollf);
+				this.sndSystem.setPitch(sourceName, pitch);
 				if (vol > 1.0F)
 				{
 					vol = 1.0F;
 				}
-				sndSystem.setVolume(sourceName, vol * soundVolume);
-				sndSystem.play(sourceName);
+				this.sndSystem.setVolume(sourceName, vol * soundVolume);
+				this.sndSystem.play(sourceName);
 			}
 			
 		}
@@ -176,49 +173,41 @@ public class Ha3SoundCommunicator
 		
 	}
 	
-	public void playSound(String sound, float x, float y, float z, float vol,
-			float pitch, int attnm, float rollf)
+	public void playSound(String sound, float x, float y, float z, float vol, float pitch, int attnm, float rollf)
 	{
 		if (!isUseable())
 			return;
 		
 		try
 		{
-			// Private value is: GameSettings options;
-			// XXX Get rid of private value getting on runtime
-			
-			//float soundVolume = ((GameSettings) mod.manager().getPrivateValue(
-			//		net.minecraft.src.SoundManager.class, sndManager, 5)).soundVolume;
-			
-			float soundVolume = mod.getManager().getMinecraft().gameSettings.soundVolume;
+			float soundVolume = this.mod.getManager().getMinecraft().gameSettings.soundVolume;
 			
 			if (soundVolume == 0.0F)
-			{
 				return;
-			}
 			
 			// Private value is: SoundPool soundPoolSounds;
 			// XXX Get rid of private value getting on runtime
-			SoundPoolEntry soundpoolentry = ((SoundPool) mod.getManager()
-					.getUtility()
-					.getPrivateValue(net.minecraft.src.SoundManager.class,
-							sndManager, 1)).getRandomSoundFromSoundPool(sound);
+			SoundPoolEntry soundpoolentry =
+				((SoundPool) this.mod
+					.getManager().getUtility()
+					.getPrivateValueLiteral(net.minecraft.src.SoundManager.class, this.sndManager, "b", 1))
+					.getRandomSoundFromSoundPool(sound);
 			if (soundpoolentry != null && vol > 0.0F)
 			{
-				lastSoundID = (lastSoundID + 1) % maxIDs;
-				String sourceName = prefix + lastSoundID;
+				this.lastSoundID = (this.lastSoundID + 1) % this.maxIDs;
+				String sourceName = this.prefix + this.lastSoundID;
 				
-				sndSystem.newSource(vol > 1.0F, sourceName,
-						soundpoolentry.soundUrl, soundpoolentry.soundName,
-						false, x, y, z, attnm, rollf);
-				sndSystem.setPitch(sourceName, pitch);
+				this.sndSystem.newSource(
+					vol > 1.0F, sourceName, soundpoolentry.soundUrl, soundpoolentry.soundName, false, x, y, z, attnm,
+					rollf);
+				this.sndSystem.setPitch(sourceName, pitch);
 				
 				if (vol > 1.0F)
 				{
 					vol = 1.0F;
 				}
-				sndSystem.setVolume(sourceName, vol * soundVolume);
-				sndSystem.play(sourceName);
+				this.sndSystem.setVolume(sourceName, vol * soundVolume);
+				this.sndSystem.play(sourceName);
 			}
 			
 		}

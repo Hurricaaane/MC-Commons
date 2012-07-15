@@ -38,22 +38,21 @@ public class LrzMod extends HaddonImpl implements SupportsFrameEvents
 			@Override
 			public String format(LogRecord record)
 			{
-				return "(" + record.getLoggerName() + " : " + record.getLevel()
-						+ ") " + record.getMessage() + "\n";
+				return "(" + record.getLoggerName() + " : " + record.getLevel() + ") " + record.getMessage() + "\n";
 			}
 		};
-		conMod = new ConsoleHandler();
-		conMod.setFormatter(formatter);
+		this.conMod = new ConsoleHandler();
+		this.conMod.setFormatter(formatter);
 		
-		conEngine = new ConsoleHandler();
-		conEngine.setFormatter(formatter);
+		this.conEngine = new ConsoleHandler();
+		this.conEngine.setFormatter(formatter);
 		
 		// TODO Customizable level
 		Level levelMod = Level.INFO;
-		LrzMod.LOGGER.addHandler(conMod);
+		LrzMod.LOGGER.addHandler(this.conMod);
 		LrzMod.LOGGER.setUseParentHandlers(false);
 		LrzMod.LOGGER.setLevel(levelMod);
-		conMod.setLevel(levelMod);
+		this.conMod.setLevel(levelMod);
 		
 	}
 	
@@ -64,7 +63,7 @@ public class LrzMod extends HaddonImpl implements SupportsFrameEvents
 	{
 		manager().hookFrameEvents(true);
 		
-		worldCache = new LrzWorldCache(8, 64, "poland", this);
+		this.worldCache = new LrzWorldCache(8, 64, "poland", this);
 		
 	}
 	
@@ -78,11 +77,14 @@ public class LrzMod extends HaddonImpl implements SupportsFrameEvents
 		if (player != null)
 		{
 			for (int i = -6; i < 6; i++)
+			{
 				for (int j = -6; j < 6; j++)
-					worldCache.requestAverage((int) player.posX + i * 16,
-							(int) player.posZ + j * 16);
+				{
+					this.worldCache.requestAverage((int) player.posX + i * 16, (int) player.posZ + j * 16);
+				}
+			}
 			
-			worldCache.save();
+			this.worldCache.save();
 			
 		}
 		

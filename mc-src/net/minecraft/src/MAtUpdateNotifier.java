@@ -1,6 +1,5 @@
 package net.minecraft.src;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -55,20 +54,20 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 	MAtUpdateNotifier(MAtMod mAtmosHaddon)
 	{
 		this.mod = mAtmosHaddon;
-		defLastFound = mAtmosHaddon.VERSION;
+		this.defLastFound = mAtmosHaddon.VERSION;
 		
-		lastFound = defLastFound;
-		displayCount = defDisplayCount;
-		displayRemaining = defDisplayRemaining;
-		enabled = defEnabled;
+		this.lastFound = this.defLastFound;
+		this.displayCount = this.defDisplayCount;
+		this.displayRemaining = this.defDisplayRemaining;
+		this.enabled = this.defEnabled;
 	}
 	
 	public void attempt()
 	{
-		if (!enabled)
+		if (!this.enabled)
 			return;
 		
-		this.start();
+		start();
 		
 	}
 	
@@ -77,8 +76,7 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 	{
 		try
 		{
-			URL url = new URL(
-					"http://ha3extra.googlecode.com/svn/trunk/matmos/version.xml");
+			URL url = new URL("http://ha3extra.googlecode.com/svn/trunk/matmos/version.xml");
 			
 			InputStream contents = url.openStream();
 			
@@ -100,7 +98,9 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 				{
 					int vn = Integer.parseInt(versionnumber);
 					if (vn > maxvn)
+					{
 						maxvn = vn;
+					}
 					
 				}
 				
@@ -118,51 +118,49 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 				
 			}
 			
-			if (maxvn > mod.VERSION)
+			if (maxvn > this.mod.VERSION)
 			{
 				boolean needsSave = false;
-				if (maxvn != lastFound)
+				if (maxvn != this.lastFound)
 				{
-					lastFound = maxvn;
-					displayRemaining = displayCount;
+					this.lastFound = maxvn;
+					this.displayRemaining = this.displayCount;
 					
 					needsSave = true;
 					
 				}
 				
-				if (displayRemaining > 0)
+				if (this.displayRemaining > 0)
 				{
-					displayRemaining = displayRemaining - 1;
+					this.displayRemaining = this.displayRemaining - 1;
 					
-					int vc = maxvn - mod.VERSION;
-					mod.printChat(Ha3Utility.COLOR_GOLD,
-							"A ",
-							Ha3Utility.COLOR_WHITE, "r" + maxvn,
-							Ha3Utility.COLOR_GOLD,
-							" update is available (You're ",
-							Ha3Utility.COLOR_WHITE, vc, Ha3Utility.COLOR_GOLD,
-							" version" + (vc > 1 ? "s" : "") + " late).");
+					int vc = maxvn - this.mod.VERSION;
+					this.mod.printChat(
+						Ha3Utility.COLOR_GOLD, "A ", Ha3Utility.COLOR_WHITE, "r" + maxvn, Ha3Utility.COLOR_GOLD,
+						" update is available (You're ", Ha3Utility.COLOR_WHITE, vc, Ha3Utility.COLOR_GOLD, " version"
+							+ (vc > 1 ? "s" : "") + " late).");
 					
-					if (displayRemaining > 0)
-						mod.printChat(Ha3Utility.COLOR_GRAY,
-								"This message will display ",
-								Ha3Utility.COLOR_WHITE,
-								displayRemaining,
-								Ha3Utility.COLOR_GRAY,
-								" more time"
-										+ (displayRemaining > 1 ? "s" : "")
-										+ ".");
-					
+					if (this.displayRemaining > 0)
+					{
+						this.mod.printChat(
+							Ha3Utility.COLOR_GRAY, "This message will display ", Ha3Utility.COLOR_WHITE,
+							this.displayRemaining, Ha3Utility.COLOR_GRAY, " more time"
+								+ (this.displayRemaining > 1 ? "s" : "") + ".");
+					}
 					else
-						mod.printChat(Ha3Utility.COLOR_GRAY,
-								"You won't be notified anymore until a newer version.");
+					{
+						this.mod.printChat(
+							Ha3Utility.COLOR_GRAY, "You won't be notified anymore until a newer version.");
+					}
 					
 					needsSave = true;
 					
 				}
 				
 				if (needsSave)
-					mod.options().saveOptions();
+				{
+					this.mod.options().saveOptions();
+				}
 				
 			}
 			
@@ -196,8 +194,10 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 	@Override
 	public void inputOptions(Properties options)
 	{
-		if (config == null)
-			config = createDefaultOptions();
+		if (this.config == null)
+		{
+			this.config = createDefaultOptions();
+		}
 		
 		try
 		{
@@ -206,8 +206,8 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 				if (options.containsKey(query))
 				{
 					String prop = options.getProperty(query);
-					lastFound = Integer.parseInt(prop);
-					config.put(query, prop);
+					this.lastFound = Integer.parseInt(prop);
+					this.config.put(query, prop);
 				}
 				
 			}
@@ -216,8 +216,8 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 				if (options.containsKey(query))
 				{
 					String prop = options.getProperty(query);
-					displayRemaining = Integer.parseInt(prop);
-					config.put(query, prop);
+					this.displayRemaining = Integer.parseInt(prop);
+					this.config.put(query, prop);
 				}
 				
 			}
@@ -226,8 +226,8 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 				if (options.containsKey(query))
 				{
 					String prop = options.getProperty(query);
-					displayCount = Integer.parseInt(prop);
-					config.put(query, prop);
+					this.displayCount = Integer.parseInt(prop);
+					this.config.put(query, prop);
 				}
 				
 			}
@@ -236,8 +236,8 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 				if (options.containsKey(query))
 				{
 					String prop = options.getProperty(query);
-					enabled = Integer.parseInt(prop) == 1 ? true : false;
-					config.put(query, prop);
+					this.enabled = Integer.parseInt(prop) == 1 ? true : false;
+					this.config.put(query, prop);
 				}
 				
 			}
@@ -253,17 +253,15 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 	@Override
 	public Properties outputOptions()
 	{
-		if (config == null)
+		if (this.config == null)
 			return createDefaultOptions();
 		
-		config.setProperty("update.found.version.value", "" + lastFound);
-		config.setProperty("update.found.display.remaining.value", ""
-				+ displayRemaining);
-		config.setProperty("update.found.display.count.value", ""
-				+ displayCount);
-		config.setProperty("update.found.use", enabled ? "1" : "0");
+		this.config.setProperty("update.found.version.value", "" + this.lastFound);
+		this.config.setProperty("update.found.display.remaining.value", "" + this.displayRemaining);
+		this.config.setProperty("update.found.display.count.value", "" + this.displayCount);
+		this.config.setProperty("update.found.use", this.enabled ? "1" : "0");
 		
-		return config;
+		return this.config;
 	}
 	
 	@Override
@@ -276,12 +274,10 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 	private Properties createDefaultOptions()
 	{
 		Properties options = new Properties();
-		options.setProperty("update.found.version.value", "" + defLastFound);
-		options.setProperty("update.found.display.remaining.value", ""
-				+ defDisplayRemaining);
-		options.setProperty("update.found.display.count.value", ""
-				+ defDisplayCount);
-		options.setProperty("update.found.use", defEnabled ? "1" : "0");
+		options.setProperty("update.found.version.value", "" + this.defLastFound);
+		options.setProperty("update.found.display.remaining.value", "" + this.defDisplayRemaining);
+		options.setProperty("update.found.display.count.value", "" + this.defDisplayCount);
+		options.setProperty("update.found.use", this.defEnabled ? "1" : "0");
 		
 		return options;
 		

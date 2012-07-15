@@ -27,7 +27,7 @@ public class MAtResourceReloader extends Thread
 	MAtResourceReloader(MAtMod modIn, Ha3Signal onSuccess)
 	{
 		this.mod = modIn;
-		this.setDaemon(true);
+		setDaemon(true);
 		
 		this.onSuccess = onSuccess;
 		
@@ -46,23 +46,21 @@ public class MAtResourceReloader extends Thread
 			// Sometimes, the previous thread for initialization is too fast, and since
 			// ModLoader loads before ThreadDownloadResources, it may not be ready for testing.
 			// This check makes it sure it has time to even start.
-			if (mod.manager().getMinecraft().ingameGUI == null)
+			if (this.mod.manager().getMinecraft().ingameGUI == null)
 			{
-				MAtMod.LOGGER
-				.info("ResourceReloader started too early! Waiting for synchronization.");
+				MAtMod.LOGGER.info("ResourceReloader started too early! Waiting for synchronization.");
 				long startLoad = System.currentTimeMillis();
 				
-				while (mod.manager().getMinecraft().ingameGUI == null)
+				while (this.mod.manager().getMinecraft().ingameGUI == null)
 				{
 					// Put it asleep since we can't use synchronizing methods
 					Thread.sleep(200);
 					
 				}
 				
-				long diff = (System.currentTimeMillis() - startLoad);
+				long diff = System.currentTimeMillis() - startLoad;
 				float diffs = diff / 1000F;
-				MAtMod.LOGGER.info("ResourceReloader can now start (took "
-						+ diffs + " s.).");
+				MAtMod.LOGGER.info("ResourceReloader can now start (took " + diffs + " s.).");
 				
 			}
 			
@@ -70,8 +68,10 @@ public class MAtResourceReloader extends Thread
 			{
 				if (thread instanceof ThreadDownloadResources)
 				{
-					if (thread.isAlive()) // Dunno if it's useful
+					if (thread.isAlive())
+					{
 						waiter = thread;
+					}
 					
 				}
 				
@@ -79,8 +79,7 @@ public class MAtResourceReloader extends Thread
 			
 			if (waiter != null && waiter.isAlive())
 			{
-				MAtMod.LOGGER
-				.info("ThreadDownloadResources found. Resource Reloader on hold.");
+				MAtMod.LOGGER.info("ThreadDownloadResources found. Resource Reloader on hold.");
 				long startLoad = System.currentTimeMillis();
 				
 				while (waiter != null && waiter.isAlive())
@@ -96,8 +95,10 @@ public class MAtResourceReloader extends Thread
 					{
 						if (thread instanceof ThreadDownloadResources)
 						{
-							if (thread.isAlive()) // Dunno if it's useful
+							if (thread.isAlive())
+							{
 								waiter = thread;
+							}
 							
 						}
 						
@@ -105,16 +106,15 @@ public class MAtResourceReloader extends Thread
 					
 				}
 				
-				long diff = (System.currentTimeMillis() - startLoad);
+				long diff = System.currentTimeMillis() - startLoad;
 				float diffs = diff / 1000F;
-				MAtMod.LOGGER.info("ThreadDownloadResources finished (took "
-						+ diffs + " s.).");
+				MAtMod.LOGGER.info("ThreadDownloadResources finished (took " + diffs + " s.).");
 				
 			}
 			
 			reloadResources();
 			
-			onSuccess.signal();
+			this.onSuccess.signal();
 			
 		}
 		catch (InterruptedException e)
@@ -127,8 +127,8 @@ public class MAtResourceReloader extends Thread
 	
 	public void reloadResources()
 	{
-		ThreadDownloadResources loader = (new ThreadDownloadResources(Minecraft
-				.getMinecraftDir(), mod.manager().getMinecraft()));
+		ThreadDownloadResources loader =
+			new ThreadDownloadResources(Minecraft.getMinecraftDir(), this.mod.manager().getMinecraft());
 		loader.reloadResources(); // This is not threaded
 		
 	}

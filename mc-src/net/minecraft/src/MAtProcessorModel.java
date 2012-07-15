@@ -31,26 +31,24 @@ public abstract class MAtProcessorModel
 	private ArrayList<Integer> normalSheet;
 	private ArrayList<Integer> deltaSheet;
 	
-	MAtProcessorModel(MAtMod modIn, MAtmosData dataIn,
-			String normalNameIn,
-			String deltaNameIn)
-			{
-		mod = modIn;
-		data = dataIn;
-		normalName = normalNameIn;
-		deltaName = deltaNameIn;
+	MAtProcessorModel(MAtMod modIn, MAtmosData dataIn, String normalNameIn, String deltaNameIn)
+	{
+		this.mod = modIn;
+		this.data = dataIn;
+		this.normalName = normalNameIn;
+		this.deltaName = deltaNameIn;
 		
-			}
+	}
 	
 	public MAtMod mod()
 	{
-		return mod;
+		return this.mod;
 		
 	}
 	
 	public MAtmosData data()
 	{
-		return data;
+		return this.data;
 		
 	}
 	
@@ -58,9 +56,11 @@ public abstract class MAtProcessorModel
 	
 	public void process()
 	{
-		normalSheet = data().sheets.get(normalName);
-		if (deltaName != null)
-			deltaSheet = data().sheets.get(deltaName);
+		this.normalSheet = data().sheets.get(this.normalName);
+		if (this.deltaName != null)
+		{
+			this.deltaSheet = data().sheets.get(this.deltaName);
+		}
 		
 		doProcess();
 		
@@ -68,11 +68,13 @@ public abstract class MAtProcessorModel
 	
 	void setValue(int index, int newValue)
 	{
-		int previousValue = normalSheet.get(index);
-		normalSheet.set(index, newValue);
+		int previousValue = this.normalSheet.get(index);
+		this.normalSheet.set(index, newValue);
 		
-		if (deltaName != null)
-			deltaSheet.set(index, newValue - previousValue);
+		if (this.deltaName != null)
+		{
+			this.deltaSheet.set(index, newValue - previousValue);
+		}
 		
 	}
 	

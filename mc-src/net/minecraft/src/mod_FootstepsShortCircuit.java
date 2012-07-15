@@ -34,7 +34,7 @@ public class mod_FootstepsShortCircuit extends BaseMod
 	
 	public mod_FootstepsShortCircuit()
 	{
-		roller = 0;
+		this.roller = 0;
 		
 	}
 	
@@ -47,12 +47,11 @@ public class mod_FootstepsShortCircuit extends BaseMod
 	@Override
 	public void load()
 	{
-		activated = true;
+		this.activated = true;
 		
 		try
 		{
-			File file = new File(Minecraft.getMinecraftDir(),
-					"footstepsshortcircuit.txt");
+			File file = new File(Minecraft.getMinecraftDir(), "footstepsshortcircuit.txt");
 			if (!file.exists())
 			{
 				boolean yes = file.createNewFile();
@@ -71,13 +70,13 @@ public class mod_FootstepsShortCircuit extends BaseMod
 				String line = fr.readLine();
 				if (line.equals("0"))
 				{
-					activated = false;
+					this.activated = false;
 					System.out.println("FootstepsShortCurcuit is off");
 					
 				}
 				else
 				{
-					activated = true;
+					this.activated = true;
 					
 				}
 				
@@ -89,7 +88,7 @@ public class mod_FootstepsShortCircuit extends BaseMod
 			e.printStackTrace();
 		}
 		
-		if (activated)
+		if (this.activated)
 		{
 			ModLoader.setInGameHook(this, true, false);
 			
@@ -100,22 +99,21 @@ public class mod_FootstepsShortCircuit extends BaseMod
 	@Override
 	public boolean onTickInGame(float fspan, Minecraft game)
 	{
-		if (roller > 0)
+		if (this.roller > 0)
 		{
-			roller = roller - 1;
+			this.roller = this.roller - 1;
 			return true;
 			
 		}
-		roller = SPAN;
+		this.roller = this.SPAN;
 		
 		if (ModLoader.getMinecraftInstance().thePlayer != null)
 		{
 			try
 			{
 				//nextStepDistance
-				ModLoader.setPrivateValue(Entity.class, ModLoader
-						.getMinecraftInstance().thePlayer, 35,
-						Integer.MAX_VALUE);
+				ModLoader.setPrivateValue(
+					Entity.class, ModLoader.getMinecraftInstance().thePlayer, 35, Integer.MAX_VALUE);
 				
 			}
 			catch (Exception e)

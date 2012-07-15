@@ -26,21 +26,23 @@ public class Ha3Options implements Ha3Personalizable
 	
 	public Ha3Options()
 	{
-		personalizables = new HashSet<Ha3Personalizable>();
+		this.personalizables = new HashSet<Ha3Personalizable>();
 		
 	}
 	
 	public void registerPersonalizable(Ha3Personalizable personalizable)
 	{
-		personalizables.add(personalizable);
+		this.personalizables.add(personalizable);
 		
 	}
 	
 	@Override
 	public void inputOptions(Properties options)
 	{
-		for (Ha3Personalizable personalizable : personalizables)
+		for (Ha3Personalizable personalizable : this.personalizables)
+		{
 			personalizable.inputOptions(options);
+		}
 		
 	}
 	
@@ -48,8 +50,10 @@ public class Ha3Options implements Ha3Personalizable
 	public Properties outputOptions()
 	{
 		Properties options = new Properties();
-		for (Ha3Personalizable personalizable : personalizables)
+		for (Ha3Personalizable personalizable : this.personalizables)
+		{
 			options.putAll(personalizable.outputOptions());
+		}
 		
 		return options;
 		
@@ -58,8 +62,10 @@ public class Ha3Options implements Ha3Personalizable
 	@Override
 	public void defaultOptions()
 	{
-		for (Ha3Personalizable personalizable : personalizables)
+		for (Ha3Personalizable personalizable : this.personalizables)
+		{
 			personalizable.defaultOptions();
+		}
 		
 	}
 	

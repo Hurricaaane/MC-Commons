@@ -32,23 +32,22 @@ public class MinapticsLiteZoomBinding implements Ha3KeyActions
 	@Override
 	public void doBefore()
 	{
-		(mod).zoomDoBefore();
+		this.mod.zoomDoBefore();
 		
 	}
 	
 	@Override
 	public void doDuring(int curTime)
 	{
-		(mod).zoomDoDuring(curTime);
+		this.mod.zoomDoDuring(curTime);
 		
 	}
 	
 	@Override
 	public void doAfter(int curTime)
 	{
-		(mod).zoomDoAfter(curTime);
+		this.mod.zoomDoAfter(curTime);
 		
 	}
-	
 	
 }

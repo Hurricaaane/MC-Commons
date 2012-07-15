@@ -1,6 +1,5 @@
 package net.minecraft.src;
 
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -38,8 +37,7 @@ public class MAtOptions extends Ha3Options
 		
 		this.mod = mAtmosHaddon;
 		
-		propertiesFile = new File(Minecraft.getMinecraftDir(),
-				"matmos_options.cfg");
+		this.propertiesFile = new File(Minecraft.getMinecraftDir(), "matmos_options.cfg");
 		
 	}
 	
@@ -48,8 +46,7 @@ public class MAtOptions extends Ha3Options
 		Properties prop = outputOptions();
 		try
 		{
-			prop.store(new FileWriter(propertiesFile), "#matmos config "
-					+ mod.VERSION);
+			prop.store(new FileWriter(this.propertiesFile), "#matmos config " + this.mod.VERSION);
 		}
 		catch (IOException e)
 		{
@@ -62,10 +59,10 @@ public class MAtOptions extends Ha3Options
 	{
 		try
 		{
-			if (propertiesFile.exists())
+			if (this.propertiesFile.exists())
 			{
 				Properties prop = new Properties();
-				prop.load(new FileReader(propertiesFile));
+				prop.load(new FileReader(this.propertiesFile));
 				inputOptions(prop);
 				
 			}

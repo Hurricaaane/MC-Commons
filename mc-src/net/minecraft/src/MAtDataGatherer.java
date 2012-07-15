@@ -64,106 +64,105 @@ public class MAtDataGatherer
 	
 	MAtDataGatherer(MAtMod mAtmosHaddon)
 	{
-		mod = mAtmosHaddon;
+		this.mod = mAtmosHaddon;
 		
 	}
 	
 	void resetRegulators()
 	{
-		lastLargeScanPassed = MAX_LARGESCAN_PASS;
-		cyclicTick = 0;
+		this.lastLargeScanPassed = MAX_LARGESCAN_PASS;
+		this.cyclicTick = 0;
 	}
 	
 	void load()
 	{
 		resetRegulators();
 		
-		largeScanner = new MAtScanVolumetricModel(mod);
-		smallScanner = new MAtScanVolumetricModel(mod);
+		this.largeScanner = new MAtScanVolumetricModel(this.mod);
+		this.smallScanner = new MAtScanVolumetricModel(this.mod);
 		
-		additionalRelaxedProcessors = new ArrayList<MAtProcessorModel>();
-		additionalFrequentProcessors = new ArrayList<MAtProcessorModel>();
+		this.additionalRelaxedProcessors = new ArrayList<MAtProcessorModel>();
+		this.additionalFrequentProcessors = new ArrayList<MAtProcessorModel>();
 		
-		data = new MAtmosData();
+		this.data = new MAtmosData();
 		prepareSheets();
 		
-		largePipeline = new MAtPipelineIDAccumulator(mod, data, LARGESCAN,
-				LARGESCAN_THOUSAND, 1000);
-		smallPipeline = new MAtPipelineIDAccumulator(mod, data, SMALLSCAN,
-				SMALLSCAN_THOUSAND, 1000);
+		this.largePipeline = new MAtPipelineIDAccumulator(this.mod, this.data, LARGESCAN, LARGESCAN_THOUSAND, 1000);
+		this.smallPipeline = new MAtPipelineIDAccumulator(this.mod, this.data, SMALLSCAN, SMALLSCAN_THOUSAND, 1000);
 		
-		largeScanner.setPipeline(largePipeline);
-		smallScanner.setPipeline(smallPipeline);
+		this.largeScanner.setPipeline(this.largePipeline);
+		this.smallScanner.setPipeline(this.smallPipeline);
 		
-		relaxedProcessor = new MAtProcessorRelaxed(mod, data, INSTANTS, DELTAS);
-		frequentProcessor = new MAtProcessorFrequent(mod, data, INSTANTS,
-				DELTAS);
-		contactProcessor = new MAtProcessorContact(mod, data, CONTACTSCAN, null);
+		this.relaxedProcessor = new MAtProcessorRelaxed(this.mod, this.data, INSTANTS, DELTAS);
+		this.frequentProcessor = new MAtProcessorFrequent(this.mod, this.data, INSTANTS, DELTAS);
+		this.contactProcessor = new MAtProcessorContact(this.mod, this.data, CONTACTSCAN, null);
 		
 	}
 	
 	public MAtmosData getData()
 	{
-		return data;
+		return this.data;
 		
 	}
 	
 	void tickRoutine()
 	{
-		if (cyclicTick % 64 == 0)
+		if (this.cyclicTick % 64 == 0)
 		{
-			EntityPlayer player = mod.manager().getMinecraft().thePlayer;
+			EntityPlayer player = this.mod.manager().getMinecraft().thePlayer;
 			long x = (long) Math.floor(player.posX);
 			long y = (long) Math.floor(player.posY);
 			long z = (long) Math.floor(player.posZ);
 			
-			if (cyclicTick == 0)
+			if (this.cyclicTick == 0)
 			{
-				if ((lastLargeScanPassed >= MAX_LARGESCAN_PASS)
-						|| (Math.abs(x - lastLargeScanX) > 16)
-						|| (Math.abs(y - lastLargeScanY) > 8)
-						|| (Math.abs(z - lastLargeScanZ) > 16))
+				if (this.lastLargeScanPassed >= MAX_LARGESCAN_PASS
+					|| Math.abs(x - this.lastLargeScanX) > 16 || Math.abs(y - this.lastLargeScanY) > 8
+					|| Math.abs(z - this.lastLargeScanZ) > 16)
 				{
-					lastLargeScanX = x;
-					lastLargeScanY = y;
-					lastLargeScanZ = z;
-					lastLargeScanPassed = 0;
-					largeScanner.startScan(x, y, z, 64, 32, 64, 8192, null);
+					this.lastLargeScanX = x;
+					this.lastLargeScanY = y;
+					this.lastLargeScanZ = z;
+					this.lastLargeScanPassed = 0;
+					this.largeScanner.startScan(x, y, z, 64, 32, 64, 8192, null);
 					
 				}
 				else
 				{
-					lastLargeScanPassed++;
+					this.lastLargeScanPassed++;
 					
 				}
 				
-				
 			}
-			smallScanner.startScan(x, y, z, 16, 8, 16, 2048, null);
-			relaxedProcessor.process();
+			this.smallScanner.startScan(x, y, z, 16, 8, 16, 2048, null);
+			this.relaxedProcessor.process();
 			
-			for (MAtProcessorModel processor : additionalRelaxedProcessors)
+			for (MAtProcessorModel processor : this.additionalRelaxedProcessors)
+			{
 				processor.process();
+			}
 			
-			data.flagUpdate();
+			this.data.flagUpdate();
 			
 		}
-		if (cyclicTick % 1 == 0) // XXX
+		if (this.cyclicTick % 1 == 0) // XXX
 		{
-			contactProcessor.process();
-			frequentProcessor.process();
+			this.contactProcessor.process();
+			this.frequentProcessor.process();
 			
-			for (MAtProcessorModel processor : additionalFrequentProcessors)
+			for (MAtProcessorModel processor : this.additionalFrequentProcessors)
+			{
 				processor.process();
+			}
 			
-			data.flagUpdate();
+			this.data.flagUpdate();
 			
 		}
 		
-		largeScanner.routine();
-		smallScanner.routine();
+		this.largeScanner.routine();
+		this.smallScanner.routine();
 		
-		cyclicTick = (cyclicTick + 1) % 256;
+		this.cyclicTick = (this.cyclicTick + 1) % 256;
 		
 	}
 	
@@ -188,7 +187,7 @@ public class MAtDataGatherer
 	void createSheet(String name, int count)
 	{
 		ArrayList<Integer> array = new ArrayList<Integer>();
-		data.sheets.put(name, array);
+		this.data.sheets.put(name, array);
 		for (int i = 0; i < count; i++)
 		{
 			array.add(0);

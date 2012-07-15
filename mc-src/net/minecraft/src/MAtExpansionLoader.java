@@ -59,24 +59,26 @@ public class MAtExpansionLoader
 		
 		this.eventListeners = new ArrayList<MAtExpansionEventListener>();
 		
-		expansionsFolder = new File(Minecraft.getMinecraftDir(),
-				"matmos_expansions_r7/");
-		onlineStorageFolder = new File(Minecraft.getMinecraftDir(),
-				"matmos_internal/storage/");
+		this.expansionsFolder = new File(Minecraft.getMinecraftDir(), "matmos_expansions_r7/");
+		this.onlineStorageFolder = new File(Minecraft.getMinecraftDir(), "matmos_internal/storage/");
 		
-		if (!expansionsFolder.exists())
-			expansionsFolder.mkdirs();
+		if (!this.expansionsFolder.exists())
+		{
+			this.expansionsFolder.mkdirs();
+		}
 		
-		if (!onlineStorageFolder.exists())
-			onlineStorageFolder.mkdirs();
+		if (!this.onlineStorageFolder.exists())
+		{
+			this.onlineStorageFolder.mkdirs();
+		}
 		
-		tasks = new ArrayList<Runnable>();
+		this.tasks = new ArrayList<Runnable>();
 		
 	}
 	
 	public synchronized void renewProngs()
 	{
-		for (MAtExpansion expansion : expansions.values())
+		for (MAtExpansion expansion : this.expansions.values())
 		{
 			renewExpansionProngs(expansion);
 			
@@ -86,8 +88,8 @@ public class MAtExpansionLoader
 	
 	private synchronized void renewExpansionProngs(MAtExpansion expansion)
 	{
-		expansion.setSoundManager(mod.soundManager());
-		expansion.setData(mod.dataGatherer().getData());
+		expansion.setSoundManager(this.mod.soundManager());
+		expansion.setData(this.mod.dataGatherer().getData());
 		
 	}
 	
@@ -100,24 +102,23 @@ public class MAtExpansionLoader
 		}
 		catch (FileNotFoundException e)
 		{
-			MAtMod.LOGGER
-			.warning("Error with FileNotFound on ExpansionLoader (on file "
-					+ file.getAbsolutePath() + ").");
-			dummy.add(userDefinedIdentifier);
+			MAtMod.LOGGER.warning("Error with FileNotFound on ExpansionLoader (on file "
+				+ file.getAbsolutePath() + ").");
+			this.dummy.add(userDefinedIdentifier);
 			
 		}
 		
 	}
 	
-	public void addExpansionFromURL(String userDefinedIdentifier,
-			URL url)
+	public void addExpansionFromURL(String userDefinedIdentifier, URL url)
 	{
-		MAtExpansionFetcher fetcher = new MAtExpansionFetcher(this,
-				userDefinedIdentifier);
-		limbo.add(userDefinedIdentifier);
+		MAtExpansionFetcher fetcher = new MAtExpansionFetcher(this, userDefinedIdentifier);
+		this.limbo.add(userDefinedIdentifier);
 		
-		for (MAtExpansionEventListener listener : eventListeners)
+		for (MAtExpansionEventListener listener : this.eventListeners)
+		{
 			listener.addedLimbo(userDefinedIdentifier);
+		}
 		
 		fetcher.getDatabase(url);
 		
@@ -125,33 +126,35 @@ public class MAtExpansionLoader
 	
 	private void fetcherSignalAfterLimboRemoval()
 	{
-		if (limbo.size() == 0)
+		if (this.limbo.size() == 0)
+		{
 			MAtMod.LOGGER.info("ExpansionLoader Limbo is now empty.");
+		}
 		
 	}
 	
-	public synchronized void fetcherSuccess(String userDefinedIdentifier,
-			InputStream stream)
+	public synchronized void fetcherSuccess(String userDefinedIdentifier, InputStream stream)
 	{
-		MAtMod.LOGGER.info("ExpansionLoader fetched " + userDefinedIdentifier
-				+ ".");
+		MAtMod.LOGGER.info("ExpansionLoader fetched " + userDefinedIdentifier + ".");
 		
-		limbo.remove(userDefinedIdentifier);
+		this.limbo.remove(userDefinedIdentifier);
 		
-		for (MAtExpansionEventListener listener : eventListeners)
+		for (MAtExpansionEventListener listener : this.eventListeners)
+		{
 			listener.successLimbo(userDefinedIdentifier);
+		}
 		
 		fetcherSignalAfterLimboRemoval();
 		
 		addExpansion(userDefinedIdentifier, stream);
-		if (expansions.get(userDefinedIdentifier).hasStructure())
+		if (this.expansions.get(userDefinedIdentifier).hasStructure())
 		{
 			writeExpansion(userDefinedIdentifier);
 			
 		}
 		else
 		{
-			expansions.remove(userDefinedIdentifier);
+			this.expansions.remove(userDefinedIdentifier);
 			fetherRescue(userDefinedIdentifier);
 			
 		}
@@ -160,13 +163,14 @@ public class MAtExpansionLoader
 	
 	public void fetcherFailure(String userDefinedIdentifier)
 	{
-		MAtMod.LOGGER.info("ExpansionLoader failed fetching "
-				+ userDefinedIdentifier + ".");
+		MAtMod.LOGGER.info("ExpansionLoader failed fetching " + userDefinedIdentifier + ".");
 		
-		limbo.remove(userDefinedIdentifier);
+		this.limbo.remove(userDefinedIdentifier);
 		
-		for (MAtExpansionEventListener listener : eventListeners)
+		for (MAtExpansionEventListener listener : this.eventListeners)
+		{
 			listener.failureLimbo(userDefinedIdentifier);
+		}
 		
 		fetcherSignalAfterLimboRemoval();
 		
@@ -177,34 +181,30 @@ public class MAtExpansionLoader
 	private void fetherRescue(String userDefinedIdentifier)
 	{
 		//System.out.println(identifierToStorage(userDefinedIdentifier));
-		addExpansionFromFile(userDefinedIdentifier,
-				identifierToStorage(userDefinedIdentifier));
+		addExpansionFromFile(userDefinedIdentifier, identifierToStorage(userDefinedIdentifier));
 		
 	}
 	
 	private void writeExpansion(String userDefinedIdentifier)
 	{
-		if (!expansions.containsKey(userDefinedIdentifier))
+		if (!this.expansions.containsKey(userDefinedIdentifier))
 			return;
 		
-		String form = expansions.get(userDefinedIdentifier)
-				.getDocumentStringForm();
+		String form = this.expansions.get(userDefinedIdentifier).getDocumentStringForm();
 		
 		if (form != null)
 		{
 			FileWriter fileWriter;
 			try
 			{
-				fileWriter = new FileWriter(
-						identifierToStorage(userDefinedIdentifier));
+				fileWriter = new FileWriter(identifierToStorage(userDefinedIdentifier));
 				fileWriter.write(form);
 				fileWriter.close();
 			}
 			catch (IOException e)
 			{
-				MAtMod.LOGGER
-				.warning("Error with I/O on ExpansionLoader about "
-						+ userDefinedIdentifier + "(Could not store).");
+				MAtMod.LOGGER.warning("Error with I/O on ExpansionLoader about "
+					+ userDefinedIdentifier + "(Could not store).");
 				e.printStackTrace();
 			}
 			
@@ -214,37 +214,39 @@ public class MAtExpansionLoader
 	
 	private File identifierToStorage(String userDefinedIdentifier)
 	{
-		return new File(onlineStorageFolder, userDefinedIdentifier + ".xmlo");
+		return new File(this.onlineStorageFolder, userDefinedIdentifier + ".xmlo");
 		
 	}
 	
 	public synchronized void removeExpansion(String userDefinedIdentifier)
 	{
-		if (expansions.containsKey(userDefinedIdentifier))
+		if (this.expansions.containsKey(userDefinedIdentifier))
 		{
-			MAtExpansion expansion = expansions.get(userDefinedIdentifier);
+			MAtExpansion expansion = this.expansions.get(userDefinedIdentifier);
 			
-			for (MAtExpansionEventListener listener : eventListeners)
+			for (MAtExpansionEventListener listener : this.eventListeners)
+			{
 				listener.removedExpansion(expansion);
+			}
 			
 			expansion.turnOff();
-			expansions.remove(userDefinedIdentifier);
+			this.expansions.remove(userDefinedIdentifier);
 		}
-		
 		
 	}
 	
-	public synchronized void addExpansion(String userDefinedIdentifier,
-			InputStream stream)
+	public synchronized void addExpansion(String userDefinedIdentifier, InputStream stream)
 	{
 		MAtExpansion expansion = new MAtExpansion(userDefinedIdentifier);
-		loading.add(expansion.getUserDefinedName());
+		this.loading.add(expansion.getUserDefinedName());
 		renewExpansionProngs(expansion);
 		expansion.inputStructure(stream);
-		expansions.put(userDefinedIdentifier, expansion);
+		this.expansions.put(userDefinedIdentifier, expansion);
 		
-		for (MAtExpansionEventListener listener : eventListeners)
+		for (MAtExpansionEventListener listener : this.eventListeners)
+		{
 			listener.addedExpansion(expansion);
+		}
 		
 		tryBuildKnowledge(expansion);
 		
@@ -252,42 +254,43 @@ public class MAtExpansionLoader
 	
 	private synchronized void tryBuildKnowledge(MAtExpansion expansion)
 	{
-		if (!canBuildKnowledge)
+		if (!this.canBuildKnowledge)
 			return;
 		
 		// TODO If the expansion is set by the user not to load, don't load it
 		// XXX If the expansion is set by the user not to load, don't load it
 		
 		expansion.buildKnowledge();
-		loading.remove(expansion.getUserDefinedName());
+		this.loading.remove(expansion.getUserDefinedName());
 		
-		MAtMod.LOGGER.info("Expansion " + expansion.getUserDefinedName()
-				+ " loaded.");
+		MAtMod.LOGGER.info("Expansion " + expansion.getUserDefinedName() + " loaded.");
 		
-		if ((loading.size() == 0) && (limbo.size() == 0))
-			MAtMod.LOGGER
-			.info("ExpansionLoader Loading and Limbo are now empty.");
+		if (this.loading.size() == 0 && this.limbo.size() == 0)
+		{
+			MAtMod.LOGGER.info("ExpansionLoader Loading and Limbo are now empty.");
+		}
 		
 		if (!expansion.hasStructure())
-			MAtMod.LOGGER.warning("Expansion " + expansion.getUserDefinedName()
-					+ " has no structure.");
+		{
+			MAtMod.LOGGER.warning("Expansion " + expansion.getUserDefinedName() + " has no structure.");
+		}
 		
 		postBuildKnowledge(expansion.getUserDefinedName());
 		
 	}
 	
-	
 	public synchronized void signalBuildKnowledge()
 	{
-		canBuildKnowledge = true;
+		this.canBuildKnowledge = true;
 		
 		MAtMod.LOGGER.info("ExpansionLoader signaled. Currently has "
-				+ expansions.size() + " expansions and " + limbo.size()
-				+ " in limbo.");
+			+ this.expansions.size() + " expansions and " + this.limbo.size() + " in limbo.");
 		
 		// Try build the knowledge of expansions that were structured before buildknowledge was ready
-		for (MAtExpansion expansion : expansions.values())
+		for (MAtExpansion expansion : this.expansions.values())
+		{
 			tryBuildKnowledge(expansion);
+		}
 		
 	}
 	
@@ -295,11 +298,14 @@ public class MAtExpansionLoader
 	{
 		// This is not called at all for expansions that are
 		// set by the user not to load
-		if (mod.isRunning())
-			expansions.get(userDefinedIdentifier).turnOn();
-		
+		if (this.mod.isRunning())
+		{
+			this.expansions.get(userDefinedIdentifier).turnOn();
+		}
 		else
-			expansions.get(userDefinedIdentifier).turnOff();
+		{
+			this.expansions.get(userDefinedIdentifier).turnOff();
+		}
 		
 		// Debugging
 		// expansions.get(userDefinedIdentifier).printKnowledge();
@@ -309,13 +315,16 @@ public class MAtExpansionLoader
 	public synchronized void signalStatusChange()
 	{
 		// TODO Separate boolean for user defined preferences
-		for (MAtExpansion expansion : expansions.values())
+		for (MAtExpansion expansion : this.expansions.values())
 		{
-			if (mod.isRunning())
+			if (this.mod.isRunning())
+			{
 				expansion.turnOn(); // Turn on contains a "build knowledge if needed".
-			
+			}
 			else
+			{
 				expansion.turnOff();
+			}
 			
 		}
 		
@@ -323,13 +332,13 @@ public class MAtExpansionLoader
 	
 	public int getLoadingCount()
 	{
-		return loading.size();
+		return this.loading.size();
 		
 	}
 	
 	public void soundRoutine()
 	{
-		for (MAtExpansion expansion : expansions.values())
+		for (MAtExpansion expansion : this.expansions.values())
 		{
 			expansion.soundRoutine();
 			
@@ -339,11 +348,11 @@ public class MAtExpansionLoader
 	
 	public void dataRoutine()
 	{
-		if (!tasks.isEmpty())
+		if (!this.tasks.isEmpty())
 		{
 			try
 			{
-				tasks.remove(0).run();
+				this.tasks.remove(0).run();
 				
 			}
 			catch (Exception e)
@@ -352,7 +361,7 @@ public class MAtExpansionLoader
 			
 		}
 		
-		for (MAtExpansion expansion : expansions.values())
+		for (MAtExpansion expansion : this.expansions.values())
 		{
 			expansion.dataRoutine();
 			
@@ -362,21 +371,21 @@ public class MAtExpansionLoader
 	
 	public void clearExpansions()
 	{
-		for (MAtExpansion expansion : expansions.values())
+		for (MAtExpansion expansion : this.expansions.values())
 		{
 			expansion.turnOff();
 			expansion.patchKnowledge();
 			
 		}
-		expansions.clear();
+		this.expansions.clear();
 		
 	}
 	
 	public void loadExpansions()
 	{
 		clearExpansions();
-		addOnlineFromFolderRecursive(expansionsFolder, "");
-		addExpansionFromFolderRecursive(expansionsFolder, "");
+		addOnlineFromFolderRecursive(this.expansionsFolder, "");
+		addExpansionFromFolderRecursive(this.expansionsFolder, "");
 		
 	}
 	
@@ -397,8 +406,7 @@ public class MAtExpansionLoader
 			}
 			else if (individual.getName().endsWith(".xml"))
 			{
-				MAtMod.LOGGER.info("ExpansionLoader found potential expansion "
-						+ individual.getName() + ".");
+				MAtMod.LOGGER.info("ExpansionLoader found potential expansion " + individual.getName() + ".");
 				addExpansionFromFile(individual.getName(), individual);
 				
 			}
@@ -421,8 +429,7 @@ public class MAtExpansionLoader
 			}
 			else if (individual.getName().endsWith(".xrl"))
 			{
-				MAtMod.LOGGER.info("ExpansionLoader found potential online "
-						+ individual.getName() + ".");
+				MAtMod.LOGGER.info("ExpansionLoader found potential online " + individual.getName() + ".");
 				addOnlineFromFile(individual.getName(), individual);
 				
 			}
@@ -443,8 +450,7 @@ public class MAtExpansionLoader
 			try
 			{
 				BufferedReader buff = new BufferedReader(fr);
-				addExpansionFromURL(userDefinedIdentifier, new URL(buff
-						.readLine()));
+				addExpansionFromURL(userDefinedIdentifier, new URL(buff.readLine()));
 				
 				win = true;
 				
@@ -458,9 +464,8 @@ public class MAtExpansionLoader
 		}
 		catch (FileNotFoundException e)
 		{
-			MAtMod.LOGGER
-			.warning("Error with FileNotFound on ExpansionLoader (on file "
-					+ file.getAbsolutePath() + ").");
+			MAtMod.LOGGER.warning("Error with FileNotFound on ExpansionLoader (on file "
+				+ file.getAbsolutePath() + ").");
 			
 		}
 		catch (IOException e)
@@ -469,13 +474,15 @@ public class MAtExpansionLoader
 		}
 		
 		if (!win)
-			dummy.add(userDefinedIdentifier);
+		{
+			this.dummy.add(userDefinedIdentifier);
+		}
 		
 	}
 	
 	public void addEventListener(MAtExpansionEventListener listener)
 	{
-		eventListeners.add(listener);
+		this.eventListeners.add(listener);
 		
 	}
 	
@@ -483,7 +490,7 @@ public class MAtExpansionLoader
 	
 	public void putTask(Runnable runnable)
 	{
-		tasks.add(runnable);
+		this.tasks.add(runnable);
 		
 	}
 	

@@ -1,6 +1,5 @@
 package net.minecraft.src;
 
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -15,22 +14,23 @@ import eu.ha3.mc.haddon.SupportsKeyEvents;
 import eu.ha3.mc.haddon.SupportsTickEvents;
 
 /*
-            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
-                    Version 2, December 2004 
+            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+                    Version 2, December 2004
 
- Copyright (C) 2004 Sam Hocevar <sam@hocevar.net> 
+ Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
 
- Everyone is permitted to copy and distribute verbatim or modified 
- copies of this license document, and changing it is allowed as long 
- as the name is changed. 
+ Everyone is permitted to copy and distribute verbatim or modified
+ copies of this license document, and changing it is allowed as long
+ as the name is changed.
 
-            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
-   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION 
+            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 
-  0. You just DO WHAT THE FUCK YOU WANT TO. 
-*/
+  0. You just DO WHAT THE FUCK YOU WANT TO.
+ */
 
-public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents
+public class MinapticsLiteHaddon extends HaddonImpl
+	implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents
 {
 	private Minecraft mc;
 	
@@ -78,57 +78,56 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 	@SuppressWarnings("static-access")
 	public void onLoad()
 	{
-		mc = manager().getMinecraft();
-		keyManager = new Ha3KeyManager();
+		this.mc = manager().getMinecraft();
+		this.keyManager = new Ha3KeyManager();
 		
-		smootherIntensityWhenIdle = 4F;
+		this.smootherIntensityWhenIdle = 4F;
 		
-		zoomKey = 15; // TAB
-		fovLevel = 0.3F;
-		zoomDuration = 300;
-		minZoomField = 0.001F;
-		maxZoomField = 0.65F;
-		smootherIntensity = 0.5F;
+		this.zoomKey = 15; // TAB
+		this.fovLevel = 0.3F;
+		this.zoomDuration = 300;
+		this.minZoomField = 0.001F;
+		this.maxZoomField = 0.65F;
+		this.smootherIntensity = 0.5F;
 		
-		isSmootherSettingEvent = false;
-		fovLevelTransitionning = false;
+		this.isSmootherSettingEvent = false;
+		this.fovLevelTransitionning = false;
 		
-		disableSmootherEvenDuringZooming = false;
+		this.disableSmootherEvenDuringZooming = false;
 		
-		wasMouseSensitivity = 0;
-		wasAlreadySmoothing = false;
+		this.wasMouseSensitivity = 0;
+		this.wasAlreadySmoothing = false;
 		
-		zoomTime = 0;
+		this.zoomTime = 0;
 		
-		eventNum = 0;
-		eventNumOnZoom = 0;
+		this.eventNum = 0;
+		this.eventNumOnZoom = 0;
 		
-		lastWorldTime = 0;
-		lastTime = 0;
-		basePlayerPitch = 0;
-		basePlayerYaw = 0;
+		this.lastWorldTime = 0;
+		this.lastTime = 0;
+		this.basePlayerPitch = 0;
+		this.basePlayerYaw = 0;
 		
-		optionsFile = new File(mc.getMinecraftDir(), "minaptics_options.txt");
-		mouseFilterXAxis = new MinapticsLiteMouseFilter();
-		mouseFilterYAxis = new MinapticsLiteMouseFilter();
+		this.optionsFile = new File(this.mc.getMinecraftDir(), "minaptics_options.txt");
+		this.mouseFilterXAxis = new MinapticsLiteMouseFilter();
+		this.mouseFilterYAxis = new MinapticsLiteMouseFilter();
 		
 		loadOptions();
-		fovLevelTransition = fovLevel;
-		fovLevelSetup = fovLevel;
+		this.fovLevelTransition = this.fovLevel;
+		this.fovLevelSetup = this.fovLevel;
 		
-		KeyBinding zoomKeyBinding = new KeyBinding("key.zoom", zoomKey);
+		KeyBinding zoomKeyBinding = new KeyBinding("key.zoom", this.zoomKey);
 		manager().addKeyBinding(zoomKeyBinding, "Zoom");
-		keyManager.addKeyBinding(zoomKeyBinding, new MinapticsLiteZoomBinding(
-				this));
+		this.keyManager.addKeyBinding(zoomKeyBinding, new MinapticsLiteZoomBinding(this));
 		
 		updateSmootherStatus();
 		
 		try
 		{
-			util().setPrivateValue(net.minecraft.src.EntityRenderer.class,
-					mc.entityRenderer, 7, mouseFilterXAxis);
-			util().setPrivateValue(net.minecraft.src.EntityRenderer.class,
-					mc.entityRenderer, 8, mouseFilterYAxis);
+			util().setPrivateValueLiteral(
+				net.minecraft.src.EntityRenderer.class, this.mc.entityRenderer, "v", 7, this.mouseFilterXAxis);
+			util().setPrivateValueLiteral(
+				net.minecraft.src.EntityRenderer.class, this.mc.entityRenderer, "w", 8, this.mouseFilterYAxis);
 		}
 		catch (PrivateAccessException e)
 		{
@@ -144,10 +143,10 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 	{
 		try
 		{
-			util().setPrivateValueLiteral(net.minecraft.src.EntityRenderer.class,
-					mc.entityRenderer, "M", 24, value);
-			util().setPrivateValueLiteral(net.minecraft.src.EntityRenderer.class,
-					mc.entityRenderer, "N", 25, value);
+			util().setPrivateValueLiteral(
+				net.minecraft.src.EntityRenderer.class, this.mc.entityRenderer, "M", 24, value);
+			util().setPrivateValueLiteral(
+				net.minecraft.src.EntityRenderer.class, this.mc.entityRenderer, "N", 25, value);
 			
 		}
 		catch (PrivateAccessException e)
@@ -169,20 +168,24 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 	
 	public void runtimeThink()
 	{
-		if (isZoomed)
+		if (this.isZoomed)
 		{
-			mc.gameSettings.mouseSensitivity = doChangeSensitivity(wasMouseSensitivity);
-			if (smootherLevel == 0F)
+			this.mc.gameSettings.mouseSensitivity = doChangeSensitivity(this.wasMouseSensitivity);
+			if (this.smootherLevel == 0F)
+			{
 				doForceSmoothCamera();
+			}
 			
 		}
 		if (shouldChangeFOV())
 		{
 			float fov = 70F;
-			fov += mc.gameSettings.fovSetting * 40F;
+			fov += this.mc.gameSettings.fovSetting * 40F;
 			
-			if (mc.thePlayer.isInsideOfMaterial(Material.water))
-				fov = (fov * 60F) / 70F;
+			if (this.mc.thePlayer.isInsideOfMaterial(Material.water))
+			{
+				fov = fov * 60F / 70F;
+			}
 			
 			setCameraZoom((1F - doChangeFOV(1F)) * -1 * fov);
 			
@@ -190,39 +193,40 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 		
 	}
 	
-	
 	@Override
 	public void onKey(KeyBinding event)
 	{
-		keyManager.handleKeyDown(event);
+		this.keyManager.handleKeyDown(event);
 		
 	}
 	
 	void zoomToggle()
 	{
-		isZoomed = !isZoomed;
+		this.isZoomed = !this.isZoomed;
 		
-		if (isZoomed)
+		if (this.isZoomed)
 		{
-			wasMouseSensitivity = mc.gameSettings.mouseSensitivity;
+			this.wasMouseSensitivity = this.mc.gameSettings.mouseSensitivity;
 			
-			if (smootherLevel != 0F || !disableSmootherEvenDuringZooming)
+			if (this.smootherLevel != 0F || !this.disableSmootherEvenDuringZooming)
 			{
-				if (smootherLevel == 0F)
-					wasAlreadySmoothing = mc.gameSettings.smoothCamera;
+				if (this.smootherLevel == 0F)
+				{
+					this.wasAlreadySmoothing = this.mc.gameSettings.smoothCamera;
+				}
 				
-				mc.gameSettings.smoothCamera = true;
+				this.mc.gameSettings.smoothCamera = true;
 				
 			}
 			
 		}
 		else
 		{
-			mc.gameSettings.mouseSensitivity = wasMouseSensitivity;
+			this.mc.gameSettings.mouseSensitivity = this.wasMouseSensitivity;
 			
-			if (smootherLevel == 0F)
+			if (this.smootherLevel == 0F)
 			{
-				mc.gameSettings.smoothCamera = wasAlreadySmoothing;
+				this.mc.gameSettings.smoothCamera = this.wasAlreadySmoothing;
 				
 				doLetSmoothCamera();
 				
@@ -230,36 +234,46 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 			
 		}
 		
-		if ((System.currentTimeMillis() - zoomTime) > zoomDuration)
-			zoomTime = System.currentTimeMillis();
-		
+		if (System.currentTimeMillis() - this.zoomTime > this.zoomDuration)
+		{
+			this.zoomTime = System.currentTimeMillis();
+		}
 		else
-			zoomTime = System.currentTimeMillis() * 2 - zoomTime - zoomDuration;
+		{
+			this.zoomTime = System.currentTimeMillis() * 2 - this.zoomTime - this.zoomDuration;
+		}
 		
 	}
 	
 	@Override
 	public void onTick()
 	{
-		keyManager.handleRuntime();
+		this.keyManager.handleRuntime();
 		
-		if (isSmootherSettingEvent)
+		if (this.isSmootherSettingEvent)
 		{
-			float rPitch = -mc.thePlayer.rotationPitch;
-			float scales = ((rPitch + 90) / 180F);
+			float rPitch = -this.mc.thePlayer.rotationPitch;
+			float scales = (rPitch + 90) / 180F;
 			
 			if (scales == 0)
-				disableSmootherEvenDuringZooming = true;
+			{
+				this.disableSmootherEvenDuringZooming = true;
+			}
 			else
-				disableSmootherEvenDuringZooming = false;
+			{
+				this.disableSmootherEvenDuringZooming = false;
+			}
 			
 			if (scales < 0.02F)
+			{
 				scales = 0F;
-			
+			}
 			else if (scales > 1F)
+			{
 				scales = 1F;
+			}
 			
-			smootherLevel = scales;
+			this.smootherLevel = scales;
 			
 		}
 		
@@ -267,21 +281,20 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 	
 	public void displayThink()
 	{
-		if (!isSmootherSettingEvent)
+		if (!this.isSmootherSettingEvent)
 			return;
 		
 		if (!util().isCurrentScreen(null))
 		{
 			String msg1 = "Close your menu to start tweaking Minaptics.";
 			
-			ScaledResolution screenRes = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+			ScaledResolution screenRes =
+				new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
 			int width = screenRes.getScaledWidth();
 			//int height = screenRes.getScaledHeight();
 			
-			int msg1width = mc.fontRenderer.getStringWidth( msg1 );
-			mc.fontRenderer.drawStringWithShadow(msg1, (width - msg1width) / 2,
-					10,
-					0xffffff);
+			int msg1width = this.mc.fontRenderer.getStringWidth(msg1);
+			this.mc.fontRenderer.drawStringWithShadow(msg1, (width - msg1width) / 2, 10, 0xffffff);
 			
 		}
 		else
@@ -292,39 +305,41 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 			String msg1 = "Smoother:";
 			String msg2;
 			
-			if (smootherLevel == 0F)
+			if (this.smootherLevel == 0F)
 			{
-				if (disableSmootherEvenDuringZooming)
+				if (this.disableSmootherEvenDuringZooming)
+				{
 					msg2 = "Disabled, including while zooming";
+				}
 				else
+				{
 					msg2 = "Disabled";
+				}
 			}
 			else
-				msg2 = "" + ((int)(smootherLevel * 1000))/10F;
+			{
+				msg2 = "" + (int) (this.smootherLevel * 1000) / 10F;
+			}
 			
-			ScaledResolution screenRes = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+			ScaledResolution screenRes =
+				new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
 			int width = screenRes.getScaledWidth();
 			int height = screenRes.getScaledHeight();
 			
-			int msg1width = mc.fontRenderer.getStringWidth( msg1 );
-			mc.fontRenderer.drawStringWithShadow(msg1, (width - msg1width) / 2,
-					height / 2 + 10, 0xffffff);
+			int msg1width = this.mc.fontRenderer.getStringWidth(msg1);
+			this.mc.fontRenderer.drawStringWithShadow(msg1, (width - msg1width) / 2, height / 2 + 10, 0xffffff);
 			
-			int msg2width = mc.fontRenderer.getStringWidth( msg2 );
-			mc.fontRenderer.drawStringWithShadow(msg2, (width - msg2width) / 2,
-					height
-					/ 2 + 10 + height / 32, 0xffff00);
+			int msg2width = this.mc.fontRenderer.getStringWidth(msg2);
+			this.mc.fontRenderer.drawStringWithShadow(
+				msg2, (width - msg2width) / 2, height / 2 + 10 + height / 32, 0xffff00);
 			
-			int msgupwidth = mc.fontRenderer.getStringWidth( msgup );
-			mc.fontRenderer.drawStringWithShadow(msgup,
-					(width - msgupwidth) / 2,
-					height
-					/ 2 + 10 - height / 8, 0xffff00);
+			int msgupwidth = this.mc.fontRenderer.getStringWidth(msgup);
+			this.mc.fontRenderer.drawStringWithShadow(
+				msgup, (width - msgupwidth) / 2, height / 2 + 10 - height / 8, 0xffff00);
 			
-			int msgdownwidth = mc.fontRenderer.getStringWidth( msgdown );
-			mc.fontRenderer.drawStringWithShadow(msgdown,
-					(width - msgdownwidth) / 2,
-					height / 2 + 10 + height / 8, 0xffff00);
+			int msgdownwidth = this.mc.fontRenderer.getStringWidth(msgdown);
+			this.mc.fontRenderer.drawStringWithShadow(
+				msgdown, (width - msgdownwidth) / 2, height / 2 + 10 + height / 8, 0xffff00);
 			
 		}
 		
@@ -335,30 +350,30 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 		if (!util().isCurrentScreen(net.minecraft.src.GuiChat.class))
 		{
 			if (!util().isCurrentScreen(net.minecraft.src.GuiInventory.class)
-					&& !util().isCurrentScreen(
-							net.minecraft.src.GuiContainerCreative.class))
+				&& !util().isCurrentScreen(net.minecraft.src.GuiContainerCreative.class))
 			{
-				if (isSmootherSettingEvent)
+				if (this.isSmootherSettingEvent)
 				{
-					isSmootherSettingEvent = false;
+					this.isSmootherSettingEvent = false;
 					saveOptions();
 					updateSmootherStatus();
 					
 				}
-				else if (!isZoomed)
+				else if (!this.isZoomed)
 				{
 					zoomToggle();
-					eventNumOnZoom = eventNum;
+					this.eventNumOnZoom = this.eventNum;
 					
 				}
 				
 			}
-			else // Smoother Event
+			else
+			// Smoother Event
 			{
-				isSmootherSettingEvent = !isSmootherSettingEvent;
-				if (isSmootherSettingEvent)
+				this.isSmootherSettingEvent = !this.isSmootherSettingEvent;
+				if (this.isSmootherSettingEvent)
 				{
-					mc.gameSettings.smoothCamera = false;
+					this.mc.gameSettings.smoothCamera = false;
 					doLetSmoothCamera();
 					
 				}
@@ -373,72 +388,81 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 		}
 		
 	}
+	
 	void zoomDoDuring(int timeKey)
 	{
-		if (isSmootherSettingEvent) return;
+		if (this.isSmootherSettingEvent)
+			return;
 		
 		if (timeKey == 4)
 		{
-			fovLevelTransitionning = true;
+			this.fovLevelTransitionning = true;
 			
-			basePlayerPitch = mc.thePlayer.rotationPitch;
-			basePlayerYaw = mc.thePlayer.rotationYaw;
-			lastTime = System.currentTimeMillis();
+			this.basePlayerPitch = this.mc.thePlayer.rotationPitch;
+			this.basePlayerYaw = this.mc.thePlayer.rotationYaw;
+			this.lastTime = System.currentTimeMillis();
 			
 		}
 		else if (timeKey > 4)
 		{
-			if (mc.gameSettings.thirdPersonView == 0)
+			if (this.mc.gameSettings.thirdPersonView == 0)
 			{
-				float diffPitch = basePlayerPitch - mc.thePlayer.rotationPitch;
+				float diffPitch = this.basePlayerPitch - this.mc.thePlayer.rotationPitch;
 				
-				fovLevelSetup = fovLevel - diffPitch * 0.5F;
+				this.fovLevelSetup = this.fovLevel - diffPitch * 0.5F;
 				
-				if (fovLevelSetup < minZoomField)
-					fovLevelSetup = minZoomField;
-				
-				else if (fovLevelSetup > maxZoomField)
-					fovLevelSetup = maxZoomField;
+				if (this.fovLevelSetup < this.minZoomField)
+				{
+					this.fovLevelSetup = this.minZoomField;
+				}
+				else if (this.fovLevelSetup > this.maxZoomField)
+				{
+					this.fovLevelSetup = this.maxZoomField;
+				}
 				
 			}
 			
 		}
 		
 	}
+	
 	void zoomDoAfter(int timeKey)
 	{
-		if (!isSmootherSettingEvent)
+		if (!this.isSmootherSettingEvent)
 		{
 			if (timeKey > 4)
 			{
-				fovLevel = fovLevelSetup;
+				this.fovLevel = this.fovLevelSetup;
 				saveOptions();
 				
 			}
 			else
 			{
-				if (isZoomed && (eventNumOnZoom != eventNum))
+				if (this.isZoomed && this.eventNumOnZoom != this.eventNum)
+				{
 					zoomToggle();
+				}
 				
 			}
-			fovLevelTransitionning = false;
+			this.fovLevelTransitionning = false;
 			
 		}
 		
-		eventNum++;
+		this.eventNum++;
 		
 	}
+	
 	public void updateSmootherStatus()
 	{
-		if (smootherLevel == 0F)
+		if (this.smootherLevel == 0F)
 		{
 			doLetSmoothCamera();
-			mc.gameSettings.smoothCamera = false;
+			this.mc.gameSettings.smoothCamera = false;
 			
 		}
 		else
 		{
-			mc.gameSettings.smoothCamera = true;
+			this.mc.gameSettings.smoothCamera = true;
 			doForceSmoothCamera();
 			
 		}
@@ -447,38 +471,41 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 	
 	public boolean shouldChangeFOV()
 	{
-		return (isZoomed || ((System.currentTimeMillis() - zoomTime) < zoomDuration));
+		return this.isZoomed || System.currentTimeMillis() - this.zoomTime < this.zoomDuration;
 		
 	}
 	
 	public float doChangeFOV(float inFov)
 	{
 		float baseLevel;
-		float delta = (System.currentTimeMillis() - lastTime) / 1000F;
+		float delta = (System.currentTimeMillis() - this.lastTime) / 1000F;
 		
 		delta = delta * 4F;
 		
 		if (delta > 1F)
+		{
 			delta = 1F;
+		}
 		
-		lastTime = System.currentTimeMillis();
+		this.lastTime = System.currentTimeMillis();
 		
-		fovLevelTransition = fovLevelTransition + (fovLevelSetup - fovLevelTransition) * delta;
+		this.fovLevelTransition = this.fovLevelTransition + (this.fovLevelSetup - this.fovLevelTransition) * delta;
 		
-		baseLevel = fovLevelTransition;
+		baseLevel = this.fovLevelTransition;
 		
-		
-		if ((System.currentTimeMillis() - zoomTime) > zoomDuration)
+		if (System.currentTimeMillis() - this.zoomTime > this.zoomDuration)
 			return inFov * baseLevel;
 		
-		float flushtrum = (System.currentTimeMillis() - zoomTime) / (float)zoomDuration;
+		float flushtrum = (System.currentTimeMillis() - this.zoomTime) / (float) this.zoomDuration;
 		
-		if (!isZoomed)
+		if (!this.isZoomed)
+		{
 			flushtrum = 1F - flushtrum;
+		}
 		
 		flushtrum = flushtrum * flushtrum;
 		
-		return inFov * (1F - (1F - fovLevel) * flushtrum );
+		return inFov * (1F - (1F - this.fovLevel) * flushtrum);
 		
 	}
 	
@@ -491,33 +518,47 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 	
 	public void doForceSmoothCameraXAxis()
 	{
-		float f2 = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
+		float f2 = this.mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
 		f2 = f2 * f2 * f2 * 8F;
-		float smoothBase = ( smootherLevel == 0F ? smootherIntensityWhenIdle : (1F - smootherLevel * 0.999F) * smootherIntensity );
+		float smoothBase =
+			this.smootherLevel == 0F ? this.smootherIntensityWhenIdle : (1F - this.smootherLevel * 0.999F)
+				* this.smootherIntensity;
 		
-		if (isZoomed)
-			smoothBase = smoothBase * 1 / fovLevelSetup;
+		if (this.isZoomed)
+		{
+			smoothBase = smoothBase * 1 / this.fovLevelSetup;
+		}
 		
 		float cSmooth = f2 * smoothBase;
-		if (cSmooth > 1F) cSmooth = 1F;
+		if (cSmooth > 1F)
+		{
+			cSmooth = 1F;
+		}
 		
-		mouseFilterXAxis.force(cSmooth);
+		this.mouseFilterXAxis.force(cSmooth);
 		
 	}
 	
 	public void doForceSmoothCameraYAxis()
 	{
-		float f2 = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
+		float f2 = this.mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
 		f2 = f2 * f2 * f2 * 8F;
-		float smoothBase = ( smootherLevel == 0F ? smootherIntensityWhenIdle : (1F - smootherLevel * 0.999F) * smootherIntensity );
+		float smoothBase =
+			this.smootherLevel == 0F ? this.smootherIntensityWhenIdle : (1F - this.smootherLevel * 0.999F)
+				* this.smootherIntensity;
 		
-		if (isZoomed)
-			smoothBase = smoothBase * 1 / fovLevelSetup;
+		if (this.isZoomed)
+		{
+			smoothBase = smoothBase * 1 / this.fovLevelSetup;
+		}
 		
 		float cSmooth = f2 * smoothBase;
-		if (cSmooth > 1F) cSmooth = 1F;
+		if (cSmooth > 1F)
+		{
+			cSmooth = 1F;
+		}
 		
-		mouseFilterYAxis.force(cSmooth);
+		this.mouseFilterYAxis.force(cSmooth);
 		
 	}
 	
@@ -527,28 +568,28 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 		doLetSmoothCameraYAxis();
 		
 	}
-
+	
 	public void doLetSmoothCameraXAxis()
 	{
-		mouseFilterXAxis.let();
+		this.mouseFilterXAxis.let();
 		
 	}
-
+	
 	public void doLetSmoothCameraYAxis()
 	{
-		mouseFilterYAxis.let();
+		this.mouseFilterYAxis.let();
 		
 	}
 	
 	public boolean shouldChangeSensitivity()
 	{
-		return isZoomed;
+		return this.isZoomed;
 		
 	}
 	
 	public float doChangeSensitivity(float f1)
 	{
-		return f1 * (float)Math.max(0.5, fovLevelSetup);
+		return f1 * (float) Math.max(0.5, this.fovLevelSetup);
 		
 	}
 	
@@ -556,75 +597,72 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 	{
 		try
 		{
-			if (!optionsFile.exists())
-			{
+			if (!this.optionsFile.exists())
 				return;
-			}
-			BufferedReader bufferedreader = new BufferedReader(new FileReader(optionsFile));
-			for(String s = ""; (s = bufferedreader.readLine()) != null;)
+			BufferedReader bufferedreader = new BufferedReader(new FileReader(this.optionsFile));
+			for (String s = ""; (s = bufferedreader.readLine()) != null;)
 			{
 				try
 				{
 					String as[] = s.split(":");
-					if(as[0].equals("key_zoom"))
+					if (as[0].equals("key_zoom"))
 					{
-						zoomKey = (int)parseFloat(as[1]);
+						this.zoomKey = (int) parseFloat(as[1]);
 						
 					}
-					if(as[0].equals("fovlevel"))
+					if (as[0].equals("fovlevel"))
 					{
-						fovLevel = parseFloat(as[1]);
+						this.fovLevel = parseFloat(as[1]);
 						
 					}
-					if(as[0].equals("zoomduration"))
+					if (as[0].equals("zoomduration"))
 					{
-						zoomDuration = (int)parseFloat(as[1]);
+						this.zoomDuration = (int) parseFloat(as[1]);
 						
 					}
-					if(as[0].equals("maximumzoomfield"))
+					if (as[0].equals("maximumzoomfield"))
 					{
-						maxZoomField = parseFloat(as[1]);
+						this.maxZoomField = parseFloat(as[1]);
 						
 					}
 					if (as[0].equals("minimumzoomfield"))
 					{
-						minZoomField = parseFloat(as[1]);
+						this.minZoomField = parseFloat(as[1]);
 						
 					}
-					if(as[0].equals("smootherlevel"))
+					if (as[0].equals("smootherlevel"))
 					{
-						smootherLevel = parseFloat(as[1]);
+						this.smootherLevel = parseFloat(as[1]);
 						
 					}
-					if(as[0].equals("smoothershape"))
+					if (as[0].equals("smoothershape"))
 					{
-						smootherIntensity = parseFloat(as[1]);
+						this.smootherIntensity = parseFloat(as[1]);
 						
 					}
 					
 					if (as[0].equals("smootherintensitywhenidle"))
 					{
-						smootherIntensityWhenIdle = parseFloat(as[1]);
+						this.smootherIntensityWhenIdle = parseFloat(as[1]);
 						
 					}
 					if (as[0].equals("disablesmootherevenduringzooming"))
 					{
-						disableSmootherEvenDuringZooming = parseFloat(as[1]) == 1F
-								? true : false;
+						this.disableSmootherEvenDuringZooming = parseFloat(as[1]) == 1F ? true : false;
 						
 					}
 					
 				}
-				catch(Exception exception1)
+				catch (Exception exception1)
 				{
-					System.out.println((new StringBuilder("Skipping bad option: ")).append(s).toString());
+					System.out.println(new StringBuilder("Skipping bad option: ").append(s).toString());
 					
 				}
 			}
 			
 			bufferedreader.close();
 		}
-		catch(Exception exception)
+		catch (Exception exception)
 		{
 			System.out.println("Failed to load MinapticsLite options");
 			exception.printStackTrace();
@@ -635,44 +673,35 @@ public class MinapticsLiteHaddon extends HaddonImpl implements SupportsFrameEven
 	
 	private float parseFloat(String s)
 	{
-		if(s.equals("true"))
-		{
+		if (s.equals("true"))
 			return 1.0F;
-		}
-		if(s.equals("false"))
-		{
+		if (s.equals("false"))
 			return 0.0F;
-		} else
-		{
+		else
 			return Float.parseFloat(s);
-		}
 	}
 	
 	public void saveOptions()
 	{
 		try
 		{
-			PrintWriter printwriter = new PrintWriter(new FileWriter(optionsFile));
-			printwriter.println((new StringBuilder("key_zoom:")).append(zoomKey).toString());
-			printwriter.println((new StringBuilder("fovlevel:")).append(fovLevel).toString());
-			printwriter.println((new StringBuilder("smootherlevel:")).append(smootherLevel).toString());
-			printwriter.println((new StringBuilder("smoothershape:")).append(smootherIntensity).toString());
-			printwriter.println((new StringBuilder("zoomduration:")).append(zoomDuration).toString());
-			printwriter.println((new StringBuilder("maximumzoomfield:")).append(maxZoomField).toString());
-			printwriter.println((new StringBuilder("minimumzoomfield:"))
-					.append(minZoomField).toString());
-			printwriter
-			.println((new StringBuilder("smootherintensitywhenidle:"))
-					.append(smootherIntensityWhenIdle).toString());
-			printwriter.println((new StringBuilder(
-					"disablesmootherevenduringzooming:")).append(
-							disableSmootherEvenDuringZooming ? "true" : "false")
-							.toString());
+			PrintWriter printwriter = new PrintWriter(new FileWriter(this.optionsFile));
+			printwriter.println(new StringBuilder("key_zoom:").append(this.zoomKey).toString());
+			printwriter.println(new StringBuilder("fovlevel:").append(this.fovLevel).toString());
+			printwriter.println(new StringBuilder("smootherlevel:").append(this.smootherLevel).toString());
+			printwriter.println(new StringBuilder("smoothershape:").append(this.smootherIntensity).toString());
+			printwriter.println(new StringBuilder("zoomduration:").append(this.zoomDuration).toString());
+			printwriter.println(new StringBuilder("maximumzoomfield:").append(this.maxZoomField).toString());
+			printwriter.println(new StringBuilder("minimumzoomfield:").append(this.minZoomField).toString());
+			printwriter.println(new StringBuilder("smootherintensitywhenidle:")
+				.append(this.smootherIntensityWhenIdle).toString());
+			printwriter.println(new StringBuilder("disablesmootherevenduringzooming:").append(
+				this.disableSmootherEvenDuringZooming ? "true" : "false").toString());
 			
 			printwriter.close();
 			
 		}
-		catch(Exception exception)
+		catch (Exception exception)
 		{
 			System.out.println("Failed to save MinapticsLite options");
 			exception.printStackTrace();

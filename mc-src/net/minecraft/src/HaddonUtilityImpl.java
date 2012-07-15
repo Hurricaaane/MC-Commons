@@ -39,69 +39,65 @@ public class HaddonUtilityImpl implements Utility
 	
 	@SuppressWarnings("rawtypes")
 	@Override
-	public Object getPrivateValue(Class classToPerformOn,
-			Object instanceToPerformOn, int zeroOffsets)
-					throws PrivateAccessException
-					{
-		return HaddonUtilitySingleton.getInstance().getPrivateValue(
-				classToPerformOn, instanceToPerformOn, zeroOffsets);
-					}
+	public Object getPrivateValue(Class classToPerformOn, Object instanceToPerformOn, int zeroOffsets)
+		throws PrivateAccessException
+	{
+		return HaddonUtilitySingleton.getInstance().getPrivateValue(classToPerformOn, instanceToPerformOn, zeroOffsets);
+	}
 	
 	@SuppressWarnings("rawtypes")
 	@Override
-	public void setPrivateValue(Class classToPerformOn,
-			Object instanceToPerformOn, int zeroOffsets, Object newValue)
-					throws PrivateAccessException
-					{
-		HaddonUtilitySingleton.getInstance().setPrivateValue(classToPerformOn,
-				instanceToPerformOn, zeroOffsets, newValue);
-					}
+	public void setPrivateValue(Class classToPerformOn, Object instanceToPerformOn, int zeroOffsets, Object newValue)
+		throws PrivateAccessException
+	{
+		HaddonUtilitySingleton.getInstance().setPrivateValue(
+			classToPerformOn, instanceToPerformOn, zeroOffsets, newValue);
+	}
 	
 	@SuppressWarnings("rawtypes")
 	@Override
-	public Object getPrivateValueLiteral(Class classToPerformOn,
-			Object instanceToPerformOn, String obfPriority, int zeroOffsetsDebug)
-					throws PrivateAccessException
-					{
+	public Object getPrivateValueLiteral(
+		Class classToPerformOn, Object instanceToPerformOn, String obfPriority, int zeroOffsetsDebug)
+		throws PrivateAccessException
+	{
 		Object ret;
 		try
 		{
-			ret = HaddonUtilitySingleton.getInstance().getPrivateValueViaName(
+			ret =
+				HaddonUtilitySingleton.getInstance().getPrivateValueViaName(
 					classToPerformOn, instanceToPerformOn, obfPriority);
 			
 		}
 		catch (Exception e)
 		{
-			ret = HaddonUtilitySingleton.getInstance().getPrivateValue(
+			ret =
+				HaddonUtilitySingleton.getInstance().getPrivateValue(
 					classToPerformOn, instanceToPerformOn, zeroOffsetsDebug); // This throws a PrivateAccessException
 			
 		}
 		
 		return ret;
-					}
+	}
 	
 	@SuppressWarnings("rawtypes")
 	@Override
-	public void setPrivateValueLiteral(Class classToPerformOn,
-			Object instanceToPerformOn, String obfPriority,
-			int zeroOffsetsDebug, Object newValue)
-					throws PrivateAccessException
-					{
+	public void setPrivateValueLiteral(
+		Class classToPerformOn, Object instanceToPerformOn, String obfPriority, int zeroOffsetsDebug, Object newValue)
+		throws PrivateAccessException
+	{
 		try
 		{
 			HaddonUtilitySingleton.getInstance().setPrivateValueViaName(
-					classToPerformOn, instanceToPerformOn, obfPriority,
-					newValue);
+				classToPerformOn, instanceToPerformOn, obfPriority, newValue);
 			
 		}
 		catch (PrivateAccessException e)
 		{
 			HaddonUtilitySingleton.getInstance().setPrivateValue(
-					classToPerformOn, instanceToPerformOn, zeroOffsetsDebug,
-					newValue); // This throws a PrivateAccessException
+				classToPerformOn, instanceToPerformOn, zeroOffsetsDebug, newValue); // This throws a PrivateAccessException
 			
 		}
-					}
+	}
 	
 	@Override
 	public int getWorldHeight()
@@ -116,9 +112,7 @@ public class HaddonUtilityImpl implements Utility
 		try
 		{
 			// XXX: IMPL_UPDATE_OBF
-			return (Integer) getPrivateValue(
-					net.minecraft.client.Minecraft.class, manager
-					.getMinecraft(), 26); // private int ticksRan;
+			return (Integer) getPrivateValue(net.minecraft.client.Minecraft.class, this.manager.getMinecraft(), 26); // private int ticksRan;
 		}
 		catch (PrivateAccessException e)
 		{
@@ -132,7 +126,7 @@ public class HaddonUtilityImpl implements Utility
 	@Override
 	public Object getCurrentScreen()
 	{
-		return manager.getMinecraft().currentScreen;
+		return this.manager.getMinecraft().currentScreen;
 		
 	}
 	
@@ -155,14 +149,14 @@ public class HaddonUtilityImpl implements Utility
 	@Override
 	public void closeCurrentScreen()
 	{
-		manager.getMinecraft().displayGuiScreen(null);
+		this.manager.getMinecraft().displayGuiScreen(null);
 		
 	}
 	
 	@Override
 	public void printChat(Object... args)
 	{
-		if (manager.getMinecraft().thePlayer == null)
+		if (this.manager.getMinecraft().thePlayer == null)
 			return;
 		
 		StringBuilder builder = new StringBuilder();
@@ -170,7 +164,7 @@ public class HaddonUtilityImpl implements Utility
 		{
 			builder.append(o);
 		}
-		manager.getMinecraft().thePlayer.addChatMessage(builder.toString());
+		this.manager.getMinecraft().thePlayer.addChatMessage(builder.toString());
 		
 	}
 	

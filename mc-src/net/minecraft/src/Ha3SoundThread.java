@@ -27,48 +27,53 @@ public class Ha3SoundThread extends Thread
 	private Ha3Signal onSuccess;
 	private Ha3Signal onFailure;
 	
-	Ha3SoundThread(Ha3SoundCommunicator sndCommIn, Ha3Signal onSuccessIn,
-			Ha3Signal onFailureIn)
-			{
-		this.setDaemon(true);
+	Ha3SoundThread(Ha3SoundCommunicator sndCommIn, Ha3Signal onSuccessIn, Ha3Signal onFailureIn)
+	{
+		setDaemon(true);
 		
-		sndComm = sndCommIn;
-		onSuccess = onSuccessIn;
-		onFailure = onFailureIn;
+		this.sndComm = sndCommIn;
+		this.onSuccess = onSuccessIn;
+		this.onFailure = onFailureIn;
 		
-			}
+	}
 	
 	@Override
 	public void run()
 	{
 		try
 		{
-			while (!sndComm.loadSoundManager())
+			while (!this.sndComm.loadSoundManager())
 			{
-				sleep(sleepTime);
+				sleep(this.sleepTime);
 			}
-			while (!sndComm.loadSoundSystem())
+			while (!this.sndComm.loadSoundSystem())
 			{
-				sleep(sleepTime);
+				sleep(this.sleepTime);
 			}
-			if (onSuccess != null)
-				onSuccess.signal();
+			if (this.onSuccess != null)
+			{
+				this.onSuccess.signal();
+			}
 			
 		}
 		catch (PrivateAccessException e)
 		{
 			e.printStackTrace();
 			
-			if (onFailure != null)
-				onFailure.signal();
+			if (this.onFailure != null)
+			{
+				this.onFailure.signal();
+			}
 			
 		}
 		catch (InterruptedException e)
 		{
 			e.printStackTrace();
 			
-			if (onFailure != null)
-				onFailure.signal();
+			if (this.onFailure != null)
+			{
+				this.onFailure.signal();
+			}
 			
 		}
 		

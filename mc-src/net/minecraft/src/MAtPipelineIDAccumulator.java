@@ -30,26 +30,25 @@ public class MAtPipelineIDAccumulator extends MAtScanCoordsPipeline
 	
 	private int proportionnalTotal;
 	
-	MAtPipelineIDAccumulator(MAtMod mod, MAtmosData dataIn,
-			String normalNameIn, String proportionnalNameIn,
-			int proportionnalTotalIn)
-			{
+	MAtPipelineIDAccumulator(
+		MAtMod mod, MAtmosData dataIn, String normalNameIn, String proportionnalNameIn, int proportionnalTotalIn)
+	{
 		super(mod, dataIn);
-		tempnormal = new int[MAtDataGatherer.COUNT_WORLD_BLOCKS];
+		this.tempnormal = new int[MAtDataGatherer.COUNT_WORLD_BLOCKS];
 		
-		normalName = normalNameIn;
-		proportionnalName = proportionnalNameIn;
-		proportionnalTotal = proportionnalTotalIn;
+		this.normalName = normalNameIn;
+		this.proportionnalName = proportionnalNameIn;
+		this.proportionnalTotal = proportionnalTotalIn;
 		
-			}
+	}
 	
 	@Override
 	void doBegin()
 	{
-		count = 0;
-		for (int i = 0; i < tempnormal.length; i++)
+		this.count = 0;
+		for (int i = 0; i < this.tempnormal.length; i++)
 		{
-			tempnormal[i] = 0;
+			this.tempnormal[i] = 0;
 			
 		}
 		
@@ -58,14 +57,13 @@ public class MAtPipelineIDAccumulator extends MAtScanCoordsPipeline
 	@Override
 	void doInput(long x, long y, long z)
 	{
-		int id = mod().manager().getMinecraft().theWorld.getBlockId((int) x,
-				(int) y, (int) z);
-		if ((id >= tempnormal.length) || (id < 0))
+		int id = mod().manager().getMinecraft().theWorld.getBlockId((int) x, (int) y, (int) z);
+		if (id >= this.tempnormal.length || id < 0)
 			return; /// Do not count
+			
+		this.tempnormal[id] = this.tempnormal[id] + 1;
 		
-		tempnormal[id] = tempnormal[id] + 1;
-		
-		count++;
+		this.count++;
 		
 	}
 	
@@ -75,19 +73,21 @@ public class MAtPipelineIDAccumulator extends MAtScanCoordsPipeline
 		ArrayList<Integer> normal = null;
 		ArrayList<Integer> proportionnal = null;
 		
-		normal = data().sheets.get(normalName);
+		normal = data().sheets.get(this.normalName);
 		
-		if (proportionnalName != null)
-			proportionnal = data().sheets.get(proportionnalName);
-		
-		for (int i = 0; i < tempnormal.length; i++)
+		if (this.proportionnalName != null)
 		{
-			normal.set(i, tempnormal[i]);
+			proportionnal = data().sheets.get(this.proportionnalName);
+		}
+		
+		for (int i = 0; i < this.tempnormal.length; i++)
+		{
+			normal.set(i, this.tempnormal[i]);
 			
-			if (proportionnalName != null)
-				proportionnal
-				.set(i,
-						(int) (proportionnalTotal * tempnormal[i] / ((float) count)));
+			if (this.proportionnalName != null)
+			{
+				proportionnal.set(i, (int) (this.proportionnalTotal * this.tempnormal[i] / (float) this.count));
+			}
 			
 		}
 		

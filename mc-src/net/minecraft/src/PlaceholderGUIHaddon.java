@@ -18,23 +18,22 @@ import eu.ha3.mc.haddon.SupportsKeyEvents;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class PlaceholderGUIHaddon extends HaddonImpl implements
-SupportsKeyEvents
+public class PlaceholderGUIHaddon extends HaddonImpl implements SupportsKeyEvents
 {
 	private KeyBinding bind;
 	
 	@Override
 	public void onLoad()
 	{
-		bind = new KeyBinding("", 13);
+		this.bind = new KeyBinding("", 13);
 		
-		manager().addKeyBinding(bind, "Placeholder GUI");
+		manager().addKeyBinding(this.bind, "Placeholder GUI");
 	}
 	
 	@Override
 	public void onKey(KeyBinding event)
 	{
-		if (event == bind && event.pressed)
+		if (event == this.bind && event.pressed)
 		{
 			if (util().isCurrentScreen(PlaceholderGUI.class))
 			{
@@ -46,8 +45,6 @@ SupportsKeyEvents
 				manager().getMinecraft().displayGuiScreen(new PlaceholderGUI());
 				
 			}
-			
-			
 			
 		}
 		

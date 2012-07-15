@@ -31,11 +31,11 @@ public class LBReport
 	
 	public LBReport()
 	{
-		valid = false;
-		page = 0;
-		pageCount = 0;
-		changedTotal = -1;
-		changes = new ArrayList<LBChange>();
+		this.valid = false;
+		this.page = 0;
+		this.pageCount = 0;
+		this.changedTotal = -1;
+		this.changes = new ArrayList<LBChange>();
 		
 	}
 	
@@ -56,44 +56,44 @@ public class LBReport
 	
 	public int getChangedTotal()
 	{
-		return changedTotal;
+		return this.changedTotal;
 		
 	}
 	
 	public int getPage()
 	{
-		return page;
+		return this.page;
 		
 	}
 	
 	public int getPageCount()
 	{
-		return pageCount;
+		return this.pageCount;
 		
 	}
 	
 	public boolean isValid()
 	{
-		return valid;
+		return this.valid;
 		
 	}
 	
 	public List<LBChange> getStoredChanges()
 	{
-		return changes;
+		return this.changes;
 		
 	}
 	
 	public void addChange(LBChange change)
 	{
-		changes.add(change);
+		this.changes.add(change);
 		
 	}
 	
 	private void validate()
 	{
-		valid = ((page != 0) && page < pageCount) && (changedTotal >= 0);
+		this.valid = this.page != 0 && this.page < this.pageCount && this.changedTotal >= 0;
 		
 	}
-
+	
 }

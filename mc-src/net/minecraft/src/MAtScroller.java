@@ -26,7 +26,7 @@ public class MAtScroller extends Ha3Scroller
 	final String msgup = "+";
 	final String msgdown = "-";
 	
-	private String msgd = msgvol;
+	private String msgd = this.msgvol;
 	
 	private MAtMod mod;
 	private float prevPitch;
@@ -37,9 +37,9 @@ public class MAtScroller extends Ha3Scroller
 	public MAtScroller(MAtUserControl userControlIn, MAtMod mod2)
 	{
 		super(mod2.manager().getMinecraft());
-		mod = mod2;
+		this.mod = mod2;
 		
-		knowsHowToUse = false;
+		this.knowsHowToUse = false;
 		
 	}
 	
@@ -50,59 +50,51 @@ public class MAtScroller extends Ha3Scroller
 		
 		Minecraft mc = getMinecraft();
 		
-		msgper = (int) Math.floor(doneValue * 100) + "%";
+		msgper = (int) Math.floor(this.doneValue * 100) + "%";
 		
-		ScaledResolution screenRes = new ScaledResolution(mc.gameSettings,
-				mc.displayWidth, mc.displayHeight);
+		ScaledResolution screenRes = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
 		
 		int scrWidth = screenRes.getScaledWidth();
 		int scrHeight = screenRes.getScaledHeight();
 		
 		int uwidth = width("_");
-		int uposx = (scrWidth - uwidth) / 2 + width(msgd) / 2;
+		int uposx = (scrWidth - uwidth) / 2 + width(this.msgd) / 2;
 		
-		mc.fontRenderer.drawStringWithShadow(msgd, uposx + uwidth * 2,
-				scrHeight / 2,
-				0xffffff);
+		mc.fontRenderer.drawStringWithShadow(this.msgd, uposx + uwidth * 2, scrHeight / 2, 0xffffff);
 		
-		mc.fontRenderer.drawStringWithShadow(msgper, uposx + uwidth * 2,
-				scrHeight / 2 + 10, 255 << 16
-				| ((int) (200 + 55 * (doneValue < 1 ? 1
-						: (4 - doneValue) / 3F))) << 8);
+		mc.fontRenderer.drawStringWithShadow(msgper, uposx + uwidth * 2, scrHeight / 2 + 10, 255 << 16
+			| (int) (200 + 55 * (this.doneValue < 1 ? 1 : (4 - this.doneValue) / 3F)) << 8);
 		
-		if (!knowsHowToUse)
+		if (!this.knowsHowToUse)
 		{
-			float glocount = mod.util().getClientTick() + fspan;
+			float glocount = this.mod.util().getClientTick() + fspan;
 			int blink = (int) (200 + 55 * (Math.sin(glocount * Math.PI * 0.07) + 1) / 2F);
-			mc.fontRenderer.drawStringWithShadow("<Look up/down>", uposx
-					+ uwidth * 2, scrHeight / 2 + 10 * 2, blink << 16
-					| blink << 8 | blink);
+			mc.fontRenderer.drawStringWithShadow(
+				"<Look up/down>", uposx + uwidth * 2, scrHeight / 2 + 10 * 2, blink << 16 | blink << 8 | blink);
 			
 			if (Math.abs(getInitialPitch() - getPitch()) > 60)
 			{
-				knowsHowToUse = true;
+				this.knowsHowToUse = true;
 				
 			}
 			
 		}
 		
-		mc.fontRenderer.drawStringWithShadow(msgup, uposx + uwidth * 2,
-				scrHeight / 2 - scrHeight / 6 + 3, 0xffff00);
+		mc.fontRenderer.drawStringWithShadow(
+			this.msgup, uposx + uwidth * 2, scrHeight / 2 - scrHeight / 6 + 3, 0xffff00);
 		
-		mc.fontRenderer.drawStringWithShadow(msgdown, uposx + uwidth * 2,
-				scrHeight / 2 + scrHeight / 6 + 3,
-				0xffff00);
+		mc.fontRenderer.drawStringWithShadow(
+			this.msgdown, uposx + uwidth * 2, scrHeight / 2 + scrHeight / 6 + 3, 0xffff00);
 		
 		final int ucount = 8;
 		final float speedytude = 20;
 		for (int i = 0; i < ucount; i++)
 		{
-			float perx = (((getPitch() + 90F) % speedytude) / speedytude + i)
-					/ (ucount);
+			float perx = ((getPitch() + 90F) % speedytude / speedytude + i) / ucount;
 			double pirx = Math.cos(Math.PI * perx);
 			
-			mc.fontRenderer.drawStringWithShadow("_", uposx, scrHeight / 2
-					+ (int) Math.floor(pirx * scrHeight / 6), 0xffff00);
+			mc.fontRenderer.drawStringWithShadow(
+				"_", uposx, scrHeight / 2 + (int) Math.floor(pirx * scrHeight / 6), 0xffff00);
 			
 		}
 		
@@ -110,13 +102,13 @@ public class MAtScroller extends Ha3Scroller
 	
 	private int width(String s)
 	{
-		return mod.manager().getMinecraft().fontRenderer.getStringWidth(s);
+		return this.mod.manager().getMinecraft().fontRenderer.getStringWidth(s);
 		
 	}
 	
 	public float getValue()
 	{
-		return doneValue;
+		return this.doneValue;
 		
 	}
 	
@@ -124,37 +116,34 @@ public class MAtScroller extends Ha3Scroller
 	protected void doRoutineBefore()
 	{
 		final int caps = 10;
-		if (Math.floor((prevPitch + 90F) / caps) != Math
-				.floor((getPitch() + 90F) / caps))
+		if (Math.floor((this.prevPitch + 90F) / caps) != Math.floor((getPitch() + 90F) / caps))
 		{
 			float hgn = (float) Math.pow((-getPitch() + 90F) / 90F, 2);
-			float res = (float) Math
-					.pow(2, -Math.floor(getPitch() / caps) / 12);
+			float res = (float) Math.pow(2, -Math.floor(getPitch() / caps) / 12);
 			
-			EntityPlayer ply = mod.manager().getMinecraft().thePlayer;
+			EntityPlayer ply = this.mod.manager().getMinecraft().thePlayer;
 			float posX = (float) ply.posX;
 			float posY = (float) ply.posY;
 			float posZ = (float) ply.posZ;
 			
-			mod.sound().playSoundViaManager("random.click", posX, posY,
-					posZ, hgn, res);
+			this.mod.sound().playSoundViaManager("random.click", posX, posY, posZ, hgn, res);
 			
 		}
 		
-		doneValue = -getPitch() / 90F + 1F;
-		doneValue = (float) Math.pow(doneValue, 2);
+		this.doneValue = -getPitch() / 90F + 1F;
+		this.doneValue = (float) Math.pow(this.doneValue, 2);
 		if (Math.abs(getPitch()) < 3)
 		{
-			doneValue = 1F;
+			this.doneValue = 1F;
 			
 		}
-		if (Math.abs(doneValue - 0.2F) < 0.05F)
+		if (Math.abs(this.doneValue - 0.2F) < 0.05F)
 		{
-			doneValue = 0.2F;
+			this.doneValue = 0.2F;
 			
 		}
 		
-		prevPitch = getPitch();
+		this.prevPitch = getPitch();
 		
 	}
 	
@@ -167,7 +156,7 @@ public class MAtScroller extends Ha3Scroller
 	@Override
 	protected void doStart()
 	{
-		prevPitch = getPitch();
+		this.prevPitch = getPitch();
 		
 	}
 	
@@ -180,9 +169,13 @@ public class MAtScroller extends Ha3Scroller
 	public void start(boolean scrollModeIsMusic)
 	{
 		if (!scrollModeIsMusic)
-			msgd = msgvol;
+		{
+			this.msgd = this.msgvol;
+		}
 		else
-			msgd = msgmus;
+		{
+			this.msgd = this.msgmus;
+		}
 		
 		this.start();
 		

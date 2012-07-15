@@ -29,23 +29,25 @@ public class MAtExpansionFetcher extends Thread
 	
 	public MAtExpansionFetcher(MAtExpansionLoader loader, String identifierIn)
 	{
-		this.setDaemon(true);
+		setDaemon(true);
 		this.loader = loader;
 		
 		setName("MATMOS-" + identifierIn);
 		setDaemon(true);
 		
-		identifier = identifierIn;
+		this.identifier = identifierIn;
 		
 	}
 	
 	public void getDatabase(URL urlIn)
 	{
-		if (this.isAlive())
-			this.interrupt();
+		if (isAlive())
+		{
+			interrupt();
+		}
 		
-		url = urlIn;
-		this.start();
+		this.url = urlIn;
+		start();
 		
 	}
 	
@@ -54,26 +56,25 @@ public class MAtExpansionFetcher extends Thread
 	{
 		try
 		{
-			final InputStream is = url.openStream();
-			loader.putTask(new Runnable() {
+			final InputStream is = this.url.openStream();
+			this.loader.putTask(new Runnable() {
 				@Override
 				public void run()
 				{
-					loader.fetcherSuccess(identifier, is);
+					MAtExpansionFetcher.this.loader.fetcherSuccess(MAtExpansionFetcher.this.identifier, is);
 				}
 			});
 			
 		}
 		catch (IOException e)
 		{
-			loader.putTask(new Runnable() {
+			this.loader.putTask(new Runnable() {
 				@Override
 				public void run()
 				{
-					MAtMod.LOGGER
-					.warning("Error with I/O on fetcher " + url.toString());
+					MAtMod.LOGGER.warning("Error with I/O on fetcher " + MAtExpansionFetcher.this.url.toString());
 					MAtMod.LOGGER.warning("(This may be a network error)");
-					loader.fetcherFailure(identifier);
+					MAtExpansionFetcher.this.loader.fetcherFailure(MAtExpansionFetcher.this.identifier);
 				}
 			});
 			

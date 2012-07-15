@@ -20,8 +20,7 @@ import eu.ha3.mc.haddon.SupportsTickEvents;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class BindingsCompactHaddon extends HaddonImpl implements
-SupportsTickEvents
+public class BindingsCompactHaddon extends HaddonImpl implements SupportsTickEvents
 {
 	private Ha3EdgeTrigger bindTrigger;
 	
@@ -29,7 +28,7 @@ SupportsTickEvents
 	public void onLoad()
 	{
 		manager().hookTickEvents(true);
-		bindTrigger = new Ha3EdgeTrigger(new Ha3EdgeModel() {
+		this.bindTrigger = new Ha3EdgeTrigger(new Ha3EdgeModel() {
 			@Override
 			public void onTrueEdge()
 			{
@@ -49,9 +48,10 @@ SupportsTickEvents
 	protected void display()
 	{
 		if (util().isCurrentScreen(null))
+		{
 			manager().getMinecraft().displayGuiScreen(
-					new BindindsCompactGUI(null,
-							manager().getMinecraft().gameSettings));
+				new BindindsCompactGUI(null, manager().getMinecraft().gameSettings));
+		}
 		
 	}
 	
@@ -59,7 +59,7 @@ SupportsTickEvents
 	public void onTick()
 	{
 		// ctrl shift B
-		bindTrigger.signalState(util().areKeysDown(29, 42, 48));
+		this.bindTrigger.signalState(util().areKeysDown(29, 42, 48));
 		
 	}
 	

@@ -30,73 +30,70 @@ public class MAtWrappedExpansionSoundManager implements MAtmosSoundManager
 	private MAtExpansion expansion;
 	private MAtmosSoundManager soundManager;
 	
-	MAtWrappedExpansionSoundManager(MAtExpansion expansion,
-			MAtmosSoundManager soundManager)
-			{
+	MAtWrappedExpansionSoundManager(MAtExpansion expansion, MAtmosSoundManager soundManager)
+	{
 		this.expansion = expansion;
 		this.soundManager = soundManager;
 		
-			}
+	}
 	
 	@Override
 	public void routine()
 	{
-		soundManager.routine();
+		this.soundManager.routine();
 	}
 	
 	@Override
 	public void cacheSound(String path)
 	{
-		soundManager.cacheSound(path);
+		this.soundManager.cacheSound(path);
 	}
 	
 	@Override
 	public void playSound(String path, float volume, float pitch, int meta)
 	{
-		soundManager.playSound(path, volume * expansion.getVolume(), pitch,
-				meta);
+		this.soundManager.playSound(path, volume * this.expansion.getVolume(), pitch, meta);
 		
 	}
 	
 	@Override
 	public int getNewStreamingToken()
 	{
-		return soundManager.getNewStreamingToken();
+		return this.soundManager.getNewStreamingToken();
 	}
 	
 	@Override
-	public boolean setupStreamingToken(int token, String path, float volume,
-			float pitch)
+	public boolean setupStreamingToken(int token, String path, float volume, float pitch)
 	{
-		return soundManager.setupStreamingToken(token, path, volume, pitch);
+		return this.soundManager.setupStreamingToken(token, path, volume, pitch);
 		
 	}
 	
 	@Override
 	public void startStreaming(int token, float fadeDuration, int timesToPlay)
 	{
-		soundManager.startStreaming(token, fadeDuration, timesToPlay);
+		this.soundManager.startStreaming(token, fadeDuration, timesToPlay);
 		
 	}
 	
 	@Override
 	public void stopStreaming(int token, float fadeDuration)
 	{
-		soundManager.stopStreaming(token, fadeDuration);
+		this.soundManager.stopStreaming(token, fadeDuration);
 		
 	}
 	
 	@Override
 	public void pauseStreaming(int token, float fadeDuration)
 	{
-		soundManager.pauseStreaming(token, fadeDuration);
+		this.soundManager.pauseStreaming(token, fadeDuration);
 		
 	}
 	
 	@Override
 	public void eraseStreamingToken(int token)
 	{
-		soundManager.eraseStreamingToken(token);
+		this.soundManager.eraseStreamingToken(token);
 		
 	}
 	

@@ -28,8 +28,7 @@ import eu.ha3.mc.haddon.SupportsTickEvents;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class LBVisHaddon extends HaddonImpl implements SupportsTickEvents,
-SupportsChatEvents
+public class LBVisHaddon extends HaddonImpl implements SupportsTickEvents, SupportsChatEvents
 {
 	private LBVisStep step;
 	
@@ -60,17 +59,17 @@ SupportsChatEvents
 	{
 		manager().hookTickEvents(true);
 		manager().hookChatEvents(true);
-		manager().addRenderable(LBVisRenderEntity.class,
-				new LBVisRenderHooks(this));
+		manager().addRenderable(LBVisRenderEntity.class, new LBVisRenderHooks(this));
 		
 	}
 	
 	private void makePatterns()
 	{
-		patternStart = Pattern.compile("^(?:§.)?Block changes?");
-		patternChange = Pattern.compile("^(?:§.)?(\\d+) changes? found\\.");
-		patternPage = Pattern.compile("^(?:§.)?Page (\\d+)/(\\d+)");
-		patternLogLine = Pattern
+		this.patternStart = Pattern.compile("^(?:§.)?Block changes?");
+		this.patternChange = Pattern.compile("^(?:§.)?(\\d+) changes? found\\.");
+		this.patternPage = Pattern.compile("^(?:§.)?Page (\\d+)/(\\d+)");
+		this.patternLogLine =
+			Pattern
 				.compile("^(?:§.)?\\((\\d+)\\) (\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}) ([a-zA-Z0-9_]+) (.*?) at (-?[0-9]+):(-?[0-9]+):(-?[0-9]+)");
 		
 	}
@@ -80,7 +79,7 @@ SupportsChatEvents
 	{
 		boolean win = false;
 		
-		switch (step)
+		switch (this.step)
 		{
 		case WAITING_FOR_CHANGECOUNT:
 			win = tryMatchChangeCount(contents);
@@ -91,7 +90,7 @@ SupportsChatEvents
 		case WAITING_FOR_LOGLINE:
 			win = tryMatchLogLine(contents);
 			break;
-			
+		
 		}
 		
 		if (!win)
@@ -112,12 +111,12 @@ SupportsChatEvents
 	
 	private boolean tryMatchLogLine(String contents)
 	{
-		if (lastReport == null)
+		if (this.lastReport == null)
 			return false;
 		
 		System.out.println(contents);
 		
-		Matcher match = patternLogLine.matcher(contents);
+		Matcher match = this.patternLogLine.matcher(contents);
 		if (match.find())
 		{
 			LBChange change = new LBChange();
@@ -129,7 +128,7 @@ SupportsChatEvents
 			change.setY(Integer.parseInt(match.group(6)));
 			change.setZ(Integer.parseInt(match.group(7)));
 			
-			lastReport.addChange(change);
+			this.lastReport.addChange(change);
 			
 			return true;
 			
@@ -141,15 +140,14 @@ SupportsChatEvents
 	
 	private boolean tryMatchPageCount(String contents)
 	{
-		if (lastReport == null)
+		if (this.lastReport == null)
 			return false;
 		
-		Matcher match = patternPage.matcher(contents);
+		Matcher match = this.patternPage.matcher(contents);
 		if (match.find())
 		{
-			step = LBVisStep.WAITING_FOR_LOGLINE;
-			lastReport.setPageData(Integer.parseInt(match.group(1)), Integer
-					.parseInt(match.group(2)));
+			this.step = LBVisStep.WAITING_FOR_LOGLINE;
+			this.lastReport.setPageData(Integer.parseInt(match.group(1)), Integer.parseInt(match.group(2)));
 			
 			return true;
 			
@@ -161,14 +159,14 @@ SupportsChatEvents
 	
 	private boolean tryMatchChangeCount(String contents)
 	{
-		if (lastReport == null)
+		if (this.lastReport == null)
 			return false;
 		
-		Matcher match = patternChange.matcher(contents);
+		Matcher match = this.patternChange.matcher(contents);
 		if (match.find())
 		{
-			step = LBVisStep.WAITING_FOR_PAGECOUNT;
-			lastReport.setChangedTotal(Integer.parseInt(match.group(1)));
+			this.step = LBVisStep.WAITING_FOR_PAGECOUNT;
+			this.lastReport.setChangedTotal(Integer.parseInt(match.group(1)));
 			
 			return true;
 			
@@ -180,16 +178,18 @@ SupportsChatEvents
 	
 	private boolean tryMatchStart(String contents)
 	{
-		Matcher match = patternStart.matcher(contents);
+		Matcher match = this.patternStart.matcher(contents);
 		if (match.find())
 		{
-			step = LBVisStep.WAITING_FOR_CHANGECOUNT;
+			this.step = LBVisStep.WAITING_FOR_CHANGECOUNT;
 			
-			if (lastReport != null && !lastReport.isValid())
-				reports.remove(lastReport);
+			if (this.lastReport != null && !this.lastReport.isValid())
+			{
+				this.reports.remove(this.lastReport);
+			}
 			
-			lastReport = new LBReport();
-			reports.add(lastReport);
+			this.lastReport = new LBReport();
+			this.reports.add(this.lastReport);
 			
 			return true;
 			
@@ -204,17 +204,15 @@ SupportsChatEvents
 	{
 		Minecraft mc = manager().getMinecraft();
 		
-		if (mc.theWorld != lastWorld || mc.thePlayer != lastPlayer)
+		if (mc.theWorld != this.lastWorld || mc.thePlayer != this.lastPlayer)
 		{
-			renderEntity = new LBVisRenderEntity(this, mc.theWorld);
-			renderEntity.setPosition(mc.thePlayer.posX, mc.thePlayer.posY,
-					mc.thePlayer.posZ);
-			mc.theWorld.spawnEntityInWorld(renderEntity);
-			renderEntity.setPosition(mc.thePlayer.posX, mc.thePlayer.posY,
-					mc.thePlayer.posZ);
+			this.renderEntity = new LBVisRenderEntity(this, mc.theWorld);
+			this.renderEntity.setPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);
+			mc.theWorld.spawnEntityInWorld(this.renderEntity);
+			this.renderEntity.setPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);
 			
-			lastWorld = mc.theWorld;
-			lastPlayer = mc.thePlayer;
+			this.lastWorld = mc.theWorld;
+			this.lastPlayer = mc.thePlayer;
 			
 			System.out.println("f");
 			changedLocation();
@@ -233,8 +231,8 @@ SupportsChatEvents
 	
 	private void changedLocation()
 	{
-		reports.clear();
-		lastReport = null;
+		this.reports.clear();
+		this.lastReport = null;
 		
 	}
 	
@@ -306,7 +304,8 @@ SupportsChatEvents
 		double ax = 0, ay = 0, az = 0;
 		int count = 0;
 		
-		for (LBReport report : reports)
+		for (LBReport report : this.reports)
+		{
 			//if (report.isValid())
 			for (LBChange change : report.getStoredChanges())
 			{
@@ -319,6 +318,7 @@ SupportsChatEvents
 				qdb(change.getX(), change.getY(), change.getZ(), f);
 				
 			}
+		}
 		
 		ax = (float) ax / count;
 		ay = (float) ay / count;

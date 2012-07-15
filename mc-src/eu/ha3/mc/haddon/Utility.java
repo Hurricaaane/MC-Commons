@@ -32,9 +32,8 @@ public interface Utility
 	 * @throws PrivateAccessException
 	 *             When the method fails
 	 */
-	public Object getPrivateValue(Class classToPerformOn,
-			Object instanceToPerformOn, int zeroOffsets)
-					throws PrivateAccessException;
+	public Object getPrivateValue(Class classToPerformOn, Object instanceToPerformOn, int zeroOffsets)
+		throws PrivateAccessException;
 	
 	/**
 	 * Forces a private value to be set, using the Zero Offset method.
@@ -51,10 +50,8 @@ public interface Utility
 	 * @throws PrivateAccessException
 	 *             When the method fails
 	 */
-	public void setPrivateValue(Class classToPerformOn,
-			Object instanceToPerformOn,
-			int zeroOffsets, Object newValue)
-					throws PrivateAccessException;
+	public void setPrivateValue(Class classToPerformOn, Object instanceToPerformOn, int zeroOffsets, Object newValue)
+		throws PrivateAccessException;
 	
 	/**
 	 * Forces a private value to be read, first using the literal string of the
@@ -72,9 +69,9 @@ public interface Utility
 	 * @throws PrivateAccessException
 	 *             When the method fails twice
 	 */
-	public Object getPrivateValueLiteral(Class classToPerformOn,
-			Object instanceToPerformOn, String obfPriority,
-			int zeroOffsetsDebug) throws PrivateAccessException;
+	public Object getPrivateValueLiteral(
+		Class classToPerformOn, Object instanceToPerformOn, String obfPriority, int zeroOffsetsDebug)
+		throws PrivateAccessException;
 	
 	/**
 	 * Forces a private value to be set, first using the literal string of the
@@ -94,10 +91,9 @@ public interface Utility
 	 * @throws PrivateAccessException
 	 *             When the method fails twice
 	 */
-	public void setPrivateValueLiteral(Class classToPerformOn,
-			Object instanceToPerformOn, String obfPriority,
-			int zeroOffsetsDebug, Object newValue)
-					throws PrivateAccessException;
+	public void setPrivateValueLiteral(
+		Class classToPerformOn, Object instanceToPerformOn, String obfPriority, int zeroOffsetsDebug, Object newValue)
+		throws PrivateAccessException;
 	
 	/**
 	 * Returns the world height.<br/>

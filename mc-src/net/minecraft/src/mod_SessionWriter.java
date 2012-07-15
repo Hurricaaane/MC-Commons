@@ -44,7 +44,9 @@ public class mod_SessionWriter extends BaseMod
 		{
 			File f = new File(getAppDir("minecraft"), "mcsession.txt");
 			if (!f.exists())
+			{
 				f.createNewFile();
+			}
 			FileWriter fw = new FileWriter(f);
 			
 			fw.write(username + " " + sessionId);

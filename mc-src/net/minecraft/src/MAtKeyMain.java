@@ -24,7 +24,7 @@ public class MAtKeyMain implements Ha3KeyActions
 	
 	MAtKeyMain(MAtUserControl userControlIn)
 	{
-		userControl = userControlIn;
+		this.userControl = userControlIn;
 		
 	}
 	
@@ -40,13 +40,13 @@ public class MAtKeyMain implements Ha3KeyActions
 	{
 		if (curTime == 1)
 		{
-			userControl.signalPress();
+			this.userControl.signalPress();
 			
 		}
 		
 		if (curTime == 7)
 		{
-			userControl.beginHold();
+			this.userControl.beginHold();
 			
 		}
 		
@@ -57,12 +57,12 @@ public class MAtKeyMain implements Ha3KeyActions
 	{
 		if (curTime < 6)
 		{
-			userControl.signalShortPress();
+			this.userControl.signalShortPress();
 			
 		} // Omit frame 7
 		else if (curTime > 7)
 		{
-			userControl.endHold();
+			this.userControl.endHold();
 			
 		}
 		

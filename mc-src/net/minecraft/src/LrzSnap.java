@@ -40,8 +40,7 @@ public class LrzSnap implements LrzSnapI
 		this.coordA = snapCoordA;
 		this.coordB = snapCoordB;
 		this.changed = false;
-		this.gatherBuffer = new int[this.worldCache.getSplit()][this.worldCache
-		                                                        .getSplit()];
+		this.gatherBuffer = new int[this.worldCache.getSplit()][this.worldCache.getSplit()];
 		
 		buildEmptyImage();
 		
@@ -51,15 +50,13 @@ public class LrzSnap implements LrzSnapI
 		
 	}
 	
-	public LrzSnap(LrzWorldCacheI worldCache, int snapCoordA, int snapCoordB,
-			BufferedImage bufferedImage)
+	public LrzSnap(LrzWorldCacheI worldCache, int snapCoordA, int snapCoordB, BufferedImage bufferedImage)
 	{
 		this.worldCache = worldCache;
 		this.coordA = snapCoordA;
 		this.coordB = snapCoordB;
 		this.changed = false;
-		this.gatherBuffer = new int[this.worldCache.getSplit()][this.worldCache
-		                                                        .getSplit()];
+		this.gatherBuffer = new int[this.worldCache.getSplit()][this.worldCache.getSplit()];
 		
 		this.image = bufferedImage; // FIXME: This assumes the image has the correct dimensions
 		
@@ -85,68 +82,73 @@ public class LrzSnap implements LrzSnapI
 			
 		}
 		
-		
 	}
+	
 	private void buildEmptyImage()
 	{
 		int size = this.worldCache.getSideCount() * this.worldCache.getSplit();
-		image = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
+		this.image = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
 		
 	}
+	
 	private void buildMags()
 	{
 		int sideCount = this.worldCache.getSideCount();
-		mags = new LrzMag[sideCount][sideCount];
+		this.mags = new LrzMag[sideCount][sideCount];
 		for (int i = 0; i < sideCount; i++)
+		{
 			for (int j = 0; j < sideCount; j++)
-				mags[i][j] = new LrzMag(this);
+			{
+				this.mags[i][j] = new LrzMag(this);
+			}
+		}
 		
 	}
 	
 	private int modulus(int a, int n)
 	{
-		return (int) (a - n * Math.floor(((float) a) / n));
+		return (int) (a - n * Math.floor((float) a / n));
 		
 	}
 	
 	@Override
 	public int requestAverage(int worldX, int worldZ)
 	{
-		int iMag = modulus((worldX / LrzWorldCache.CHUNK_SIZE), worldCache
-				.getSideCount());
-		int jMag = modulus((worldZ / LrzWorldCache.CHUNK_SIZE), worldCache
-				.getSideCount());
-		int split = worldCache.getSplit();
+		int iMag = modulus(worldX / LrzWorldCache.CHUNK_SIZE, this.worldCache.getSideCount());
+		int jMag = modulus(worldZ / LrzWorldCache.CHUNK_SIZE, this.worldCache.getSideCount());
+		int split = this.worldCache.getSplit();
 		
 		int average = 0;
 		
-		LrzMagI mag = mags[iMag][jMag];
+		LrzMagI mag = this.mags[iMag][jMag];
 		
-		int tick = worldCache.mod().util().getClientTick();
+		int tick = this.worldCache.mod().util().getClientTick();
 		if (mag.hasTimeout(tick))
 		{
 			boolean gathered = gatherChunk(iMag, jMag);
 			if (mag.isGathered())
+			{
 				mag.setTimeout(tick + LrzWorldCache.TICKS_TO_CACHE_TIMEOUT);
+			}
 			else
+			{
 				mag.setTimeout(tick + LrzWorldCache.TICKS_TO_RETRY_TIMEOUT);
+			}
 			
 			if (gathered)
+			{
 				mag.markGathered();
+			}
 			
-			changed = true;
+			this.changed = true;
 			
 		}
 		
 		if (mag.isGathered())
 		{
-			average = image.getRGB(iMag
-					* split
-					+ modulus((worldX / (LrzWorldCache.CHUNK_SIZE / split)),
-							split), jMag
-							* split
-							+ modulus((worldZ / (LrzWorldCache.CHUNK_SIZE / split)),
-									split)) & 0xFF;
+			average =
+				this.image.getRGB(iMag * split + modulus(worldX / (LrzWorldCache.CHUNK_SIZE / split), split), jMag
+					* split + modulus(worldZ / (LrzWorldCache.CHUNK_SIZE / split), split)) & 0xFF;
 			
 		}
 		else
@@ -166,22 +168,22 @@ public class LrzSnap implements LrzSnapI
 	
 	private boolean gatherChunk(int iMag, int jMag)
 	{
-		int xOrigin = coordA * worldCache.getSideCount()
-				* LrzWorldCache.CHUNK_SIZE + iMag * LrzWorldCache.CHUNK_SIZE;
-		int zOrigin = coordB * worldCache.getSideCount()
-				* LrzWorldCache.CHUNK_SIZE + jMag * LrzWorldCache.CHUNK_SIZE;
-		int splits = worldCache.getSplit();
+		int xOrigin =
+			this.coordA * this.worldCache.getSideCount() * LrzWorldCache.CHUNK_SIZE + iMag * LrzWorldCache.CHUNK_SIZE;
+		int zOrigin =
+			this.coordB * this.worldCache.getSideCount() * LrzWorldCache.CHUNK_SIZE + jMag * LrzWorldCache.CHUNK_SIZE;
+		int splits = this.worldCache.getSplit();
 		int splitPhysicalSize = LrzWorldCache.CHUNK_SIZE / splits;
 		int splitPhysicalSizeSquared = splitPhysicalSize * splitPhysicalSize;
-		Minecraft mc = worldCache.mod().manager().getMinecraft();
+		Minecraft mc = this.worldCache.mod().manager().getMinecraft();
 		
 		boolean fail = false;
 		
-		for (int b = 0; (b < splits) && (!fail); b++)
+		for (int b = 0; b < splits && !fail; b++)
 		{
 			int zPush = b * splitPhysicalSize;
 			
-			for (int a = 0; (a < splits) && (!fail); a++)
+			for (int a = 0; a < splits && !fail; a++)
 			{
 				int xPush = a * splitPhysicalSize;
 				
@@ -190,9 +192,8 @@ public class LrzSnap implements LrzSnapI
 				{
 					for (int zPand = 0; zPand < splitPhysicalSize; zPand++)
 					{
-						average = average
-								+ mc.theWorld.getHeightValue(xOrigin + xPush
-										+ xPand, zOrigin + zPush + zPand);
+						average =
+							average + mc.theWorld.getHeightValue(xOrigin + xPush + xPand, zOrigin + zPush + zPand);
 						
 					}
 				}
@@ -208,12 +209,11 @@ public class LrzSnap implements LrzSnapI
 		}
 		if (!fail)
 		{
-			for (int b = 0; b < splits && (!fail); b++)
+			for (int b = 0; b < splits && !fail; b++)
 			{
-				for (int a = 0; a < splits && (!fail); a++)
+				for (int a = 0; a < splits && !fail; a++)
 				{
-					image.setRGB(iMag * splits + a, jMag * splits + b,
-							this.gatherBuffer[a][b]);
+					this.image.setRGB(iMag * splits + a, jMag * splits + b, this.gatherBuffer[a][b]);
 					
 				}
 			}
@@ -221,12 +221,11 @@ public class LrzSnap implements LrzSnapI
 		}
 		else
 		{
-			for (int b = 0; b < splits && (!fail); b++)
+			for (int b = 0; b < splits && !fail; b++)
 			{
-				for (int a = 0; a < splits && (!fail); a++)
+				for (int a = 0; a < splits && !fail; a++)
 				{
-					image.setRGB(iMag * splits + a, jMag * splits + b,
-							this.failedBuffer[a][b]);
+					this.image.setRGB(iMag * splits + a, jMag * splits + b, this.failedBuffer[a][b]);
 					
 				}
 			}
@@ -240,7 +239,7 @@ public class LrzSnap implements LrzSnapI
 	@Override
 	public boolean hasChanged()
 	{
-		return changed;
+		return this.changed;
 	}
 	
 	@Override
@@ -253,7 +252,7 @@ public class LrzSnap implements LrzSnapI
 	@Override
 	public BufferedImage getImage()
 	{
-		return image;
+		return this.image;
 	}
 	
 	@Override
@@ -266,19 +265,19 @@ public class LrzSnap implements LrzSnapI
 	@Override
 	public int getCoordA()
 	{
-		return coordA;
+		return this.coordA;
 	}
 	
 	@Override
 	public int getCoordB()
 	{
-		return coordB;
+		return this.coordB;
 	}
 	
 	@Override
 	public void clearChangeState()
 	{
-		changed = false;
+		this.changed = false;
 		
 	}
 	
