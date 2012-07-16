@@ -34,9 +34,13 @@ public class Ha3StaticUtilities
 			canWork = Class.forName(className, false, context.getClass().getClassLoader()) != null;
 			
 		}
-		catch (ClassNotFoundException e)
+		//catch (ClassNotFoundException e)
+		//{
+		//}
+		catch (Exception e)
 		{
-			canWork = false;
+			// Normally throws checked ClassNotFoundException
+			// This also throws unckecked security exceptions
 		}
 		
 		return canWork;
