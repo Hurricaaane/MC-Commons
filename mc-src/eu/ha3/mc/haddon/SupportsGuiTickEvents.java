@@ -1,5 +1,7 @@
 package eu.ha3.mc.haddon;
 
+import net.minecraft.src.GuiScreen;
+
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
                     Version 2, December 2004 
@@ -16,13 +18,13 @@ package eu.ha3.mc.haddon;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public interface SupportsTickEvents
+public interface SupportsGuiTickEvents
 {
 	/**
-	 * Triggered on each tick in-game while the tick events are hooked onto the
-	 * manager.
+	 * Triggered on each tick outside of a game while the gui tick events are
+	 * hooked onto the manager.
 	 * 
 	 */
-	public void onTick();
+	public void onGuiTick(GuiScreen gui);
 	
 }

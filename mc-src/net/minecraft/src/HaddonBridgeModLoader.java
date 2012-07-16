@@ -8,9 +8,12 @@ import eu.ha3.mc.haddon.Haddon;
 import eu.ha3.mc.haddon.Manager;
 import eu.ha3.mc.haddon.SupportsChatEvents;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
+import eu.ha3.mc.haddon.SupportsGuiFrameEvents;
+import eu.ha3.mc.haddon.SupportsGuiTickEvents;
 import eu.ha3.mc.haddon.SupportsInitialization;
 import eu.ha3.mc.haddon.SupportsKeyEvents;
 import eu.ha3.mc.haddon.SupportsTickEvents;
+import eu.ha3.mc.haddon.UnsupportedInterfaceException;
 import eu.ha3.mc.haddon.Utility;
 
 /*
@@ -36,18 +39,24 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 	
 	private boolean supportsTick;
 	private boolean supportsFrame;
+	private boolean supportsGuiTick;
+	private boolean supportsGuiFrame;
 	private boolean supportsChat;
 	private boolean supportsKey;
 	
 	private boolean tickEnabled;
 	private boolean frameEnabled;
+	private boolean guiTickEnabled;
+	private boolean guiFrameEnabled;
 	private boolean chatEnabled;
 	
 	private Map<Object, Object> renderPairs;
 	
 	private boolean impl_continueTicking;
+	private boolean impl_continueGuiTicking;
 	
 	private int lastTick;
+	private int lastGuiTick;
 	
 	public HaddonBridgeModLoader(Haddon haddon)
 	{
@@ -58,12 +67,16 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 		
 		this.supportsTick = haddon instanceof SupportsTickEvents;
 		this.supportsFrame = haddon instanceof SupportsFrameEvents;
+		this.supportsGuiTick = haddon instanceof SupportsGuiTickEvents;
+		this.supportsGuiFrame = haddon instanceof SupportsGuiFrameEvents;
 		this.supportsChat = haddon instanceof SupportsChatEvents;
 		this.supportsKey = haddon instanceof SupportsKeyEvents;
 		
 		this.impl_continueTicking = this.supportsTick || this.supportsFrame;
+		this.impl_continueGuiTicking = this.supportsGuiTick || this.supportsGuiFrame;
 		
 		this.lastTick = -1;
+		this.lastGuiTick = -1;
 		
 		if (haddon instanceof SupportsInitialization)
 		{
@@ -84,6 +97,15 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 		else if (this.supportsFrame)
 		{
 			ModLoader.setInGameHook(this, true, false);
+		}
+		
+		if (this.supportsGuiTick && !this.supportsGuiFrame)
+		{
+			ModLoader.setInGUIHook(this, true, true);
+		}
+		else if (this.supportsGuiFrame)
+		{
+			ModLoader.setInGUIHook(this, true, false);
 		}
 		
 	}
@@ -121,6 +143,31 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 	}
 	
 	@Override
+	public boolean onTickInGUI(float semi, Minecraft minecraft, GuiScreen gui)
+	{
+		if (this.supportsGuiTick && this.guiTickEnabled)
+		{
+			int tick = this.utility.getClientTick();
+			if (tick != this.lastGuiTick)
+			{
+				((SupportsGuiTickEvents) this.haddon).onGuiTick(gui);
+				this.lastGuiTick = tick;
+				
+			}
+			
+		}
+		
+		if (this.supportsGuiFrame && this.guiFrameEnabled)
+		{
+			((SupportsGuiFrameEvents) this.haddon).onGuiFrame(gui, semi);
+			
+		}
+		
+		return this.impl_continueGuiTicking;
+		
+	}
+	
+	@Override
 	public void receiveChatPacket(String contents)
 	{
 		if (this.supportsChat && this.chatEnabled)
@@ -134,9 +181,29 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 	public void hookTickEvents(boolean enable)
 	{
 		if (!this.supportsTick)
-			return;
+			throw new UnsupportedInterfaceException();
 		
 		this.tickEnabled = enable;
+		
+	}
+	
+	@Override
+	public void hookGuiTickEvents(boolean enable)
+	{
+		if (!this.supportsGuiTick)
+			throw new UnsupportedInterfaceException();
+		
+		this.guiTickEnabled = enable;
+		
+	}
+	
+	@Override
+	public void hookGuiFrameEvents(boolean enable)
+	{
+		if (!this.supportsGuiFrame)
+			throw new UnsupportedInterfaceException();
+		
+		this.guiFrameEnabled = enable;
 		
 	}
 	
@@ -144,7 +211,7 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 	public void hookFrameEvents(boolean enable)
 	{
 		if (!this.supportsFrame)
-			return;
+			throw new UnsupportedInterfaceException();
 		
 		this.frameEnabled = enable;
 		
@@ -154,7 +221,7 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 	public void hookChatEvents(boolean enable)
 	{
 		if (!this.supportsChat)
-			return;
+			throw new UnsupportedInterfaceException();
 		
 		this.chatEnabled = enable;
 		
@@ -214,5 +281,4 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 		((SupportsKeyEvents) this.haddon).onKey(event);
 		
 	}
-	
 }
