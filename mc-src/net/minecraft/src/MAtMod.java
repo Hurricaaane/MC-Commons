@@ -230,7 +230,6 @@ public class MAtMod extends HaddonImpl
 	
 	private String getFirstBlocker()
 	{
-		manager().getMinecraft();
 		File folder = new File(Minecraft.getMinecraftDir(), "matmos_audiomodlike_blacklist/");
 		
 		if (!folder.exists())

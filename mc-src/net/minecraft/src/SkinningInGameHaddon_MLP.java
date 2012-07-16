@@ -36,7 +36,6 @@ import eu.ha3.mc.haddon.SupportsTickEvents;
 
 public class SkinningInGameHaddon_MLP extends HaddonImpl implements SupportsTickEvents, SupportsFrameEvents
 {
-	private boolean canWork;
 	private boolean isCaptureEnabled;
 	
 	private Ha3EdgeTrigger bindTrigger;
