@@ -21,6 +21,7 @@ import eu.ha3.mc.convenience.Ha3Personalizable;
 import eu.ha3.mc.convenience.Ha3Signal;
 import eu.ha3.mc.convenience.Ha3StaticUtilities;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
+import eu.ha3.mc.haddon.SupportsGuiTickEvents;
 import eu.ha3.mc.haddon.SupportsKeyEvents;
 import eu.ha3.mc.haddon.SupportsTickEvents;
 
@@ -41,7 +42,7 @@ import eu.ha3.mc.haddon.SupportsTickEvents;
  */
 
 public class MAtMod extends HaddonImpl
-	implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents, Ha3Personalizable
+	implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents, SupportsGuiTickEvents, Ha3Personalizable
 {
 	final static public Logger LOGGER = Logger.getLogger("MAtmos");
 	final public int VERSION = 13; // Remember to change the thing on mod_Matmos_forModLoader
@@ -144,6 +145,7 @@ public class MAtMod extends HaddonImpl
 		
 		manager().hookFrameEvents(true);
 		manager().hookTickEvents(true);
+		manager().hookGuiTickEvents(true);
 		
 		doLoad();
 		
@@ -649,6 +651,12 @@ public class MAtMod extends HaddonImpl
 		
 		return options;
 		
+	}
+	
+	@Override
+	public void onGuiTick(GuiScreen gui)
+	{
+		this.expansionLoader.lowUsageRoutine();
 	}
 	
 }

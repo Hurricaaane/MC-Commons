@@ -346,20 +346,26 @@ public class MAtExpansionLoader
 		
 	}
 	
-	public void dataRoutine()
+	private void loadTask()
 	{
-		if (!this.tasks.isEmpty())
+		if (this.tasks.isEmpty())
+			return;
+		
+		try
 		{
-			try
-			{
-				this.tasks.remove(0).run();
-				
-			}
-			catch (Exception e)
-			{
-			}
+			this.tasks.remove(0).run();
 			
 		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void dataRoutine()
+	{
+		loadTask();
 		
 		for (MAtExpansion expansion : this.expansions.values())
 		{
@@ -493,6 +499,12 @@ public class MAtExpansionLoader
 	public void putTask(Runnable runnable)
 	{
 		this.tasks.add(runnable);
+		
+	}
+	
+	public void lowUsageRoutine()
+	{
+		loadTask();
 		
 	}
 	
