@@ -135,6 +135,13 @@ public class MAtUserControl
 					this.mod.printChat(
 						Ha3Utility.COLOR_GOLD, "Still loading... ", Ha3Utility.COLOR_GRAY,
 						"(Waiting for the sound engine to be ready)");
+					if (this.mod.manager().getMinecraft().gameSettings.soundVolume <= 0)
+					{
+						this.mod.printChat(
+							Ha3Utility.COLOR_RED, "Warning: ", Ha3Utility.COLOR_WHITE,
+							"MAtmos cannot load yet because sounds are turned off in your game settings!");
+						
+					}
 					break;
 				case RESOURCE_LOADER:
 					this.mod.printChat(
