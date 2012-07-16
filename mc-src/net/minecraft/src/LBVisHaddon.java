@@ -90,6 +90,8 @@ public class LBVisHaddon extends HaddonImpl implements SupportsTickEvents, Suppo
 		case WAITING_FOR_LOGLINE:
 			win = tryMatchLogLine(contents);
 			break;
+		default:
+			break;
 		
 		}
 		

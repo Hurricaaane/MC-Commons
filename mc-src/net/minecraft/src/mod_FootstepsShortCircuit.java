@@ -79,6 +79,7 @@ public class mod_FootstepsShortCircuit extends BaseMod
 					this.activated = true;
 					
 				}
+				fr.close();
 				
 			}
 			

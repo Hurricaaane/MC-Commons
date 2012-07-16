@@ -154,6 +154,8 @@ public class MAtUserControl
 						Ha3Utility.COLOR_GOLD, "Still loading... ", Ha3Utility.COLOR_GRAY,
 						"(MAtmos is preparing the ambience generator)");
 					break;
+				default:
+					break;
 				}
 				
 			}
@@ -170,6 +172,8 @@ public class MAtUserControl
 					this.mod.printChat(
 						Ha3Utility.COLOR_GOLD, "Still loading... ", Ha3Utility.COLOR_GRAY,
 						"(Could not retreive Minecraft sound engine)");
+					break;
+				default:
 					break;
 				}
 				

@@ -445,11 +445,9 @@ public class MAtExpansionLoader
 		// TODO Weird exception handling
 		try
 		{
-			FileReader fr = new FileReader(file);
-			
+			BufferedReader buff = new BufferedReader(new FileReader(file));
 			try
 			{
-				BufferedReader buff = new BufferedReader(fr);
 				addExpansionFromURL(userDefinedIdentifier, new URL(buff.readLine()));
 				
 				win = true;
@@ -459,7 +457,11 @@ public class MAtExpansionLoader
 			{
 				e.printStackTrace();
 			}
-			fr.close();
+			finally
+			{
+				buff.close();
+				
+			}
 			
 		}
 		catch (FileNotFoundException e)
