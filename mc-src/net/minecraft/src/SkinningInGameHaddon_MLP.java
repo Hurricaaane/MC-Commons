@@ -139,18 +139,19 @@ public class SkinningInGameHaddon_MLP extends HaddonImpl implements SupportsTick
 				this.pony.wantTail = this.pony.backgroundWantTail;
 				this.pony.isMale = this.pony.backgroundIsMale;
 				this.pony.advancedTexturing = this.pony.backgroundAdvancedTexturing;
-				
 			}
 			else
 			{
-				this.pony.isPonySkin = false;
-				this.pony.texture = "/pony_edit.png";
-				
-				RenderEngine re = manager().getMinecraft().renderEngine;
-				re.setupTexture(bufferedimage, re.getTexture(this.pony.texture));
-				this.pony.skinUrl = null;
+				//this.pony.isPonySkin = false;
+				this.pony.isPony = true;
 				
 			}
+			
+			this.pony.texture = "/pony_edit.png";
+			
+			RenderEngine re = manager().getMinecraft().renderEngine;
+			re.setupTexture(bufferedimage, re.getTexture(this.pony.texture));
+			this.pony.skinUrl = null;
 			
 		}
 		catch (Exception exception)
