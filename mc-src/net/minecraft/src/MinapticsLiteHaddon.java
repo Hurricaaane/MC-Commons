@@ -286,60 +286,36 @@ public class MinapticsLiteHaddon extends HaddonImpl
 		
 		if (!util().isCurrentScreen(null))
 		{
-			String msg1 = "Close your menu to start tweaking Minaptics.";
-			
-			ScaledResolution screenRes =
-				new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
-			int width = screenRes.getScaledWidth();
-			//int height = screenRes.getScaledHeight();
-			
-			int msg1width = this.mc.fontRenderer.getStringWidth(msg1);
-			this.mc.fontRenderer.drawStringWithShadow(msg1, (width - msg1width) / 2, 10, 0xffffff);
+			util().prepareDrawString();
+			util().drawString(
+				"Close your menu to start tweaking Minaptics.", 0.5f, 0.01f, 0, 0, '8', 255, 255, 255, 255, true);
 			
 		}
 		else
 		{
-			String msgup = "Intensity+";
-			String msgdown = "Intensity-";
-			
-			String msg1 = "Smoother:";
-			String msg2;
-			
+			String intensity;
 			if (this.smootherLevel == 0F)
 			{
 				if (this.disableSmootherEvenDuringZooming)
 				{
-					msg2 = "Disabled, including while zooming";
+					intensity = "Disabled, even when zoomed in";
 				}
 				else
 				{
-					msg2 = "Disabled";
+					intensity = "Disabled";
 				}
 			}
 			else
 			{
-				msg2 = "" + (int) (this.smootherLevel * 1000) / 10F;
+				intensity = "" + (int) (this.smootherLevel * 1000) / 10F;
 			}
 			
-			ScaledResolution screenRes =
-				new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
-			int width = screenRes.getScaledWidth();
-			int height = screenRes.getScaledHeight();
+			int height = this.mc.fontRenderer.FONT_HEIGHT;
 			
-			int msg1width = this.mc.fontRenderer.getStringWidth(msg1);
-			this.mc.fontRenderer.drawStringWithShadow(msg1, (width - msg1width) / 2, height / 2 + 10, 0xffffff);
-			
-			int msg2width = this.mc.fontRenderer.getStringWidth(msg2);
-			this.mc.fontRenderer.drawStringWithShadow(
-				msg2, (width - msg2width) / 2, height / 2 + 10 + height / 32, 0xffff00);
-			
-			int msgupwidth = this.mc.fontRenderer.getStringWidth(msgup);
-			this.mc.fontRenderer.drawStringWithShadow(
-				msgup, (width - msgupwidth) / 2, height / 2 + 10 - height / 8, 0xffff00);
-			
-			int msgdownwidth = this.mc.fontRenderer.getStringWidth(msgdown);
-			this.mc.fontRenderer.drawStringWithShadow(
-				msgdown, (width - msgdownwidth) / 2, height / 2 + 10 + height / 8, 0xffff00);
+			util().prepareDrawString();
+			util().drawString("Intensity+", 0.55f, 0.5f, 0, -height, '1', 255, 255, 0, 255, true);
+			util().drawString("Intensity-", 0.55f, 0.5f, 0, height, '7', 255, 255, 0, 255, true);
+			util().drawString(intensity, 0.55f, 0.5f, 0, 0, '4', 255, 255, 255, 255, true);
 			
 		}
 		
