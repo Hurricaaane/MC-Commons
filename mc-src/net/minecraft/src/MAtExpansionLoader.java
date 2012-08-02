@@ -472,13 +472,11 @@ public class MAtExpansionLoader
 		}
 		catch (FileNotFoundException e)
 		{
-			MAtMod.LOGGER.warning("Error with FileNotFound on ExpansionLoader (on file "
-				+ file.getAbsolutePath() + ").");
-			
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
+			MAtMod.LOGGER.warning(e.getMessage());
 		}
 		
 		if (!win)
@@ -496,15 +494,39 @@ public class MAtExpansionLoader
 	
 	private List<Runnable> tasks;
 	
+	/**
+	 * Adds a task to the list of tasks to run by the expansion loader.
+	 * 
+	 * @param runnable
+	 */
 	public void putTask(Runnable runnable)
 	{
 		this.tasks.add(runnable);
 		
 	}
 	
+	/**
+	 * Routing that executes when Minecraft is in low usage mode. Typically,
+	 * this occurs in the main menu of Minecraft.
+	 * 
+	 */
 	public void lowUsageRoutine()
 	{
-		loadTask();
+		if (this.tasks.isEmpty())
+			return;
+		
+		long startTime = System.currentTimeMillis();
+		MAtMod.LOGGER.info("Loading tasks...");
+		
+		int taskCount = 0;
+		while (!this.tasks.isEmpty())
+		{
+			loadTask();
+			taskCount++;
+		}
+		
+		MAtMod.LOGGER.info("Took "
+			+ (System.currentTimeMillis() - startTime) / 1000f + "s to finish loading " + taskCount + " tasks.");
 		
 	}
 	

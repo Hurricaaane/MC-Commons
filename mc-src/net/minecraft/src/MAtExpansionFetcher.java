@@ -1,8 +1,11 @@
 package net.minecraft.src;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -29,12 +32,10 @@ public class MAtExpansionFetcher extends Thread
 	
 	public MAtExpansionFetcher(MAtExpansionLoader loader, String identifierIn)
 	{
+		super(null, null, "MATMOS-" + identifierIn);
 		setDaemon(true);
+		
 		this.loader = loader;
-		
-		setName("MATMOS-" + identifierIn);
-		setDaemon(true);
-		
 		this.identifier = identifierIn;
 		
 	}
@@ -56,27 +57,43 @@ public class MAtExpansionFetcher extends Thread
 	{
 		try
 		{
-			final InputStream is = this.url.openStream();
-			this.loader.putTask(new Runnable() {
+			InputStream is = this.url.openStream();
+			String dumped = "";
+			try
+			{
+				dumped = new Scanner(is).useDelimiter("\\A").next();
+			}
+			catch (NoSuchElementException e)
+			{
+			}
+			finally
+			{
+				is.close();
+			}
+			
+			byte[] bytes = dumped.getBytes("UTF-8");
+			final InputStream ios = new ByteArrayInputStream(bytes);
+			
+			/*this.loader.putTask(new Runnable() {
 				@Override
 				public void run()
-				{
-					MAtExpansionFetcher.this.loader.fetcherSuccess(MAtExpansionFetcher.this.identifier, is);
-				}
-			});
+				{*/
+			MAtExpansionFetcher.this.loader.fetcherSuccess(MAtExpansionFetcher.this.identifier, ios);
+			/*	}
+			});*/
 			
 		}
 		catch (IOException e)
 		{
-			this.loader.putTask(new Runnable() {
+			/*this.loader.putTask(new Runnable() {
 				@Override
 				public void run()
-				{
-					MAtMod.LOGGER.warning("Error with I/O on fetcher " + MAtExpansionFetcher.this.url.toString());
-					MAtMod.LOGGER.warning("(This may be a network error)");
-					MAtExpansionFetcher.this.loader.fetcherFailure(MAtExpansionFetcher.this.identifier);
-				}
-			});
+				{*/
+			MAtMod.LOGGER.warning("Error with I/O on fetcher " + MAtExpansionFetcher.this.url.toString());
+			MAtMod.LOGGER.warning("(This may be a network error)");
+			MAtExpansionFetcher.this.loader.fetcherFailure(MAtExpansionFetcher.this.identifier);
+			/*	}
+			});*/
 			
 		}
 		
