@@ -37,6 +37,8 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 	private Haddon haddon;
 	private Utility utility;
 	
+	private Minecraft mc;
+	
 	private boolean supportsTick;
 	private boolean supportsFrame;
 	private boolean supportsGuiTick;
@@ -78,6 +80,8 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 		this.lastTick = -1;
 		this.lastGuiTick = -1;
 		
+		this.mc = ModLoader.getMinecraftInstance();
+		
 		if (haddon instanceof SupportsInitialization)
 		{
 			((SupportsInitialization) haddon).onInitialize();
@@ -113,7 +117,7 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 	@Override
 	public Minecraft getMinecraft()
 	{
-		return ModLoader.getMinecraftInstance();
+		return this.mc;
 		
 	}
 	
