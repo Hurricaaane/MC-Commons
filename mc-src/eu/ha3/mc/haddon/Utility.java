@@ -118,4 +118,34 @@ public interface Utility
 	
 	public boolean areKeysDown(int... args);
 	
+	/**
+	 * Prepares a drawString sequence.
+	 */
+	public void prepareDrawString();
+	
+	/**
+	 * Draws a string on-screen using viewport size percentages.<br>
+	 * Alignment is a number between 1 and 9. It corresponds to the key position
+	 * of a classic layout keyboard numpad. For instance, 7 means "top left",
+	 * because the key "7" is at the top left.
+	 * 
+	 * @param text
+	 * @param px
+	 * @param py
+	 * @param offx
+	 * @param offy
+	 * @param alignment
+	 *            Number from 1 to 9 corresponding to numpad position on a
+	 *            keyboard (not a phone).
+	 * @param cr
+	 *            Red color 0-255
+	 * @param cg
+	 * @param cb
+	 * @param ca
+	 * @param hasShadow
+	 */
+	public void drawString(
+		String text, float px, float py, int offx, int offy, char alignment, int cr, int cg, int cb, int ca,
+		boolean hasShadow);
+	
 }

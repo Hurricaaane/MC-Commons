@@ -1,5 +1,7 @@
 package net.minecraft.src;
 
+import net.minecraft.client.Minecraft;
+
 import org.lwjgl.input.Keyboard;
 
 import eu.ha3.mc.haddon.Manager;
@@ -182,4 +184,66 @@ public class HaddonUtilityImpl implements Utility
 		
 	}
 	
+	private ScaledResolution drawString_scaledRes = null;
+	private int drawString_screenWidth;
+	private int drawString_screenHeight;
+	private int drawString_textHeight;
+	
+	@Override
+	public void prepareDrawString()
+	{
+		Minecraft mc = this.manager.getMinecraft();
+		
+		this.drawString_scaledRes = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+		this.drawString_screenWidth = this.drawString_scaledRes.getScaledWidth();
+		this.drawString_screenHeight = this.drawString_scaledRes.getScaledHeight();
+		this.drawString_textHeight = mc.fontRenderer.FONT_HEIGHT;
+		
+	}
+	
+	@Override
+	public void drawString(
+		String text, float px, float py, int offx, int offy, char alignment, int cr, int cg, int cb, int ca,
+		boolean hasShadow)
+	{
+		if (this.drawString_scaledRes == null)
+		{
+			prepareDrawString();
+		}
+		
+		Minecraft mc = this.manager.getMinecraft();
+		
+		int xPos = (int) Math.floor(px * this.drawString_screenWidth) + offx;
+		int yPos = (int) Math.floor(py * this.drawString_screenHeight) + offy;
+		
+		if (alignment == '2' || alignment == '5' || alignment == '8')
+		{
+			xPos = xPos - mc.fontRenderer.getStringWidth(text) / 2;
+		}
+		else if (alignment == '3' || alignment == '6' || alignment == '9')
+		{
+			xPos = xPos - mc.fontRenderer.getStringWidth(text);
+		}
+		
+		if (alignment == '4' || alignment == '5' || alignment == '6')
+		{
+			yPos = yPos - this.drawString_textHeight / 2;
+		}
+		else if (alignment == '1' || alignment == '2' || alignment == '3')
+		{
+			yPos = yPos - this.drawString_textHeight;
+		}
+		
+		int color = ca << 24 | cr << 16 | cg << 8 | cb;
+		
+		if (hasShadow)
+		{
+			this.manager.getMinecraft().fontRenderer.drawStringWithShadow(text, xPos, yPos, color);
+		}
+		else
+		{
+			this.manager.getMinecraft().fontRenderer.drawString(text, xPos, yPos, color);
+		}
+		
+	}
 }
