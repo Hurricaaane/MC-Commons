@@ -172,7 +172,7 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 	}
 	
 	@Override
-	public void receiveChatPacket(String contents)
+	public void clientChat(String contents)
 	{
 		if (this.supportsChat && this.chatEnabled)
 		{

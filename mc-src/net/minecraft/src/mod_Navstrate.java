@@ -81,7 +81,7 @@ public class mod_Navstrate extends BaseMod
 		
 		ModLoader.setInGameHook(this, true, false);
 		
-		this.bbox = AxisAlignedBB.getBoundingBoxFromPool(0, 0, 0, 0, 0, 0);
+		this.bbox = AxisAlignedBB.getBoundingBox(0, 0, 0, 0, 0, 0);
 		
 	}
 	

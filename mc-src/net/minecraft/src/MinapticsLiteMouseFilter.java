@@ -45,7 +45,7 @@ public class MinapticsLiteMouseFilter extends MouseFilter
 	}
 	
 	@Override
-	public float func_22386_a(float f, float f1)
+	public float func_76333_a(float f, float f1)
 	{
 		if (this.forceMode)
 		{

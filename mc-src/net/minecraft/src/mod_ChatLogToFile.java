@@ -74,7 +74,7 @@ public class mod_ChatLogToFile extends BaseMod
 	}
 	
 	@Override
-	public void receiveChatPacket(String contents)
+	public void clientChat(String contents)
 	{
 		PrintWriter writer;
 		try
