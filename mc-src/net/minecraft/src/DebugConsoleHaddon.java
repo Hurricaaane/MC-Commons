@@ -11,8 +11,8 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.ha3.mc.convenience.Ha3EdgeModel;
-import eu.ha3.mc.convenience.Ha3EdgeTrigger;
+import eu.ha3.easy.EdgeModel;
+import eu.ha3.easy.EdgeTrigger;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
 import eu.ha3.mc.haddon.SupportsGuiFrameEvents;
 import eu.ha3.mc.haddon.SupportsGuiTickEvents;
@@ -38,7 +38,7 @@ public class DebugConsoleHaddon extends HaddonImpl
 	implements SupportsGuiFrameEvents, SupportsFrameEvents, SupportsTickEvents, SupportsGuiTickEvents
 {
 	private boolean enabled;
-	private Ha3EdgeTrigger bindTrigger;
+	private EdgeTrigger bindTrigger;
 	
 	private PrintStream soutPrinter;
 	private BufferedReader soutReader;
@@ -55,7 +55,7 @@ public class DebugConsoleHaddon extends HaddonImpl
 	@Override
 	public void onLoad()
 	{
-		this.bindTrigger = new Ha3EdgeTrigger(new Ha3EdgeModel() {
+		this.bindTrigger = new EdgeTrigger(new EdgeModel() {
 			@Override
 			public void onTrueEdge()
 			{

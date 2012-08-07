@@ -1,7 +1,7 @@
 package net.minecraft.src;
 
-import eu.ha3.mc.convenience.Ha3EdgeModel;
-import eu.ha3.mc.convenience.Ha3EdgeTrigger;
+import eu.ha3.easy.EdgeModel;
+import eu.ha3.easy.EdgeTrigger;
 import eu.ha3.mc.haddon.SupportsTickEvents;
 
 /*
@@ -25,12 +25,12 @@ public class HaddonPreface extends HaddonImpl implements SupportsTickEvents
 	private static final HaddonPreface instance = new HaddonPreface();
 	
 	private boolean defined;
-	private Ha3EdgeTrigger trigger;
+	private EdgeTrigger trigger;
 	
 	private HaddonPreface()
 	{
 		this.defined = false;
-		this.trigger = new Ha3EdgeTrigger(new Ha3EdgeModel() {
+		this.trigger = new EdgeTrigger(new EdgeModel() {
 			
 			@Override
 			public void onTrueEdge()

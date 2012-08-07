@@ -1,4 +1,4 @@
-package eu.ha3.mc.convenience;
+package eu.ha3.easy;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -16,7 +16,7 @@ package eu.ha3.mc.convenience;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public interface Ha3EdgeModel
+public interface EdgeModel
 {
 	public void onTrueEdge();
 	

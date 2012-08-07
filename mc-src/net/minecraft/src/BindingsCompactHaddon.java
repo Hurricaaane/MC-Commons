@@ -1,18 +1,18 @@
 package net.minecraft.src;
 
-import eu.ha3.mc.convenience.Ha3EdgeModel;
-import eu.ha3.mc.convenience.Ha3EdgeTrigger;
+import eu.ha3.easy.EdgeModel;
+import eu.ha3.easy.EdgeTrigger;
 import eu.ha3.mc.haddon.SupportsTickEvents;
 
 public class BindingsCompactHaddon extends HaddonImpl implements SupportsTickEvents
 {
-	private Ha3EdgeTrigger bindTrigger;
+	private EdgeTrigger bindTrigger;
 	
 	@Override
 	public void onLoad()
 	{
 		manager().hookTickEvents(true);
-		this.bindTrigger = new Ha3EdgeTrigger(new Ha3EdgeModel() {
+		this.bindTrigger = new EdgeTrigger(new EdgeModel() {
 			@Override
 			public void onTrueEdge()
 			{

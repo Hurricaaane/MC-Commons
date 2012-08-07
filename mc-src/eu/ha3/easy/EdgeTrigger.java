@@ -1,4 +1,4 @@
-package eu.ha3.mc.convenience;
+package eu.ha3.easy;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -22,17 +22,17 @@ package eu.ha3.mc.convenience;
  * @author Hurry
  * 
  */
-public class Ha3EdgeTrigger
+public class EdgeTrigger
 {
 	private boolean currentState;
-	private Ha3EdgeModel triggerModel;
+	private EdgeModel triggerModel;
 	
 	/**
 	 * Creates an edge trigger with an initial state of false.
 	 * 
 	 * @param model
 	 */
-	public Ha3EdgeTrigger(Ha3EdgeModel model)
+	public EdgeTrigger(EdgeModel model)
 	{
 		this(model, false);
 		
@@ -43,7 +43,7 @@ public class Ha3EdgeTrigger
 	 * 
 	 * @param model
 	 */
-	public Ha3EdgeTrigger(Ha3EdgeModel model, boolean initialState)
+	public EdgeTrigger(EdgeModel model, boolean initialState)
 	{
 		this.triggerModel = model;
 		this.currentState = initialState;
