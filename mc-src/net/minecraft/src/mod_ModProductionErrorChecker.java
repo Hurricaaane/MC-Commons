@@ -15,7 +15,7 @@ public class mod_ModProductionErrorChecker extends HaddonBridgeModLoader
 			@Override
 			public void onLoad()
 			{
-				if (!Ha3StaticUtilities.classExists("a", this))
+				if (Ha3StaticUtilities.classExists("net.minecraft.src.Block", this))
 				{
 					System.out.println("ModProductionErrorChecker is not running in a compiled Minecraft.");
 					return;
