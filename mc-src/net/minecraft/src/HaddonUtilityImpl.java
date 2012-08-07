@@ -30,6 +30,8 @@ public class HaddonUtilityImpl implements Utility
 	
 	private Manager manager;
 	
+	private Timer mc_timer;
+	
 	public HaddonUtilityImpl(Manager manager)
 	{
 		this.manager = manager;
@@ -111,17 +113,19 @@ public class HaddonUtilityImpl implements Utility
 	@Override
 	public int getClientTick()
 	{
-		try
+		if (this.mc_timer == null)
 		{
-			// XXX: IMPL_UPDATE_OBF
-			return (Integer) getPrivateValue(net.minecraft.client.Minecraft.class, this.manager.getMinecraft(), 26); // private int ticksRan;
+			try
+			{
+				this.mc_timer = (Timer) getPrivateValueLiteral(Minecraft.class, this.manager.getMinecraft(), "T", 9);
+			}
+			catch (PrivateAccessException e)
+			{
+				throw new RuntimeException("Cannot retreive timer from Minecraft!");
+			}
 		}
-		catch (PrivateAccessException e)
-		{
-			e.printStackTrace();
-			return -1;
-			
-		}
+		
+		return this.mc_timer.elapsedTicks;
 		
 	}
 	
