@@ -1,7 +1,9 @@
 package net.minecraft.src;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.client.Minecraft;
 import eu.ha3.mc.haddon.Haddon;
@@ -10,6 +12,7 @@ import eu.ha3.mc.haddon.SupportsChatEvents;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
 import eu.ha3.mc.haddon.SupportsGuiFrameEvents;
 import eu.ha3.mc.haddon.SupportsGuiTickEvents;
+import eu.ha3.mc.haddon.SupportsIncomingMessages;
 import eu.ha3.mc.haddon.SupportsInitialization;
 import eu.ha3.mc.haddon.SupportsKeyEvents;
 import eu.ha3.mc.haddon.SupportsTickEvents;
@@ -45,6 +48,10 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 	private boolean supportsGuiFrame;
 	private boolean supportsChat;
 	private boolean supportsKey;
+	private boolean supportsIncomingMessages;
+	
+	private Set<String> enlistedIncomingMessages;
+	private Set<String> enlistedOutgoingMessages;
 	
 	private boolean tickEnabled;
 	private boolean frameEnabled;
@@ -73,6 +80,7 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 		this.supportsGuiFrame = haddon instanceof SupportsGuiFrameEvents;
 		this.supportsChat = haddon instanceof SupportsChatEvents;
 		this.supportsKey = haddon instanceof SupportsKeyEvents;
+		this.supportsIncomingMessages = haddon instanceof SupportsIncomingMessages;
 		
 		this.impl_continueTicking = this.supportsTick || this.supportsFrame;
 		this.impl_continueGuiTicking = this.supportsGuiTick || this.supportsGuiFrame;
@@ -81,6 +89,13 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 		this.lastGuiTick = -1;
 		
 		this.mc = ModLoader.getMinecraftInstance();
+		
+		this.enlistedOutgoingMessages = new HashSet<String>();
+		if (this.supportsIncomingMessages)
+		{
+			this.enlistedIncomingMessages = new HashSet<String>();
+			
+		}
 		
 		if (haddon instanceof SupportsInitialization)
 		{
@@ -285,4 +300,67 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 		((SupportsKeyEvents) this.haddon).onKey(event);
 		
 	}
+	
+	@Override
+	public void enlistIncomingMessages(String channel)
+	{
+		if (!this.supportsIncomingMessages)
+			throw new UnsupportedInterfaceException();
+		
+		this.enlistedIncomingMessages.add(channel);
+		
+		// XXX: Need to implement sending the REGISTER(channel) packet to the server
+		// Modloader implementation may not work as expected
+		ModLoader.registerPacketChannel(this, channel);
+		
+	}
+	
+	@Override
+	public void enlistOutgoingMessages(String channel)
+	{
+		if (channel == null)
+			throw new IllegalArgumentException();
+		
+		this.enlistedOutgoingMessages.add(channel);
+		
+	}
+	
+	@Override
+	public void delistIncomingMessages(String channel)
+	{
+		if (!this.supportsIncomingMessages)
+			throw new UnsupportedInterfaceException();
+		
+		this.enlistedIncomingMessages.remove(channel);
+		// XXX: Need to implement sending the UNREGISTER(channel) packet to the server
+	}
+	
+	@Override
+	public void delistOutgoingMessages(String channel)
+	{
+		this.enlistedOutgoingMessages.remove(channel);
+		
+	}
+	
+	@Override
+	public void sendOutgoingMessage(Packet250CustomPayload message)
+	{
+		ModLoader.clientSendPacket(message);
+		
+	}
+	
+	@Override
+	public void clientCustomPayload(NetClientHandler var1, Packet250CustomPayload message)
+	{
+		if (!this.supportsIncomingMessages)
+			return;
+		
+		if (this.enlistedIncomingMessages.contains(message) || this.enlistedIncomingMessages.contains(null))
+		{
+			((SupportsIncomingMessages) this.haddon).onIncomingMessage(message);
+			
+		}
+		
+	}
+	
 }

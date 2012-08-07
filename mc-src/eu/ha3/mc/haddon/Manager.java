@@ -2,6 +2,7 @@ package eu.ha3.mc.haddon;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.KeyBinding;
+import net.minecraft.src.Packet250CustomPayload;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -96,6 +97,57 @@ public interface Manager
 	@SuppressWarnings("rawtypes")
 	public void addRenderable(Class renderable, Object renderer);
 	
+	/**
+	 * Adds a key binding with a certain localization.
+	 * 
+	 * @param keyBindingIn
+	 * @param localization
+	 */
 	public void addKeyBinding(KeyBinding keyBindingIn, String localization);
+	
+	/**
+	 * Enlist for incoming messages on some specific channel by name.<br>
+	 * If channel is null, then allow any messages to be received if possible.<br>
+	 * <br>
+	 * If the addon doesn't implement SupportsIncomingMessages, the method will
+	 * throw a UnsupportedInterfaceException.
+	 * 
+	 * @param channel
+	 */
+	public void enlistIncomingMessages(String channel);
+	
+	/**
+	 * Declare existence of outgoing messages on some channel.
+	 * 
+	 * @param channel
+	 */
+	public void enlistOutgoingMessages(String channel);
+	
+	/**
+	 * Delist for incoming messages on some channel.<br>
+	 * If channel is null, then if it was previously enlisted for any messages,
+	 * disallow any messages to be received except those specified by name.<br>
+	 * <br>
+	 * If the addon doesn't implement SupportsIncomingMessages, the method will
+	 * throw a UnsupportedInterfaceException.
+	 * 
+	 * @param channel
+	 */
+	public void delistIncomingMessages(String channel);
+	
+	/**
+	 * Declare no more messages are going to be outgoing anymore to this
+	 * channel.
+	 * 
+	 * @param channel
+	 */
+	public void delistOutgoingMessages(String channel);
+	
+	/**
+	 * Sends a message with a prepared packet. This doesn't require enlisting.
+	 * 
+	 * @param message
+	 */
+	public void sendOutgoingMessage(Packet250CustomPayload message);
 	
 }
