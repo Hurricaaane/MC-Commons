@@ -93,7 +93,7 @@ public class MinapticsLiteHaddon extends HaddonImpl
 		this.isSmootherSettingEvent = false;
 		this.fovLevelTransitionning = false;
 		
-		this.disableSmootherEvenDuringZooming = false;
+		this.disableSmootherEvenDuringZooming = true;
 		
 		this.wasMouseSensitivity = 0;
 		this.wasAlreadySmoothing = false;
