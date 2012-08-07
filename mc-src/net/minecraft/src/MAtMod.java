@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.ConsoleHandler;
@@ -16,6 +17,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
+import eu.ha3.easy.TimeStatistic;
 import eu.ha3.matmos.engine.MAtmosLogger;
 import eu.ha3.mc.convenience.Ha3Personalizable;
 import eu.ha3.mc.convenience.Ha3Signal;
@@ -78,6 +80,9 @@ public class MAtMod extends HaddonImpl
 	
 	public MAtMod()
 	{
+		// This is the constructor, so don't do anything
+		// related to Minecraft.
+		
 		Formatter formatter = new Formatter() {
 			@Override
 			public String format(LogRecord record)
@@ -106,6 +111,11 @@ public class MAtMod extends HaddonImpl
 		
 	}
 	
+	/**
+	 * Sets the logger level for MAtmos mod.
+	 * 
+	 * @param lvl
+	 */
 	public void setModLogger(Level lvl)
 	{
 		MAtMod.LOGGER.setLevel(lvl);
@@ -113,6 +123,11 @@ public class MAtMod extends HaddonImpl
 		
 	}
 	
+	/**
+	 * Sets the logger level for MAtmos Engine (minecraft independent)
+	 * 
+	 * @param lvl
+	 */
 	public void setEngineLogger(Level lvl)
 	{
 		MAtmosLogger.LOGGER.setLevel(lvl);
@@ -123,7 +138,7 @@ public class MAtMod extends HaddonImpl
 	@Override
 	public void onLoad()
 	{
-		long beginTime = System.currentTimeMillis();
+		TimeStatistic stat = new TimeStatistic(Locale.ENGLISH);
 		
 		this.isRunning = false;
 		this.isReady = false;
@@ -149,8 +164,7 @@ public class MAtMod extends HaddonImpl
 		
 		doLoad();
 		
-		MAtMod.LOGGER.info("Took "
-			+ Math.floor(System.currentTimeMillis() - beginTime) / 1000f + " seconds to load MAtmos.");
+		MAtMod.LOGGER.info("Took " + stat.getSecondsAsString(1) + " seconds to load MAtmos.");
 		
 	}
 	
@@ -232,7 +246,7 @@ public class MAtMod extends HaddonImpl
 	
 	private String getFirstBlocker()
 	{
-		File folder = new File(Minecraft.getMinecraftDir(), "matmos_audiomodlike_blacklist/");
+		File folder = new File(Minecraft.getMinecraftDir(), "matmos/audiomodlike_blacklist/");
 		
 		if (!folder.exists())
 			return null;

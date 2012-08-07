@@ -59,8 +59,8 @@ public class MAtExpansionLoader
 		
 		this.eventListeners = new ArrayList<MAtExpansionEventListener>();
 		
-		this.expansionsFolder = new File(Minecraft.getMinecraftDir(), "matmos_expansions_r7/");
-		this.onlineStorageFolder = new File(Minecraft.getMinecraftDir(), "matmos_internal/storage/");
+		this.expansionsFolder = new File(Minecraft.getMinecraftDir(), "matmos/expansions_r12/");
+		this.onlineStorageFolder = new File(Minecraft.getMinecraftDir(), "matmos/internal/storage/");
 		
 		if (!this.expansionsFolder.exists())
 		{
