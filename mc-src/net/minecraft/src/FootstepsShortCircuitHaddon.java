@@ -31,8 +31,7 @@ public class FootstepsShortCircuitHaddon extends HaddonImpl
 {
 	private boolean activated;
 	
-	private FootstepsSCP62 packet62handler;
-	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void onLoad()
 	{
@@ -82,9 +81,6 @@ public class FootstepsShortCircuitHaddon extends HaddonImpl
 		{
 			try
 			{
-				
-				this.packet62handler = new FootstepsSCP62();
-				
 				Packet.packetIdToClassMap.addKey(62, FootstepsSCP62.class);
 				
 				HashMap map = (HashMap) util().getPrivateValueLiteral(Packet.class, null, "a", 1);
