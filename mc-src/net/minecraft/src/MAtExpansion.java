@@ -46,7 +46,7 @@ import eu.ha3.matmos.engine.MAtmosUtilityLoader;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class MAtExpansion
+public class MAtExpansion implements MAtCustomVolume
 {
 	private DocumentBuilder documentBuilder;
 	private Document document;
@@ -65,6 +65,8 @@ public class MAtExpansion
 	
 	private int dataFrequency;
 	private int dataCyclic;
+	
+	private MAtmosSoundManager soundManager;
 	
 	MAtExpansion(String userDefinedIdentifier)
 	{
@@ -104,6 +106,7 @@ public class MAtExpansion
 	public void setSoundManager(MAtmosSoundManager soundManager)
 	{
 		this.knowledge.setSoundManager(soundManager);
+		this.soundManager = soundManager;
 		
 	}
 	
@@ -311,9 +314,23 @@ public class MAtExpansion
 		
 	}
 	
+	@Override
 	public float getVolume()
 	{
-		return 1.0F; // TOGO getVolume
+		if (this.soundManager instanceof MAtCustomVolume)
+			return ((MAtCustomVolume) this.soundManager).getVolume();
+		
+		return 1;
+		
+	}
+	
+	@Override
+	public void setVolume(float volume)
+	{
+		if (this.soundManager instanceof MAtCustomVolume)
+		{
+			((MAtCustomVolume) this.soundManager).setVolume(volume);
+		}
 		
 	}
 	

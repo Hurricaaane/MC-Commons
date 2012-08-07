@@ -88,7 +88,7 @@ public class MAtExpansionLoader
 	
 	private synchronized void renewExpansionProngs(MAtExpansion expansion)
 	{
-		expansion.setSoundManager(this.mod.soundManager());
+		expansion.setSoundManager(new MAtSoundManagerProxy(this.mod.soundManager()));
 		expansion.setData(this.mod.dataGatherer().getData());
 		
 	}
@@ -333,6 +333,12 @@ public class MAtExpansionLoader
 	public int getLoadingCount()
 	{
 		return this.loading.size();
+		
+	}
+	
+	public Map<String, MAtExpansion> getExpansions()
+	{
+		return this.expansions;
 		
 	}
 	

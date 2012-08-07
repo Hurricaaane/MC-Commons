@@ -39,8 +39,8 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 	private MAtMod mod;
 	
 	private float soundVolume;
-	private float musicVolume;
-	private boolean musicVolUsesMinecraft;
+	//private float musicVolume;
+	//private boolean musicVolUsesMinecraft;
 	final private float defSoundVolume = 1F;
 	final private float defMusicVolume = 1F;
 	final private boolean defMusicVolUsesMinecraft = false;
@@ -66,8 +66,8 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 		this.mod = mAtmosHaddon;
 		
 		this.soundVolume = this.defSoundVolume;
-		this.musicVolume = this.defMusicVolume;
-		this.musicVolUsesMinecraft = this.defMusicVolUsesMinecraft;
+		//this.musicVolume = this.defMusicVolume;
+		//this.musicVolUsesMinecraft = this.defMusicVolUsesMinecraft;
 		
 		this.nbTokens = 0;
 		this.random = new Random(System.currentTimeMillis());
@@ -103,7 +103,7 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 		
 	}
 	
-	public void setCustomMusicVolume(float mod)
+	/*public void setCustomMusicVolume(float mod)
 	{
 		this.musicVolume = mod;
 		
@@ -125,7 +125,7 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 	{
 		return this.musicVolUsesMinecraft;
 		
-	}
+	}*/
 	
 	@Override
 	public void routine()
@@ -156,7 +156,7 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 			this.settingsVolume = mc.gameSettings.soundVolume;
 		}
 		
-		if (this.musicVolUsesMinecraft)
+		/*if (this.musicVolUsesMinecraft)
 		{
 			float currentMusicVolume = mc.gameSettings.musicVolume;
 			if (changedSettings || currentMusicVolume != this.settingsMusicVolume)
@@ -184,7 +184,7 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 			}
 			this.previousMusicVolume = getCustomMusicVolume();
 			
-		}
+		}*/
 		
 	}
 	
@@ -244,9 +244,9 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 		String equivalent = getSound(path);
 		
 		// FIXME: Doesn't play if musicVolUsesMinecraft is true and the music volume is low...
-		float actualVolume =
-			volume == 0 ? this.musicVolUsesMinecraft ? this.settingsMusicVolume : getCustomMusicVolume() : volume
-				* getCustomSoundVolume();
+		float actualVolume = volume * getCustomSoundVolume();
+		//	volume == 0 ? this.musicVolUsesMinecraft ? this.settingsMusicVolume : getCustomMusicVolume() : volume
+		//		* getCustomSoundVolume();
 		
 		if (actualVolume == 0) //TODO Check if okay
 			return;
@@ -372,15 +372,15 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 		float volume = this.tokenVolume.get(token);
 		float playVolume;
 		
-		if (volume == 0)
+		/*if (volume == 0)
 		{
 			playVolume =
 				this.settingsVolume * (this.musicVolUsesMinecraft ? this.settingsMusicVolume : getCustomMusicVolume());
 		}
 		else
-		{
-			playVolume = volume * this.settingsVolume * getCustomSoundVolume();
-		}
+		{*/
+		playVolume = volume * this.settingsVolume * getCustomSoundVolume();
+		//}
 		
 		if (fadeDuration == 0)
 		{
@@ -481,7 +481,7 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 				}
 				
 			}
-			{
+			/*{
 				String query = "volume.music.value";
 				if (options.containsKey(query))
 				{
@@ -500,7 +500,7 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 					this.config.put(query, prop);
 				}
 				
-			}
+			}*/
 		}
 		catch (NumberFormatException e)
 		{
@@ -517,8 +517,8 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 			return createDefaultOptions();
 		
 		this.config.setProperty("volume.generic.value", "" + getCustomSoundVolume());
-		this.config.setProperty("volume.music.value", "" + getCustomMusicVolume());
-		this.config.setProperty("volume.music.minecraft.use", getMusicVolumeIsBasedOffMinecraft() ? "1" : "0");
+		//this.config.setProperty("volume.music.value", "" + getCustomMusicVolume());
+		//this.config.setProperty("volume.music.minecraft.use", getMusicVolumeIsBasedOffMinecraft() ? "1" : "0");
 		
 		return this.config;
 	}
@@ -534,8 +534,8 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 	{
 		Properties options = new Properties();
 		options.setProperty("volume.generic.value", "" + this.defSoundVolume);
-		options.setProperty("volume.music.value", "" + this.defMusicVolume);
-		options.setProperty("volume.music.minecraft.use", this.defMusicVolUsesMinecraft ? "1" : "0");
+		//options.setProperty("volume.music.value", "" + this.defMusicVolume);
+		//options.setProperty("volume.music.minecraft.use", this.defMusicVolUsesMinecraft ? "1" : "0");
 		
 		return options;
 		

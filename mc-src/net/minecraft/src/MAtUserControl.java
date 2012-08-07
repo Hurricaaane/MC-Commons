@@ -67,14 +67,14 @@ public class MAtUserControl
 		this.scroller.routine();
 		if (this.scroller.isRunning())
 		{
-			if (!this.scrollModeIsMusic)
-			{
-				this.mod.soundManager().setCustomSoundVolume(this.scroller.getValue());
-			}
+			//if (!this.scrollModeIsMusic)
+			//{
+			this.mod.soundManager().setCustomSoundVolume(this.scroller.getValue());
+			/*}
 			else
 			{
-				this.mod.soundManager().setCustomMusicVolume(this.scroller.getValue());
-			}
+				//this.mod.soundManager().setCustomMusicVolume(this.scroller.getValue());
+			}*/
 			
 		}
 		
@@ -103,7 +103,7 @@ public class MAtUserControl
 	
 	public void beginHold()
 	{
-		if (this.mod.isRunning() && this.mod.util().isCurrentScreen(null))
+		/*if (this.mod.isRunning() && this.mod.util().isCurrentScreen(null))
 		{
 			this.scrollModeIsMusic = false;
 			this.scroller.start(this.scrollModeIsMusic);
@@ -118,6 +118,13 @@ public class MAtUserControl
 			this.scrollModeIsMusic = true;
 			this.scroller.start(this.scrollModeIsMusic);
 			
+		}*/
+		
+		if (this.mod.isRunning() && this.mod.util().isCurrentScreen(null))
+		{
+			this.mod
+				.manager().getMinecraft()
+				.displayGuiScreen(new MAtGuiMenu((GuiScreen) this.mod.util().getCurrentScreen(), this.mod));
 		}
 		
 	}
@@ -227,12 +234,12 @@ public class MAtUserControl
 	
 	public void endHold()
 	{
-		if (this.scroller.isRunning())
+		/*if (this.scroller.isRunning())
 		{
 			this.scroller.stop();
 			this.mod.options().saveOptions();
 			
-		}
+		}*/
 		
 		if (!this.mod.isRunning() && this.mod.isReady())
 		{

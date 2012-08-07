@@ -174,7 +174,7 @@ public class MAtMod extends HaddonImpl
 		
 		MAtMod.LOGGER.info("Constructing.");
 		
-		this.arbitraryPool.put("sndcomm_startload", new Long(System.currentTimeMillis()));
+		this.arbitraryPool.put("sndcomm_startload", new TimeStatistic(Locale.ENGLISH));
 		this.userControl.load();
 		this.dataGatherer.load();
 		// note: soundManager needs to be loaded post sndcomms
@@ -233,11 +233,10 @@ public class MAtMod extends HaddonImpl
 	
 	private void sndCommFailed()
 	{
-		long diff = System.currentTimeMillis() - (Long) this.arbitraryPool.get("sndcomm_startload");
-		float diffs = diff / 1000F;
+		String ttload = ((TimeStatistic) this.arbitraryPool.get("sndcomm_startload")).getSecondsAsString(3);
 		
 		this.phase = MAtModPhase.SOUNDCOMMUNICATOR_FAILURE;
-		MAtMod.LOGGER.severe("CRITICAL Error with SoundCommunicator (after " + diffs + " s.). Will not load.");
+		MAtMod.LOGGER.severe("CRITICAL Error with SoundCommunicator (after " + ttload + " s.). Will not load.");
 		
 		this.fatalError = true;
 		this.phase = MAtModPhase.SOUNDCOMMUNICATOR_FAILURE;
@@ -314,10 +313,9 @@ public class MAtMod extends HaddonImpl
 	{
 		this.phase = MAtModPhase.RESOURCE_LOADER;
 		
-		long diff = System.currentTimeMillis() - (Long) this.arbitraryPool.get("sndcomm_startload");
-		float diffs = diff / 1000F;
+		String ttload = ((TimeStatistic) this.arbitraryPool.get("sndcomm_startload")).getSecondsAsString(3);
 		
-		MAtMod.LOGGER.info("SoundCommunicator loaded (after " + diffs + " s.).");
+		MAtMod.LOGGER.info("SoundCommunicator loaded (after " + ttload + " s.).");
 		
 		String firstBlocker = getFirstBlocker();
 		if (firstBlocker != null)
@@ -356,10 +354,9 @@ public class MAtMod extends HaddonImpl
 	{
 		this.phase = MAtModPhase.FINAL_PHASE;
 		
-		long diff = System.currentTimeMillis() - (Long) this.arbitraryPool.get("sndcomm_startload");
-		float diffs = diff / 1000F;
+		String ttload = ((TimeStatistic) this.arbitraryPool.get("sndcomm_startload")).getSecondsAsString(3);
 		
-		MAtMod.LOGGER.info("ResourceReloader finished (after " + diffs + " s.).");
+		MAtMod.LOGGER.info("ResourceReloader finished (after " + ttload + " s.).");
 		
 		// options.loadPostSndComms();
 		// soundManager.load();
