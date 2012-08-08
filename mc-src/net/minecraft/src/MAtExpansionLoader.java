@@ -88,8 +88,8 @@ public class MAtExpansionLoader
 	
 	private synchronized void renewExpansionProngs(MAtExpansion expansion)
 	{
-		expansion.setSoundManager(new MAtSoundManagerProxy(this.mod.soundManager()));
-		expansion.setData(this.mod.dataGatherer().getData());
+		expansion.setSoundManager(new MAtSoundManagerProxy(this.mod.getCentralSoundManager()));
+		expansion.setData(this.mod.getDataGatherer().getData());
 		
 	}
 	

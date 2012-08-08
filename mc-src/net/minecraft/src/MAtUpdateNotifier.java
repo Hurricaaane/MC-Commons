@@ -159,7 +159,7 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 				
 				if (needsSave)
 				{
-					this.mod.options().saveOptions();
+					this.mod.getOptions().saveOptions();
 				}
 				
 			}

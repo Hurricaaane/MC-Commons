@@ -6,9 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
@@ -65,10 +63,10 @@ public class MAtMod extends HaddonImpl
 	private MAtOptions options;
 	private MAtUpdateNotifier updateNotifier;
 	
-	private MAtSoundManagerConfigurable soundManager;
+	private MAtSoundManagerConfigurable centralSoundManager;
 	
 	private boolean isRunning;
-	private Map<String, Object> arbitraryPool;
+	private TimeStatistic timeStatistic;
 	
 	private boolean isReady;
 	private boolean fatalError;
@@ -83,6 +81,9 @@ public class MAtMod extends HaddonImpl
 		// This is the constructor, so don't do anything
 		// related to Minecraft.
 		
+		// Haddon constructors don't have superclass constructor calls
+		// for convenience, so nothing is initialized.
+		
 		Formatter formatter = new Formatter() {
 			@Override
 			public String format(LogRecord record)
@@ -90,13 +91,13 @@ public class MAtMod extends HaddonImpl
 				return "(" + record.getLoggerName() + " : " + record.getLevel() + ") " + record.getMessage() + "\n";
 			}
 		};
+		
 		this.conMod = new ConsoleHandler();
 		this.conMod.setFormatter(formatter);
 		
 		this.conEngine = new ConsoleHandler();
 		this.conEngine.setFormatter(formatter);
 		
-		// TODO Customizable level
 		Level levelMod = Level.INFO;
 		MAtMod.LOGGER.addHandler(this.conMod);
 		MAtMod.LOGGER.setUseParentHandlers(false);
@@ -138,15 +139,13 @@ public class MAtMod extends HaddonImpl
 	@Override
 	public void onLoad()
 	{
-		TimeStatistic stat = new TimeStatistic(Locale.ENGLISH);
+		this.timeStatistic = new TimeStatistic(Locale.ENGLISH);
 		
 		this.isRunning = false;
 		this.isReady = false;
 		
 		this.bypassResourceLoaderWait = this.defBypassResourceLoaderWait;
 		this.allowDump = this.defAllowDump;
-		
-		this.arbitraryPool = new HashMap<String, Object>();
 		
 		this.sndComm = new Ha3SoundCommunicator(this, "MAtmos_");
 		
@@ -156,7 +155,7 @@ public class MAtMod extends HaddonImpl
 		this.options = new MAtOptions(this);
 		this.updateNotifier = new MAtUpdateNotifier(this);
 		
-		this.soundManager = new MAtSoundManagerConfigurable(this);
+		this.centralSoundManager = new MAtSoundManagerConfigurable(this);
 		
 		manager().hookFrameEvents(true);
 		manager().hookTickEvents(true);
@@ -164,7 +163,7 @@ public class MAtMod extends HaddonImpl
 		
 		doLoad();
 		
-		MAtMod.LOGGER.info("Took " + stat.getSecondsAsString(1) + " seconds to load MAtmos.");
+		MAtMod.LOGGER.info("Took " + this.timeStatistic.getSecondsAsString(1) + " seconds to load MAtmos.");
 		
 	}
 	
@@ -174,13 +173,12 @@ public class MAtMod extends HaddonImpl
 		
 		MAtMod.LOGGER.info("Constructing.");
 		
-		this.arbitraryPool.put("sndcomm_startload", new TimeStatistic(Locale.ENGLISH));
 		this.userControl.load();
 		this.dataGatherer.load();
 		// note: soundManager needs to be loaded post sndcomms
 		
 		this.options.registerPersonalizable(this);
-		this.options.registerPersonalizable(this.soundManager);
+		this.options.registerPersonalizable(this.centralSoundManager);
 		this.options.registerPersonalizable(this.updateNotifier);
 		this.options.loadOptions(); // TODO Options
 		
@@ -188,7 +186,7 @@ public class MAtMod extends HaddonImpl
 			@Override
 			public void signal()
 			{
-				sndCommLoadFinishedPhaseOne();
+				loadResourcesPhase();
 				
 			}
 		}, new Ha3Signal() {
@@ -206,26 +204,26 @@ public class MAtMod extends HaddonImpl
 		
 	}
 	
-	public MAtSoundManagerConfigurable soundManager()
+	public MAtSoundManagerConfigurable getCentralSoundManager()
 	{
-		return this.soundManager;
+		return this.centralSoundManager;
 		
 	}
 	
-	public MAtDataGatherer dataGatherer()
+	public MAtDataGatherer getDataGatherer()
 	{
 		return this.dataGatherer;
 		
 	}
 	
-	public MAtOptions options()
+	public MAtOptions getOptions()
 	{
 		return this.options;
 		
 	}
 	
 	// XXX Blatant design.
-	public MAtExpansionLoader expansionLoader()
+	public MAtExpansionLoader getExpansionLoader()
 	{
 		return this.expansionLoader;
 		
@@ -233,10 +231,9 @@ public class MAtMod extends HaddonImpl
 	
 	private void sndCommFailed()
 	{
-		String ttload = ((TimeStatistic) this.arbitraryPool.get("sndcomm_startload")).getSecondsAsString(3);
-		
 		this.phase = MAtModPhase.SOUNDCOMMUNICATOR_FAILURE;
-		MAtMod.LOGGER.severe("CRITICAL Error with SoundCommunicator (after " + ttload + " s.). Will not load.");
+		MAtMod.LOGGER.severe("CRITICAL Error with SoundCommunicator (after "
+			+ this.timeStatistic.getSecondsAsString(3) + " s.). Will not load.");
 		
 		this.fatalError = true;
 		this.phase = MAtModPhase.SOUNDCOMMUNICATOR_FAILURE;
@@ -309,20 +306,18 @@ public class MAtMod extends HaddonImpl
 		
 	}
 	
-	private void sndCommLoadFinishedPhaseOne()
+	private void loadResourcesPhase()
 	{
 		this.phase = MAtModPhase.RESOURCE_LOADER;
 		
-		String ttload = ((TimeStatistic) this.arbitraryPool.get("sndcomm_startload")).getSecondsAsString(3);
-		
-		MAtMod.LOGGER.info("SoundCommunicator loaded (after " + ttload + " s.).");
+		MAtMod.LOGGER.info("SoundCommunicator loaded (after " + this.timeStatistic.getSecondsAsString(3) + " s.).");
 		
 		String firstBlocker = getFirstBlocker();
 		if (firstBlocker != null)
 		{
 			MAtMod.LOGGER.warning(firstBlocker);
 			MAtMod.LOGGER.warning("MAtmos will not attempt load sounds on its own at all.");
-			sndCommLoaded();
+			loadFinalPhase();
 			
 		}
 		else if (!this.bypassResourceLoaderWait)
@@ -332,7 +327,7 @@ public class MAtMod extends HaddonImpl
 				@Override
 				public void signal()
 				{
-					sndCommLoaded();
+					loadFinalPhase();
 					
 				}
 				
@@ -344,22 +339,17 @@ public class MAtMod extends HaddonImpl
 			MAtMod.LOGGER.info("Bypassing Resource Reloader threaded wait. This may cause issues.");
 			
 			new MAtResourceReloader(this, null).reloadResources();
-			sndCommLoaded();
+			loadFinalPhase();
 			
 		}
 		
 	}
 	
-	private void sndCommLoaded()
+	private void loadFinalPhase()
 	{
 		this.phase = MAtModPhase.FINAL_PHASE;
 		
-		String ttload = ((TimeStatistic) this.arbitraryPool.get("sndcomm_startload")).getSecondsAsString(3);
-		
-		MAtMod.LOGGER.info("ResourceReloader finished (after " + ttload + " s.).");
-		
-		// options.loadPostSndComms();
-		// soundManager.load();
+		MAtMod.LOGGER.info("ResourceReloader finished (after " + this.timeStatistic.getSecondsAsString(3) + " s.).");
 		
 		this.expansionLoader.signalBuildKnowledge();
 		
@@ -402,8 +392,6 @@ public class MAtMod extends HaddonImpl
 		
 		this.isRunning = true;
 		
-		//printChat(Ha3Utility.COLOR_BRIGHTGREEN, "Loading...");
-		
 		MAtMod.LOGGER.fine("Loading...");
 		this.expansionLoader.signalStatusChange();
 		MAtMod.LOGGER.fine("Loaded.");
@@ -441,7 +429,7 @@ public class MAtMod extends HaddonImpl
 			file.createNewFile();
 			
 			FileWriter fw = new FileWriter(file);
-			fw.write(dataGatherer().getData().createXML());
+			fw.write(getDataGatherer().getData().createXML());
 			fw.close();
 		}
 		catch (Exception e)
@@ -515,17 +503,13 @@ public class MAtMod extends HaddonImpl
 	@Override
 	public void onFrame(float semi)
 	{
-		if (!this.fatalError)
-		{
-			this.userControl.frameRoutine(semi);
-			
-			if (this.isRunning)
-			{
-				this.expansionLoader.soundRoutine();
-				
-			}
-			
-		}
+		if (this.fatalError)
+			return;
+		
+		if (!this.isRunning)
+			return;
+		
+		this.expansionLoader.soundRoutine();
 		
 	}
 	
@@ -546,9 +530,14 @@ public class MAtMod extends HaddonImpl
 		else if (!this.userKnowsFatalError)
 		{
 			this.userKnowsFatalError = true;
+			
 			printChat(Ha3Utility.COLOR_YELLOW, "A fatal error has occured. MAtmos will not load.");
+			manager().hookTickEvents(false);
+			manager().hookGuiTickEvents(false);
+			manager().hookFrameEvents(false);
 			
 		}
+		
 		if (!this.firstTickPassed)
 		{
 			this.firstTickPassed = true;
@@ -634,10 +623,6 @@ public class MAtMod extends HaddonImpl
 	{
 		if (this.config == null)
 			return createDefaultOptions();
-		
-		// XXX Options do not change if changed due to code.
-		//config.setProperty("debug.logger.mod.use", "0");
-		//config.setProperty("debug.logger.engine.use", "0");
 		
 		this.config.setProperty("core.init.bypassresourcereloaderwait.use", this.bypassResourceLoaderWait ? "1" : "0");
 		this.config.setProperty("core.data.dump.use", this.allowDump ? "1" : "0");

@@ -32,18 +32,14 @@ import eu.ha3.mc.haddon.PrivateAccessException;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Personalizable
+public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Personalizable, MAtCustomVolume
 {
 	// XXX Implement me: Does not do anything and sndcomms is down
 	
 	private MAtMod mod;
 	
-	private float soundVolume;
-	//private float musicVolume;
-	//private boolean musicVolUsesMinecraft;
+	private float volume;
 	final private float defSoundVolume = 1F;
-	final private float defMusicVolume = 1F;
-	final private boolean defMusicVolUsesMinecraft = false;
 	
 	private int nbTokens;
 	private Random random;
@@ -56,8 +52,6 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 	private Map<String, Float> paulsCodeBug_markForFadeIn;
 	
 	private float settingsVolume;
-	private float settingsMusicVolume;
-	private float previousMusicVolume;
 	
 	private Properties config;
 	
@@ -65,9 +59,7 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 	{
 		this.mod = mAtmosHaddon;
 		
-		this.soundVolume = this.defSoundVolume;
-		//this.musicVolume = this.defMusicVolume;
-		//this.musicVolUsesMinecraft = this.defMusicVolUsesMinecraft;
+		this.volume = this.defSoundVolume;
 		
 		this.nbTokens = 0;
 		this.random = new Random(System.currentTimeMillis());
@@ -80,8 +72,6 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 		this.sourcesAsMusic = new ArrayList<String>();
 		
 		this.settingsVolume = 0F;
-		this.settingsMusicVolume = 0F;
-		this.previousMusicVolume = 0F;
 		
 	}
 	
@@ -91,41 +81,19 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 		
 	}
 	
-	public void setCustomSoundVolume(float modifier)
+	@Override
+	public void setVolume(float modifier)
 	{
-		this.soundVolume = modifier;
+		this.volume = modifier;
 		
 	}
 	
-	public float getCustomSoundVolume()
+	@Override
+	public float getVolume()
 	{
-		return this.soundVolume;
+		return this.volume;
 		
 	}
-	
-	/*public void setCustomMusicVolume(float mod)
-	{
-		this.musicVolume = mod;
-		
-	}
-	
-	public float getCustomMusicVolume()
-	{
-		return this.musicVolume;
-		
-	}
-	
-	public void setMusicVolumeIsBasedOffMinecraft(boolean use)
-	{
-		this.musicVolUsesMinecraft = use;
-		
-	}
-	
-	public boolean getMusicVolumeIsBasedOffMinecraft()
-	{
-		return this.musicVolUsesMinecraft;
-		
-	}*/
 	
 	@Override
 	public void routine()
@@ -155,36 +123,6 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 		{
 			this.settingsVolume = mc.gameSettings.soundVolume;
 		}
-		
-		/*if (this.musicVolUsesMinecraft)
-		{
-			float currentMusicVolume = mc.gameSettings.musicVolume;
-			if (changedSettings || currentMusicVolume != this.settingsMusicVolume)
-			{
-				for (Iterator<String> iter = this.sourcesAsMusic.iterator(); iter.hasNext();)
-				{
-					sndSystem().setVolume(iter.next(), currentMusicVolume * this.settingsVolume);
-					
-				}
-				
-			}
-			this.settingsMusicVolume = currentMusicVolume;
-			
-		}
-		else
-		{
-			if (changedSettings || getCustomMusicVolume() != this.previousMusicVolume)
-			{
-				for (Iterator<String> iter = this.sourcesAsMusic.iterator(); iter.hasNext();)
-				{
-					sndSystem().setVolume(iter.next(), getCustomMusicVolume() * this.settingsVolume);
-					
-				}
-				
-			}
-			this.previousMusicVolume = getCustomMusicVolume();
-			
-		}*/
 		
 	}
 	
@@ -243,10 +181,7 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 		
 		String equivalent = getSound(path);
 		
-		// FIXME: Doesn't play if musicVolUsesMinecraft is true and the music volume is low...
-		float actualVolume = volume * getCustomSoundVolume();
-		//	volume == 0 ? this.musicVolUsesMinecraft ? this.settingsMusicVolume : getCustomMusicVolume() : volume
-		//		* getCustomSoundVolume();
+		float actualVolume = volume * getVolume();
 		
 		if (actualVolume == 0) //TODO Check if okay
 			return;
@@ -258,28 +193,24 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 			ny = ny + this.random.nextFloat() * meta * 0.2F - meta * 0.01F;
 			nz = nz + (float) (Math.sin(angle) * meta);
 			
-			//mc.sndManager.playSound(equivalent, nx, ny, nz, actualVolume, pitch);
 			this.mod.sound().playSound(equivalent, nx, ny, nz, actualVolume, pitch, 0, 0F);
 		}
 		else
-		//if meta == 0
 		{
 			// NOTE: playSoundFX from Minecraft SoundManager
 			//   does NOT work. Must use playSoundFX Proxy
-			//   which will play the sound 192 blocks above the player...
+			//   which will play the sound 2048 blocks above the player...
 			//   ...and that somehow does the trick!
-			//
 			
 			ny = ny + 2048;
 			this.mod.sound().playSound(equivalent, nx, ny, nz, actualVolume, pitch, 0, 0F);
-			//mc.sndManager.playSoundFX(equivalent, volume * customVolumeMod, pitch);
 			
 		}
 		
 	}
 	
 	@Override
-	public synchronized int getNewStreamingToken() // TODO Sync?
+	public synchronized int getNewStreamingToken()
 	{
 		int token = this.nbTokens;
 		this.nbTokens = this.nbTokens + 1;
@@ -288,8 +219,6 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 		this.tokenSetFirst.add(false);
 		this.tokenURL.add(null);
 		this.tokenVolume.add(0F);
-		
-		//System.out.println(token);
 		
 		return token;
 	}
@@ -304,7 +233,6 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 			this.tokenPaths.set(token, path);
 			
 			cacheSound(path);
-			//System.out.println(getSound(path));
 			String poolName = getSound(path);
 			SoundPoolEntry soundpoolentry;
 			soundpoolentry =
@@ -322,13 +250,9 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 				this.tokenURL.set(token, soundpoolentry.soundUrl);
 				this.tokenVolume.set(token, volume);
 				
-				//System.out.println(sourceName + " " + soundpoolentry.soundUrl
-				//+ " " + path);
-				
 				sndSystem().newStreamingSource(true, sourceName, soundpoolentry.soundUrl, path, true, 0, 0, 0, 0, 0);
 				sndSystem().setTemporary(sourceName, false);
 				sndSystem().setPitch(sourceName, pitch);
-				//sndSystem.setVolume(sourceName, volume * settingsVolume);
 				
 				sndSystem().setLooping(sourceName, true);
 				sndSystem().activate(sourceName); // XXX ??? Is it alright?
@@ -367,20 +291,8 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 			
 		}
 		
-		// pcSystem.rewind(sourceName);
-		
 		float volume = this.tokenVolume.get(token);
-		float playVolume;
-		
-		/*if (volume == 0)
-		{
-			playVolume =
-				this.settingsVolume * (this.musicVolUsesMinecraft ? this.settingsMusicVolume : getCustomMusicVolume());
-		}
-		else
-		{*/
-		playVolume = volume * this.settingsVolume * getCustomSoundVolume();
-		//}
+		float playVolume = volume * this.settingsVolume * getVolume();
 		
 		if (fadeDuration == 0)
 		{
@@ -394,17 +306,6 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 			// Set 1 millisecond fade out
 			//
 			// http://www.java-gaming.org/index.php?action=profile;u=11099;sa=showPosts
-			
-			// Disabled in r7 because of fail
-			
-			/*String path = tokenPaths.get(token);
-			paulsCodeBug_markForFadeIn.put(sourceName, playVolume);
-			sndSystem().setVolume(sourceName, 0);
-			sndSystem().play(sourceName);
-			sndSystem().fadeOutIn(sourceName, tokenURL.get(token), path, 1,
-					((long) fadeDuration) * 1000L);*/
-			
-			// Disabled version:
 			
 			String path = this.tokenPaths.get(token);
 			sndSystem().setVolume(sourceName, playVolume);
@@ -422,7 +323,6 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 		
 		if (fadeDuration == 0)
 		{
-			//sndSystem.fadeOut(sourceName, null, 0);
 			sndSystem().stop(sourceName);
 		}
 		else
@@ -454,13 +354,6 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 		
 	}
 	
-	/*
-	public void addLocator(int i, MAtCustomSheet cs)
-	{
-		locators.put(i, cs);
-		
-	}*/
-	
 	@Override
 	public void inputOptions(Properties options)
 	{
@@ -476,31 +369,11 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 				if (options.containsKey(query))
 				{
 					String prop = options.getProperty(query);
-					setCustomSoundVolume(Float.parseFloat(prop));
+					setVolume(Float.parseFloat(prop));
 					this.config.put(query, prop);
 				}
 				
 			}
-			/*{
-				String query = "volume.music.value";
-				if (options.containsKey(query))
-				{
-					String prop = options.getProperty(query);
-					setCustomMusicVolume(Float.parseFloat(prop));
-					this.config.put(query, prop);
-				}
-				
-			}
-			{
-				String query = "volume.music.minecraft.use";
-				if (options.containsKey(query))
-				{
-					String prop = options.getProperty(query);
-					setMusicVolumeIsBasedOffMinecraft(Integer.parseInt(prop) == 1 ? true : false);
-					this.config.put(query, prop);
-				}
-				
-			}*/
 		}
 		catch (NumberFormatException e)
 		{
@@ -516,9 +389,7 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 		if (this.config == null)
 			return createDefaultOptions();
 		
-		this.config.setProperty("volume.generic.value", "" + getCustomSoundVolume());
-		//this.config.setProperty("volume.music.value", "" + getCustomMusicVolume());
-		//this.config.setProperty("volume.music.minecraft.use", getMusicVolumeIsBasedOffMinecraft() ? "1" : "0");
+		this.config.setProperty("volume.generic.value", "" + getVolume());
 		
 		return this.config;
 	}
@@ -534,8 +405,6 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 	{
 		Properties options = new Properties();
 		options.setProperty("volume.generic.value", "" + this.defSoundVolume);
-		//options.setProperty("volume.music.value", "" + this.defMusicVolume);
-		//options.setProperty("volume.music.minecraft.use", this.defMusicVolUsesMinecraft ? "1" : "0");
 		
 		return options;
 		

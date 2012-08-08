@@ -61,7 +61,7 @@ public class MAtGuiMenu extends GuiScreen implements HSliderListener
 		StringTranslate stringtranslate = StringTranslate.getInstance();
 		int i = func_20080_j();
 		
-		Map<String, MAtExpansion> expansions = this.matmos.expansionLoader().getExpansions();
+		Map<String, MAtExpansion> expansions = this.matmos.getExpansionLoader().getExpansions();
 		int j = 0;
 		
 		for (Entry<String, MAtExpansion> expansion : expansions.entrySet())
@@ -134,10 +134,10 @@ public class MAtGuiMenu extends GuiScreen implements HSliderListener
 	{
 		System.out.println("value = " + value);
 		this.matmos
-			.expansionLoader().getExpansions().get(((HGuiSliderControl) this.controlList.get(id)).displayString)
+			.getExpansionLoader().getExpansions().get(((HGuiSliderControl) this.controlList.get(id)).displayString)
 			.setVolume(value);
 		System.out.println(this.matmos
-			.expansionLoader().getExpansions().get(((HGuiSliderControl) this.controlList.get(id)).displayString)
+			.getExpansionLoader().getExpansions().get(((HGuiSliderControl) this.controlList.get(id)).displayString)
 			.getVolume());
 		
 	}

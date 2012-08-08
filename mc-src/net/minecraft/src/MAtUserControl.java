@@ -27,9 +27,6 @@ public class MAtUserControl
 	private KeyBinding keyBindingMain;
 	private Ha3KeyManager keyManager;
 	
-	private MAtScroller scroller;
-	private boolean scrollModeIsMusic;
-	
 	private boolean hasFirstHit;
 	
 	public MAtUserControl(MAtMod mAtmosHaddon)
@@ -40,15 +37,11 @@ public class MAtUserControl
 	
 	public void load()
 	{
-		// Prepare key bindings
 		this.keyBindingMain = new KeyBinding("key.matmos", 65);
 		this.keyManager = new Ha3KeyManager();
 		
 		this.mod.manager().addKeyBinding(this.keyBindingMain, "MAtmos");
 		this.keyManager.addKeyBinding(this.keyBindingMain, new MAtKeyMain(this));
-		
-		// Prepare scroller
-		this.scroller = new MAtScroller(this, this.mod);
 		
 	}
 	
@@ -64,26 +57,6 @@ public class MAtUserControl
 	{
 		this.keyManager.handleRuntime();
 		
-		this.scroller.routine();
-		if (this.scroller.isRunning())
-		{
-			//if (!this.scrollModeIsMusic)
-			//{
-			this.mod.soundManager().setCustomSoundVolume(this.scroller.getValue());
-			/*}
-			else
-			{
-				//this.mod.soundManager().setCustomMusicVolume(this.scroller.getValue());
-			}*/
-			
-		}
-		
-	}
-	
-	public void frameRoutine(float fspan)
-	{
-		this.scroller.draw(fspan);
-		
 	}
 	
 	public void communicateKeyBindingEvent(KeyBinding event)
@@ -94,32 +67,10 @@ public class MAtUserControl
 	
 	public void signalPress()
 	{
-		// Do nothing.
-		// XXX DEBUG
-		/*mod.manager().getMinecraft().displayGuiScreen(
-				new MAtGuiExpansions(null));*/
-		
 	}
 	
 	public void beginHold()
 	{
-		/*if (this.mod.isRunning() && this.mod.util().isCurrentScreen(null))
-		{
-			this.scrollModeIsMusic = false;
-			this.scroller.start(this.scrollModeIsMusic);
-			
-		}
-		else if (this.mod.isRunning()
-			&& (this.mod.util().isCurrentScreen(net.minecraft.src.GuiInventory.class) || this.mod
-				.util().isCurrentScreen(net.minecraft.src.GuiContainerCreative.class)))
-		{
-			this.mod.util().closeCurrentScreen();
-			
-			this.scrollModeIsMusic = true;
-			this.scroller.start(this.scrollModeIsMusic);
-			
-		}*/
-		
 		if (this.mod.isRunning() && this.mod.util().isCurrentScreen(null))
 		{
 			this.mod
@@ -200,9 +151,9 @@ public class MAtUserControl
 	{
 		if (this.mod.isRunning())
 		{
-			if (!this.hasFirstHit && this.mod.expansionLoader().getLoadingCount() > 0)
+			if (!this.hasFirstHit && this.mod.getExpansionLoader().getLoadingCount() > 0)
 			{
-				int glc = this.mod.expansionLoader().getLoadingCount();
+				int glc = this.mod.getExpansionLoader().getLoadingCount();
 				this.mod.printChat(Ha3Utility.COLOR_GOLD, "Warning: "
 					+ glc + " expansion" + (glc > 1 ? "s are" : " is") + " still loading.");
 				this.mod.printChatShort(
@@ -234,13 +185,6 @@ public class MAtUserControl
 	
 	public void endHold()
 	{
-		/*if (this.scroller.isRunning())
-		{
-			this.scroller.stop();
-			this.mod.options().saveOptions();
-			
-		}*/
-		
 		if (!this.mod.isRunning() && this.mod.isReady())
 		{
 			this.mod.printChat(Ha3Utility.COLOR_BRIGHTGREEN, "Reloading expansions...");
