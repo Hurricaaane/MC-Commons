@@ -31,6 +31,7 @@ public class HaddonUtilityImpl implements Utility
 	private Manager manager;
 	
 	private Timer mc_timer;
+	private int ticksRan = 0;
 	
 	public HaddonUtilityImpl(Manager manager)
 	{
@@ -125,7 +126,9 @@ public class HaddonUtilityImpl implements Utility
 			}
 		}
 		
-		return this.mc_timer.elapsedTicks;
+		this.ticksRan = this.ticksRan + this.mc_timer.elapsedTicks;
+		
+		return this.ticksRan;
 		
 	}
 	
