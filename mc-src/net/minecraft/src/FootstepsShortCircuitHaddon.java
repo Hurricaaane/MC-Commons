@@ -79,6 +79,15 @@ public class FootstepsShortCircuitHaddon extends HaddonImpl
 		
 		if (this.activated)
 		{
+			// So ever since 1.3.1 SS'ing footsteps clientside doesn't work anymore
+			// Sounds are sent using generic LevelSound packets from the server
+			// Since footsteps use the same sounds as the digging sound,
+			// we can't use the approach of muting sounds.
+			//
+			// However the observation is that all footsteps sent from the server
+			// happen to be at volume 0.15f and at 65 pitch. So we catch them and
+			// cancel them by setting the volume to zero.
+			
 			try
 			{
 				Packet.packetIdToClassMap.addKey(62, FootstepsSCP62.class);

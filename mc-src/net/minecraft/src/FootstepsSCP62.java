@@ -55,16 +55,12 @@ public class FootstepsSCP62 extends Packet62LevelSound
 		this.volume = par1DataInputStream.readFloat();
 		this.pitch = par1DataInputStream.readUnsignedByte();
 		
+		// Catch all footsteps and cancel them
 		if (this.volume == 0.15f && this.pitch == 63)
 		{
-			//System.err.println(this.soundName + " " + this.volume + " " + this.pitch);
 			this.volume = 0;
 		}
-		else
-		{
-			//System.out.println(this.soundName + " " + this.volume + " " + this.pitch);
-			
-		}
+		
 	}
 	
 	/**
