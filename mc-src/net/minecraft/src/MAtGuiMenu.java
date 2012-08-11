@@ -59,20 +59,19 @@ public class MAtGuiMenu extends GuiScreen implements HSliderListener
 	public void initGui()
 	{
 		StringTranslate stringtranslate = StringTranslate.getInstance();
-		int i = func_20080_j();
+		int leftHinge = func_20080_j();
 		
 		Map<String, MAtExpansion> expansions = this.matmos.getExpansionLoader().getExpansions();
-		int j = 0;
+		int id = 0;
 		
 		for (Entry<String, MAtExpansion> expansion : expansions.entrySet())
 		{
-			HGuiSliderControl gsc =
-				new HGuiSliderControl(
-					j, i + j % 2 * 160, this.height / 12 + 16 * (j >> 1), expansion.getKey(), expansion
-						.getValue().getVolume());
-			gsc.setListener(this);
-			this.controlList.add(gsc);
-			j++;
+			HGuiSliderControl sliderControl =
+				new HGuiSliderControl(id, leftHinge, 22 * id, 310, 20, expansion.getKey(), expansion
+					.getValue().getVolume());
+			sliderControl.setListener(this);
+			this.controlList.add(sliderControl);
+			id++;
 			
 		}
 		
@@ -132,13 +131,9 @@ public class MAtGuiMenu extends GuiScreen implements HSliderListener
 	@Override
 	public void sliderValueChanged(int id, float value)
 	{
-		System.out.println("value = " + value);
 		this.matmos
 			.getExpansionLoader().getExpansions().get(((HGuiSliderControl) this.controlList.get(id)).displayString)
-			.setVolume(value);
-		System.out.println(this.matmos
-			.getExpansionLoader().getExpansions().get(((HGuiSliderControl) this.controlList.get(id)).displayString)
-			.getVolume());
+			.setVolume(value * 2);
 		
 	}
 	

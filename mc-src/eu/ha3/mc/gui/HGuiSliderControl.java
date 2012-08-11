@@ -87,9 +87,10 @@ public class HGuiSliderControl extends GuiButton
 			}
 			
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-			drawTexturedModalRect(this.xPosition + (int) (this.value * (this.width - 8)), this.yPosition, 0, 66, 4, 20);
 			drawTexturedModalRect(
-				this.xPosition + (int) (this.value * (this.width - 8)) + 4, this.yPosition, 196, 66, 4, 20);
+				this.xPosition + (int) (this.value * (this.width - 8)), this.yPosition, 0, 66, 4, this.height);
+			drawTexturedModalRect(
+				this.xPosition + (int) (this.value * (this.width - 8)) + 4, this.yPosition, 196, 66, 4, this.height);
 		}
 	}
 	
