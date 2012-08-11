@@ -16,12 +16,14 @@ package net.minecraft.src;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class mod_SkinningInGame_MLP extends HaddonBridgeModLoader
+public interface SkinningSystem
 {
-	public mod_SkinningInGame_MLP()
-	{
-		super(new SkinningInGameHaddon_MLP());
-		
-	}
+	public void enable();
+	
+	public void disable();
+	
+	public void update();
+	
+	public void render(float semi);
 	
 }
