@@ -35,4 +35,24 @@ public class Ha3Utility
 	final public static String COLOR_YELLOW = "§e";
 	final public static String COLOR_WHITE = "§f";
 	
+	/*private static final Ha3Utility instance = new Ha3Utility();
+	
+	private FontRenderer pixFont;
+	
+	private Ha3Utility()
+	{
+		pixFont = new FontRenderer(par1GameSettings, par2Str, par3RenderEngine, par4)
+	}
+	
+	public static Ha3Utility getInstance()
+	{
+		return instance;
+		
+	}
+	public Ha3Utility getInstance()
+	{
+		return instance;
+		
+	}*/
+	
 }
