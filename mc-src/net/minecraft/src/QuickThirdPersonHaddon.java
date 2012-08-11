@@ -138,15 +138,15 @@ public class QuickThirdPersonHaddon extends HaddonImpl
 			// prevDebugCamPitch;
 			
 			util().setPrivateValueLiteral(
-				EntityRenderer.class, manager().getMinecraft().entityRenderer, "t", 15,
+				EntityRenderer.class, manager().getMinecraft().entityRenderer, "D", 15,
 				this.desiredYaw + viewOffsetsYaw);
 			util().setPrivateValueLiteral(
-				EntityRenderer.class, manager().getMinecraft().entityRenderer, "u", 16,
+				EntityRenderer.class, manager().getMinecraft().entityRenderer, "E", 16,
 				this.desiredYaw + viewOffsetsYaw);
 			util().setPrivateValueLiteral(
-				EntityRenderer.class, manager().getMinecraft().entityRenderer, "v", 17, this.desiredPitch);
+				EntityRenderer.class, manager().getMinecraft().entityRenderer, "F", 17, this.desiredPitch);
 			util().setPrivateValueLiteral(
-				EntityRenderer.class, manager().getMinecraft().entityRenderer, "w", 18, this.desiredPitch);
+				EntityRenderer.class, manager().getMinecraft().entityRenderer, "G", 18, this.desiredPitch);
 		}
 		catch (PrivateAccessException e)
 		{
@@ -201,15 +201,15 @@ public class QuickThirdPersonHaddon extends HaddonImpl
 			// prevDebugCamPitch;
 			
 			util().setPrivateValueLiteral(
-				EntityRenderer.class, manager().getMinecraft().entityRenderer, "t", 15,
+				EntityRenderer.class, manager().getMinecraft().entityRenderer, "D", 15,
 				this.desiredYaw + viewOffsetsYaw);
 			util().setPrivateValueLiteral(
-				EntityRenderer.class, manager().getMinecraft().entityRenderer, "u", 16,
+				EntityRenderer.class, manager().getMinecraft().entityRenderer, "E", 16,
 				this.desiredYaw + viewOffsetsYaw);
 			util().setPrivateValueLiteral(
-				EntityRenderer.class, manager().getMinecraft().entityRenderer, "v", 17, this.desiredPitch);
+				EntityRenderer.class, manager().getMinecraft().entityRenderer, "F", 17, this.desiredPitch);
 			util().setPrivateValueLiteral(
-				EntityRenderer.class, manager().getMinecraft().entityRenderer, "w", 18, this.desiredPitch);
+				EntityRenderer.class, manager().getMinecraft().entityRenderer, "G", 18, this.desiredPitch);
 		}
 		catch (PrivateAccessException e)
 		{
