@@ -112,7 +112,7 @@ public interface Utility
 	
 	public void closeCurrentScreen();
 	
-	public int getClientTick();
+	public long getClientTick();
 	
 	public void printChat(Object... args);
 	

@@ -64,14 +64,16 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 	private boolean impl_continueTicking;
 	private boolean impl_continueGuiTicking;
 	
-	private int lastTick;
-	private int lastGuiTick;
+	private long nextTick;
+	private long lastGuiTick;
+	
+	private long ticksRan;
 	
 	public HaddonBridgeModLoader(Haddon haddon)
 	{
 		this.haddon = haddon;
 		
-		this.utility = new HaddonUtilityImpl(this);
+		this.utility = new HaddonUtilityModLoader(this);
 		haddon.setManager(this);
 		
 		this.supportsTick = haddon instanceof SupportsTickEvents;
@@ -85,7 +87,7 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 		this.impl_continueTicking = this.supportsTick || this.supportsFrame;
 		this.impl_continueGuiTicking = this.supportsGuiTick || this.supportsGuiFrame;
 		
-		this.lastTick = -1;
+		this.nextTick = -1;
 		this.lastGuiTick = -1;
 		
 		this.mc = ModLoader.getMinecraftInstance();
@@ -141,11 +143,23 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 	{
 		if (this.supportsTick && this.tickEnabled)
 		{
-			int tick = this.utility.getClientTick();
+			/*long tick = this.utility.getClientTick();
 			if (tick != this.lastTick)
 			{
 				((SupportsTickEvents) this.haddon).onTick();
 				this.lastTick = tick;
+				
+			}*/
+			
+			// Shitty inaccurate workaround because the normal method has evolved
+			// (1.3.1 version can jump tick by running it multiple times at once
+			// and doesn't have a tick accumulator)
+			long tick = System.currentTimeMillis();
+			if (tick > this.nextTick)
+			{
+				((SupportsTickEvents) this.haddon).onTick();
+				this.nextTick = tick + 50;
+				this.ticksRan++;
 				
 			}
 			
@@ -166,7 +180,7 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 	{
 		if (this.supportsGuiTick && this.guiTickEnabled)
 		{
-			int tick = this.utility.getClientTick();
+			long tick = this.utility.getClientTick();
 			if (tick != this.lastGuiTick)
 			{
 				((SupportsGuiTickEvents) this.haddon).onGuiTick(gui);
@@ -360,6 +374,12 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 			((SupportsIncomingMessages) this.haddon).onIncomingMessage(message);
 			
 		}
+		
+	}
+	
+	public long bridgeTicksRan()
+	{
+		return this.ticksRan;
 		
 	}
 	

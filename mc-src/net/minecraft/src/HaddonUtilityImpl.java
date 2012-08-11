@@ -28,16 +28,16 @@ public class HaddonUtilityImpl implements Utility
 {
 	final private static int WORLD_HEIGHT = 256;
 	
-	private Manager manager;
+	protected Manager manager;
 	
-	private Timer mc_timer;
-	private int ticksRan = 0;
+	//private Timer mc_timer;
+	//private int ticksRan = 0;
 	
 	public HaddonUtilityImpl(Manager manager)
 	{
 		this.manager = manager;
 		
-		// Initialize field modifiers
+		// Initialize reflection (Call the static constructor)
 		HaddonUtilitySingleton.getInstance();
 		
 	}
@@ -112,9 +112,9 @@ public class HaddonUtilityImpl implements Utility
 	}
 	
 	@Override
-	public int getClientTick()
+	public long getClientTick()
 	{
-		if (this.mc_timer == null)
+		/*if (this.mc_timer == null)
 		{
 			try
 			{
@@ -128,7 +128,9 @@ public class HaddonUtilityImpl implements Utility
 		
 		this.ticksRan = this.ticksRan + this.mc_timer.elapsedTicks;
 		
-		return this.ticksRan;
+		return this.ticksRan;*/
+		
+		throw new RuntimeException("getClientTick() doesn't work");
 		
 	}
 	
