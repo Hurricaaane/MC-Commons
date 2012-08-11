@@ -22,10 +22,10 @@ public interface LrzMagI
 	
 	//public boolean isLegit();
 	
-	public void setTimeout(int timeout);
+	public void setTimeout(long l);
 	
 	public boolean isGathered();
 	
-	public boolean hasTimeout(int current);
+	public boolean hasTimeout(long tick);
 	
 }

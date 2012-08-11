@@ -122,7 +122,7 @@ public class LrzSnap implements LrzSnapI
 		
 		LrzMagI mag = this.mags[iMag][jMag];
 		
-		int tick = this.worldCache.mod().util().getClientTick();
+		long tick = System.currentTimeMillis() / 1000;
 		if (mag.hasTimeout(tick))
 		{
 			boolean gathered = gatherChunk(iMag, jMag);

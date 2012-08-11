@@ -18,7 +18,7 @@ package net.minecraft.src;
 
 public class LrzMag implements LrzMagI
 {
-	private int timeout;
+	private long timeout;
 	//private boolean legit;
 	private boolean gathered;
 	
@@ -42,7 +42,7 @@ public class LrzMag implements LrzMagI
 	}
 	
 	@Override
-	public void setTimeout(int timeout)
+	public void setTimeout(long timeout)
 	{
 		this.timeout = timeout;
 		
@@ -61,7 +61,7 @@ public class LrzMag implements LrzMagI
 	}
 	
 	@Override
-	public boolean hasTimeout(int current)
+	public boolean hasTimeout(long current)
 	{
 		return current > this.timeout;
 	}

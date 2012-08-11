@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import eu.ha3.mc.haddon.SupportsFrameEvents;
+import eu.ha3.mc.haddon.SupportsTickEvents;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -24,7 +24,7 @@ import eu.ha3.mc.haddon.SupportsFrameEvents;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class LrzMod extends HaddonImpl implements SupportsFrameEvents
+public class LrzMod extends HaddonImpl implements SupportsTickEvents
 {
 	final static public Logger LOGGER = Logger.getLogger("Lowrizon");
 	final public int VERSION = 0;
@@ -57,6 +57,7 @@ public class LrzMod extends HaddonImpl implements SupportsFrameEvents
 	}
 	
 	private LrzWorldCacheI worldCache;
+	private int ticksRan = 0;
 	
 	@Override
 	public void onLoad()
@@ -68,9 +69,11 @@ public class LrzMod extends HaddonImpl implements SupportsFrameEvents
 	}
 	
 	@Override
-	public void onFrame(float fspan)
+	public void onTick()
 	{
-		if (util().getClientTick() % 50 != 0)
+		this.ticksRan++;
+		
+		if (this.ticksRan % 50 != 0)
 			return;
 		
 		EntityPlayer player = manager().getMinecraft().thePlayer;
