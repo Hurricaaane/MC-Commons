@@ -162,7 +162,7 @@ public class SkinningSystemMLP implements SkinningSystem
 	
 	private Pony getPonyOf(String playerName)
 	{
-		return Pony.getPonyFromRegistry(playerName, this.mc.renderEngine);
+		return Pony.getPonyFromRegistry(this.mc.theWorld.getPlayerEntityByName(playerName), this.mc.renderEngine);
 		
 	}
 	
