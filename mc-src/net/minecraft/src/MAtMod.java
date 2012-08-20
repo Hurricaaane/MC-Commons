@@ -7,7 +7,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Locale;
-import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -17,11 +16,9 @@ import java.util.logging.Logger;
 import net.minecraft.client.Minecraft;
 import eu.ha3.easy.TimeStatistic;
 import eu.ha3.matmos.engine.MAtmosLogger;
-import eu.ha3.mc.convenience.Ha3Personalizable;
 import eu.ha3.mc.convenience.Ha3Signal;
 import eu.ha3.mc.convenience.Ha3StaticUtilities;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
-import eu.ha3.mc.haddon.SupportsGuiTickEvents;
 import eu.ha3.mc.haddon.SupportsKeyEvents;
 import eu.ha3.mc.haddon.SupportsTickEvents;
 
@@ -41,25 +38,23 @@ import eu.ha3.mc.haddon.SupportsTickEvents;
   0. You just DO WHAT THE FUCK YOU WANT TO.
  */
 
-public class MAtMod extends HaddonImpl
-	implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents, SupportsGuiTickEvents, Ha3Personalizable
+public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents/*, SupportsGuiTickEvents, Ha3Personalizable*/
 {
 	final static public Logger LOGGER = Logger.getLogger("MAtmos");
-	final public int VERSION = 13; // Remember to change the thing on mod_Matmos_forModLoader
-	private Properties config;
+	final public int VERSION = 14; // Remember to change the thing on mod_Matmos_forModLoader
+	
+	//private Properties config;
 	private ConsoleHandler conMod;
 	private ConsoleHandler conEngine;
 	
 	private Ha3SoundCommunicator sndComm;
 	
-	private final boolean defBypassResourceLoaderWait = true;
-	private final boolean defAllowDump = true;
-	private boolean bypassResourceLoaderWait;
-	private boolean allowDump;
+	private boolean shouldSkipResourceReloader = true;
+	private boolean shouldDumpData = true;
 	
 	private MAtUserControl userControl;
 	private MAtDataGatherer dataGatherer;
-	private MAtExpansionLoader expansionLoader;
+	private MAtExpansionManager expansionManager;
 	private MAtOptions options;
 	private MAtUpdateNotifier updateNotifier;
 	
@@ -141,25 +136,17 @@ public class MAtMod extends HaddonImpl
 	{
 		this.timeStatistic = new TimeStatistic(Locale.ENGLISH);
 		
-		this.isRunning = false;
-		this.isReady = false;
-		
-		this.bypassResourceLoaderWait = this.defBypassResourceLoaderWait;
-		this.allowDump = this.defAllowDump;
-		
 		this.sndComm = new Ha3SoundCommunicator(this, "MAtmos_");
 		
 		this.userControl = new MAtUserControl(this);
 		this.dataGatherer = new MAtDataGatherer(this);
-		this.expansionLoader = new MAtExpansionLoader(this);
-		this.options = new MAtOptions(this);
+		this.expansionManager = new MAtExpansionManager(this);
 		this.updateNotifier = new MAtUpdateNotifier(this);
 		
 		this.centralSoundManager = new MAtSoundManagerConfigurable(this);
 		
 		manager().hookFrameEvents(true);
 		manager().hookTickEvents(true);
-		manager().hookGuiTickEvents(true);
 		
 		doLoad();
 		
@@ -167,7 +154,7 @@ public class MAtMod extends HaddonImpl
 		
 	}
 	
-	public void doLoad()
+	private void doLoad()
 	{
 		this.phase = MAtModPhase.CONSTRUCTING;
 		
@@ -177,10 +164,10 @@ public class MAtMod extends HaddonImpl
 		this.dataGatherer.load();
 		// note: soundManager needs to be loaded post sndcomms
 		
-		this.options.registerPersonalizable(this);
+		/*this.options.registerPersonalizable(this);
 		this.options.registerPersonalizable(this.centralSoundManager);
 		this.options.registerPersonalizable(this.updateNotifier);
-		this.options.loadOptions(); // TODO Options
+		this.options.loadOptions(); // TODO Options*/
 		
 		this.sndComm.load(new Ha3Signal() {
 			@Override
@@ -199,8 +186,8 @@ public class MAtMod extends HaddonImpl
 			}
 		});
 		
-		this.expansionLoader.renewProngs();
-		this.expansionLoader.loadExpansions();
+		//this.expansionLoader.renewProngs();
+		this.expansionManager.loadExpansions();
 		
 	}
 	
@@ -223,9 +210,9 @@ public class MAtMod extends HaddonImpl
 	}
 	
 	// XXX Blatant design.
-	public MAtExpansionLoader getExpansionLoader()
+	public MAtExpansionManager getExpansionLoader()
 	{
-		return this.expansionLoader;
+		return this.expansionManager;
 		
 	}
 	
@@ -320,7 +307,7 @@ public class MAtMod extends HaddonImpl
 			loadFinalPhase();
 			
 		}
-		else if (!this.bypassResourceLoaderWait)
+		else if (!this.shouldSkipResourceReloader)
 		{
 			new MAtResourceReloader(this, new Ha3Signal() {
 				
@@ -351,7 +338,7 @@ public class MAtMod extends HaddonImpl
 		
 		MAtMod.LOGGER.info("ResourceReloader finished (after " + this.timeStatistic.getSecondsAsString(3) + " s.).");
 		
-		this.expansionLoader.signalBuildKnowledge();
+		//this.expansionManager.signalBuildKnowledge();
 		
 		this.phase = MAtModPhase.READY;
 		
@@ -359,6 +346,7 @@ public class MAtMod extends HaddonImpl
 		MAtMod.LOGGER.info("Ready.");
 		
 		startRunning();
+		this.expansionManager.signalReadyToTurnOn();
 		
 	}
 	
@@ -374,7 +362,9 @@ public class MAtMod extends HaddonImpl
 			@Override
 			public void run()
 			{
-				MAtMod.this.expansionLoader.loadExpansions();
+				TimeStatistic stat = new TimeStatistic(Locale.ENGLISH);
+				MAtMod.this.expansionManager.loadExpansions();
+				MAtMod.LOGGER.info("Expansions loaded (" + stat.getSecondsAsString(1) + "s).");
 				
 			}
 		}.start();
@@ -393,7 +383,7 @@ public class MAtMod extends HaddonImpl
 		this.isRunning = true;
 		
 		MAtMod.LOGGER.fine("Loading...");
-		this.expansionLoader.signalStatusChange();
+		this.expansionManager.modWasTurnedOnOrOff();
 		MAtMod.LOGGER.fine("Loaded.");
 		
 	}
@@ -409,16 +399,16 @@ public class MAtMod extends HaddonImpl
 		this.isRunning = false;
 		
 		MAtMod.LOGGER.fine("Stopping...");
-		this.expansionLoader.signalStatusChange();
+		this.expansionManager.modWasTurnedOnOrOff();
 		MAtMod.LOGGER.fine("Stopped.");
 		
 		createDataDump();
 		
 	}
 	
-	public void createDataDump()
+	private void createDataDump()
 	{
-		if (!this.allowDump)
+		if (!this.shouldDumpData)
 			return;
 		
 		MAtMod.LOGGER.fine("Dumping data.");
@@ -509,7 +499,8 @@ public class MAtMod extends HaddonImpl
 		if (!this.isRunning)
 			return;
 		
-		this.expansionLoader.soundRoutine();
+		this.expansionManager.soundRoutine();
+		this.centralSoundManager.routine();
 		
 	}
 	
@@ -522,7 +513,7 @@ public class MAtMod extends HaddonImpl
 			if (this.isRunning)
 			{
 				this.dataGatherer.tickRoutine();
-				this.expansionLoader.dataRoutine();
+				this.expansionManager.dataRoutine();
 				
 			}
 			
@@ -547,7 +538,7 @@ public class MAtMod extends HaddonImpl
 		
 	}
 	
-	@Override
+	/*@Override
 	public void inputOptions(Properties options)
 	{
 		if (this.config == null)
@@ -647,12 +638,12 @@ public class MAtMod extends HaddonImpl
 		
 		return options;
 		
-	}
+	}*/
 	
-	@Override
+	/*@Override
 	public void onGuiTick(GuiScreen gui)
 	{
-		this.expansionLoader.lowUsageRoutine();
-	}
+		this.expansionManager.lowUsageRoutine();
+	}*/
 	
 }

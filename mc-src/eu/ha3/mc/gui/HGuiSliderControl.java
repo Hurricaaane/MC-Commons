@@ -81,7 +81,7 @@ public class HGuiSliderControl extends GuiButton
 				if (this.value != value)
 				{
 					this.value = value;
-					this.listener.sliderValueChanged(this.id, value);
+					this.listener.sliderValueChanged(this, value);
 				}
 				
 			}
@@ -118,7 +118,7 @@ public class HGuiSliderControl extends GuiButton
 			if (this.value != value)
 			{
 				this.value = value;
-				this.listener.sliderValueChanged(this.id, value);
+				this.listener.sliderValueChanged(this, value);
 			}
 			
 			this.isBeingDragged = true;

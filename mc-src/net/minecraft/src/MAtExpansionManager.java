@@ -32,32 +32,21 @@ import net.minecraft.client.Minecraft;
   0. You just DO WHAT THE FUCK YOU WANT TO.
  */
 
-public class MAtExpansionLoader
+public class MAtExpansionManager
 {
+	private MAtMod mod;
+	private Map<String, MAtExpansion> expansions;
+	
 	private File expansionsFolder;
 	private File onlineStorageFolder;
 	
-	private MAtMod mod;
-	
-	private Map<String, MAtExpansion> expansions;
-	private List<String> limbo;
-	private List<String> dummy;
-	private List<String> loading;
-	
 	private boolean canBuildKnowledge;
-	private List<MAtExpansionEventListener> eventListeners;
 	
-	MAtExpansionLoader(MAtMod mAtmosHaddon)
+	public MAtExpansionManager(MAtMod mAtmosHaddon)
 	{
 		this.mod = mAtmosHaddon;
-		this.canBuildKnowledge = false;
 		
 		this.expansions = new ConcurrentHashMap<String, MAtExpansion>();
-		this.dummy = new ArrayList<String>();
-		this.limbo = new ArrayList<String>();
-		this.loading = new ArrayList<String>();
-		
-		this.eventListeners = new ArrayList<MAtExpansionEventListener>();
 		
 		this.expansionsFolder = new File(Minecraft.getMinecraftDir(), "matmos/expansions_r12/");
 		this.onlineStorageFolder = new File(Minecraft.getMinecraftDir(), "matmos/internal/storage/");
@@ -72,24 +61,20 @@ public class MAtExpansionLoader
 			this.onlineStorageFolder.mkdirs();
 		}
 		
-		this.tasks = new ArrayList<Runnable>();
-		
-	}
-	
-	public synchronized void renewProngs()
-	{
-		for (MAtExpansion expansion : this.expansions.values())
-		{
-			renewExpansionProngs(expansion);
-			
-		}
-		
 	}
 	
 	private synchronized void renewExpansionProngs(MAtExpansion expansion)
 	{
 		expansion.setSoundManager(new MAtSoundManagerProxy(this.mod.getCentralSoundManager()));
 		expansion.setData(this.mod.getDataGatherer().getData());
+		
+	}
+	
+	public void createExpansionEntry(String userDefinedIdentifier)
+	{
+		MAtExpansion expansion = new MAtExpansion(userDefinedIdentifier);
+		this.expansions.put(userDefinedIdentifier, expansion);
+		renewExpansionProngs(expansion);
 		
 	}
 	
@@ -104,7 +89,6 @@ public class MAtExpansionLoader
 		{
 			MAtMod.LOGGER.warning("Error with FileNotFound on ExpansionLoader (on file "
 				+ file.getAbsolutePath() + ").");
-			this.dummy.add(userDefinedIdentifier);
 			
 		}
 		
@@ -113,38 +97,15 @@ public class MAtExpansionLoader
 	public void addExpansionFromURL(String userDefinedIdentifier, URL url)
 	{
 		MAtExpansionFetcher fetcher = new MAtExpansionFetcher(this, userDefinedIdentifier);
-		this.limbo.add(userDefinedIdentifier);
-		
-		for (MAtExpansionEventListener listener : this.eventListeners)
-		{
-			listener.addedLimbo(userDefinedIdentifier);
-		}
+		//this.expansions.put(userDefinedIdentifier, null);
 		
 		fetcher.getDatabase(url);
-		
-	}
-	
-	private void fetcherSignalAfterLimboRemoval()
-	{
-		if (this.limbo.size() == 0)
-		{
-			MAtMod.LOGGER.info("ExpansionLoader Limbo is now empty.");
-		}
 		
 	}
 	
 	public synchronized void fetcherSuccess(String userDefinedIdentifier, InputStream stream)
 	{
 		MAtMod.LOGGER.info("ExpansionLoader fetched " + userDefinedIdentifier + ".");
-		
-		this.limbo.remove(userDefinedIdentifier);
-		
-		for (MAtExpansionEventListener listener : this.eventListeners)
-		{
-			listener.successLimbo(userDefinedIdentifier);
-		}
-		
-		fetcherSignalAfterLimboRemoval();
 		
 		addExpansion(userDefinedIdentifier, stream);
 		if (this.expansions.get(userDefinedIdentifier).hasStructure())
@@ -165,22 +126,12 @@ public class MAtExpansionLoader
 	{
 		MAtMod.LOGGER.info("ExpansionLoader failed fetching " + userDefinedIdentifier + ".");
 		
-		this.limbo.remove(userDefinedIdentifier);
-		
-		for (MAtExpansionEventListener listener : this.eventListeners)
-		{
-			listener.failureLimbo(userDefinedIdentifier);
-		}
-		
-		fetcherSignalAfterLimboRemoval();
-		
 		fetherRescue(userDefinedIdentifier);
 		
 	}
 	
 	private void fetherRescue(String userDefinedIdentifier)
 	{
-		//System.out.println(identifierToStorage(userDefinedIdentifier));
 		addExpansionFromFile(userDefinedIdentifier, identifierToStorage(userDefinedIdentifier));
 		
 	}
@@ -224,11 +175,6 @@ public class MAtExpansionLoader
 		{
 			MAtExpansion expansion = this.expansions.get(userDefinedIdentifier);
 			
-			for (MAtExpansionEventListener listener : this.eventListeners)
-			{
-				listener.removedExpansion(expansion);
-			}
-			
 			expansion.turnOff();
 			this.expansions.remove(userDefinedIdentifier);
 		}
@@ -237,103 +183,84 @@ public class MAtExpansionLoader
 	
 	public synchronized void addExpansion(String userDefinedIdentifier, InputStream stream)
 	{
-		MAtExpansion expansion = new MAtExpansion(userDefinedIdentifier);
-		this.loading.add(expansion.getUserDefinedName());
-		renewExpansionProngs(expansion);
-		expansion.inputStructure(stream);
-		this.expansions.put(userDefinedIdentifier, expansion);
-		
-		for (MAtExpansionEventListener listener : this.eventListeners)
+		if (!this.expansions.containsKey(userDefinedIdentifier))
 		{
-			listener.addedExpansion(expansion);
+			MAtMod.LOGGER.severe("Tried to add an expansion that has no entry!");
+			return;
+			
 		}
 		
-		tryBuildKnowledge(expansion);
+		MAtExpansion expansion = this.expansions.get(userDefinedIdentifier);
+		expansion.inputStructure(stream);
+		
+		tryTurnOn(expansion);
 		
 	}
 	
-	private synchronized void tryBuildKnowledge(MAtExpansion expansion)
+	private synchronized void tryTurnOn(MAtExpansion expansion)
 	{
+		if (expansion == null)
+			return;
+		
 		if (!this.canBuildKnowledge)
 			return;
 		
 		// TODO If the expansion is set by the user not to load, don't load it
 		// XXX If the expansion is set by the user not to load, don't load it
 		
+		/*TimeStatistic stat = new TimeStatistic(Locale.ENGLISH);
 		expansion.buildKnowledge();
-		this.loading.remove(expansion.getUserDefinedName());
 		
-		MAtMod.LOGGER.info("Expansion " + expansion.getUserDefinedName() + " loaded.");
-		
-		if (this.loading.size() == 0 && this.limbo.size() == 0)
-		{
-			MAtMod.LOGGER.info("ExpansionLoader Loading and Limbo are now empty.");
-		}
+		MAtMod.LOGGER.info("Expansion "
+			+ expansion.getUserDefinedName() + " loaded (" + stat.getSecondsAsString(1) + "s).");
 		
 		if (!expansion.hasStructure())
 		{
 			MAtMod.LOGGER.warning("Expansion " + expansion.getUserDefinedName() + " has no structure.");
-		}
+		}*/
 		
-		postBuildKnowledge(expansion.getUserDefinedName());
+		turnOnOrOff(expansion);
 		
 	}
 	
-	public synchronized void signalBuildKnowledge()
+	public synchronized void signalReadyToTurnOn()
 	{
 		this.canBuildKnowledge = true;
-		
-		MAtMod.LOGGER.info("ExpansionLoader signaled. Currently has "
-			+ this.expansions.size() + " expansions and " + this.limbo.size() + " in limbo.");
 		
 		// Try build the knowledge of expansions that were structured before buildknowledge was ready
 		for (MAtExpansion expansion : this.expansions.values())
 		{
-			tryBuildKnowledge(expansion);
+			tryTurnOn(expansion);
 		}
 		
 	}
 	
-	private void postBuildKnowledge(String userDefinedIdentifier)
+	private void turnOnOrOff(MAtExpansion expansion)
 	{
-		// This is not called at all for expansions that are
-		// set by the user not to load
+		if (expansion == null)
+			return;
+		
 		if (this.mod.isRunning())
 		{
-			this.expansions.get(userDefinedIdentifier).turnOn();
+			if (expansion.getVolume() > 0)
+			{
+				expansion.turnOn();
+			}
 		}
 		else
 		{
-			this.expansions.get(userDefinedIdentifier).turnOff();
+			expansion.turnOff();
 		}
-		
-		// Debugging
-		// expansions.get(userDefinedIdentifier).printKnowledge();
 		
 	}
 	
-	public synchronized void signalStatusChange()
+	public synchronized void modWasTurnedOnOrOff()
 	{
-		// TODO Separate boolean for user defined preferences
 		for (MAtExpansion expansion : this.expansions.values())
 		{
-			if (this.mod.isRunning())
-			{
-				expansion.turnOn(); // Turn on contains a "build knowledge if needed".
-			}
-			else
-			{
-				expansion.turnOff();
-			}
+			turnOnOrOff(expansion);
 			
 		}
-		
-	}
-	
-	public int getLoadingCount()
-	{
-		return this.loading.size();
-		
 	}
 	
 	public Map<String, MAtExpansion> getExpansions()
@@ -352,27 +279,8 @@ public class MAtExpansionLoader
 		
 	}
 	
-	private void loadTask()
-	{
-		if (this.tasks.isEmpty())
-			return;
-		
-		try
-		{
-			this.tasks.remove(0).run();
-			
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		
-	}
-	
 	public void dataRoutine()
 	{
-		loadTask();
-		
 		for (MAtExpansion expansion : this.expansions.values())
 		{
 			expansion.dataRoutine();
@@ -385,9 +293,7 @@ public class MAtExpansionLoader
 	{
 		for (MAtExpansion expansion : this.expansions.values())
 		{
-			expansion.turnOff();
-			expansion.patchKnowledge();
-			
+			expansion.clear();
 		}
 		this.expansions.clear();
 		
@@ -396,12 +302,37 @@ public class MAtExpansionLoader
 	public void loadExpansions()
 	{
 		clearExpansions();
-		addOnlineFromFolderRecursive(this.expansionsFolder, "");
-		addExpansionFromFolderRecursive(this.expansionsFolder, "");
+		
+		List<File> offline = new ArrayList<File>();
+		List<File> online = new ArrayList<File>();
+		
+		gatherOffline(this.expansionsFolder, offline);
+		gatherOnline(this.expansionsFolder, online);
+		
+		for (File file : offline)
+		{
+			MAtMod.LOGGER.info("ExpansionLoader found offline " + file.getName() + ".");
+			createExpansionEntry(file.getName());
+		}
+		
+		for (File file : online)
+		{
+			MAtMod.LOGGER.info("ExpansionLoader found online " + file.getName() + ".");
+			createExpansionEntry(file.getName());
+		}
+		
+		for (File file : online)
+		{
+			addOnlineFromFile(file.getName(), file);
+		}
+		for (File file : offline)
+		{
+			addExpansionFromFile(file.getName(), file);
+		}
 		
 	}
 	
-	private void addExpansionFromFolderRecursive(File file, String s)
+	private void gatherOffline(File file, List<File> files)
 	{
 		if (!file.exists())
 			return;
@@ -410,16 +341,10 @@ public class MAtExpansionLoader
 		{
 			if (individual.isDirectory())
 			{
-				/*addExpansionFromFolderRecursive(afile[i], s + afile[i].getName() + "/");
-				continue;*/
-				;
-				// TODO What should be done about expansions in subfolders?
-				
 			}
 			else if (individual.getName().endsWith(".xml"))
 			{
-				MAtMod.LOGGER.info("ExpansionLoader found potential expansion " + individual.getName() + ".");
-				addExpansionFromFile(individual.getName(), individual);
+				files.add(individual);
 				
 			}
 			
@@ -427,7 +352,7 @@ public class MAtExpansionLoader
 		
 	}
 	
-	private void addOnlineFromFolderRecursive(File file, String s)
+	private void gatherOnline(File file, List<File> files)
 	{
 		if (!file.exists())
 			return;
@@ -436,13 +361,10 @@ public class MAtExpansionLoader
 		{
 			if (individual.isDirectory())
 			{
-				;
-				
 			}
 			else if (individual.getName().endsWith(".xrl"))
 			{
-				MAtMod.LOGGER.info("ExpansionLoader found potential online " + individual.getName() + ".");
-				addOnlineFromFile(individual.getName(), individual);
+				files.add(individual);
 				
 			}
 			
@@ -452,8 +374,6 @@ public class MAtExpansionLoader
 	
 	private void addOnlineFromFile(String userDefinedIdentifier, File file)
 	{
-		boolean win = false;
-		
 		// TODO Weird exception handling
 		try
 		{
@@ -461,8 +381,6 @@ public class MAtExpansionLoader
 			try
 			{
 				addExpansionFromURL(userDefinedIdentifier, new URL(buff.readLine()));
-				
-				win = true;
 				
 			}
 			catch (IOException e)
@@ -485,55 +403,20 @@ public class MAtExpansionLoader
 			MAtMod.LOGGER.warning(e.getMessage());
 		}
 		
-		if (!win)
+	}
+	
+	public int getLoadingCount()
+	{
+		int count = 0;
+		for (MAtExpansion e : this.expansions.values())
 		{
-			this.dummy.add(userDefinedIdentifier);
+			if (e == null)
+			{
+				count = count + 1;
+			}
 		}
 		
-	}
-	
-	public void addEventListener(MAtExpansionEventListener listener)
-	{
-		this.eventListeners.add(listener);
-		
-	}
-	
-	private List<Runnable> tasks;
-	
-	/**
-	 * Adds a task to the list of tasks to run by the expansion loader.
-	 * 
-	 * @param runnable
-	 */
-	public void putTask(Runnable runnable)
-	{
-		this.tasks.add(runnable);
-		
-	}
-	
-	/**
-	 * Routing that executes when Minecraft is in low usage mode. Typically,
-	 * this occurs in the main menu of Minecraft.
-	 * 
-	 */
-	public void lowUsageRoutine()
-	{
-		if (this.tasks.isEmpty())
-			return;
-		
-		long startTime = System.currentTimeMillis();
-		MAtMod.LOGGER.info("Loading tasks...");
-		
-		int taskCount = 0;
-		while (!this.tasks.isEmpty())
-		{
-			loadTask();
-			taskCount++;
-		}
-		
-		MAtMod.LOGGER.info("Took "
-			+ (System.currentTimeMillis() - startTime) / 1000f + "s to finish loading " + taskCount + " tasks.");
-		
+		return count;
 	}
 	
 }

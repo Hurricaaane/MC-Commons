@@ -25,12 +25,12 @@ import java.util.Scanner;
 
 public class MAtExpansionFetcher extends Thread
 {
-	private MAtExpansionLoader loader;
+	private MAtExpansionManager loader;
 	
 	private URL url;
 	private String identifier;
 	
-	public MAtExpansionFetcher(MAtExpansionLoader loader, String identifierIn)
+	public MAtExpansionFetcher(MAtExpansionManager loader, String identifierIn)
 	{
 		super(null, null, "MATMOS-" + identifierIn);
 		setDaemon(true);

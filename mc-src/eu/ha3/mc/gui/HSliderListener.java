@@ -18,6 +18,6 @@ package eu.ha3.mc.gui;
 
 public interface HSliderListener
 {
-	public void sliderValueChanged(int id, float value);
+	public void sliderValueChanged(HGuiSliderControl slider, float value);
 	
 }

@@ -47,8 +47,9 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 	private ArrayList<String> tokenPaths;
 	private ArrayList<Boolean> tokenSetFirst;
 	private ArrayList<Float> tokenVolume;
+	private ArrayList<Float> tokenPitch;
 	private ArrayList<URL> tokenURL;
-	private ArrayList<String> sourcesAsMusic;
+	private ArrayList<Boolean> tokenRegisteredInEngine;
 	private Map<String, Float> paulsCodeBug_markForFadeIn;
 	
 	private float settingsVolume;
@@ -68,8 +69,9 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 		this.tokenSetFirst = new ArrayList<Boolean>();
 		this.tokenURL = new ArrayList<URL>();
 		this.tokenVolume = new ArrayList<Float>();
+		this.tokenPitch = new ArrayList<Float>();
+		this.tokenRegisteredInEngine = new ArrayList<Boolean>();
 		this.paulsCodeBug_markForFadeIn = new HashMap<String, Float>();
-		this.sourcesAsMusic = new ArrayList<String>();
 		
 		this.settingsVolume = 0F;
 		
@@ -117,12 +119,8 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 	private void updateSettingsVolume()
 	{
 		Minecraft mc = this.mod.manager().getMinecraft();
-		boolean changedSettings = this.settingsVolume != mc.gameSettings.soundVolume;
 		
-		if (changedSettings)
-		{
-			this.settingsVolume = mc.gameSettings.soundVolume;
-		}
+		this.settingsVolume = mc.gameSettings.soundVolume;
 		
 	}
 	
@@ -219,18 +217,27 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 		this.tokenSetFirst.add(false);
 		this.tokenURL.add(null);
 		this.tokenVolume.add(0F);
+		this.tokenPitch.add(0F);
+		this.tokenRegisteredInEngine.add(false);
 		
 		return token;
 	}
 	
-	@Override
-	public synchronized boolean setupStreamingToken(int token, String path, float volume, float pitch)
+	public void ensureInitialized(int token)
 	{
+		if (this.tokenRegisteredInEngine.get(token))
+			return;
+		
+		this.tokenRegisteredInEngine.set(token, true);
+		
 		try
 		{
 			String sourceName = "MATMOS_SRM_" + token;
+			String path = this.tokenPaths.get(token);
+			float volume = this.tokenVolume.get(token);
+			float pitch = this.tokenPitch.get(token);
 			
-			this.tokenPaths.set(token, path);
+			MAtMod.LOGGER.info("Initializing source: " + sourceName);
 			
 			cacheSound(path);
 			String poolName = getSound(path);
@@ -242,13 +249,7 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 			
 			if (soundpoolentry != null)
 			{
-				if (volume == 0)
-				{
-					this.sourcesAsMusic.add(sourceName);
-				}
-				
 				this.tokenURL.set(token, soundpoolentry.soundUrl);
-				this.tokenVolume.set(token, volume);
 				
 				sndSystem().newStreamingSource(true, sourceName, soundpoolentry.soundUrl, path, true, 0, 0, 0, 0, 0);
 				sndSystem().setTemporary(sourceName, false);
@@ -258,22 +259,30 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 				sndSystem().activate(sourceName); // XXX ??? Is it alright?
 				
 			}
-			
-			return true;
-			
 		}
 		catch (PrivateAccessException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return false;
+	}
+	
+	@Override
+	public synchronized boolean setupStreamingToken(int token, String path, float volume, float pitch)
+	{
+		this.tokenPaths.set(token, path);
+		this.tokenVolume.set(token, volume);
+		this.tokenPitch.set(token, pitch);
+		
+		return true;
 		
 	}
 	
 	@Override
 	public synchronized void startStreaming(int token, float fadeDuration, int timesToPlay)
 	{
+		ensureInitialized(token);
+		
 		String sourceName = "MATMOS_SRM_" + token;
 		
 		if (this.tokenSetFirst.get(token) == false)
@@ -349,8 +358,6 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 		stopStreaming(token, 0);
 		
 		sndSystem().removeSource(sourceName);
-		
-		this.sourcesAsMusic.remove(sourceName);
 		
 	}
 	

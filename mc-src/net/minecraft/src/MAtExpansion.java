@@ -3,11 +3,11 @@ package net.minecraft.src;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -24,6 +24,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import eu.ha3.easy.TimeStatistic;
 import eu.ha3.matmos.engine.MAtmosData;
 import eu.ha3.matmos.engine.MAtmosException;
 import eu.ha3.matmos.engine.MAtmosKnowledge;
@@ -68,7 +69,7 @@ public class MAtExpansion implements MAtCustomVolume
 	
 	private MAtmosSoundManager soundManager;
 	
-	MAtExpansion(String userDefinedIdentifier)
+	public MAtExpansion(String userDefinedIdentifier)
 	{
 		this.userDefinedIdentifier = userDefinedIdentifier;
 		this.isReady = false;
@@ -118,6 +119,8 @@ public class MAtExpansion implements MAtCustomVolume
 	
 	public void inputStructure(InputStream stream)
 	{
+		System.out.println("inputting " + this.userDefinedIdentifier);
+		
 		this.hasStructure = false;
 		try
 		{
@@ -289,13 +292,15 @@ public class MAtExpansion implements MAtCustomVolume
 	
 	public void turnOn()
 	{
-		//if (!isReady || isRunning())
 		if (isRunning())
 			return;
 		
 		if (!this.isReady && this.hasStructure)
 		{
+			TimeStatistic stat = new TimeStatistic(Locale.ENGLISH);
 			buildKnowledge();
+			
+			MAtMod.LOGGER.info("Expansion " + getUserDefinedName() + " loaded (" + stat.getSecondsAsString(1) + "s).");
 		}
 		
 		if (this.isReady)
@@ -373,7 +378,7 @@ public class MAtExpansion implements MAtCustomVolume
 		
 	}
 	
-	public void printKnowledge() // XXX Debugging function, remove me
+	/*public void printKnowledge() // XXX Debugging function, remove me
 	{
 		try
 		{
@@ -385,13 +390,13 @@ public class MAtExpansion implements MAtCustomVolume
 			e.printStackTrace();
 		}
 		
-	}
+	}*/
 	
-	public void patchKnowledge()
+	public void clear()
 	{
+		turnOff();
 		this.knowledge.patchKnowledge();
 		this.isReady = false;
-		
 	}
 	
 }

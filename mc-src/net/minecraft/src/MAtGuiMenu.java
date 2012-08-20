@@ -1,7 +1,9 @@
 package net.minecraft.src;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import eu.ha3.mc.gui.HGuiSliderControl;
 import eu.ha3.mc.gui.HSliderListener;
@@ -22,7 +24,7 @@ import eu.ha3.mc.gui.HSliderListener;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class MAtGuiMenu extends GuiScreen implements HSliderListener
+public class MAtGuiMenu extends GuiScreen
 {
 	/**
 	 * A reference to the screen object that created this. Used for navigating
@@ -38,17 +40,25 @@ public class MAtGuiMenu extends GuiScreen implements HSliderListener
 	/** The ID of the button that has been pressed. */
 	private int buttonId;
 	
+	private int pageFromZero;
+	private final int IDS_PER_PAGE = 6;
+	
+	private static int in_memory_page = 0;
+	
 	public MAtGuiMenu(GuiScreen par1GuiScreen, MAtMod matmos)
+	{
+		this(par1GuiScreen, matmos, in_memory_page);
+	}
+	
+	public MAtGuiMenu(GuiScreen par1GuiScreen, MAtMod matmos, int pageFromZero)
 	{
 		this.screenTitle = "Expansions";
 		this.buttonId = -1;
 		this.parentScreen = par1GuiScreen;
 		this.matmos = matmos;
-	}
-	
-	private int func_20080_j()
-	{
-		return this.width / 2 - 155;
+		this.pageFromZero = pageFromZero;
+		
+		in_memory_page = this.pageFromZero;
 	}
 	
 	/**
@@ -58,18 +68,56 @@ public class MAtGuiMenu extends GuiScreen implements HSliderListener
 	@Override
 	public void initGui()
 	{
+		final MAtMod matmos = this.matmos;
+		
 		StringTranslate stringtranslate = StringTranslate.getInstance();
-		int leftHinge = func_20080_j();
+		int leftHinge = this.width / 2 - 155;
 		
 		Map<String, MAtExpansion> expansions = this.matmos.getExpansionLoader().getExpansions();
 		int id = 0;
 		
-		for (Entry<String, MAtExpansion> expansion : expansions.entrySet())
 		{
+			final MAtSoundManagerConfigurable central = this.matmos.getCentralSoundManager();
+			String display = "Global Volume Control: " + (int) Math.floor(central.getVolume() * 100) + "%";
+			
 			HGuiSliderControl sliderControl =
-				new HGuiSliderControl(id, leftHinge, 22 * id, 310, 20, expansion.getKey(), expansion
-					.getValue().getVolume());
-			sliderControl.setListener(this);
+				new HGuiSliderControl(id, leftHinge, 22 + 22 * id, 310, 20, display, central.getVolume() * 0.5f);
+			sliderControl.setListener(new HSliderListener() {
+				@Override
+				public void sliderValueChanged(HGuiSliderControl slider, float value)
+				{
+					central.setVolume(value * 2);
+					slider.displayString = "Global Volume Control: " + (int) Math.floor(value * 200) + "%";
+				}
+			});
+			this.controlList.add(sliderControl);
+			id++;
+			
+		}
+		
+		List<String> identifiers = new ArrayList<String>(expansions.keySet());
+		Collections.sort(identifiers);
+		
+		for (int indexedIdentifier = this.pageFromZero * this.IDS_PER_PAGE; indexedIdentifier < this.pageFromZero
+			* this.IDS_PER_PAGE + this.IDS_PER_PAGE
+			&& indexedIdentifier < identifiers.size(); indexedIdentifier++)
+		{
+			final String uniqueIdentifier = identifiers.get(indexedIdentifier);
+			final MAtExpansion expansion = expansions.get(uniqueIdentifier);
+			
+			String display = uniqueIdentifier + ": " + (int) Math.floor(expansion.getVolume() * 100) + "%";
+			
+			HGuiSliderControl sliderControl =
+				new HGuiSliderControl(
+					id, leftHinge + 22, 22 + 22 * id, 310 - 44, 20, display, expansion.getVolume() * 0.5f);
+			sliderControl.setListener(new HSliderListener() {
+				@Override
+				public void sliderValueChanged(HGuiSliderControl slider, float value)
+				{
+					expansion.setVolume(value * 2);
+					slider.displayString = uniqueIdentifier + ": " + (int) Math.floor(value * 200) + "%";
+				}
+			});
 			this.controlList.add(sliderControl);
 			id++;
 			
@@ -77,7 +125,18 @@ public class MAtGuiMenu extends GuiScreen implements HSliderListener
 		
 		this.controlList.add(new GuiButton(200, this.width / 2 - 100, this.height / 6 + 168, stringtranslate
 			.translateKey("gui.done")));
-		this.screenTitle = stringtranslate.translateKey("controls.title");
+		if (this.pageFromZero != 0)
+		{
+			this.controlList.add(new GuiButton(201, leftHinge, this.height / 6 + 168 - 22, 150, 20, stringtranslate
+				.translateKey("Previous")));
+		}
+		if (this.pageFromZero * this.IDS_PER_PAGE + this.IDS_PER_PAGE < identifiers.size())
+		{
+			this.controlList.add(new GuiButton(
+				202, leftHinge + 160, this.height / 6 + 168 - 22, 150, 20, stringtranslate.translateKey("Next")));
+		}
+		
+		//this.screenTitle = stringtranslate.translateKey("controls.title");
 	}
 	
 	/**
@@ -91,13 +150,14 @@ public class MAtGuiMenu extends GuiScreen implements HSliderListener
 		{
 			this.mc.displayGuiScreen(this.parentScreen);
 		}
-		/*else
+		else if (par1GuiButton.id == 201)
 		{
-			this.buttonId = par1GuiButton.id;
-			
-			GuiSlider slider = (GuiSlider) par1GuiButton;
-			this.matmos.expansionLoader().getExpansions().get(slider.displayString).setVolume(slider.value);
-		}*/
+			this.mc.displayGuiScreen(new MAtGuiMenu(this.parentScreen, this.matmos, this.pageFromZero - 1));
+		}
+		else if (par1GuiButton.id == 202)
+		{
+			this.mc.displayGuiScreen(new MAtGuiMenu(this.parentScreen, this.matmos, this.pageFromZero + 1));
+		}
 	}
 	
 	/**
@@ -125,15 +185,6 @@ public class MAtGuiMenu extends GuiScreen implements HSliderListener
 		drawCenteredString(this.fontRenderer, this.screenTitle, this.width / 2, 5, 0xffffff);
 		
 		super.drawScreen(par1, par2, par3);
-		
-	}
-	
-	@Override
-	public void sliderValueChanged(int id, float value)
-	{
-		this.matmos
-			.getExpansionLoader().getExpansions().get(((HGuiSliderControl) this.controlList.get(id)).displayString)
-			.setVolume(value * 2);
 		
 	}
 	
