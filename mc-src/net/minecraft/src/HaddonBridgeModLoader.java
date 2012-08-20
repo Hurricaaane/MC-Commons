@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.client.Minecraft;
+import eu.ha3.mc.haddon.Bridge;
 import eu.ha3.mc.haddon.Haddon;
 import eu.ha3.mc.haddon.Manager;
 import eu.ha3.mc.haddon.SupportsChatEvents;
@@ -35,7 +36,7 @@ import eu.ha3.mc.haddon.Utility;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class HaddonBridgeModLoader extends BaseMod implements Manager
+public class HaddonBridgeModLoader extends BaseMod implements Manager, Bridge
 {
 	private Haddon haddon;
 	private Utility utility;
@@ -103,6 +104,13 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager
 		{
 			((SupportsInitialization) haddon).onInitialize();
 		}
+		
+	}
+	
+	@Override
+	public Haddon getHaddon()
+	{
+		return this.haddon;
 		
 	}
 	
