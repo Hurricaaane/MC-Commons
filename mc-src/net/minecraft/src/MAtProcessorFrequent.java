@@ -119,7 +119,7 @@ public class MAtProcessorFrequent extends MAtProcessorModel
 		setValue(
 			37, y >= 2 && y < mod().util().getWorldHeight()
 				? getTranslatedBlockId(mc.theWorld.getBlockId(x, y - 2, z)) : -1); //FIXME difference in Altitude notion
-		setValue(38, mod().util().getClientTick());
+		setValue(38, (int) mod().util().getClientTick());
 		setValue(39, player.isBurning() ? 1 : 0); // XXX ERROR NOW IS A PRIVATE VALUE
 		setValue(40, player.swingProgressInt);
 		setValue(41, player.isSwinging ? 1 : 0);
