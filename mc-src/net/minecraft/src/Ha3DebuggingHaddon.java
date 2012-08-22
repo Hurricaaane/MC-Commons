@@ -1,5 +1,9 @@
 package net.minecraft.src;
 
+import net.minecraft.client.Minecraft;
+
+import org.lwjgl.opengl.GL11;
+
 import eu.ha3.easy.EdgeModel;
 import eu.ha3.easy.EdgeTrigger;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
@@ -25,6 +29,7 @@ public class Ha3DebuggingHaddon extends HaddonImpl implements SupportsTickEvents
 {
 	private EdgeTrigger button;
 	private boolean toggle;
+	private RenderSpawnPoints renderRelay;
 	
 	@Override
 	public void onLoad()
@@ -42,8 +47,12 @@ public class Ha3DebuggingHaddon extends HaddonImpl implements SupportsTickEvents
 				out();
 			}
 		});
+		
+		this.renderRelay = new RenderSpawnPoints(manager().getMinecraft());
+		
 		manager().hookTickEvents(true);
 		manager().hookFrameEvents(true);
+		manager().addRenderable(this.renderRelay.getRenderEntityClass(), this.renderRelay.getRenderHook());
 	}
 	
 	protected void in()
@@ -70,6 +79,7 @@ public class Ha3DebuggingHaddon extends HaddonImpl implements SupportsTickEvents
 	@Override
 	public void onTick()
 	{
+		this.renderRelay.ensureExists();
 		this.button.signalState(util().areKeysDown(29, 42, 49));
 	}
 	
@@ -103,9 +113,18 @@ public class Ha3DebuggingHaddon extends HaddonImpl implements SupportsTickEvents
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);*/
 		
-		showGPS(1523, 736, 0x00FF00);
-		showGPS(602, 275, 0xFFFF00);
-		showGPS(-102, 187, 0xFF0000);
+		if (true)
+		{
+			showGPS(1523, 736, 0x00FF00);
+			showGPS(602, 275, 0xFFFF00);
+			showGPS(-102, 187, 0xFF0000);
+			showGPS(-508, -55, 0xFFFFFF);
+		}
+		else
+		{
+			showGPS(1497 / 8, 672 / 8, 0x0000FF); // inverse nether portal for sandstone village
+		}
+		
 		//showGPS(34, -509, 0x00FF00);
 	}
 	
@@ -133,6 +152,118 @@ public class Ha3DebuggingHaddon extends HaddonImpl implements SupportsTickEvents
 		util().drawString(
 			(int) distance + "", (float) modu / 150f + 0.5f, 0.05f, 0, 0, '5', color >> 16 & 0xFF, color >> 8 & 0xFF,
 			color & 0xFF, color >> 24 & 0xFF, true);
+		
+	}
+	
+	private class RenderSpawnPoints extends Ha3RenderRelayContract
+	{
+		public RenderSpawnPoints(Minecraft mc)
+		{
+			super(mc);
+		}
+		
+		@Override
+		public void doRender(Entity entity, double dx, double dy, double dz, float f, float semi)
+		{
+			if (true)
+				return;
+			
+			EntityPlayer ply = manager().getMinecraft().thePlayer;
+			World world = manager().getMinecraft().theWorld;
+			
+			int x = (int) Math.floor(ply.posX);
+			int y = (int) Math.floor(ply.posY);
+			int z = (int) Math.floor(ply.posZ);
+			
+			final int rad = 24;
+			final int hei = 6;
+			
+			beginTrace();
+			for (int i = x - rad; i <= x + rad; i++)
+			{
+				for (int j = y - hei; j <= y + hei; j++)
+					if (j > 0 && j < 253)
+					{
+						for (int k = z - rad; k <= z + rad; k++)
+						{
+							if (world.isBlockOpaqueCube(i, j - 1, k)
+								&& !world.isBlockOpaqueCube(i, j, k) && !world.isBlockOpaqueCube(i, j + 1, k)
+								&& world.getBlockId(i, j, k) == 0)
+							{
+								int acura = 4;
+								int lv = world.getSavedLightValue(EnumSkyBlock.Block, i, j, k) + acura; // 4 = moonlight
+								if (lv <= 7)
+								{
+									float lvs = (1 - (7f - lv) / (7f - acura)) * 0.4f;
+									
+									trace(dx, dy, dz, i + lvs, j, k + lvs, i + 1 - lvs, j, k + 1 - lvs);
+									trace(dx, dy, dz, i + 1 - lvs, j, k + lvs, i + lvs, j, k + 1 - lvs);
+								}
+								
+							}
+							
+						}
+					}
+			}
+			finishTrace();
+		}
+		
+		private void beginTrace()
+		{
+			RenderHelper.disableStandardItemLighting();
+			
+			GL11.glDisable(GL11.GL_DEPTH_TEST);
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
+			GL11.glDisable(GL11.GL_ALPHA_TEST);
+			
+			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ZERO);
+		}
+		
+		private void finishTrace()
+		{
+			GL11.glDisable(GL11.GL_BLEND);
+			
+			GL11.glEnable(GL11.GL_ALPHA_TEST);
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			GL11.glEnable(GL11.GL_DEPTH_TEST);
+			
+			RenderHelper.enableStandardItemLighting();
+		}
+		
+		private void trace(
+			double dx, double dy, double dz, double xa, double ya, double za, double xb, double yb, double zb)
+		{
+			GL11.glLineWidth(2f);
+			
+			GL11.glColor3f(1f, 0f, 0f);
+			Tessellator tessellator = Tessellator.instance;
+			tessellator.startDrawing(GL11.GL_LINE_STRIP);
+			
+			tessellator.setTranslation(-dx, -dy, -dz);
+			tessellator.addVertex(xa, ya, za);
+			tessellator.addVertex(xb, yb, zb);
+			
+			tessellator.draw();
+			tessellator.setTranslation(0, 0, 0);
+		}
+		
+		@SuppressWarnings("rawtypes")
+		@Override
+		public Class getRenderEntityClass()
+		{
+			return MyRenderEntity.class;
+		}
+		
+		@Override
+		public Entity newRenderEntity()
+		{
+			return new MyRenderEntity();
+		}
+		
+		private class MyRenderEntity extends HRenderEntity
+		{
+		}
 		
 	}
 }
