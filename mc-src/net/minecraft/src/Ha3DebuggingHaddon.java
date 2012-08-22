@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import org.lwjgl.opengl.GL11;
-
 import eu.ha3.easy.EdgeModel;
 import eu.ha3.easy.EdgeTrigger;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
@@ -81,11 +79,11 @@ public class Ha3DebuggingHaddon extends HaddonImpl implements SupportsTickEvents
 		if (!this.toggle)
 			return;
 		
-		int sc = 1400;
+		/*int sc = 1400;
 		
-		GL11.glEnable(GL11.GL_BLEND /*GL_BLEND*/);
-		GL11.glDisable(GL11.GL_ALPHA_TEST /*GL_ALPHA_TEST*/);
-		GL11.glDisable(GL11.GL_TEXTURE_2D /*GL_TEXTURE_2D*/);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_ALPHA_TEST);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_DST_COLOR);
 		
 		float var = 0.5f;
@@ -101,8 +99,40 @@ public class Ha3DebuggingHaddon extends HaddonImpl implements SupportsTickEvents
 		tessellator.addVertex(0, 0, 0.0D);
 		tessellator.draw();
 		
-		GL11.glDisable(GL11.GL_BLEND /*GL_BLEND*/);
-		GL11.glEnable(GL11.GL_ALPHA_TEST /*GL_ALPHA_TEST*/);
-		GL11.glEnable(GL11.GL_TEXTURE_2D /*GL_TEXTURE_2D*/);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_ALPHA_TEST);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);*/
+		
+		showGPS(1523, 736, 0x00FF00);
+		showGPS(602, 275, 0xFFFF00);
+		showGPS(-102, 187, 0xFF0000);
+		//showGPS(34, -509, 0x00FF00);
+	}
+	
+	private void showGPS(int xDest, int zDest, int color)
+	{
+		EntityPlayer ply = manager().getMinecraft().thePlayer;
+		double myX = ply.posX;
+		double myZ = ply.posZ;
+		
+		double toX = xDest - myX;
+		double toZ = zDest - myZ;
+		double distance = Math.sqrt(toX * toX + toZ * toZ);
+		
+		double ang = Math.atan2(toZ, toX) / Math.PI * 180;
+		
+		double diffang = Math.floor(ang - 90 - ply.rotationYaw);
+		
+		double modu = diffang - Math.floor(diffang / 360) * 360;
+		if (modu > 180)
+		{
+			modu = modu - 360;
+		}
+		
+		util().prepareDrawString();
+		util().drawString(
+			(int) distance + "", (float) modu / 150f + 0.5f, 0.05f, 0, 0, '5', color >> 16 & 0xFF, color >> 8 & 0xFF,
+			color & 0xFF, color >> 24 & 0xFF, true);
+		
 	}
 }
