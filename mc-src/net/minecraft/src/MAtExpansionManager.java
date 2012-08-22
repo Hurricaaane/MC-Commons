@@ -36,6 +36,7 @@ public class MAtExpansionManager
 {
 	private MAtMod mod;
 	private Map<String, MAtExpansion> expansions;
+	private List<MAtSoundManagerChild> soundManagers;
 	
 	private File expansionsFolder;
 	private File onlineStorageFolder;
@@ -47,6 +48,7 @@ public class MAtExpansionManager
 		this.mod = mAtmosHaddon;
 		
 		this.expansions = new ConcurrentHashMap<String, MAtExpansion>();
+		this.soundManagers = new ArrayList<MAtSoundManagerChild>();
 		
 		this.expansionsFolder = new File(Minecraft.getMinecraftDir(), "matmos/expansions_r12/");
 		this.onlineStorageFolder = new File(Minecraft.getMinecraftDir(), "matmos/internal/storage/");
@@ -65,7 +67,10 @@ public class MAtExpansionManager
 	
 	private synchronized void renewExpansionProngs(MAtExpansion expansion)
 	{
-		expansion.setSoundManager(new MAtSoundManagerChild(this.mod));
+		MAtSoundManagerChild soundManager = new MAtSoundManagerChild(this.mod);
+		this.soundManagers.add(soundManager);
+		
+		expansion.setSoundManager(soundManager);
 		expansion.setData(this.mod.getDataGatherer().getData());
 		
 	}
@@ -176,6 +181,7 @@ public class MAtExpansionManager
 			MAtExpansion expansion = this.expansions.get(userDefinedIdentifier);
 			
 			expansion.turnOff();
+			
 			this.expansions.remove(userDefinedIdentifier);
 		}
 		

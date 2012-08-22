@@ -193,7 +193,11 @@ public class MAtSoundManagerChild implements MAtmosSoundManager, MAtCustomVolume
 	@Override
 	public void eraseStreamingToken(int token)
 	{
-		this.tokens.get(token).interruptStreaming();
+		MAtMod.LOGGER.info("Erasing token #" + token);
+		
+		MAtSoundStream stream = this.tokens.get(token);
+		stream.interruptStreaming();
+		stream.unallocate();
 		this.tokens.remove(token);
 		
 	}
@@ -216,5 +220,30 @@ public class MAtSoundManagerChild implements MAtmosSoundManager, MAtCustomVolume
 	public SoundSystem getSoundSystem()
 	{
 		return this.mod.sound().getSoundSystem();
+	}
+	
+	@Override
+	public void finalize()
+	{
+		MAtMod.LOGGER.info("Calling finalizer of SMC");
+		
+		try
+		{
+			for (MAtSoundStream stream : this.tokens.values())
+			{
+				try
+				{
+					stream.unallocate();
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

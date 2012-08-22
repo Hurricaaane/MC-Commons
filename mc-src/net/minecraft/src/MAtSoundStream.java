@@ -35,6 +35,7 @@ public class MAtSoundStream
 	
 	private boolean isInitialized;
 	private boolean loopingIsSet;
+	private boolean isPaused;
 	private URL poolURL;
 	
 	private float playbackVolume;
@@ -74,7 +75,17 @@ public class MAtSoundStream
 		
 		if (fadeDuration == 0)
 		{
-			sndSystem.play(this.sourceName);
+			if (this.isPaused)
+			{
+				sndSystem.play(this.sourceName);
+			}
+			else
+			{
+				// Prevent a bug where fading out and re-playing it while it is fading out breaks it
+				// This doesn't happen with fadeoutins
+				sndSystem.play(this.sourceName);
+				sndSystem.fadeOutIn(this.sourceName, this.poolURL, this.path, 1, 1);
+			}
 			
 		}
 		else
@@ -96,7 +107,7 @@ public class MAtSoundStream
 		if (this.isInitialized)
 			return;
 		
-		MAtMod.LOGGER.info("Initializing source: " + this.sourceName);
+		MAtMod.LOGGER.info("Initializing source: " + this.sourceName + " (" + this.path + ")");
 		
 		SoundPoolEntry poolEntry = this.refer.getSoundPoolEntryOf(this.path);
 		if (poolEntry != null)
@@ -161,8 +172,14 @@ public class MAtSoundStream
 	{
 		SoundSystem sndSystem = this.refer.getSoundSystem();
 		
-		sndSystem.stop(this.sourceName);
-		sndSystem.fadeOut(this.sourceName, null, (long) fadeDuration * 1000L);
+		if (fadeDuration <= 0f)
+		{
+			sndSystem.stop(this.sourceName);
+		}
+		else
+		{
+			sndSystem.fadeOut(this.sourceName, null, (long) fadeDuration * 1000L);
+		}
 		
 	}
 	
@@ -171,6 +188,8 @@ public class MAtSoundStream
 		SoundSystem sndSystem = this.refer.getSoundSystem();
 		sndSystem.pause(this.sourceName);
 		
+		this.isPaused = true;
+		
 	}
 	
 	public void interruptStreaming()
@@ -178,4 +197,15 @@ public class MAtSoundStream
 		stopStreaming(0f);
 		
 	}
+	
+	public void unallocate()
+	{
+		if (!this.isInitialized)
+			return;
+		
+		SoundSystem sndSystem = this.refer.getSoundSystem();
+		sndSystem.removeSource(this.sourceName);
+		
+	}
+	
 }
