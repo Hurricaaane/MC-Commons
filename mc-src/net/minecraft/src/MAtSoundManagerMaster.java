@@ -36,16 +36,7 @@ public class MAtSoundManagerMaster implements MAtmosSoundManager, Ha3Personaliza
 	final private float defSoundVolume = 1F;
 	
 	private int nbTokens;
-	//private Random random;
 	private Map<String, String> soundequivalences;
-	/*private ArrayList<String> tokenPaths;
-	private ArrayList<Boolean> tokenSetFirst;
-	private ArrayList<Float> tokenVolume;
-	private ArrayList<Float> tokenVolModulator;
-	private ArrayList<Float> tokenPitch;
-	private ArrayList<URL> tokenURL;
-	private ArrayList<Boolean> tokenRegisteredInEngine;
-	private Map<String, Float> paulsCodeBug_markForFadeIn;*/
 	
 	private float settingsVolume;
 	
@@ -58,16 +49,7 @@ public class MAtSoundManagerMaster implements MAtmosSoundManager, Ha3Personaliza
 		this.volume = this.defSoundVolume;
 		
 		this.nbTokens = 0;
-		//this.random = new Random(System.currentTimeMillis());
 		this.soundequivalences = new HashMap<String, String>();
-		/*this.tokenPaths = new ArrayList<String>();
-		this.tokenSetFirst = new ArrayList<Boolean>();
-		this.tokenURL = new ArrayList<URL>();
-		this.tokenVolume = new ArrayList<Float>();
-		this.tokenVolModulator = new ArrayList<Float>();
-		this.tokenPitch = new ArrayList<Float>();
-		this.tokenRegisteredInEngine = new ArrayList<Boolean>();
-		//this.paulsCodeBug_markForFadeIn = new HashMap<String, Float>();*/
 		
 		this.settingsVolume = 0F;
 		
@@ -90,19 +72,6 @@ public class MAtSoundManagerMaster implements MAtmosSoundManager, Ha3Personaliza
 	public void routine()
 	{
 		updateSettingsVolume();
-		
-		/*if (this.paulsCodeBug_markForFadeIn.size() != 0)
-		{
-			for (Iterator<Entry<String, Float>> iter = this.paulsCodeBug_markForFadeIn.entrySet().iterator(); iter
-				.hasNext();)
-			{
-				Entry<String, Float> entry = iter.next();
-				sndSystem().setVolume(entry.getKey(), entry.getValue() * this.settingsVolume);
-				
-			}
-			this.paulsCodeBug_markForFadeIn.clear();
-			
-		}*/
 	}
 	
 	@Override
@@ -113,7 +82,7 @@ public class MAtSoundManagerMaster implements MAtmosSoundManager, Ha3Personaliza
 	}
 	
 	@SuppressWarnings("static-access")
-	String getSound(String soundPath)
+	public String getSound(String soundPath)
 	{
 		if (this.soundequivalences.containsKey(soundPath))
 			return this.soundequivalences.get(soundPath);
@@ -144,8 +113,6 @@ public class MAtSoundManagerMaster implements MAtmosSoundManager, Ha3Personaliza
 			MAtMod.LOGGER.warning("File " + soundPath + " is missing " + " (" + dotted + ")");
 		}
 		
-		//System.out.println("File " + soundPath + (soundFile.exists()?" exists":" is missing") + " (" + dotted + ")");
-		
 		return dotted;
 		
 	}
@@ -153,7 +120,7 @@ public class MAtSoundManagerMaster implements MAtmosSoundManager, Ha3Personaliza
 	@Override
 	public void playSound(String path, float volume, float pitch, int meta)
 	{
-		// The MASTER shall never play sounds.
+		// Master NEVER plays sounds.
 	}
 	
 	@Override
@@ -162,60 +129,8 @@ public class MAtSoundManagerMaster implements MAtmosSoundManager, Ha3Personaliza
 		int token = this.nbTokens;
 		this.nbTokens = this.nbTokens + 1;
 		
-		/*this.tokenPaths.add("");
-		this.tokenSetFirst.add(false);
-		this.tokenURL.add(null);
-		this.tokenVolume.add(0F);
-		this.tokenVolModulator.add(1F);
-		this.tokenPitch.add(0F);
-		this.tokenRegisteredInEngine.add(false);*/
-		
 		return token;
 	}
-	
-	/*private void ensureInitialized(int token)
-	{
-		if (this.tokenRegisteredInEngine.get(token))
-			return;
-		
-		this.tokenRegisteredInEngine.set(token, true);
-		
-		try
-		{
-			String sourceName = "MATMOS_SRM_" + token;
-			String path = this.tokenPaths.get(token);
-			float volume = this.tokenVolume.get(token);
-			float pitch = this.tokenPitch.get(token);
-			
-			MAtMod.LOGGER.info("Initializing source: " + sourceName);
-			
-			cacheSound(path);
-			String poolName = getSound(path);
-			SoundPoolEntry soundpoolentry;
-			soundpoolentry =
-				((SoundPool) this.mod.util().getPrivateValueLiteral(
-					net.minecraft.src.SoundManager.class, this.mod.manager().getMinecraft().sndManager, "b", 1))
-					.getRandomSoundFromSoundPool(poolName);
-			
-			if (soundpoolentry != null)
-			{
-				this.tokenURL.set(token, soundpoolentry.soundUrl);
-				
-				sndSystem().newStreamingSource(true, sourceName, soundpoolentry.soundUrl, path, true, 0, 0, 0, 0, 0);
-				sndSystem().setTemporary(sourceName, false);
-				sndSystem().setPitch(sourceName, pitch);
-				
-				sndSystem().setLooping(sourceName, true);
-				sndSystem().activate(sourceName); // XXX ??? Is it alright?
-				
-			}
-		}
-		catch (PrivateAccessException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
 	
 	@Override
 	public synchronized boolean setupStreamingToken(int token, String path, float volume, float pitch)
@@ -223,7 +138,6 @@ public class MAtSoundManagerMaster implements MAtmosSoundManager, Ha3Personaliza
 		// Master NEVER manages stream playback.
 		
 		return true;
-		
 	}
 	
 	@Override
@@ -236,7 +150,6 @@ public class MAtSoundManagerMaster implements MAtmosSoundManager, Ha3Personaliza
 	public synchronized void stopStreaming(int token, float fadeDuration)
 	{
 		// Master NEVER manages stream playback.
-		
 	}
 	
 	@Override
@@ -307,26 +220,6 @@ public class MAtSoundManagerMaster implements MAtmosSoundManager, Ha3Personaliza
 		
 	}
 	
-	/*@Override
-	public void volumeStreaming(int token, float modulator)
-	{
-		String sourceName = "MATMOS_SRM_" + token;
-		
-		this.tokenVolModulator.set(token, modulator);
-		
-		float playVolume = modulator * this.tokenVolume.get(token) * this.settingsVolume * getVolume();
-		sndSystem().setVolume(sourceName, playVolume);
-	}*/
-	/*
-	public void recomputeVolumeStreaming(int token)
-	{
-		String sourceName = "MATMOS_SRM_" + token;
-		
-		float playVolume =
-			this.tokenVolModulator.get(token) * this.tokenVolume.get(token) * this.settingsVolume * getVolume();
-		sndSystem().setVolume(sourceName, playVolume);
-	}
-	*/
 	@Override
 	public void setVolume(float modifier)
 	{
@@ -343,13 +236,11 @@ public class MAtSoundManagerMaster implements MAtmosSoundManager, Ha3Personaliza
 			this.settingsVolume = mc.gameSettings.soundVolume;
 			
 		}
-		
 	}
 	
 	public float getSettingsVolume()
 	{
 		return this.settingsVolume;
-		
 	}
 	
 }
