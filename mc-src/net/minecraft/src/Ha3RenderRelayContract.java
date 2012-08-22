@@ -64,9 +64,13 @@ public abstract class Ha3RenderRelayContract
 	private class HRenderHook extends Render
 	{
 		@Override
-		public void doRender(Entity entity, double d, double d1, double d2, float f, float f1)
+		public void doRender(Entity entity, double qx, double qy, double qz, float f, float semi)
 		{
-			Ha3RenderRelayContract.this.doRender(entity, d, d1, d2, f, f1);
+			double dx = entity.posX * semi + entity.lastTickPosX * (1 - semi);
+			double dy = entity.posY * semi + entity.lastTickPosY * (1 - semi);
+			double dz = entity.posZ * semi + entity.lastTickPosZ * (1 - semi);
+			
+			Ha3RenderRelayContract.this.doRender(entity, dx, dy, dz, f, semi);
 			
 		}
 		
@@ -110,6 +114,6 @@ public abstract class Ha3RenderRelayContract
 	
 	public abstract Entity newRenderEntity();
 	
-	public abstract void doRender(Entity entity, double d, double d1, double d2, float f, float f1);
+	public abstract void doRender(Entity entity, double dx, double dy, double dz, float f, float semi);
 	
 }
