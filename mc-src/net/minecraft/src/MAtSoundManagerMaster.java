@@ -1,20 +1,14 @@
 package net.minecraft.src;
 
 import java.io.File;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Random;
 
 import net.minecraft.client.Minecraft;
 import paulscode.sound.SoundSystem;
 import eu.ha3.matmos.engine.MAtmosSoundManager;
 import eu.ha3.mc.convenience.Ha3Personalizable;
-import eu.ha3.mc.haddon.PrivateAccessException;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -32,7 +26,7 @@ import eu.ha3.mc.haddon.PrivateAccessException;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Personalizable, MAtCustomVolume
+public class MAtSoundManagerMaster implements MAtmosSoundManager, Ha3Personalizable, MAtCustomVolume
 {
 	// XXX Implement me: Does not do anything and sndcomms is down
 	
@@ -42,36 +36,38 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 	final private float defSoundVolume = 1F;
 	
 	private int nbTokens;
-	private Random random;
+	//private Random random;
 	private Map<String, String> soundequivalences;
-	private ArrayList<String> tokenPaths;
+	/*private ArrayList<String> tokenPaths;
 	private ArrayList<Boolean> tokenSetFirst;
 	private ArrayList<Float> tokenVolume;
+	private ArrayList<Float> tokenVolModulator;
 	private ArrayList<Float> tokenPitch;
 	private ArrayList<URL> tokenURL;
 	private ArrayList<Boolean> tokenRegisteredInEngine;
-	private Map<String, Float> paulsCodeBug_markForFadeIn;
+	private Map<String, Float> paulsCodeBug_markForFadeIn;*/
 	
 	private float settingsVolume;
 	
 	private Properties config;
 	
-	public MAtSoundManagerConfigurable(MAtMod mAtmosHaddon)
+	public MAtSoundManagerMaster(MAtMod mAtmosHaddon)
 	{
 		this.mod = mAtmosHaddon;
 		
 		this.volume = this.defSoundVolume;
 		
 		this.nbTokens = 0;
-		this.random = new Random(System.currentTimeMillis());
+		//this.random = new Random(System.currentTimeMillis());
 		this.soundequivalences = new HashMap<String, String>();
-		this.tokenPaths = new ArrayList<String>();
+		/*this.tokenPaths = new ArrayList<String>();
 		this.tokenSetFirst = new ArrayList<Boolean>();
 		this.tokenURL = new ArrayList<URL>();
 		this.tokenVolume = new ArrayList<Float>();
+		this.tokenVolModulator = new ArrayList<Float>();
 		this.tokenPitch = new ArrayList<Float>();
 		this.tokenRegisteredInEngine = new ArrayList<Boolean>();
-		this.paulsCodeBug_markForFadeIn = new HashMap<String, Float>();
+		//this.paulsCodeBug_markForFadeIn = new HashMap<String, Float>();*/
 		
 		this.settingsVolume = 0F;
 		
@@ -80,13 +76,6 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 	public SoundSystem sndSystem()
 	{
 		return this.mod.sound().getSoundSystem();
-		
-	}
-	
-	@Override
-	public void setVolume(float modifier)
-	{
-		this.volume = modifier;
 		
 	}
 	
@@ -102,7 +91,7 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 	{
 		updateSettingsVolume();
 		
-		if (this.paulsCodeBug_markForFadeIn.size() != 0)
+		/*if (this.paulsCodeBug_markForFadeIn.size() != 0)
 		{
 			for (Iterator<Entry<String, Float>> iter = this.paulsCodeBug_markForFadeIn.entrySet().iterator(); iter
 				.hasNext();)
@@ -113,15 +102,7 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 			}
 			this.paulsCodeBug_markForFadeIn.clear();
 			
-		}
-	}
-	
-	private void updateSettingsVolume()
-	{
-		Minecraft mc = this.mod.manager().getMinecraft();
-		
-		this.settingsVolume = mc.gameSettings.soundVolume;
-		
+		}*/
 	}
 	
 	@Override
@@ -172,39 +153,7 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 	@Override
 	public void playSound(String path, float volume, float pitch, int meta)
 	{
-		Minecraft mc = this.mod.manager().getMinecraft();
-		float nx = (float) mc.thePlayer.posX;
-		float ny = (float) mc.thePlayer.posY;
-		float nz = (float) mc.thePlayer.posZ;
-		
-		String equivalent = getSound(path);
-		
-		float actualVolume = volume * getVolume();
-		
-		if (actualVolume == 0) //TODO Check if okay
-			return;
-		
-		if (meta > 0)
-		{
-			double angle = this.random.nextFloat() * 2 * Math.PI;
-			nx = nx + (float) (Math.cos(angle) * meta);
-			ny = ny + this.random.nextFloat() * meta * 0.2F - meta * 0.01F;
-			nz = nz + (float) (Math.sin(angle) * meta);
-			
-			this.mod.sound().playSound(equivalent, nx, ny, nz, actualVolume, pitch, 0, 0F);
-		}
-		else
-		{
-			// NOTE: playSoundFX from Minecraft SoundManager
-			//   does NOT work. Must use playSoundFX Proxy
-			//   which will play the sound 2048 blocks above the player...
-			//   ...and that somehow does the trick!
-			
-			ny = ny + 2048;
-			this.mod.sound().playSound(equivalent, nx, ny, nz, actualVolume, pitch, 0, 0F);
-			
-		}
-		
+		// The MASTER shall never play sounds.
 	}
 	
 	@Override
@@ -213,17 +162,18 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 		int token = this.nbTokens;
 		this.nbTokens = this.nbTokens + 1;
 		
-		this.tokenPaths.add("");
+		/*this.tokenPaths.add("");
 		this.tokenSetFirst.add(false);
 		this.tokenURL.add(null);
 		this.tokenVolume.add(0F);
+		this.tokenVolModulator.add(1F);
 		this.tokenPitch.add(0F);
-		this.tokenRegisteredInEngine.add(false);
+		this.tokenRegisteredInEngine.add(false);*/
 		
 		return token;
 	}
 	
-	public void ensureInitialized(int token)
+	/*private void ensureInitialized(int token)
 	{
 		if (this.tokenRegisteredInEngine.get(token))
 			return;
@@ -265,14 +215,12 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
 	@Override
 	public synchronized boolean setupStreamingToken(int token, String path, float volume, float pitch)
 	{
-		this.tokenPaths.set(token, path);
-		this.tokenVolume.set(token, volume);
-		this.tokenPitch.set(token, pitch);
+		// Master NEVER manages stream playback.
 		
 		return true;
 		
@@ -281,84 +229,26 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 	@Override
 	public synchronized void startStreaming(int token, float fadeDuration, int timesToPlay)
 	{
-		ensureInitialized(token);
-		
-		String sourceName = "MATMOS_SRM_" + token;
-		
-		if (this.tokenSetFirst.get(token) == false)
-		{
-			this.tokenSetFirst.set(token, true);
-			
-			if (timesToPlay == 0)
-			{
-				sndSystem().setLooping(sourceName, true);
-			}
-			else
-			{
-				sndSystem().setLooping(sourceName, false);
-			}
-			
-		}
-		
-		float volume = this.tokenVolume.get(token);
-		float playVolume = volume * this.settingsVolume * getVolume();
-		
-		if (fadeDuration == 0)
-		{
-			sndSystem().setVolume(sourceName, playVolume);
-			sndSystem().play(sourceName);
-			
-		}
-		else
-		{
-			// This is a workaround to counter the bug that makes FadeIn impossible
-			// Set 1 millisecond fade out
-			//
-			// http://www.java-gaming.org/index.php?action=profile;u=11099;sa=showPosts
-			
-			String path = this.tokenPaths.get(token);
-			sndSystem().setVolume(sourceName, playVolume);
-			sndSystem().play(sourceName);
-			sndSystem().fadeOutIn(sourceName, this.tokenURL.get(token), path, 1, (long) fadeDuration * 1000L);
-			
-		}
-		
+		// Master NEVER manages stream playback.
 	}
 	
 	@Override
 	public synchronized void stopStreaming(int token, float fadeDuration)
 	{
-		String sourceName = "MATMOS_SRM_" + token;
-		
-		if (fadeDuration == 0)
-		{
-			sndSystem().stop(sourceName);
-		}
-		else
-		{
-			sndSystem().fadeOut(sourceName, null, (long) fadeDuration * 1000L);
-		}
+		// Master NEVER manages stream playback.
 		
 	}
 	
 	@Override
 	public synchronized void pauseStreaming(int token, float fadeDuration)
 	{
-		String sourceName = "MATMOS_SRM_" + token;
-		sndSystem().pause(sourceName);
-		// TODO
-		
+		// Master NEVER manages stream playback.
 	}
 	
 	@Override
 	public synchronized void eraseStreamingToken(int token)
 	{
-		String sourceName = "MATMOS_SRM_" + token;
-		
-		stopStreaming(token, 0);
-		
-		sndSystem().removeSource(sourceName);
-		
+		// Master NEVER manages stream playback.
 	}
 	
 	@Override
@@ -414,6 +304,51 @@ public class MAtSoundManagerConfigurable implements MAtmosSoundManager, Ha3Perso
 		options.setProperty("volume.generic.value", "" + this.defSoundVolume);
 		
 		return options;
+		
+	}
+	
+	/*@Override
+	public void volumeStreaming(int token, float modulator)
+	{
+		String sourceName = "MATMOS_SRM_" + token;
+		
+		this.tokenVolModulator.set(token, modulator);
+		
+		float playVolume = modulator * this.tokenVolume.get(token) * this.settingsVolume * getVolume();
+		sndSystem().setVolume(sourceName, playVolume);
+	}*/
+	/*
+	public void recomputeVolumeStreaming(int token)
+	{
+		String sourceName = "MATMOS_SRM_" + token;
+		
+		float playVolume =
+			this.tokenVolModulator.get(token) * this.tokenVolume.get(token) * this.settingsVolume * getVolume();
+		sndSystem().setVolume(sourceName, playVolume);
+	}
+	*/
+	@Override
+	public void setVolume(float modifier)
+	{
+		this.volume = modifier;
+		
+	}
+	
+	private void updateSettingsVolume()
+	{
+		Minecraft mc = this.mod.manager().getMinecraft();
+		
+		if (this.settingsVolume != mc.gameSettings.soundVolume)
+		{
+			this.settingsVolume = mc.gameSettings.soundVolume;
+			
+		}
+		
+	}
+	
+	public float getSettingsVolume()
+	{
+		return this.settingsVolume;
 		
 	}
 	

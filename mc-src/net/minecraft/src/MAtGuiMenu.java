@@ -68,8 +68,6 @@ public class MAtGuiMenu extends GuiScreen
 	@Override
 	public void initGui()
 	{
-		final MAtMod matmos = this.matmos;
-		
 		StringTranslate stringtranslate = StringTranslate.getInstance();
 		int leftHinge = this.width / 2 - 155;
 		
@@ -77,7 +75,7 @@ public class MAtGuiMenu extends GuiScreen
 		int id = 0;
 		
 		{
-			final MAtSoundManagerConfigurable central = this.matmos.getCentralSoundManager();
+			final MAtSoundManagerMaster central = this.matmos.getSoundManagerMaster();
 			String display = "Global Volume Control: " + (int) Math.floor(central.getVolume() * 100) + "%";
 			
 			HGuiSliderControl sliderControl =
@@ -106,6 +104,10 @@ public class MAtGuiMenu extends GuiScreen
 			final MAtExpansion expansion = expansions.get(uniqueIdentifier);
 			
 			String display = uniqueIdentifier + ": " + (int) Math.floor(expansion.getVolume() * 100) + "%";
+			if (expansion.getVolume() == 0f)
+			{
+				display = uniqueIdentifier + " (Disabled)";
+			}
 			
 			HGuiSliderControl sliderControl =
 				new HGuiSliderControl(
@@ -115,7 +117,18 @@ public class MAtGuiMenu extends GuiScreen
 				public void sliderValueChanged(HGuiSliderControl slider, float value)
 				{
 					expansion.setVolume(value * 2);
-					slider.displayString = uniqueIdentifier + ": " + (int) Math.floor(value * 200) + "%";
+					if (value != 0f && !expansion.isRunning())
+					{
+						expansion.turnOn();
+					}
+					
+					String display = uniqueIdentifier + ": " + (int) Math.floor(expansion.getVolume() * 100) + "%";
+					if (value == 0f)
+					{
+						display = display + " (Will be disabled)";
+					}
+					slider.displayString = display;
+					
 				}
 			});
 			this.controlList.add(sliderControl);
@@ -148,6 +161,16 @@ public class MAtGuiMenu extends GuiScreen
 	{
 		if (par1GuiButton.id == 200)
 		{
+			Map<String, MAtExpansion> expansions = this.matmos.getExpansionLoader().getExpansions();
+			for (MAtExpansion expansion : expansions.values())
+			{
+				if (expansion.getVolume() == 0f && expansion.isRunning())
+				{
+					expansion.turnOff();
+					
+				}
+				
+			}
 			this.mc.displayGuiScreen(this.parentScreen);
 		}
 		else if (par1GuiButton.id == 201)

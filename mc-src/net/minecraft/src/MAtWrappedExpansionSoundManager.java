@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import eu.ha3.matmos.engine.MAtmosSoundManager;
-
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
                     Version 2, December 2004 
@@ -25,9 +23,9 @@ import eu.ha3.matmos.engine.MAtmosSoundManager;
  * @author Hurry
  * 
  */
-public class MAtWrappedExpansionSoundManager implements MAtmosSoundManager
+public class MAtWrappedExpansionSoundManager /*implements MAtmosSoundManager*/
 {
-	private MAtExpansion expansion;
+	/*private MAtExpansion expansion;
 	private MAtmosSoundManager soundManager;
 	
 	MAtWrappedExpansionSoundManager(MAtExpansion expansion, MAtmosSoundManager soundManager)
@@ -60,8 +58,8 @@ public class MAtWrappedExpansionSoundManager implements MAtmosSoundManager
 	public int getNewStreamingToken()
 	{
 		return this.soundManager.getNewStreamingToken();
-	}
-	
+	}*/
+	/*
 	@Override
 	public boolean setupStreamingToken(int token, String path, float volume, float pitch)
 	{
@@ -95,6 +93,6 @@ public class MAtWrappedExpansionSoundManager implements MAtmosSoundManager
 	{
 		this.soundManager.eraseStreamingToken(token);
 		
-	}
+	}*/
 	
 }

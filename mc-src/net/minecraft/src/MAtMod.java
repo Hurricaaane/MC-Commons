@@ -58,7 +58,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	private MAtOptions options;
 	private MAtUpdateNotifier updateNotifier;
 	
-	private MAtSoundManagerConfigurable centralSoundManager;
+	private MAtSoundManagerMaster centralSoundManager;
 	
 	private boolean isRunning;
 	private TimeStatistic timeStatistic;
@@ -143,7 +143,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		this.expansionManager = new MAtExpansionManager(this);
 		this.updateNotifier = new MAtUpdateNotifier(this);
 		
-		this.centralSoundManager = new MAtSoundManagerConfigurable(this);
+		this.centralSoundManager = new MAtSoundManagerMaster(this);
 		
 		manager().hookFrameEvents(true);
 		manager().hookTickEvents(true);
@@ -191,7 +191,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		
 	}
 	
-	public MAtSoundManagerConfigurable getCentralSoundManager()
+	public MAtSoundManagerMaster getSoundManagerMaster()
 	{
 		return this.centralSoundManager;
 		

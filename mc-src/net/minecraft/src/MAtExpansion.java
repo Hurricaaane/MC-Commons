@@ -220,6 +220,7 @@ public class MAtExpansion implements MAtCustomVolume
 		if (this.isReady)
 		{
 			this.knowledge.soundRoutine();
+			this.soundManager.routine();
 		}
 		
 	}
