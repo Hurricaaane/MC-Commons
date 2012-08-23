@@ -35,18 +35,23 @@ public class MAtKeyMain implements Ha3KeyActions
 		
 	}
 	
+	private boolean isHolding;
+	
 	@Override
 	public void doDuring(int curTime)
 	{
-		if (curTime == 1)
+		/*if (curTime == 1)
 		{
 			this.userControl.signalPress();
 			
-		}
+		}*/
 		
-		if (curTime == 7)
+		if (curTime >= 7 && !this.isHolding)
 		{
+			this.isHolding = true;
+			
 			this.userControl.beginHold();
+			System.out.println("hold");
 			
 		}
 		
@@ -59,10 +64,14 @@ public class MAtKeyMain implements Ha3KeyActions
 		{
 			this.userControl.signalShortPress();
 			
-		} // Omit frame 7
-		else if (curTime > 7)
+		} // Omit frame 7 : not anymore
+		else if (this.isHolding)
+		//if (curTime >= 7)
 		{
+			this.isHolding = false;
+			
 			this.userControl.endHold();
+			System.out.println("endhold");
 			
 		}
 		

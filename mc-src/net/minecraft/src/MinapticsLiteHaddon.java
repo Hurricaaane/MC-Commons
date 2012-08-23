@@ -365,13 +365,17 @@ public class MinapticsLiteHaddon extends HaddonImpl
 		
 	}
 	
+	private boolean isHolding;
+	
 	void zoomDoDuring(int timeKey)
 	{
 		if (this.isSmootherSettingEvent)
 			return;
 		
-		if (timeKey == 4)
+		if (timeKey >= 4 && !this.isHolding)
 		{
+			this.isHolding = true;
+			
 			this.fovLevelTransitionning = true;
 			
 			this.basePlayerPitch = this.mc.thePlayer.rotationPitch;
@@ -379,7 +383,7 @@ public class MinapticsLiteHaddon extends HaddonImpl
 			this.lastTime = System.currentTimeMillis();
 			
 		}
-		else if (timeKey > 4)
+		else if (timeKey >= 4)
 		{
 			if (this.mc.gameSettings.thirdPersonView == 0)
 			{
@@ -406,7 +410,7 @@ public class MinapticsLiteHaddon extends HaddonImpl
 	{
 		if (!this.isSmootherSettingEvent)
 		{
-			if (timeKey > 4)
+			if (timeKey >= 4)
 			{
 				this.fovLevel = this.fovLevelSetup;
 				saveOptions();
@@ -423,6 +427,7 @@ public class MinapticsLiteHaddon extends HaddonImpl
 			this.fovLevelTransitionning = false;
 			
 		}
+		this.isHolding = false;
 		
 		this.eventNum++;
 		
