@@ -147,6 +147,8 @@ public class MAtUserControl
 		
 	}
 	
+	private int loadingCount;
+	
 	public void signalShortPress()
 	{
 		if (this.mod.isRunning())
@@ -174,7 +176,19 @@ public class MAtUserControl
 		
 		else if (this.mod.isReady())
 		{
-			this.mod.printChat(Ha3Utility.COLOR_BRIGHTGREEN, "Loading...");
+			if (this.loadingCount != 0)
+			{
+				this.mod.printChat(Ha3Utility.COLOR_BRIGHTGREEN, "Loading...");
+			}
+			else
+			{
+				this.mod.printChat(
+					Ha3Utility.COLOR_BRIGHTGREEN, "Loading...", Ha3Utility.COLOR_YELLOW, " (Hold ",
+					Ha3Utility.COLOR_WHITE, getKeyBindingMainFriendlyName() + " down", Ha3Utility.COLOR_YELLOW,
+					" to tweak the volume)");
+			}
+			
+			this.loadingCount++;
 			this.mod.startRunning();
 			
 		}
