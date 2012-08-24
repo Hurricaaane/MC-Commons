@@ -1,0 +1,41 @@
+MC-Client is a collection of clientside mods for Minecraft created or altered by Hurricaaane (Ha3).
+
+--
+(About the Haddon system)
+
+Most of the mods are revolving around a personal interfaced mod management system called Haddon, which is implemented to traditional mod systems using Bridges (basically those are Haddon containers and wrappers). For instance, an Haddon that is installed on a system using ModLoader will use a ModLoader Bridge to function.
+
+
+The Haddon system is a simplified system with convenience methods. It speaks with a Manager whenever it requires a consideration from the Manager to hook onto events.
+
+For instance, to create an Haddon that requires Frame events, the Haddon should implement SupportsFrameEvents, and when loading, ask its Manager to hookFrameEvents(true).
+
+Haddons also have a Utility implementation with convenience methods to interface with Minecraft.
+
+
+The reason for this is that I don't want to force users to use Forge or whatever, but also most mods I make don't alter game rules (no new items, blocks, etc.) therefore I only implement mechanics I need for my system, making it very simple to quickly make new addons by getting rid of boilerplate code.
+
+--
+(Side libraries from eu.ha3)
+
+Some mods rely on side libraries provided by eu.ha3
+
+They are libraries made to get rid of boilerplate code. For instance, the EdgeTrigger gets rid of:
+
+	boolean now = bistable();
+	if (now != this.before)
+	{
+		if (now)
+			onBecomeTrue();
+		else
+			onBecomeFalse();
+		
+		this.before = now;
+	}
+
+--
+(Technical file layout)
+
+MC-Client source files (mc-src) is a subset of a pool of files (resulting from MCPatcher). The rest of the pool is .gitignore'd.
+
+On a local filesystem, the mc-src folder is a symlink to the actual directory within MCPatcher, which that can be deleted or reinitialized at will. This makes editing convenient, but doesn't allow individual client mods to be split apart.
