@@ -20,6 +20,6 @@ public class mod_Ha3Debugging extends HaddonBridgeModLoader
 {
 	public mod_Ha3Debugging()
 	{
-		super(new Ha3DebuggingHaddon());
+		super(new DebuggingHa3Haddon());
 	}
 }
