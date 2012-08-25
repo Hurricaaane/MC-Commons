@@ -1,5 +1,6 @@
 package net.minecraft.src;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -19,6 +20,8 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import net.minecraft.client.Minecraft;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -30,6 +33,7 @@ import eu.ha3.matmos.engine.MAtmosException;
 import eu.ha3.matmos.engine.MAtmosKnowledge;
 import eu.ha3.matmos.engine.MAtmosSoundManager;
 import eu.ha3.matmos.engine.MAtmosUtilityLoader;
+import eu.ha3.util.property.simple.ConfigProperty;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -69,6 +73,9 @@ public class MAtExpansion implements MAtCustomVolume
 	
 	private MAtmosSoundManager soundManager;
 	
+	private ConfigProperty myConfiguration;
+	private String friendlyName;
+	
 	public MAtExpansion(String userDefinedIdentifier)
 	{
 		this.userDefinedIdentifier = userDefinedIdentifier;
@@ -89,6 +96,26 @@ public class MAtExpansion implements MAtCustomVolume
 		this.dataFrequency = 1;
 		this.dataCyclic = 0;
 		
+		this.myConfiguration = new ConfigProperty();
+		this.myConfiguration.setProperty("volume", 1f);
+		this.myConfiguration.setProperty("friendlyname", "");
+		this.myConfiguration.commit();
+		try
+		{
+			this.myConfiguration.setSource(new File(Minecraft.getMinecraftDir(), "matmos/expansions_r12_userconfig/"
+				+ userDefinedIdentifier + ".cfg").getCanonicalPath());
+			this.myConfiguration.load();
+		}
+		catch (IOException e1)
+		{
+			e1.printStackTrace();
+		}
+		this.friendlyName = this.myConfiguration.getString("friendlyname");
+		if (this.friendlyName.equals(""))
+		{
+			this.friendlyName = userDefinedIdentifier;
+		}
+		
 		try
 		{
 			this.documentBuilder = dbf.newDocumentBuilder();
@@ -104,10 +131,18 @@ public class MAtExpansion implements MAtCustomVolume
 		
 	}
 	
+	public String getFriendlyName()
+	{
+		return this.friendlyName;
+		
+	}
+	
 	public void setSoundManager(MAtmosSoundManager soundManager)
 	{
 		this.knowledge.setSoundManager(soundManager);
 		this.soundManager = soundManager;
+		
+		setVolume(this.myConfiguration.getFloat("volume"));
 		
 	}
 	
@@ -279,6 +314,15 @@ public class MAtExpansion implements MAtCustomVolume
 		
 	}
 	
+	public void saveConfig()
+	{
+		if (this.myConfiguration.commit())
+		{
+			this.myConfiguration.save();
+		}
+		
+	}
+	
 	public boolean isReady()
 	{
 		return this.isReady;
@@ -294,6 +338,9 @@ public class MAtExpansion implements MAtCustomVolume
 	public void turnOn()
 	{
 		if (isRunning())
+			return;
+		
+		if (getVolume() <= 0f)
 			return;
 		
 		if (!this.isReady && this.hasStructure)
@@ -336,6 +383,7 @@ public class MAtExpansion implements MAtCustomVolume
 		if (this.soundManager instanceof MAtCustomVolume)
 		{
 			((MAtCustomVolume) this.soundManager).setVolume(volume);
+			this.myConfiguration.setProperty("volume", getVolume());
 		}
 		
 	}

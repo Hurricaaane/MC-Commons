@@ -103,10 +103,10 @@ public class MAtGuiMenu extends GuiScreen
 			final String uniqueIdentifier = identifiers.get(indexedIdentifier);
 			final MAtExpansion expansion = expansions.get(uniqueIdentifier);
 			
-			String display = uniqueIdentifier + ": " + (int) Math.floor(expansion.getVolume() * 100) + "%";
+			String display = expansion.getFriendlyName() + ": " + (int) Math.floor(expansion.getVolume() * 100) + "%";
 			if (expansion.getVolume() == 0f)
 			{
-				display = uniqueIdentifier + " (Disabled)";
+				display = expansion.getFriendlyName() + " (Disabled)";
 			}
 			
 			HGuiSliderControl sliderControl =
@@ -122,7 +122,8 @@ public class MAtGuiMenu extends GuiScreen
 						expansion.turnOn();
 					}
 					
-					String display = uniqueIdentifier + ": " + (int) Math.floor(expansion.getVolume() * 100) + "%";
+					String display =
+						expansion.getFriendlyName() + ": " + (int) Math.floor(expansion.getVolume() * 100) + "%";
 					if (value == 0f)
 					{
 						display = display + " (Will be disabled)";
@@ -136,8 +137,7 @@ public class MAtGuiMenu extends GuiScreen
 			
 		}
 		
-		this.controlList.add(new GuiButton(200, this.width / 2 - 100, this.height / 6 + 168, stringtranslate
-			.translateKey("gui.done")));
+		this.controlList.add(new GuiButton(200, this.width / 2 - 100, this.height / 6 + 168, "Save"));
 		if (this.pageFromZero != 0)
 		{
 			this.controlList.add(new GuiButton(201, leftHinge, this.height / 6 + 168 - 22, 150, 20, stringtranslate
@@ -174,6 +174,11 @@ public class MAtGuiMenu extends GuiScreen
 			this.mc.displayGuiScreen(this.parentScreen);
 			
 			this.matmos.saveConfig();
+			for (MAtExpansion expansion : expansions.values())
+			{
+				expansion.saveConfig();
+				
+			}
 		}
 		else if (par1GuiButton.id == 201)
 		{
