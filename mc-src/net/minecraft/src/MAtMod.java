@@ -58,7 +58,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	private MAtOptions options;
 	private MAtUpdateNotifier updateNotifier;
 	
-	private MAtSoundManagerMaster centralSoundManager;
+	private MAtSoundManagerMaster soundManagerMaster;
 	
 	private boolean isRunning;
 	private TimeStatistic timeStatistic;
@@ -145,7 +145,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		this.expansionManager = new MAtExpansionManager(this);
 		this.updateNotifier = new MAtUpdateNotifier(this);
 		
-		this.centralSoundManager = new MAtSoundManagerMaster(this);
+		this.soundManagerMaster = new MAtSoundManagerMaster(this);
 		
 		manager().hookFrameEvents(true);
 		manager().hookTickEvents(true);
@@ -171,7 +171,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		}
 		
 		this.shouldDumpData = this.configuration.getBoolean("dump.enabled");
-		this.centralSoundManager.setVolume(this.configuration.getFloat("globalvolume.scale"));
+		this.soundManagerMaster.setVolume(this.configuration.getFloat("globalvolume.scale"));
 		this.updateNotifier.loadConfiguration(this.configuration);
 		
 		doLoad();
@@ -190,11 +190,6 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		this.dataGatherer.load();
 		// note: soundManager needs to be loaded post sndcomms
 		
-		/*this.options.registerPersonalizable(this);
-		this.options.registerPersonalizable(this.centralSoundManager);
-		this.options.registerPersonalizable(this.updateNotifier);
-		this.options.loadOptions(); // TODO Options*/
-		
 		this.sndComm.load(new Ha3Signal() {
 			@Override
 			public void signal()
@@ -212,14 +207,13 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 			}
 		});
 		
-		//this.expansionLoader.renewProngs();
 		this.expansionManager.loadExpansions();
 		
 	}
 	
 	public MAtSoundManagerMaster getSoundManagerMaster()
 	{
-		return this.centralSoundManager;
+		return this.soundManagerMaster;
 		
 	}
 	
@@ -526,7 +520,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 			return;
 		
 		this.expansionManager.soundRoutine();
-		this.centralSoundManager.routine();
+		this.soundManagerMaster.routine();
 		
 	}
 	
@@ -566,7 +560,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	
 	public void saveConfig()
 	{
-		this.configuration.setProperty("globalvolume.scale", this.centralSoundManager.getVolume());
+		this.configuration.setProperty("globalvolume.scale", this.soundManagerMaster.getVolume());
 		this.configuration.commit();
 		this.configuration.save();
 		
