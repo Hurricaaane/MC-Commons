@@ -17,10 +17,15 @@ public class VersionnableProperty implements PropertyHolder, Versionnable
 	}
 	
 	@Override
-	public void commit()
+	public boolean commit()
 	{
+		if (this.soft.getAllProperties().size() == 0)
+			return false;
+		
 		this.hard.getAllProperties().putAll(this.soft.getAllProperties());
 		this.soft.getAllProperties().clear();
+		
+		return true;
 	}
 	
 	@Override

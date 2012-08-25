@@ -102,9 +102,9 @@ public class ConfigProperty implements PropertyHolder, Versionnable, ConfigSourc
 	}
 	
 	@Override
-	public void commit()
+	public boolean commit()
 	{
-		this.mixed.commit();
+		return this.mixed.commit();
 		
 	}
 	
