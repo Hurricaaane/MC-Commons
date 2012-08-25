@@ -3,12 +3,10 @@ package net.minecraft.src;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import net.minecraft.client.Minecraft;
 import paulscode.sound.SoundSystem;
 import eu.ha3.matmos.engine.MAtmosSoundManager;
-import eu.ha3.mc.convenience.Ha3Personalizable;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -26,7 +24,7 @@ import eu.ha3.mc.convenience.Ha3Personalizable;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class MAtSoundManagerMaster implements MAtmosSoundManager, Ha3Personalizable, MAtCustomVolume
+public class MAtSoundManagerMaster implements MAtmosSoundManager, MAtCustomVolume
 {
 	// XXX Implement me: Does not do anything and sndcomms is down
 	
@@ -39,8 +37,6 @@ public class MAtSoundManagerMaster implements MAtmosSoundManager, Ha3Personaliza
 	private Map<String, String> soundequivalences;
 	
 	private float settingsVolume;
-	
-	private Properties config;
 	
 	public MAtSoundManagerMaster(MAtMod mAtmosHaddon)
 	{
@@ -162,62 +158,6 @@ public class MAtSoundManagerMaster implements MAtmosSoundManager, Ha3Personaliza
 	public synchronized void eraseStreamingToken(int token)
 	{
 		// Master NEVER manages stream playback.
-	}
-	
-	@Override
-	public void inputOptions(Properties options)
-	{
-		if (this.config == null)
-		{
-			this.config = createDefaultOptions();
-		}
-		
-		try
-		{
-			{
-				String query = "volume.generic.value";
-				if (options.containsKey(query))
-				{
-					String prop = options.getProperty(query);
-					setVolume(Float.parseFloat(prop));
-					this.config.put(query, prop);
-				}
-				
-			}
-		}
-		catch (NumberFormatException e)
-		{
-			e.printStackTrace();
-			
-		}
-		
-	}
-	
-	@Override
-	public Properties outputOptions()
-	{
-		if (this.config == null)
-			return createDefaultOptions();
-		
-		this.config.setProperty("volume.generic.value", "" + getVolume());
-		
-		return this.config;
-	}
-	
-	@Override
-	public void defaultOptions()
-	{
-		inputOptions(createDefaultOptions());
-		
-	}
-	
-	private Properties createDefaultOptions()
-	{
-		Properties options = new Properties();
-		options.setProperty("volume.generic.value", "" + this.defSoundVolume);
-		
-		return options;
-		
 	}
 	
 	@Override

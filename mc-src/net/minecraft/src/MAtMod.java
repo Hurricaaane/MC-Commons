@@ -21,6 +21,7 @@ import eu.ha3.mc.convenience.Ha3StaticUtilities;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
 import eu.ha3.mc.haddon.SupportsKeyEvents;
 import eu.ha3.mc.haddon.SupportsTickEvents;
+import eu.ha3.util.property.simple.ConfigProperty;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
@@ -41,9 +42,8 @@ import eu.ha3.mc.haddon.SupportsTickEvents;
 public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents/*, SupportsGuiTickEvents, Ha3Personalizable*/
 {
 	final static public Logger LOGGER = Logger.getLogger("MAtmos");
-	final public int VERSION = 14; // Remember to change the thing on mod_Matmos_forModLoader
+	final static public int VERSION = 14; // Remember to change the thing on mod_Matmos_forModLoader
 	
-	//private Properties config;
 	private ConsoleHandler conMod;
 	private ConsoleHandler conEngine;
 	
@@ -70,6 +70,8 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	private boolean firstTickPassed;
 	
 	private MAtModPhase phase;
+	
+	private ConfigProperty configuration;
 	
 	public MAtMod()
 	{
@@ -147,6 +149,30 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		
 		manager().hookFrameEvents(true);
 		manager().hookTickEvents(true);
+		
+		this.configuration = new ConfigProperty();
+		this.configuration.setProperty("dump.enabled", true);
+		this.configuration.setProperty("globalvolume.scale", 1f);
+		this.configuration.setProperty("update_found.enabled", true);
+		this.configuration.setProperty("update_found.version", MAtMod.VERSION);
+		this.configuration.setProperty("update_found.display.remaining.value", 0);
+		this.configuration.setProperty("update_found.display.count.value", 3);
+		this.configuration.commit();
+		try
+		{
+			this.configuration.setSource(new File(Minecraft.getMinecraftDir(), "matmos/userconfig.cfg")
+				.getCanonicalPath());
+			this.configuration.load();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			throw new RuntimeException("Error caused config not to work: " + e.getMessage());
+		}
+		
+		this.shouldDumpData = this.configuration.getBoolean("dump.enabled");
+		this.centralSoundManager.setVolume(this.configuration.getFloat("globalvolume.scale"));
+		this.updateNotifier.loadConfiguration(this.configuration);
 		
 		doLoad();
 		
@@ -538,112 +564,12 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		
 	}
 	
-	/*@Override
-	public void inputOptions(Properties options)
+	public void saveConfig()
 	{
-		if (this.config == null)
-		{
-			this.config = createDefaultOptions();
-		}
-		
-		try
-		{
-			{
-				String query = "debug.logger.mod.use";
-				if (options.containsKey(query))
-				{
-					String prop = options.getProperty(query);
-					int lvl = Integer.parseInt(prop);
-					setModLogger(lvl == 0 ? Level.INFO : lvl == 1 ? Level.FINE : lvl == 2 ? Level.FINER : lvl == 3
-						? Level.FINEST : Level.INFO);
-					this.config.put(query, prop);
-				}
-				
-			}
-			{
-				String query = "debug.logger.engine.use";
-				if (options.containsKey(query))
-				{
-					String prop = options.getProperty(query);
-					int lvl = Integer.parseInt(prop);
-					setEngineLogger(lvl == 0 ? Level.INFO : lvl == 1 ? Level.FINE : lvl == 2 ? Level.FINER : lvl == 3
-						? Level.FINEST : Level.INFO);
-					this.config.put(query, prop);
-				}
-				
-			}
-		}
-		catch (NumberFormatException e)
-		{
-			e.printStackTrace(); // TODO Logger could not input soundmanagerconf options
-			
-		}
-		try
-		{
-			{
-				String query = "core.init.bypassresourcereloaderwait.use";
-				if (options.containsKey(query))
-				{
-					String prop = options.getProperty(query);
-					this.bypassResourceLoaderWait = Integer.parseInt(prop) == 1 ? true : false;
-					this.config.put(query, prop);
-				}
-				
-			}
-			{
-				String query = "core.data.dump.use";
-				if (options.containsKey(query))
-				{
-					String prop = options.getProperty(query);
-					this.allowDump = Integer.parseInt(prop) == 1 ? true : false;
-					this.config.put(query, prop);
-				}
-				
-			}
-		}
-		catch (NumberFormatException e)
-		{
-			e.printStackTrace(); // TODO Logger could not input soundmanagerconf options
-			
-		}
+		this.configuration.setProperty("globalvolume.scale", this.centralSoundManager.getVolume());
+		this.configuration.commit();
+		this.configuration.save();
 		
 	}
-	
-	@Override
-	public Properties outputOptions()
-	{
-		if (this.config == null)
-			return createDefaultOptions();
-		
-		this.config.setProperty("core.init.bypassresourcereloaderwait.use", this.bypassResourceLoaderWait ? "1" : "0");
-		this.config.setProperty("core.data.dump.use", this.allowDump ? "1" : "0");
-		
-		return this.config;
-	}
-	
-	@Override
-	public void defaultOptions()
-	{
-		inputOptions(createDefaultOptions());
-		
-	}
-	
-	private Properties createDefaultOptions()
-	{
-		Properties options = new Properties();
-		options.setProperty("debug.logger.mod.use", "0");
-		options.setProperty("debug.logger.engine.use", "0");
-		options.setProperty("core.init.bypassresourcereloaderwait.use", this.defBypassResourceLoaderWait ? "1" : "0");
-		options.setProperty("core.data.dump.use", this.defAllowDump ? "1" : "0");
-		
-		return options;
-		
-	}*/
-	
-	/*@Override
-	public void onGuiTick(GuiScreen gui)
-	{
-		this.expansionManager.lowUsageRoutine();
-	}*/
 	
 }

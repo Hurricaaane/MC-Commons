@@ -172,6 +172,8 @@ public class MAtGuiMenu extends GuiScreen
 				
 			}
 			this.mc.displayGuiScreen(this.parentScreen);
+			
+			this.matmos.saveConfig();
 		}
 		else if (par1GuiButton.id == 201)
 		{

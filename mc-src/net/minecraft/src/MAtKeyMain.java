@@ -51,7 +51,6 @@ public class MAtKeyMain implements Ha3KeyActions
 			this.isHolding = true;
 			
 			this.userControl.beginHold();
-			System.out.println("hold");
 			
 		}
 		
@@ -71,7 +70,6 @@ public class MAtKeyMain implements Ha3KeyActions
 			this.isHolding = false;
 			
 			this.userControl.endHold();
-			System.out.println("endhold");
 			
 		}
 		

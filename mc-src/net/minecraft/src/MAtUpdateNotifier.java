@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,7 +17,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import eu.ha3.mc.convenience.Ha3Personalizable;
+import eu.ha3.util.property.simple.ConfigProperty;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -36,7 +35,7 @@ import eu.ha3.mc.convenience.Ha3Personalizable;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
+public class MAtUpdateNotifier extends Thread// implements Ha3Personalizable
 {
 	private MAtMod mod;
 	
@@ -44,21 +43,16 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 	private int displayCount;
 	private int displayRemaining;
 	private boolean enabled;
-	final private int defLastFound;
-	final private int defDisplayCount = 3;
-	final private int defDisplayRemaining = 0;
-	final private boolean defEnabled = true;
 	
-	private Properties config;
+	final private boolean defEnabled = true;
 	
 	MAtUpdateNotifier(MAtMod mAtmosHaddon)
 	{
 		this.mod = mAtmosHaddon;
-		this.defLastFound = mAtmosHaddon.VERSION;
 		
-		this.lastFound = this.defLastFound;
-		this.displayCount = this.defDisplayCount;
-		this.displayRemaining = this.defDisplayRemaining;
+		this.lastFound = MAtMod.VERSION;
+		this.displayCount = 3;
+		this.displayRemaining = 0;
 		this.enabled = this.defEnabled;
 	}
 	
@@ -118,7 +112,7 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 				
 			}
 			
-			if (maxvn > this.mod.VERSION)
+			if (maxvn > MAtMod.VERSION)
 			{
 				boolean needsSave = false;
 				if (maxvn != this.lastFound)
@@ -134,7 +128,7 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 				{
 					this.displayRemaining = this.displayRemaining - 1;
 					
-					int vc = maxvn - this.mod.VERSION;
+					int vc = maxvn - MAtMod.VERSION;
 					this.mod.printChat(
 						Ha3Utility.COLOR_GOLD, "A ", Ha3Utility.COLOR_WHITE, "r" + maxvn, Ha3Utility.COLOR_GOLD,
 						" update is available (You're ", Ha3Utility.COLOR_WHITE, vc, Ha3Utility.COLOR_GOLD, " version"
@@ -191,95 +185,12 @@ public class MAtUpdateNotifier extends Thread implements Ha3Personalizable
 		}
 	}
 	
-	@Override
-	public void inputOptions(Properties options)
+	public void loadConfiguration(ConfigProperty configuration)
 	{
-		if (this.config == null)
-		{
-			this.config = createDefaultOptions();
-		}
-		
-		try
-		{
-			{
-				String query = "update.found.version.value";
-				if (options.containsKey(query))
-				{
-					String prop = options.getProperty(query);
-					this.lastFound = Integer.parseInt(prop);
-					this.config.put(query, prop);
-				}
-				
-			}
-			{
-				String query = "update.found.display.remaining.value";
-				if (options.containsKey(query))
-				{
-					String prop = options.getProperty(query);
-					this.displayRemaining = Integer.parseInt(prop);
-					this.config.put(query, prop);
-				}
-				
-			}
-			{
-				String query = "update.found.display.count.value";
-				if (options.containsKey(query))
-				{
-					String prop = options.getProperty(query);
-					this.displayCount = Integer.parseInt(prop);
-					this.config.put(query, prop);
-				}
-				
-			}
-			{
-				String query = "update.found.use";
-				if (options.containsKey(query))
-				{
-					String prop = options.getProperty(query);
-					this.enabled = Integer.parseInt(prop) == 1 ? true : false;
-					this.config.put(query, prop);
-				}
-				
-			}
-		}
-		catch (NumberFormatException e)
-		{
-			e.printStackTrace();
-			
-		}
-		
-	}
-	
-	@Override
-	public Properties outputOptions()
-	{
-		if (this.config == null)
-			return createDefaultOptions();
-		
-		this.config.setProperty("update.found.version.value", "" + this.lastFound);
-		this.config.setProperty("update.found.display.remaining.value", "" + this.displayRemaining);
-		this.config.setProperty("update.found.display.count.value", "" + this.displayCount);
-		this.config.setProperty("update.found.use", this.enabled ? "1" : "0");
-		
-		return this.config;
-	}
-	
-	@Override
-	public void defaultOptions()
-	{
-		inputOptions(createDefaultOptions());
-		
-	}
-	
-	private Properties createDefaultOptions()
-	{
-		Properties options = new Properties();
-		options.setProperty("update.found.version.value", "" + this.defLastFound);
-		options.setProperty("update.found.display.remaining.value", "" + this.defDisplayRemaining);
-		options.setProperty("update.found.display.count.value", "" + this.defDisplayCount);
-		options.setProperty("update.found.use", this.defEnabled ? "1" : "0");
-		
-		return options;
+		this.enabled = configuration.getBoolean("update_found.enabled");
+		this.lastFound = configuration.getInteger("update_found.version");
+		this.displayRemaining = configuration.getInteger("update_found.display.remaining.value");
+		this.displayCount = configuration.getInteger("update_found.display.count.value");
 		
 	}
 	
