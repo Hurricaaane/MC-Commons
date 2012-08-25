@@ -24,6 +24,22 @@ public class PropertyCell implements PropertyHolder
 	}
 	
 	@Override
+	public boolean getBoolean(String name)
+	{
+		if (!this.properties.containsKey(name))
+			throw new PropertyMissingException();
+		
+		try
+		{
+			return Boolean.parseBoolean(this.properties.get(name));
+		}
+		catch (NumberFormatException e)
+		{
+			throw new PropertyTypeException();
+		}
+	}
+	
+	@Override
 	public int getInteger(String name)
 	{
 		if (!this.properties.containsKey(name))

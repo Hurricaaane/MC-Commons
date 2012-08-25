@@ -47,6 +47,23 @@ public class VersionnableProperty implements PropertyHolder, Versionnable
 	}
 	
 	@Override
+	public boolean getBoolean(String name)
+	{
+		try
+		{
+			return this.soft.getBoolean(name);
+		}
+		catch (PropertyMissingException e)
+		{
+			return this.hard.getBoolean(name);
+		}
+		catch (PropertyTypeException e)
+		{
+			return this.hard.getBoolean(name);
+		}
+	}
+	
+	@Override
 	public int getInteger(String name)
 	{
 		try

@@ -10,16 +10,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import eu.ha3.util.property.contract.ConfigDuet;
+import eu.ha3.util.property.contract.ConfigSource;
 import eu.ha3.util.property.contract.PropertyHolder;
 import eu.ha3.util.property.contract.Versionnable;
 
-public class ConfigProperty implements PropertyHolder, Versionnable, ConfigDuet
+public class ConfigProperty implements PropertyHolder, Versionnable, ConfigSource
 {
 	private VersionnableProperty mixed;
 	
-	private String defaultPath;
-	private String userPath;
+	private String path;
 	
 	public ConfigProperty()
 	{
@@ -28,24 +27,22 @@ public class ConfigProperty implements PropertyHolder, Versionnable, ConfigDuet
 	}
 	
 	@Override
-	public void setDuet(String defaultPath, String userPath)
+	public void setSource(String path)
 	{
-		this.defaultPath = defaultPath;
-		this.userPath = userPath;
+		this.path = path;
 		
 	}
 	
 	@Override
-	public void load()
+	public boolean load()
 	{
-		File defaultFile = new File(this.defaultPath);
-		File userFile = new File(this.userPath);
+		File file = new File(this.path);
 		
-		if (defaultFile.exists())
+		if (file.exists())
 		{
 			try
 			{
-				Reader reader = new FileReader(defaultFile);
+				Reader reader = new FileReader(file);
 				
 				Properties props = new Properties();
 				props.load(reader);
@@ -56,59 +53,36 @@ public class ConfigProperty implements PropertyHolder, Versionnable, ConfigDuet
 					
 				}
 				this.mixed.commit();
+				
 			}
 			catch (FileNotFoundException e)
 			{
 				e.printStackTrace();
+				this.mixed.revert();
+				return false;
+				
 			}
 			catch (IOException e)
 			{
 				e.printStackTrace();
+				this.mixed.revert();
+				return false;
+				
 			}
 		}
 		else
-			throw new MissingDefaultConfigException();
+			return false;
 		
-		if (userFile.exists())
-		{
-			try
-			{
-				Reader reader = new FileReader(userFile);
-				
-				Properties props = new Properties();
-				props.load(reader);
-				
-				for (Entry<Object, Object> entry : props.entrySet())
-				{
-					this.mixed.setProperty(entry.getKey().toString(), entry.getValue().toString());
-					
-				}
-				this.mixed.commit();
-			}
-			catch (FileNotFoundException e)
-			{
-				e.printStackTrace();
-				this.mixed.revert();
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-				this.mixed.revert();
-			}
-		}
-		else
-		{
-			// NO USER FILE
-		}
+		return true;
 		
 	}
 	
 	@Override
-	public void save()
+	public boolean save()
 	{
 		try
 		{
-			File userFile = new File(this.userPath);
+			File userFile = new File(this.path);
 			Properties props = new Properties();
 			for (Entry<String, String> property : this.mixed.getAllProperties().entrySet())
 			{
@@ -121,7 +95,9 @@ public class ConfigProperty implements PropertyHolder, Versionnable, ConfigDuet
 		catch (IOException e)
 		{
 			e.printStackTrace();
+			return false;
 		}
+		return true;
 		
 	}
 	
@@ -143,6 +119,12 @@ public class ConfigProperty implements PropertyHolder, Versionnable, ConfigDuet
 	public String getString(String name)
 	{
 		return this.mixed.getString(name);
+	}
+	
+	@Override
+	public boolean getBoolean(String name)
+	{
+		return this.mixed.getBoolean(name);
 	}
 	
 	@Override

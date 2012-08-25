@@ -6,6 +6,8 @@ public interface PropertyHolder
 {
 	public String getString(String name);
 	
+	public boolean getBoolean(String name);
+	
 	public int getInteger(String name);
 	
 	public float getFloat(String name);
