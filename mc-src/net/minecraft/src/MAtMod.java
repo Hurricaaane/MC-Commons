@@ -560,9 +560,15 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	
 	public void saveConfig()
 	{
-		this.configuration.setProperty("globalvolume.scale", this.soundManagerMaster.getVolume());
-		this.configuration.commit();
-		this.configuration.save();
+		if (this.soundManagerMaster.getVolume() != this.configuration.getFloat("globalvolume.scale"))
+		{
+			this.configuration.setProperty("globalvolume.scale", this.soundManagerMaster.getVolume());
+		}
+		
+		if (this.configuration.commit())
+		{
+			this.configuration.save();
+		}
 		
 	}
 	
