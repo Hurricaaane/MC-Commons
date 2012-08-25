@@ -25,7 +25,7 @@ import eu.ha3.mc.haddon.SupportsTickEvents;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class Ha3DebuggingHaddon extends HaddonImpl implements SupportsTickEvents, SupportsFrameEvents
+public class DebuggingHa3Haddon extends HaddonImpl implements SupportsTickEvents, SupportsFrameEvents
 {
 	private EdgeTrigger button;
 	private boolean toggle;
@@ -175,11 +175,11 @@ public class Ha3DebuggingHaddon extends HaddonImpl implements SupportsTickEvents
 			int y = (int) Math.floor(ply.posY);
 			int z = (int) Math.floor(ply.posZ);
 			
-			final int rad = 24;
-			final int hei = 6;
+			final int rad = 64;
+			final int hei = 32;
 			
 			beginTrace();
-			for (int i = x - rad; i <= x + rad; i++)
+			/*for (int i = x - rad; i <= x + rad; i++)
 			{
 				for (int j = y - hei; j <= y + hei; j++)
 					if (j > 0 && j < 253)
@@ -204,7 +204,7 @@ public class Ha3DebuggingHaddon extends HaddonImpl implements SupportsTickEvents
 							
 						}
 					}
-			}
+			}*/
 			finishTrace();
 		}
 		
