@@ -25,4 +25,11 @@ public class mod_LogBlockVisualizer extends HaddonBridgeModLoader
 		
 	}
 	
+	@Override
+	public String getVersion()
+	{
+		return "x0";
+		
+	}
+	
 }

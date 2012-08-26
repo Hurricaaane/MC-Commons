@@ -46,4 +46,11 @@ public class mod_ModProductionErrorChecker extends HaddonBridgeModLoader
 		
 	}
 	
+	@Override
+	public String getVersion()
+	{
+		return "r0 Custom (*)";
+		
+	}
+	
 }

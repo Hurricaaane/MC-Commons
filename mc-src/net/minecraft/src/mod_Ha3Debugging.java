@@ -22,4 +22,11 @@ public class mod_Ha3Debugging extends HaddonBridgeModLoader
 	{
 		super(new DebuggingHa3Haddon());
 	}
+	
+	@Override
+	public String getVersion()
+	{
+		return "x0";
+		
+	}
 }

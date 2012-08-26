@@ -110,7 +110,7 @@ public class mod_SessionWriter extends BaseMod
 	@Override
 	public String getVersion()
 	{
-		return "r2";
+		return "x2 Custom (*)";
 	}
 	
 	@Override

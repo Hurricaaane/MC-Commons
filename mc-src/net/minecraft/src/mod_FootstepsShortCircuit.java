@@ -1,6 +1,5 @@
 package net.minecraft.src;
 
-
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
                     Version 2, December 2004 
@@ -22,6 +21,13 @@ public class mod_FootstepsShortCircuit extends HaddonBridgeModLoader
 	public mod_FootstepsShortCircuit()
 	{
 		super(new FootstepsShortCircuitHaddon());
+	}
+	
+	@Override
+	public String getVersion()
+	{
+		return "r0 for 1.3.2";
+		
 	}
 	
 }

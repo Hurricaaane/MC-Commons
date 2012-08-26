@@ -28,7 +28,6 @@ import eu.ha3.mc.convenience.Ha3KeyManager;
 
 public class mod_Navstrate extends BaseMod
 {
-	final String VERSION = "1.8.1 rc1";
 	Minecraft mc;
 	private Ha3KeyManager keyManager;
 	private KeyBinding navKeyBinding;
@@ -53,7 +52,7 @@ public class mod_Navstrate extends BaseMod
 	@Override
 	public String getVersion()
 	{
-		return this.VERSION;
+		return "x0 Custom (*)";
 		
 	}
 	

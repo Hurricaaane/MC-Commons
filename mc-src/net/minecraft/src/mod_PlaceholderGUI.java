@@ -24,4 +24,11 @@ public class mod_PlaceholderGUI extends HaddonBridgeModLoader
 		
 	}
 	
+	@Override
+	public String getVersion()
+	{
+		return "r0 for 1.3.2";
+		
+	}
+	
 }
