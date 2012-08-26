@@ -119,7 +119,8 @@ public class DebuggingHa3Haddon extends HaddonImpl implements SupportsTickEvents
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);*/
 		
-		if (true)
+		boolean inWorld = true;
+		if (inWorld)
 		{
 			showGPS(1523, 736, 0x00FF00);
 			showGPS(602, 275, 0xFFFF00);
@@ -171,7 +172,9 @@ public class DebuggingHa3Haddon extends HaddonImpl implements SupportsTickEvents
 		@Override
 		public void doRender(Entity entity, double dx, double dy, double dz, float f, float semi)
 		{
-			if (true)
+			boolean renderEnabled = false;
+			
+			if (renderEnabled)
 				return;
 			
 			EntityPlayer ply = manager().getMinecraft().thePlayer;
@@ -185,7 +188,7 @@ public class DebuggingHa3Haddon extends HaddonImpl implements SupportsTickEvents
 			final int hei = 32;
 			
 			beginTrace();
-			/*for (int i = x - rad; i <= x + rad; i++)
+			for (int i = x - rad; i <= x + rad; i++)
 			{
 				for (int j = y - hei; j <= y + hei; j++)
 					if (j > 0 && j < 253)
@@ -210,7 +213,7 @@ public class DebuggingHa3Haddon extends HaddonImpl implements SupportsTickEvents
 							
 						}
 					}
-			}*/
+			}
 			finishTrace();
 		}
 		
