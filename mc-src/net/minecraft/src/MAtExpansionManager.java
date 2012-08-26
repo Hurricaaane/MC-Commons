@@ -370,7 +370,12 @@ public class MAtExpansionManager
 			}
 			else if (individual.getName().endsWith(".xrl"))
 			{
-				files.add(individual);
+				//files.add(individual);
+				MAtMod.LOGGER
+					.severe("ATTENTION: .xrl are disabled in this version of MAtmos. Please use .xml files instead.");
+				this.mod.printChat(
+					Ha3Utility.COLOR_RED, "ATTENTION:", Ha3Utility.COLOR_YELLOW,
+					".xrl are disabled in this version of MAtmos. Please use .xml files instead.");
 				
 			}
 			
