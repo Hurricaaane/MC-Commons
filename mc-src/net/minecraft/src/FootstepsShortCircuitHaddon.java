@@ -92,6 +92,7 @@ public class FootstepsShortCircuitHaddon extends HaddonImpl
 			{
 				Packet.packetIdToClassMap.addKey(62, FootstepsSCP62.class);
 				
+				// packetClassToIdMap
 				HashMap map = (HashMap) util().getPrivateValueLiteral(Packet.class, null, "a", 1);
 				map.put(FootstepsSCP62.class, 62);
 				

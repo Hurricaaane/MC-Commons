@@ -102,6 +102,7 @@ public class Ha3SoundCommunicator
 	{
 		if (this.sndSystem == null)
 		{
+			// sndSystem
 			this.sndSystem =
 				(SoundSystem) this.mod
 					.getManager()
@@ -135,7 +136,7 @@ public class Ha3SoundCommunicator
 			if (soundVolume == 0.0F)
 				return;
 			
-			// Private value is: SoundPool soundPoolSounds;
+			// soundPoolSounds
 			// XXX Get rid of private value getting on runtime
 			SoundPoolEntry soundpoolentry =
 				((SoundPool) this.mod
@@ -185,7 +186,7 @@ public class Ha3SoundCommunicator
 			if (soundVolume == 0.0F)
 				return;
 			
-			// Private value is: SoundPool soundPoolSounds;
+			// soundPoolSounds
 			// XXX Get rid of private value getting on runtime
 			SoundPoolEntry soundpoolentry =
 				((SoundPool) this.mod

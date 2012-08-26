@@ -124,6 +124,8 @@ public class MinapticsLiteHaddon extends HaddonImpl
 		
 		try
 		{
+			// mouseFilterXAxis
+			// mouseFilterYAxis
 			util().setPrivateValueLiteral(
 				net.minecraft.src.EntityRenderer.class, this.mc.entityRenderer, "v", 7, this.mouseFilterXAxis);
 			util().setPrivateValueLiteral(
@@ -143,6 +145,8 @@ public class MinapticsLiteHaddon extends HaddonImpl
 	{
 		try
 		{
+			// debugCamFOV
+			// prevDebugCamFOV
 			util().setPrivateValueLiteral(
 				net.minecraft.src.EntityRenderer.class, this.mc.entityRenderer, "M", 24, value);
 			util().setPrivateValueLiteral(

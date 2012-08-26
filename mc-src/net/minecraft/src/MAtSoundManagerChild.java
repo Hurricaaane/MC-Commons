@@ -206,6 +206,7 @@ public class MAtSoundManagerChild implements MAtmosSoundManager, MAtCustomVolume
 	{
 		try
 		{
+			// soundPoolSounds
 			return ((SoundPool) this.mod.util().getPrivateValueLiteral(
 				net.minecraft.src.SoundManager.class, this.mod.manager().getMinecraft().sndManager, "b", 1))
 				.getRandomSoundFromSoundPool(getMaster().getSound(path));
