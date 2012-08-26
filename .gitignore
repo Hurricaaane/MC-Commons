@@ -301,3 +301,4 @@ mc-src/net/minecraft/src/MineLPRData.java
 mc-src/net/minecraft/src/MineLPReflection.java
 mc-src/net/minecraft/src/PonyConfig.java
 mc-src/net/minecraft/src/MineLPGlow.java
+mc-src/net/minecraft/src/CommandServerMessage.java
