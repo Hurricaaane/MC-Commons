@@ -174,7 +174,7 @@ public class DebuggingHa3Haddon extends HaddonImpl implements SupportsTickEvents
 		{
 			boolean renderEnabled = false;
 			
-			if (renderEnabled)
+			if (!renderEnabled)
 				return;
 			
 			EntityPlayer ply = manager().getMinecraft().thePlayer;
