@@ -20,14 +20,14 @@ import eu.ha3.mc.haddon.SupportsTickEvents;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class HaddonPreface extends HaddonImpl implements SupportsTickEvents
+public class PrefaceHaddon extends HaddonImpl implements SupportsTickEvents
 {
-	private static final HaddonPreface instance = new HaddonPreface();
+	private static final PrefaceHaddon instance = new PrefaceHaddon();
 	
 	private boolean defined;
 	private EdgeTrigger trigger;
 	
-	private HaddonPreface()
+	private PrefaceHaddon()
 	{
 		this.defined = false;
 		this.trigger = new EdgeTrigger(new EdgeModel() {
@@ -46,7 +46,7 @@ public class HaddonPreface extends HaddonImpl implements SupportsTickEvents
 		
 	}
 	
-	public static HaddonPreface getInstance()
+	public static PrefaceHaddon getInstance()
 	{
 		return instance;
 		
