@@ -42,7 +42,7 @@ import eu.ha3.util.property.simple.ConfigProperty;
 public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents/*, SupportsGuiTickEvents, Ha3Personalizable*/
 {
 	final static public Logger LOGGER = Logger.getLogger("MAtmos");
-	final static public int VERSION = 13; // Remember to change the thing on mod_Matmos_forModLoader
+	final static public int VERSION = 12; // Remember to change the thing on mod_Matmos_forModLoader
 	
 	private ConsoleHandler conMod;
 	private ConsoleHandler conEngine;
@@ -553,15 +553,16 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	
 	public void saveConfig()
 	{
-		if (this.soundManagerMaster.getVolume() != this.configuration.getFloat("globalvolume.scale"))
-		{
-			this.configuration.setProperty("globalvolume.scale", this.soundManagerMaster.getVolume());
-		}
-		
 		if (this.configuration.commit())
 		{
 			this.configuration.save();
 		}
+		
+	}
+	
+	public ConfigProperty getConfiguration()
+	{
+		return this.configuration;
 		
 	}
 	

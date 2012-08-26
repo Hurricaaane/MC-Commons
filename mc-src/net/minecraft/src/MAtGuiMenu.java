@@ -86,6 +86,7 @@ public class MAtGuiMenu extends GuiScreen
 				{
 					central.setVolume(value * 2);
 					slider.displayString = "Global Volume Control: " + (int) Math.floor(value * 200) + "%";
+					MAtGuiMenu.this.matmos.getConfiguration().setProperty("globalvolume.scale", central.getVolume());
 				}
 			});
 			this.controlList.add(sliderControl);

@@ -70,7 +70,7 @@ public class MAtUpdateNotifier extends Thread// implements Ha3Personalizable
 	{
 		try
 		{
-			URL url = new URL("http://ha3extra.googlecode.com/svn/trunk/matmos/version.xml");
+			URL url = new URL("http://ha3extra.googlecode.com/svn/trunk/matmos/version_test.xml");
 			
 			InputStream contents = url.openStream();
 			
@@ -121,12 +121,17 @@ public class MAtUpdateNotifier extends Thread// implements Ha3Personalizable
 					this.displayRemaining = this.displayCount;
 					
 					needsSave = true;
+					this.mod.getConfiguration().setProperty("update_found.version", this.lastFound);
+					this.mod.getConfiguration().setProperty(
+						"update_found.display.remaining.value", this.displayRemaining);
 					
 				}
 				
 				if (this.displayRemaining > 0)
 				{
 					this.displayRemaining = this.displayRemaining - 1;
+					this.mod.getConfiguration().setProperty(
+						"update_found.display.remaining.value", this.displayRemaining);
 					
 					int vc = maxvn - MAtMod.VERSION;
 					this.mod.printChat(
@@ -153,7 +158,7 @@ public class MAtUpdateNotifier extends Thread// implements Ha3Personalizable
 				
 				if (needsSave)
 				{
-					this.mod.getOptions().saveOptions();
+					this.mod.saveConfig();
 				}
 				
 			}
