@@ -117,7 +117,7 @@ public class MinapticsLiteHaddon extends HaddonImpl
 		this.fovLevelSetup = this.fovLevel;
 		
 		KeyBinding zoomKeyBinding = new KeyBinding("key.zoom", this.zoomKey);
-		manager().addKeyBinding(zoomKeyBinding, "Zoom");
+		manager().addKeyBinding(zoomKeyBinding, "Zoom (Minaptics)");
 		this.keyManager.addKeyBinding(zoomKeyBinding, new MinapticsLiteZoomBinding(this));
 		
 		updateSmootherStatus();
