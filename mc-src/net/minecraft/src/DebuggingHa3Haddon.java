@@ -161,7 +161,7 @@ public class DebuggingHa3Haddon extends HaddonImpl implements SupportsTickEvents
 		
 	}
 	
-	private class RenderSpawnPoints extends Ha3RenderRelayContract
+	private class RenderSpawnPoints extends Ha3RenderRelay
 	{
 		public RenderSpawnPoints(Minecraft mc)
 		{

@@ -18,7 +18,7 @@ import net.minecraft.client.Minecraft;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public abstract class Ha3RenderRelayContract
+public abstract class Ha3RenderRelay
 {
 	private Minecraft mc;
 	
@@ -28,7 +28,7 @@ public abstract class Ha3RenderRelayContract
 	private Entity renderEntity;
 	private Render renderHook;
 	
-	public Ha3RenderRelayContract(Minecraft mc)
+	public Ha3RenderRelay(Minecraft mc)
 	{
 		this.mc = mc;
 		this.renderHook = new HRenderHook();
@@ -70,7 +70,7 @@ public abstract class Ha3RenderRelayContract
 			double dy = entity.posY * semi + entity.lastTickPosY * (1 - semi);
 			double dz = entity.posZ * semi + entity.lastTickPosZ * (1 - semi);
 			
-			Ha3RenderRelayContract.this.doRender(entity, dx, dy, dz, f, semi);
+			Ha3RenderRelay.this.doRender(entity, dx, dy, dz, f, semi);
 			
 		}
 		
@@ -80,7 +80,7 @@ public abstract class Ha3RenderRelayContract
 	{
 		public HRenderEntity()
 		{
-			super(Ha3RenderRelayContract.this.mc.theWorld);
+			super(Ha3RenderRelay.this.mc.theWorld);
 			
 			this.ignoreFrustumCheck = true;
 		}
@@ -88,7 +88,7 @@ public abstract class Ha3RenderRelayContract
 		@Override
 		public void onEntityUpdate()
 		{
-			EntityPlayer ply = Ha3RenderRelayContract.this.mc.thePlayer;
+			EntityPlayer ply = Ha3RenderRelay.this.mc.thePlayer;
 			setPosition(ply.posX, ply.posY, ply.posZ);
 			
 		}
