@@ -55,7 +55,6 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	private MAtUserControl userControl;
 	private MAtDataGatherer dataGatherer;
 	private MAtExpansionManager expansionManager;
-	private MAtOptions options;
 	private MAtUpdateNotifier updateNotifier;
 	
 	private MAtSoundManagerMaster soundManagerMaster;
@@ -220,12 +219,6 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	public MAtDataGatherer getDataGatherer()
 	{
 		return this.dataGatherer;
-		
-	}
-	
-	public MAtOptions getOptions()
-	{
-		return this.options;
 		
 	}
 	
