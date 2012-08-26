@@ -187,7 +187,7 @@ public class MAtProcessorFrequent extends MAtProcessorModel
 			}
 		}
 		
-		/*for (int i = 0; i < 64; i++)
+		for (int i = 0; i < 32; i++)
 		{
 			setValue(200 + i, 0);
 		}
@@ -195,7 +195,12 @@ public class MAtProcessorFrequent extends MAtProcessorModel
 		for (Object oeffect : player.getActivePotionEffects())
 		{
 			PotionEffect effect = (PotionEffect) oeffect;
-		}*/
+			int id = effect.getPotionID();
+			if (id < 32 && id >= 0)
+			{
+				setValue(200 + id, 1 + effect.getAmplifier());
+			}
+		}
 		// Remember to increase the data size.
 		
 	}
