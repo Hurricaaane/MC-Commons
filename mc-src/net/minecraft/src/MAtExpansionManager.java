@@ -39,6 +39,7 @@ public class MAtExpansionManager
 	private List<MAtSoundManagerChild> soundManagers;
 	
 	private File expansionsFolder;
+	private File userconfigFolder;
 	private File onlineStorageFolder;
 	
 	private boolean canBuildKnowledge;
@@ -51,11 +52,17 @@ public class MAtExpansionManager
 		this.soundManagers = new ArrayList<MAtSoundManagerChild>();
 		
 		this.expansionsFolder = new File(Minecraft.getMinecraftDir(), "matmos/expansions_r12/");
+		this.userconfigFolder = new File(Minecraft.getMinecraftDir(), "matmos/expansions_r12_userconfig/");
 		this.onlineStorageFolder = new File(Minecraft.getMinecraftDir(), "matmos/internal/storage/");
 		
 		if (!this.expansionsFolder.exists())
 		{
 			this.expansionsFolder.mkdirs();
+		}
+		
+		if (!this.userconfigFolder.exists())
+		{
+			this.userconfigFolder.mkdirs();
 		}
 		
 		if (!this.onlineStorageFolder.exists())

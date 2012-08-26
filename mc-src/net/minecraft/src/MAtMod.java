@@ -42,7 +42,7 @@ import eu.ha3.util.property.simple.ConfigProperty;
 public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents/*, SupportsGuiTickEvents, Ha3Personalizable*/
 {
 	final static public Logger LOGGER = Logger.getLogger("MAtmos");
-	final static public int VERSION = 12; // Remember to change the thing on mod_Matmos_forModLoader
+	final static public int VERSION = 13; // Remember to change the thing on mod_Matmos_forModLoader
 	
 	private ConsoleHandler conMod;
 	private ConsoleHandler conEngine;
@@ -135,6 +135,14 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	@Override
 	public void onLoad()
 	{
+		if (!new File(Minecraft.getMinecraftDir(), "matmos/").exists())
+		{
+			this.fatalError = true;
+			manager().hookTickEvents(true);
+			return;
+			
+		}
+		
 		this.timeStatistic = new TimeStatistic(Locale.ENGLISH);
 		
 		this.sndComm = new Ha3SoundCommunicator(this, "MAtmos_");
@@ -242,7 +250,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	
 	private String getFirstBlocker()
 	{
-		File folder = new File(Minecraft.getMinecraftDir(), "matmos/audiomodlike_blacklist/");
+		File folder = new File(Minecraft.getMinecraftDir(), "matmos/reloader_blacklist/");
 		
 		if (!folder.exists())
 			return null;
@@ -536,8 +544,15 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 			this.userKnowsFatalError = true;
 			
 			printChat(Ha3Utility.COLOR_YELLOW, "A fatal error has occured. MAtmos will not load.");
+			if (!new File(Minecraft.getMinecraftDir(), "matmos/").exists())
+			{
+				printChat(Ha3Utility.COLOR_WHITE, "Are you sure you installed MAtmos correctly?");
+				printChat(
+					Ha3Utility.COLOR_WHITE, "The folder called ", Ha3Utility.COLOR_YELLOW, ".minecraft/matmos/",
+					Ha3Utility.COLOR_YELLOW, " was NOT found. This folder should exist on a normal installation.");
+				
+			}
 			manager().hookTickEvents(false);
-			manager().hookGuiTickEvents(false);
 			manager().hookFrameEvents(false);
 			
 		}

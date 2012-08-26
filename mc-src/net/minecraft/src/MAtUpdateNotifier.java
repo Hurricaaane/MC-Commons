@@ -70,7 +70,7 @@ public class MAtUpdateNotifier extends Thread// implements Ha3Personalizable
 	{
 		try
 		{
-			URL url = new URL("http://ha3extra.googlecode.com/svn/trunk/matmos/version_test.xml");
+			URL url = new URL("http://ha3extra.googlecode.com/svn/trunk/matmos/version.xml");
 			
 			InputStream contents = url.openStream();
 			
