@@ -163,6 +163,38 @@ public class MAtProcessorFrequent extends MAtProcessorModel
 		setValue(73, rmz);
 		setValue(74, player.ridingEntity != null ? (int) Math.floor(Math.sqrt(rmx * rmx + rmz * rmz)) : 0);
 		
+		for (int i = 0; i < 64; i++)
+		{
+			setValue(100 + i, 0);
+		}
+		
+		if (player.inventory.getCurrentItem() != null
+			&& player.inventory.getCurrentItem().getEnchantmentTagList() != null
+			&& player.inventory.getCurrentItem().getEnchantmentTagList().tagCount() > 0)
+		{
+			int total = player.inventory.getCurrentItem().getEnchantmentTagList().tagCount();
+			
+			NBTTagList enchantments = player.inventory.getCurrentItem().getEnchantmentTagList();
+			for (int i = 0; i < total; i++)
+			{
+				short id = ((NBTTagCompound) enchantments.tagAt(i)).getShort("id");
+				short lvl = ((NBTTagCompound) enchantments.tagAt(i)).getShort("lvl");
+				
+				if (id < 64 && i >= 0)
+				{
+					setValue(100 + id, lvl);
+				}
+			}
+		}
+		
+		for (int i = 0; i < 64; i++)
+		{
+			setValue(200 + i, 0);
+		}
+		
+		for (Object effect : player.getActivePotionEffects())
+		{
+		}
 		// Remember to increase the data size.
 		
 	}
