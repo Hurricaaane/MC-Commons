@@ -21,6 +21,12 @@
 	<constant>365</constant>
 	<constant>366</constant>
 	<constant>367</constant>
+	<constant>382</constant>
+	<constant>391</constant>
+	<constant>392</constant>
+	<constant>393</constant>
+	<constant>394</constant>
+	<constant>396</constant>
 </list>
 <list name="Sword Sharp">
 	<descriptible>
@@ -90,6 +96,19 @@
 	<constant>345</constant>
 	<constant>347</constant>
 </list>
+<condition name="Flaming Enchantment">
+	<descriptible>
+		<nickname>Flaming Enchantment</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<sheet>Instants</sheet>
+	<key>150</key>
+	<symbol>&gt;</symbol>
+	<constant>0</constant>
+	<list></list>
+</condition>
 <condition name="Interact Block Stance To Off">
 	<descriptible>
 		<nickname>Interact Block Stance To Off</nickname>
@@ -153,6 +172,19 @@
 	<key>61</key>
 	<symbol>&gt;</symbol>
 	<constant>10</constant>
+	<list></list>
+</condition>
+<condition name="Interact Bow Release">
+	<descriptible>
+		<nickname>Interact Bow Release</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<sheet>Deltas</sheet>
+	<key>58</key>
+	<symbol>&lt;</symbol>
+	<constant>0</constant>
 	<list></list>
 </condition>
 <condition name="Interact Consumable Food">
@@ -439,6 +471,17 @@
 	<truepart>Interact Bow</truepart>
 	<truepart>Interact Item Select</truepart>
 </set>
+<set name="Interact Bow Release with Flaming">
+	<descriptible>
+		<nickname>Interact Bow Release with Flaming</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<truepart>Interact Bow</truepart>
+	<truepart>Flaming Enchantment</truepart>
+	<truepart>Interact Bow Release</truepart>
+</set>
 <set name="Interact Bow Stretching">
 	<descriptible>
 		<nickname>Interact Bow Stretching</nickname>
@@ -627,6 +670,22 @@
 	<volmax>1.0</volmax>
 	<pitchmin>0.95</pitchmin>
 	<pitchmax>1.1</pitchmax>
+	<metasound>0</metasound>
+</event>
+<event name="Interact Bow Flaming Fire">
+	<descriptible>
+		<nickname>Interact Bow Flaming Fire</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<path>newsound/matmos_interactions/bow_flame_a.ogg</path>
+	<path>newsound/matmos_interactions/bow_flame_b.ogg</path>
+	<path>newsound/matmos_interactions/bow_flame_c.ogg</path>
+	<volmin>0.8</volmin>
+	<volmax>1.0</volmax>
+	<pitchmin>0.9</pitchmin>
+	<pitchmax>1.05</pitchmax>
 	<metasound>0</metasound>
 </event>
 <event name="Interact Bow Stretch">
@@ -926,6 +985,23 @@
 	<allow>Interact Bow Draw</allow>
 	<eventtimed>
 		<eventname>Interact Bow Draw</eventname>
+		<delaymin>10.0</delaymin>
+		<delaymax>10.0</delaymax>
+		<delaystart>-1.0</delaystart>
+		<volmod>1.0</volmod>
+		<pitchmod>1.0</pitchmod>
+	</eventtimed>
+</machine>
+<machine name="Interact Bow Flaming Fire">
+	<descriptible>
+		<nickname>Interact Bow Flaming Fire</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<allow>Interact Bow Release with Flaming</allow>
+	<eventtimed>
+		<eventname>Interact Bow Flaming Fire</eventname>
 		<delaymin>10.0</delaymin>
 		<delaymax>10.0</delaymax>
 		<delaystart>-1.0</delaystart>
