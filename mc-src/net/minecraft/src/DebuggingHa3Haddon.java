@@ -1,5 +1,11 @@
 package net.minecraft.src;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Field;
+
 import net.minecraft.client.Minecraft;
 
 import org.lwjgl.opengl.GL11;
@@ -266,4 +272,57 @@ public class DebuggingHa3Haddon extends HaddonImpl implements SupportsTickEvents
 		}
 		
 	}
+	
+	public static void main(String[] args)
+	{
+		try
+		{
+			Field f = Minecraft.class.getDeclaredField("minecraftDir");
+			Field.setAccessible(new Field[] { f }, true);
+			f.set(null, new File("."));
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return;
+		}
+		
+		String[] altArgs = new String[2];
+		altArgs[0] = "";
+		altArgs[1] = "";
+		boolean useAltArgs = false;
+		
+		try
+		{
+			File f = new File("E:\\Dropbox\\Minecraft\\user\\mainline\\.minecraft\\mcsession.txt");
+			
+			if (f.exists())
+			{
+				BufferedReader reader = new BufferedReader(new FileReader(f));
+				String[] split = reader.readLine().split(" ");
+				reader.close();
+				if (split.length >= 2)
+				{
+					altArgs[0] = split[0];
+					altArgs[1] = split[1];
+					useAltArgs = true;
+				}
+			}
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		if (!useAltArgs)
+		{
+			Minecraft.main(args);
+		}
+		else
+		{
+			Minecraft.main(altArgs);
+		}
+		
+	}
+	
 }
