@@ -199,8 +199,9 @@ public class MAtProcessorRelaxed extends MAtProcessorModel
 		this.serverAddresses.put(playerIp, wellHashCode);
 		this.serverPorts.put(playerIp, conPort);
 		
-		System.out.println("Computed server IP for \""
-			+ playerIp + " as : " + wellIp + " (" + wellHashCode + ") : " + conPort);
+		//System.out.println("Computed server IP for \""
+		//	+ playerIp + " as : " + wellIp + " (" + wellHashCode + ") : " + conPort);
+		System.out.println("Computed server IP and hashed as (" + wellHashCode + ") : " + conPort);
 		
 	}
 	
