@@ -1,9 +1,15 @@
 package net.minecraft.src;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+
+import javax.naming.directory.Attributes;
+import javax.naming.directory.InitialDirContext;
 
 import net.minecraft.client.Minecraft;
 import eu.ha3.matmos.engine.MAtmosData;
@@ -28,6 +34,9 @@ public class MAtProcessorRelaxed extends MAtProcessorModel
 {
 	private Map<String, Integer> biomeHash;
 	private Random random;
+	
+	private Map<String, Integer> serverAddresses;
+	private Map<String, Integer> serverPorts;
 	
 	MAtProcessorRelaxed(MAtMod modIn, MAtmosData dataIn, String normalNameIn, String deltaNameIn)
 	{
@@ -66,6 +75,9 @@ public class MAtProcessorRelaxed extends MAtProcessorModel
 		
 		this.random = new Random(System.nanoTime());
 		
+		this.serverAddresses = new HashMap<String, Integer>();
+		this.serverPorts = new HashMap<String, Integer>();
+		
 	}
 	
 	@Override
@@ -103,10 +115,18 @@ public class MAtProcessorRelaxed extends MAtProcessorModel
 		ServerData serverData = mc.getServerData();
 		if (serverData != null)
 		{
+			String playerIp = serverData.serverIP;
+			
+			System.out.println(playerIp);
+			computeServerIP(playerIp);
+			
 			setValue(75, 1);
 			setValue(76, serverData.serverIP.toLowerCase(Locale.ENGLISH).hashCode());
 			setValue(77, serverData.serverMOTD.hashCode());
 			setValue(78, serverData.serverName.hashCode());
+			setValue(79, this.serverAddresses.get(playerIp));
+			setValue(80, this.serverPorts.get(playerIp));
+			
 		}
 		else
 		{
@@ -114,8 +134,106 @@ public class MAtProcessorRelaxed extends MAtProcessorModel
 			setValue(76, 0);
 			setValue(77, 0);
 			setValue(78, 0);
+			setValue(79, 0);
+			setValue(80, 0);
 		}
 		
+	}
+	
+	private void computeServerIP(String playerIp)
+	{
+		if (this.serverAddresses.containsKey(playerIp))
+			return;
+		
+		String[] splitIp = playerIp.split(":");
+		
+		if (playerIp.startsWith("["))
+		{
+			int vDelimiter = playerIp.indexOf("]");
+			
+			if (vDelimiter > 0)
+			{
+				String ipPart = playerIp.substring(1, vDelimiter);
+				String portPart = playerIp.substring(vDelimiter + 1).trim();
+				
+				if (portPart.startsWith(":") && portPart.length() > 0)
+				{
+					portPart = portPart.substring(1);
+					splitIp = new String[] { ipPart, portPart };
+				}
+				else
+				{
+					splitIp = new String[] { ipPart };
+				}
+			}
+		}
+		
+		if (splitIp.length > 2)
+		{
+			splitIp = new String[] { playerIp };
+		}
+		
+		String ipPotential = splitIp[0];
+		int portPotential = splitIp.length > 1 ? parseIntWithDefault(splitIp[1], 25565) : 25565;
+		
+		if (portPotential == 25565)
+		{
+			String[] var7 = useDnsC(ipPotential);
+			ipPotential = var7[0];
+			portPotential = parseIntWithDefault(var7[1], 25565);
+		}
+		
+		String conIp = ipPotential;
+		int conPort = portPotential;
+		
+		String wellIp = "<could not determine>";
+		int wellHashCode = 0;
+		try
+		{
+			wellIp = InetAddress.getByName(conIp).getHostAddress();
+			wellHashCode = wellIp.hashCode();
+		}
+		catch (UnknownHostException e)
+		{
+		}
+		
+		this.serverAddresses.put(playerIp, wellHashCode);
+		this.serverPorts.put(playerIp, conPort);
+		
+		System.out.println("Computed server IP for \""
+			+ playerIp + " as : " + wellIp + " (" + wellHashCode + ") : " + conPort);
+		
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private static String[] useDnsC(String par0Str)
+	{
+		try
+		{
+			Hashtable var1 = new Hashtable();
+			var1.put("java.naming.factory.initial", "com.sun.jndi.dns.DnsContextFactory");
+			var1.put("java.naming.provider.url", "dns:");
+			InitialDirContext var2 = new InitialDirContext(var1);
+			Attributes var3 = var2.getAttributes("_minecraft._tcp." + par0Str, new String[] { "SRV" });
+			String[] var4 = var3.get("srv").get().toString().split(" ", 4);
+			return new String[] { var4[3], var4[2] };
+		}
+		catch (Throwable var5)
+		{
+			return new String[] { par0Str, Integer.toString(25565) };
+		}
+	}
+	
+	private static int parseIntWithDefault(String par0Str, int par1)
+	{
+		try
+		{
+			return Integer.parseInt(par0Str.trim());
+		}
+		catch (Exception var3)
+		{
+			return par1;
+		}
 	}
 	
 }
