@@ -1,6 +1,7 @@
 package net.minecraft.src;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
@@ -98,6 +99,22 @@ public class MAtProcessorRelaxed extends MAtProcessorModel
 		setValue(29, biomeInt);
 		setValue(30, (int) (w.getSeed() >> 32));
 		setValue(31, (int) (w.getSeed() & 0xFFFFFFFF));
+		
+		ServerData serverData = mc.getServerData();
+		if (serverData != null)
+		{
+			setValue(75, 1);
+			setValue(76, serverData.serverIP.toLowerCase(Locale.ENGLISH).hashCode());
+			setValue(77, serverData.serverMOTD.hashCode());
+			setValue(78, serverData.serverName.hashCode());
+		}
+		else
+		{
+			setValue(75, 0);
+			setValue(76, 0);
+			setValue(77, 0);
+			setValue(78, 0);
+		}
 		
 	}
 	

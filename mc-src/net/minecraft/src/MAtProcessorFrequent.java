@@ -163,6 +163,8 @@ public class MAtProcessorFrequent extends MAtProcessorModel
 		setValue(73, rmz);
 		setValue(74, player.ridingEntity != null ? (int) Math.floor(Math.sqrt(rmx * rmx + rmz * rmz)) : 0);
 		
+		//
+		
 		for (int i = 0; i < 64; i++)
 		{
 			setValue(100 + i, 0);

@@ -10,7 +10,7 @@
 	<sheet name="SpecialLarge">spelarge</sheet>
 	<sheet name="SpecialSmall">spesmall</sheet>
 
-	<list name="instants" id_max="100">
+	<list name="instants" id_max="255">
 		<data id="0">Sun LightLevel in memory</data>
 		<data id="1">Block LightLevel in memory</data>
 		<data id="2">Current LightLevel</data>
@@ -86,6 +86,53 @@
 		<data id="72">Riding Motion Y (x1000)</data>
 		<data id="73">Riding Motion Z (x1000)</data>
 		<data id="74">Riding Motion XZ (x1000) Pythagore</data>
+		<data id="75">Is Server Data available for use</data>
+		<data id="76">Server Data: Player-defined Server IP English lowercase hashcode</data>
+		<data id="77">Server Data: Server MOTD hashcode on-connection</data>
+		<data id="78">Server Data: Player-defined Server Name hashcode</data>
+		
+		<data id="100">Protection</data>
+		<data id="101">Fire  Protection</data>
+		<data id="102">Feather Falling</data>
+		<data id="103">Blast Protection</data>
+		<data id="104">Projectile Protection</data>
+		<data id="105">Respiration</data>
+		<data id="106">Aqua Affinity</data>
+		<data id="116">Sharpness</data>
+		<data id="117">Smite</data>
+		<data id="118">Bane of Arthropods</data>
+		<data id="119">Knockback</data>
+		<data id="120">Fire Aspect</data>
+		<data id="121">Looting</data>
+		<data id="132">Efficiency</data>
+		<data id="133">Silk Touch</data>
+		<data id="134">Unbreaking</data>
+		<data id="135">Fortune</data>
+		<data id="148">Power</data>
+		<data id="149">Punch</data>
+		<data id="150">Flame</data>
+		<data id="151">Infinity</data>
+		
+		<data id="201">Speed</data>
+		<data id="202">Slowness</data>
+		<data id="203">Haste</data>
+		<data id="204">Mining Fatigue</data>
+		<data id="205">Strength</data>
+		<data id="206">Instant Health</data>
+		<data id="207">Instant Damage</data>
+		<data id="208">Jump Boost</data>
+		<data id="209">Nausea</data>
+		<data id="210">Regeneration</data>
+		<data id="211">Resistance</data>
+		<data id="212">Fire Resistance</data>
+		<data id="213">Water Breathing</data>
+		<data id="214">Invisibility</data>
+		<data id="215">Blindness</data>
+		<data id="216">Night Vision</data>
+		<data id="217">Hunger</data>
+		<data id="218">Weakness</data>
+		<data id="219">Poison</data>
+		<data id="220">Wither</data>
 	</list>
 	
 	<list name="datavalues" id_max="255">
@@ -214,6 +261,28 @@
 		<data id="122">Dragon Egg</data>
 		<data id="123">Redstone Lamp Inactive</data>
 		<data id="124">Redstone Lamp Active</data>
+		<data id="125">Wooden Double Slab</data>
+		<data id="126">Wooden Slab</data>
+		<data id="127">Cocoa Plant</data>
+		<data id="128">Sandstone Stairs</data>
+		<data id="129">Emerald Ore</data>
+		<data id="130">Ender Chest</data>
+		<data id="131">Tripwire Hook</data>
+		<data id="132">Tripwire</data>
+		<data id="133">Emerald Block</data>
+		<data id="134">Spruce Wood Stairs</data>
+		<data id="135">Birch Wodo Stairs</data>
+		<data id="136">Jungle Wood Stairs</data>
+		<data id="137">Command Block</data>
+		<data id="138">Beacon Block</data>
+		<data id="139">Cobblestone Wall</data>
+		<data id="140">Flower Pot</data>
+		<data id="141">Carrots</data>
+		<data id="142">Potatoes</data>
+		<data id="143">Wooden Button</data>
+		
+		
+		
 		<data id="165">Portal (Aether)</data>
 		<data id="166">Dirt (Aether)</data>
 		<data id="167">Grass (Aether)</data>
