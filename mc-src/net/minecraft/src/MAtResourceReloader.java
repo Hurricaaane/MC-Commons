@@ -1,9 +1,12 @@
 package net.minecraft.src;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import eu.ha3.mc.convenience.Ha3Signal;
+import eu.ha3.mc.haddon.PrivateAccessException;
 
 public class MAtResourceReloader extends Thread
 {
@@ -111,9 +114,40 @@ public class MAtResourceReloader extends Thread
 		
 	}
 	
+	private SoundPool sps;
+	private List<String> myStack;
+	private List<String> myAddedFiles;
+	
 	public void reloadResources()
 	{
-		cpy_reloadResources();
+		// soundPoolSounds
+		// XXX Get rid of private value getting on runtime
+		try
+		{
+			this.sps =
+				(SoundPool) this.mod
+					.getManager()
+					.getUtility()
+					.getPrivateValueLiteral(
+						net.minecraft.src.SoundManager.class, this.mod.sound().getSoundManager(), "b", 1);
+			
+			this.myStack = new ArrayList<String>();
+			this.myAddedFiles = new ArrayList<String>();
+			
+			cpy_reloadResources();
+			
+			StringBuilder sb = new StringBuilder().append("Loaded files:");
+			for (String afile : this.myAddedFiles)
+			{
+				sb.append(" ").append(afile);
+				
+			}
+			MAtMod.LOGGER.info(sb.toString());
+		}
+		catch (PrivateAccessException e)
+		{
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -123,7 +157,21 @@ public class MAtResourceReloader extends Thread
 	 */
 	private void cpy_reloadResources()
 	{
-		loadResource(new File(Minecraft.getMinecraftDir(), "resources/"), "");
+		File[] filesInThisDir = new File(Minecraft.getMinecraftDir(), "resources/newsound/").listFiles();
+		
+		if (filesInThisDir != null)
+		{
+			for (File file : filesInThisDir)
+			{
+				if (file.getName().startsWith("matmos_"))
+				{
+					loadResource(file, "newsound/" + file.getName() + "/");
+					
+				}
+				
+			}
+			
+		}
 	}
 	
 	/**
@@ -131,27 +179,45 @@ public class MAtResourceReloader extends Thread
 	 */
 	private void loadResource(File par1File, String par2Str)
 	{
-		File[] var3 = par1File.listFiles();
-		File[] var4 = var3;
-		int var5 = var3.length;
+		File[] filesInThisDir = par1File.listFiles();
+		int fileCount = filesInThisDir.length;
 		
-		for (int var6 = 0; var6 < var5; ++var6)
+		for (int i = 0; i < fileCount; ++i)
 		{
-			File var7 = var4[var6];
+			File file = filesInThisDir[i];
 			
-			if (var7.isDirectory())
+			if (file.isDirectory())
 			{
-				loadResource(var7, par2Str + var7.getName() + "/");
+				loadResource(file, par2Str + file.getName() + "/");
 			}
 			else
 			{
 				try
 				{
-					this.mod.getManager().getMinecraft().installResource(par2Str + var7.getName(), var7);
+					String fileRep = par2Str + file.getName();
+					fileRep = fileRep.substring(fileRep.indexOf("/") + 1);
+					fileRep = fileRep.substring(0, fileRep.indexOf("."));
+					while (Character.isDigit(fileRep.charAt(fileRep.length() - 1)))
+					{
+						fileRep = fileRep.substring(0, fileRep.length() - 1);
+					}
+					fileRep = fileRep.replaceAll("/", ".");
+					
+					if (this.myStack.contains(fileRep))
+					{
+						this.mod.getManager().getMinecraft().installResource(par2Str + file.getName(), file);
+						this.myAddedFiles.add(par2Str + file.getName());
+					}
+					else if (this.sps.getRandomSoundFromSoundPool(fileRep) == null)
+					{
+						this.myStack.add(fileRep);
+						this.mod.getManager().getMinecraft().installResource(par2Str + file.getName(), file);
+						this.myAddedFiles.add(par2Str + file.getName());
+					}
 				}
 				catch (Exception var9)
 				{
-					System.out.println("Failed to add " + par2Str + var7.getName());
+					System.out.println("Failed to add " + par2Str + file.getName());
 				}
 			}
 		}
