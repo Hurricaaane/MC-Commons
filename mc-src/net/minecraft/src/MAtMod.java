@@ -20,6 +20,7 @@ import eu.ha3.easy.TimeStatistic;
 import eu.ha3.matmos.engine.MAtmosLogger;
 import eu.ha3.mc.convenience.Ha3Signal;
 import eu.ha3.mc.convenience.Ha3StaticUtilities;
+import eu.ha3.mc.haddon.PrivateAccessException;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
 import eu.ha3.mc.haddon.SupportsKeyEvents;
 import eu.ha3.mc.haddon.SupportsTickEvents;
@@ -44,7 +45,7 @@ import eu.ha3.util.property.simple.ConfigProperty;
 public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents/*, SupportsGuiTickEvents, Ha3Personalizable*/
 {
 	final static public Logger LOGGER = Logger.getLogger("MAtmos");
-	final static public int VERSION = 14; // Remember to change the thing on mod_Matmos_forModLoader
+	final static public int VERSION = 15; // Remember to change the thing on mod_Matmos_forModLoader
 	
 	private ConsoleHandler conMod;
 	private ConsoleHandler conEngine;
@@ -252,6 +253,20 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	
 	private String getFirstBlocker()
 	{
+		try
+		{
+			// Try to check if ThreadDownloadResources is altered by a third party
+			// Like SoundModEnabler
+			HaddonUtilitySingleton.getInstance().getPrivateValueViaName(ThreadDownloadResources.class, null, "logger");
+			// If it doesn't throw an exception, it means it is a third party class
+			return "SoundModEnabler was likely detected. The unobfuscated field called \"logger\" exists, assume SoundModEnabled is installed.";
+			
+		}
+		catch (PrivateAccessException e2)
+		{
+			// Else, it's not a third party class, or it may not have been detected as such.
+		}
+		
 		File folder = new File(Minecraft.getMinecraftDir(), "matmos/reloader_blacklist/");
 		
 		if (!folder.exists())
