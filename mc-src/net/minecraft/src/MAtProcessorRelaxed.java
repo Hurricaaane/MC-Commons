@@ -117,7 +117,6 @@ public class MAtProcessorRelaxed extends MAtProcessorModel
 		{
 			String playerIp = serverData.serverIP;
 			
-			System.out.println(playerIp);
 			computeServerIP(playerIp);
 			
 			setValue(75, 1);
