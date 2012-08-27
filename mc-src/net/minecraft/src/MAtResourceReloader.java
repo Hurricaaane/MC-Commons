@@ -1,23 +1,9 @@
 package net.minecraft.src;
 
+import java.io.File;
+
 import net.minecraft.client.Minecraft;
 import eu.ha3.mc.convenience.Ha3Signal;
-
-/*
-            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
-                    Version 2, December 2004 
-
- Copyright (C) 2004 Sam Hocevar <sam@hocevar.net> 
-
- Everyone is permitted to copy and distribute verbatim or modified 
- copies of this license document, and changing it is allowed as long 
- as the name is changed. 
-
-            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
-   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION 
-
-  0. You just DO WHAT THE FUCK YOU WANT TO. 
-*/
 
 public class MAtResourceReloader extends Thread
 {
@@ -127,10 +113,48 @@ public class MAtResourceReloader extends Thread
 	
 	public void reloadResources()
 	{
-		ThreadDownloadResources loader =
-			new ThreadDownloadResources(Minecraft.getMinecraftDir(), this.mod.manager().getMinecraft());
-		loader.reloadResources(); // This is not threaded
+		cpy_reloadResources();
 		
+	}
+	
+	/**
+	 * Reloads the resource folder and passes the resources to Minecraft to
+	 * install.
+	 */
+	private void cpy_reloadResources()
+	{
+		loadResource(new File(Minecraft.getMinecraftDir(), "resources/"), "");
+	}
+	
+	/**
+	 * Loads a resource and passes it to Minecraft to install.
+	 */
+	private void loadResource(File par1File, String par2Str)
+	{
+		File[] var3 = par1File.listFiles();
+		File[] var4 = var3;
+		int var5 = var3.length;
+		
+		for (int var6 = 0; var6 < var5; ++var6)
+		{
+			File var7 = var4[var6];
+			
+			if (var7.isDirectory())
+			{
+				loadResource(var7, par2Str + var7.getName() + "/");
+			}
+			else
+			{
+				try
+				{
+					this.mod.getManager().getMinecraft().installResource(par2Str + var7.getName(), var7);
+				}
+				catch (Exception var9)
+				{
+					System.out.println("Failed to add " + par2Str + var7.getName());
+				}
+			}
+		}
 	}
 	
 }
