@@ -5,6 +5,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import net.minecraft.client.Minecraft;
 
@@ -80,6 +84,28 @@ public class DebuggingHa3Haddon extends HaddonImpl implements SupportsTickEvents
 	
 	protected void out()
 	{
+		Set set = WorldClient.getEntityList(manager().getMinecraft().theWorld);
+		Map<String, Integer> types = new HashMap<String, Integer>();
+		for (Object o : set)
+		{
+			Entity entity = (Entity) o;
+			String classname = entity.getClass().toString();
+			if (!types.containsKey(classname))
+			{
+				types.put(classname, 1);
+			}
+			else
+			{
+				types.put(classname, 1 + types.get(classname));
+			}
+			
+		}
+		for (Entry<String, Integer> o : types.entrySet())
+		{
+			System.out.println(o.getKey() + " " + o.getValue());
+			
+		}
+		System.out.println("--");
 	}
 	
 	@Override
@@ -87,6 +113,7 @@ public class DebuggingHa3Haddon extends HaddonImpl implements SupportsTickEvents
 	{
 		this.renderRelay.ensureExists();
 		this.button.signalState(util().areKeysDown(29, 42, 49));
+		
 	}
 	
 	@Override
