@@ -9,6 +9,7 @@
 	<sheet name="Deltas">instants</sheet>
 	<sheet name="SpecialLarge">spelarge</sheet>
 	<sheet name="SpecialSmall">spesmall</sheet>
+	<sheet name="ConfigVars">configvars</sheet>
 
 	<list name="instants" id_max="255">
 		<data id="0">Sun LightLevel in memory</data>
@@ -323,6 +324,11 @@
 	
 	<list name="spesmall" id_max="19">
 		<data id="0">Unused sheet.</data>
+	</list>
+	
+	<list name="configvars" id_max="255">
+		<data id="0">Negated altitude where it starts to get windy</data>
+		<data id="1">Negated altitude where it's REALLY windy</data>
 	</list>
 	
 </contents>
