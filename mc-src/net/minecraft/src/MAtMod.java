@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.Locale;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
@@ -355,6 +357,18 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 				MAtMod.LOGGER.severe("A severe error has occured while trying to reload resources.");
 				MAtMod.LOGGER.severe("MAtmos may not function properly.");
 				e.printStackTrace();
+				
+				try
+				{
+					Writer writer = new FileWriter(new File(Minecraft.getMinecraftDir(), "matmos_error.log"), true);
+					PrintWriter pw = new PrintWriter(writer);
+					e.printStackTrace(pw);
+					pw.close();
+					
+				}
+				catch (Exception eee)
+				{
+				}
 			}
 			loadFinalPhase();
 			
