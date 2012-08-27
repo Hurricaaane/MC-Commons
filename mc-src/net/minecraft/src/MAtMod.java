@@ -346,7 +346,16 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		{
 			MAtMod.LOGGER.info("Bypassing Resource Reloader threaded wait. This may cause issues.");
 			
-			new MAtResourceReloader(this, null).reloadResources();
+			try
+			{
+				new MAtResourceReloader(this, null).reloadResources();
+			}
+			catch (Exception e)
+			{
+				MAtMod.LOGGER.severe("A severe error has occured while trying to reload resources.");
+				MAtMod.LOGGER.severe("MAtmos may not function properly.");
+				e.printStackTrace();
+			}
 			loadFinalPhase();
 			
 		}
@@ -538,6 +547,13 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 				
 			}
 			
+			if (!this.firstTickPassed)
+			{
+				this.firstTickPassed = true;
+				this.updateNotifier.attempt();
+				
+			}
+			
 		}
 		else if (!this.userKnowsFatalError)
 		{
@@ -554,13 +570,6 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 			}
 			manager().hookTickEvents(false);
 			manager().hookFrameEvents(false);
-			
-		}
-		
-		if (!this.firstTickPassed)
-		{
-			this.firstTickPassed = true;
-			this.updateNotifier.attempt();
 			
 		}
 		
