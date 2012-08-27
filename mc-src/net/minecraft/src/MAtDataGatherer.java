@@ -32,9 +32,11 @@ public class MAtDataGatherer
 	final static String SPECIAL_LARGE = "SpecialLarge";
 	final static String SPECIAL_SMALL = "SpecialSmall";
 	final static String CONTACTSCAN = "ContactScan";
+	final static String CONFIGVARS = "ConfigVars";
 	
 	final static int COUNT_WORLD_BLOCKS = 4096;
 	final static int COUNT_INSTANTS = 256;
+	final static int COUNT_CONFIGVARS = 256;
 	
 	final static int MAX_LARGESCAN_PASS = 10;
 	
@@ -49,6 +51,7 @@ public class MAtDataGatherer
 	private MAtProcessorModel relaxedProcessor;
 	private MAtProcessorModel frequentProcessor;
 	private MAtProcessorModel contactProcessor;
+	private MAtProcessorModel configVarsProcessor;
 	
 	private List<MAtProcessorModel> additionalRelaxedProcessors;
 	private List<MAtProcessorModel> additionalFrequentProcessors;
@@ -96,6 +99,7 @@ public class MAtDataGatherer
 		this.relaxedProcessor = new MAtProcessorRelaxed(this.mod, this.data, INSTANTS, DELTAS);
 		this.frequentProcessor = new MAtProcessorFrequent(this.mod, this.data, INSTANTS, DELTAS);
 		this.contactProcessor = new MAtProcessorContact(this.mod, this.data, CONTACTSCAN, null);
+		this.configVarsProcessor = new MAtProcessorConfig(this.mod, this.data, CONFIGVARS, null);
 		
 	}
 	
@@ -145,7 +149,8 @@ public class MAtDataGatherer
 			this.data.flagUpdate();
 			
 		}
-		if (this.cyclicTick % 1 == 0) // XXX
+		//if (this.cyclicTick % 1 == 0) // XXX
+		if (true)
 		{
 			this.contactProcessor.process();
 			this.frequentProcessor.process();
@@ -159,10 +164,17 @@ public class MAtDataGatherer
 			
 		}
 		
+		if (this.cyclicTick % 2048 == 0)
+		{
+			this.configVarsProcessor.process();
+			
+		}
+		
 		this.largeScanner.routine();
 		this.smallScanner.routine();
 		
-		this.cyclicTick = (this.cyclicTick + 1) % 256;
+		//this.cyclicTick = (this.cyclicTick + 1) % 256;
+		this.cyclicTick = this.cyclicTick + 1;
 		
 	}
 	
@@ -181,6 +193,8 @@ public class MAtDataGatherer
 		
 		createSheet(SPECIAL_LARGE, 2);
 		createSheet(SPECIAL_SMALL, 1);
+		
+		createSheet(CONFIGVARS, COUNT_CONFIGVARS);
 		
 	}
 	
