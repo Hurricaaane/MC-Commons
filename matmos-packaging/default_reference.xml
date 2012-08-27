@@ -90,7 +90,7 @@
 		<data id="76">Server Data: Player-defined Server IP English lowercase hashcode</data>
 		<data id="77">Server Data: Server MOTD hashcode on-connection</data>
 		<data id="78">Server Data: Player-defined Server Name hashcode</data>
-		<data id="79">Server Data: Computed actual IP address</data>
+		<data id="79">Server Data: Computed actual IP address hashcode</data>
 		<data id="80">Server Data: Computed actual port</data>
 		
 		<data id="100">Protection</data>
