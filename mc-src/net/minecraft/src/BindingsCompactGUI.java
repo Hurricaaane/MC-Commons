@@ -1,6 +1,6 @@
 package net.minecraft.src;
 
-public class BindindsCompactGUI extends GuiScreen
+public class BindingsCompactGUI extends GuiScreen
 {
 	/**
 	 * A reference to the screen object that created this. Used for navigating
@@ -17,7 +17,7 @@ public class BindindsCompactGUI extends GuiScreen
 	/** The ID of the button that has been pressed. */
 	private int buttonId;
 	
-	public BindindsCompactGUI(GuiScreen par1GuiScreen, GameSettings par2GameSettings)
+	public BindingsCompactGUI(GuiScreen par1GuiScreen, GameSettings par2GameSettings)
 	{
 		this.screenTitle = "Controls";
 		this.buttonId = -1;
