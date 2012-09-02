@@ -53,9 +53,119 @@ public class SkinningSystemMLP implements SkinningSystem
 	@Override
 	public void disable()
 	{
-		String skinUrl = "http://skins.minecraft.net/MinecraftSkins/" + this.mc.thePlayer.username + ".png";
-		new CheckOnlinePonySkin(getMyPony(), skinUrl, this.mc.renderEngine).start();
+		//String skinUrl = "http://skins.minecraft.net/MinecraftSkins/" + this.mc.thePlayer.username + ".png";
+		ponyReconstruct();
+	}
+	
+	private void ponyReconstruct()
+	{
+		Pony pony = getMyPony();
 		
+		pony.texture = "/mob/char.png";
+		pony.skinUrl = null;
+		
+		String username = this.mc.thePlayer.username;
+		
+		if (username != null)
+		{
+			pony.skinUrl =
+				new StringBuilder()
+					.append("http://skins.minecraft.net/MinecraftSkins/").append(username).append(".png").toString();
+			pony.realSkinUrl = pony.skinUrl;
+			// You can replace the above line with this line if the skin servers are unreliable
+			//skinUrl = (new StringBuilder()).append("http://s3.amazonaws.com/MinecraftSkins/").append(username).append(".png").toString();
+			// you'll also need to replace it in entityplayersp and entityotherplayermp
+		}
+		
+		pony.isPony = false;
+		pony.isPonySkin = false;
+		pony.isPegasus = false;
+		pony.isUnicorn = false;
+		pony.isMale = false;
+		pony.wantTail = 0;
+		pony.advancedTexturing = false;
+		pony.isFlying = false;
+		pony.isGlow = false;
+		pony.defaultYOffset = 1.62F;
+		
+		int ponyLevel = Pony.getPonyLevel();
+		
+		if (Pony.getPonyLevel() == 0)
+		{
+			pony.textureSetup = true;
+			return;
+		}
+		
+		if (ponyLevel == 1)
+		{
+			pony.textureSetup = false;
+			return;
+		}
+		
+		if (ponyLevel == 2)
+		{
+			pony.textureSetup = false;
+			if (pony.isSpPlayer)
+			{
+				System.out
+					.println("[Mine Little Pony] Temporarily reset skin to the default single player skin charpony.png");
+				pony.texture = "/mob/charpony.png";
+			}
+			else
+			{
+				System.out.println("[Mine Little Pony] Temporarily reset skin to a background pony");
+				// Take a hash of the player name
+				// then get the modulus of this divided by the number of background ponies,
+				// this gives the number of the background pony we will use.
+				// java sucks a ball, can we have a real modulus operator please?
+				int backgroundNumber = username.hashCode() % Pony.backgroundPonies.size();
+				if (backgroundNumber < 0)
+				{
+					backgroundNumber += Pony.backgroundPonies.size();
+				}
+				pony.texture = Pony.backgroundPonies.get(backgroundNumber);
+				// debug
+				System.out.println("[Mine Little Pony] " + username + " gets skin " + backgroundNumber);
+			}
+			pony.backgroundIsPegasus = false;
+			pony.backgroundIsUnicorn = false;
+			pony.backgroundTexture = pony.texture;
+			BufferedImage bufferedimage;
+			try
+			{
+				bufferedimage = ImageIO.read(net.minecraft.client.Minecraft.class.getResource(pony.texture));
+				pony.checkBuiltinTexture(bufferedimage);
+			}
+			catch (Exception e1)
+			{
+				pony.texture = "/mob/charpony.png";
+				System.out
+					.println("[Mine Little Pony] Failed to read a background pony texture from a file, resetting to default charpony.png");
+				try
+				{
+					bufferedimage = ImageIO.read(net.minecraft.client.Minecraft.class.getResource(pony.texture));
+					pony.checkBuiltinTexture(bufferedimage);
+				}
+				catch (Exception e2)
+				{
+					pony.texture = "/mob/char.png";
+					System.out.println("[Mine Little Pony] Failed to read charpony.png, resetting to default char.png");
+					try
+					{
+						bufferedimage = ImageIO.read(net.minecraft.client.Minecraft.class.getResource(pony.texture));
+						pony.checkBuiltinTexture(bufferedimage);
+					}
+					catch (Exception e3)
+					{
+						System.out
+							.println("[Mine Little Pony] Failed to read char.png, I just don't know what went wrong.");
+					}
+					
+				}
+			}
+			// set this to null until texture setup can be completed
+			pony.skinUrl = null;
+		}
 	}
 	
 	@Override
