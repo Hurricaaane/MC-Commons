@@ -113,16 +113,28 @@ public class MAtProcessorRelaxed extends MAtProcessorModel
 		setValue(31, (int) (w.getSeed() & 0xFFFFFFFF));
 		
 		ServerData serverData = mc.getServerData();
-		if (serverData != null)
+		if (serverData != null && serverData.serverIP != null)
 		{
 			String playerIp = serverData.serverIP;
 			
 			computeServerIP(playerIp);
 			
+			String MOTDsec = serverData.serverMOTD;
+			String NAMEsec = serverData.serverName;
+			
+			if (MOTDsec == null)
+			{
+				MOTDsec = "";
+			}
+			if (NAMEsec == null)
+			{
+				NAMEsec = "";
+			}
+			
 			setValue(75, 1);
 			setValue(76, serverData.serverIP.toLowerCase(Locale.ENGLISH).hashCode());
-			setValue(77, serverData.serverMOTD.hashCode());
-			setValue(78, serverData.serverName.hashCode());
+			setValue(77, MOTDsec.hashCode());
+			setValue(78, NAMEsec.hashCode());
 			setValue(79, this.serverAddresses.get(playerIp));
 			setValue(80, this.serverPorts.get(playerIp));
 			
