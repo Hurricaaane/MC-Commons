@@ -16,6 +16,7 @@ import org.lwjgl.opengl.GL11;
 
 import eu.ha3.easy.EdgeModel;
 import eu.ha3.easy.EdgeTrigger;
+import eu.ha3.mc.haddon.PrivateAccessException;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
 import eu.ha3.mc.haddon.SupportsTickEvents;
 
@@ -106,6 +107,7 @@ public class DebuggingHa3Haddon extends HaddonImpl implements SupportsTickEvents
 			
 		}
 		System.out.println("--");
+		
 	}
 	
 	@Override
@@ -121,6 +123,19 @@ public class DebuggingHa3Haddon extends HaddonImpl implements SupportsTickEvents
 	{
 		if (!this.toggle)
 			return;
+		
+		try
+		{
+			float value = 3f;
+			util().setPrivateValue(
+				net.minecraft.src.EntityRenderer.class, manager().getMinecraft().entityRenderer, 14, value);
+			util().setPrivateValue(
+				net.minecraft.src.EntityRenderer.class, manager().getMinecraft().entityRenderer, 13, value);
+		}
+		catch (PrivateAccessException e)
+		{
+			e.printStackTrace();
+		}
 		
 		/*int sc = 1400;
 		
