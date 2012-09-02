@@ -118,7 +118,7 @@ public class MAtDataGatherer
 			long y = (long) Math.floor(player.posY);
 			long z = (long) Math.floor(player.posZ);
 			
-			if (this.cyclicTick == 0)
+			if (this.cyclicTick % 256 == 0)
 			{
 				if (this.lastLargeScanPassed >= MAX_LARGESCAN_PASS
 					|| Math.abs(x - this.lastLargeScanX) > 16 || Math.abs(y - this.lastLargeScanY) > 8
