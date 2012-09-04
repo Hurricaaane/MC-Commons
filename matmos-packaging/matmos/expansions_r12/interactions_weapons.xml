@@ -1,33 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <contents>
-<list name="Consumable Food">
-	<descriptible>
-		<nickname>Consumable Food</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<constant>260</constant>
-	<constant>319</constant>
-	<constant>320</constant>
-	<constant>322</constant>
-	<constant>349</constant>
-	<constant>350</constant>
-	<constant>354</constant>
-	<constant>357</constant>
-	<constant>360</constant>
-	<constant>363</constant>
-	<constant>364</constant>
-	<constant>365</constant>
-	<constant>366</constant>
-	<constant>367</constant>
-	<constant>382</constant>
-	<constant>391</constant>
-	<constant>392</constant>
-	<constant>393</constant>
-	<constant>394</constant>
-	<constant>396</constant>
-</list>
 <list name="Sword Sharp">
 	<descriptible>
 		<nickname>Sword Sharp</nickname>
@@ -86,16 +58,6 @@
 	<constant>291</constant>
 	<constant>346</constant>
 </list>
-<list name="Utility">
-	<descriptible>
-		<nickname>Utility</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<constant>345</constant>
-	<constant>347</constant>
-</list>
 <condition name="Flaming Enchantment">
 	<descriptible>
 		<nickname>Flaming Enchantment</nickname>
@@ -105,32 +67,6 @@
 	</descriptible>
 	<sheet>Instants</sheet>
 	<key>150</key>
-	<symbol>&gt;</symbol>
-	<constant>0</constant>
-	<list></list>
-</condition>
-<condition name="Interact Block Stance To Off">
-	<descriptible>
-		<nickname>Interact Block Stance To Off</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<sheet>Deltas</sheet>
-	<key>60</key>
-	<symbol>&lt;</symbol>
-	<constant>0</constant>
-	<list></list>
-</condition>
-<condition name="Interact Block Stance To On">
-	<descriptible>
-		<nickname>Interact Block Stance To On</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<sheet>Deltas</sheet>
-	<key>60</key>
 	<symbol>&gt;</symbol>
 	<constant>0</constant>
 	<list></list>
@@ -187,19 +123,6 @@
 	<constant>0</constant>
 	<list></list>
 </condition>
-<condition name="Interact Consumable Food">
-	<descriptible>
-		<nickname>Interact Consumable Food</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<sheet>Instants</sheet>
-	<key>32</key>
-	<symbol>in</symbol>
-	<constant>0</constant>
-	<list>Consumable Food</list>
-</condition>
 <condition name="Interact Critical Hit (1)">
 	<descriptible>
 		<nickname>Interact Critical Hit (1)</nickname>
@@ -252,32 +175,6 @@
 	<constant>0</constant>
 	<list></list>
 </condition>
-<condition name="Interact Different Item Select">
-	<descriptible>
-		<nickname>Interact Different Item Select</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<sheet>Deltas</sheet>
-	<key>32</key>
-	<symbol>!=</symbol>
-	<constant>0</constant>
-	<list></list>
-</condition>
-<condition name="Interact Hands">
-	<descriptible>
-		<nickname>Interact Hands</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<sheet>Instants</sheet>
-	<key>32</key>
-	<symbol>==</symbol>
-	<constant>-1</constant>
-	<list></list>
-</condition>
 <condition name="Interact Hit">
 	<descriptible>
 		<nickname>Interact Hit</nickname>
@@ -289,19 +186,6 @@
 	<key>40</key>
 	<symbol>&gt;</symbol>
 	<constant>1</constant>
-	<list></list>
-</condition>
-<condition name="Interact Item Select">
-	<descriptible>
-		<nickname>Interact Item Select</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<sheet>Deltas</sheet>
-	<key>46</key>
-	<symbol>!=</symbol>
-	<constant>0</constant>
 	<list></list>
 </condition>
 <condition name="Interact Mouse over an Entity">
@@ -408,37 +292,6 @@
 	<constant>0</constant>
 	<list>Tool Soft</list>
 </condition>
-<condition name="Interact Utility">
-	<descriptible>
-		<nickname>Interact Utility</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<sheet>Instants</sheet>
-	<key>32</key>
-	<symbol>in</symbol>
-	<constant>0</constant>
-	<list>Utility</list>
-</condition>
-<set name="Interact Block Stance To Off">
-	<descriptible>
-		<nickname>Interact Block Stance To Off</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<truepart>Interact Block Stance To Off</truepart>
-</set>
-<set name="Interact Block Stance To On">
-	<descriptible>
-		<nickname>Interact Block Stance To On</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<truepart>Interact Block Stance To On</truepart>
-</set>
 <set name="Interact Bow Critical (1)">
 	<descriptible>
 		<nickname>Interact Bow Critical (1)</nickname>
@@ -461,16 +314,6 @@
 	<truepart>Interact Bow Critical Release (1)</truepart>
 	<truepart>Interact Bow Critical Release (2)</truepart>
 </set>
-<set name="Interact Bow Draw">
-	<descriptible>
-		<nickname>Interact Bow Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<truepart>Interact Bow</truepart>
-	<truepart>Interact Item Select</truepart>
-</set>
 <set name="Interact Bow Release with Flaming">
 	<descriptible>
 		<nickname>Interact Bow Release with Flaming</nickname>
@@ -492,16 +335,6 @@
 	<truepart>Interact Bow</truepart>
 	<truepart>Interact Right Action Continuous</truepart>
 </set>
-<set name="Interact Consumable Food Draw">
-	<descriptible>
-		<nickname>Interact Consumable Food Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<truepart>Interact Consumable Food</truepart>
-	<truepart>Interact Item Select</truepart>
-</set>
 <set name="Interact Critical Hit">
 	<descriptible>
 		<nickname>Interact Critical Hit</nickname>
@@ -516,25 +349,6 @@
 	<truepart>Interact Swing</truepart>
 	<truepart>Interact Critical Hit (4)</truepart>
 </set>
-<set name="Interact Hands">
-	<descriptible>
-		<nickname>Interact Hands</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<truepart>Interact Hands</truepart>
-</set>
-<set name="Interact Hands Select">
-	<descriptible>
-		<nickname>Interact Hands Select</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<truepart>Interact Hands</truepart>
-	<truepart>Interact Different Item Select</truepart>
-</set>
 <set name="Interact Item Select">
 	<descriptible>
 		<nickname>Interact Item Select</nickname>
@@ -542,16 +356,6 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<truepart>Interact Item Select</truepart>
-</set>
-<set name="Interact Sword Sharp Draw">
-	<descriptible>
-		<nickname>Interact Sword Sharp Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<truepart>Interact Sword Sharp</truepart>
 	<truepart>Interact Item Select</truepart>
 </set>
 <set name="Interact Sword Sharp Hit">
@@ -575,16 +379,6 @@
 	<truepart>Interact Sword Sharp</truepart>
 	<truepart>Interact Swing</truepart>
 </set>
-<set name="Interact Sword Soft Draw">
-	<descriptible>
-		<nickname>Interact Sword Soft Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<truepart>Interact Sword Soft</truepart>
-	<truepart>Interact Item Select</truepart>
-</set>
 <set name="Interact Sword Soft Hit">
 	<descriptible>
 		<nickname>Interact Sword Soft Hit</nickname>
@@ -606,16 +400,6 @@
 	<truepart>Interact Sword Soft</truepart>
 	<truepart>Interact Swing</truepart>
 </set>
-<set name="Interact Tool Sharp Draw">
-	<descriptible>
-		<nickname>Interact Tool Sharp Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<truepart>Interact Tool Sharp</truepart>
-	<truepart>Interact Item Select</truepart>
-</set>
 <set name="Interact Tool Sharp Swing to Miss">
 	<descriptible>
 		<nickname>Interact Tool Sharp Swing to Miss</nickname>
@@ -626,16 +410,6 @@
 	<falsepart>Interact Target</falsepart>
 	<truepart>Interact Tool Sharp</truepart>
 	<truepart>Interact Swing</truepart>
-</set>
-<set name="Interact Tool Soft Draw">
-	<descriptible>
-		<nickname>Interact Tool Soft Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<truepart>Interact Tool Soft</truepart>
-	<truepart>Interact Item Select</truepart>
 </set>
 <set name="Interact Tool Soft Swing to Miss">
 	<descriptible>
@@ -648,30 +422,6 @@
 	<truepart>Interact Tool Soft</truepart>
 	<truepart>Interact Swing</truepart>
 </set>
-<set name="Interact Utility Draw">
-	<descriptible>
-		<nickname>Interact Utility Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<truepart>Interact Utility</truepart>
-	<truepart>Interact Item Select</truepart>
-</set>
-<event name="Interact Bow Draw">
-	<descriptible>
-		<nickname>Interact Bow Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<path>newsound/matmos_interactions/bow_draw.ogg</path>
-	<volmin>1.0</volmin>
-	<volmax>1.0</volmax>
-	<pitchmin>0.95</pitchmin>
-	<pitchmax>1.1</pitchmax>
-	<metasound>0</metasound>
-</event>
 <event name="Interact Bow Flaming Fire">
 	<descriptible>
 		<nickname>Interact Bow Flaming Fire</nickname>
@@ -706,20 +456,6 @@
 	<pitchmax>1.1</pitchmax>
 	<metasound>0</metasound>
 </event>
-<event name="Interact Consumable Food Draw">
-	<descriptible>
-		<nickname>Interact Consumable Food Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<path>newsound/matmos_interactions/food_draw.ogg</path>
-	<volmin>1.0</volmin>
-	<volmax>1.0</volmax>
-	<pitchmin>0.9</pitchmin>
-	<pitchmax>1.1</pitchmax>
-	<metasound>0</metasound>
-</event>
 <event name="Interact Critical Emit">
 	<descriptible>
 		<nickname>Interact Critical Emit</nickname>
@@ -730,20 +466,6 @@
 	<path>newsound/matmos_interactions/crit_emit_a.ogg</path>
 	<path>newsound/matmos_interactions/crit_emit_b.ogg</path>
 	<path>newsound/matmos_interactions/crit_emit_c.ogg</path>
-	<volmin>1.0</volmin>
-	<volmax>1.0</volmax>
-	<pitchmin>0.9</pitchmin>
-	<pitchmax>1.1</pitchmax>
-	<metasound>0</metasound>
-</event>
-<event name="Interact Generic Draw">
-	<descriptible>
-		<nickname>Interact Generic Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<path>newsound/matmos_interactions/generic_draw.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>0.9</pitchmin>
@@ -762,20 +484,6 @@
 	<volmax>1.0</volmax>
 	<pitchmin>0.7</pitchmin>
 	<pitchmax>0.8</pitchmax>
-	<metasound>0</metasound>
-</event>
-<event name="Interact Sword Sharp Draw">
-	<descriptible>
-		<nickname>Interact Sword Sharp Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<path>newsound/matmos_interactions/sword_draw.ogg</path>
-	<volmin>1.0</volmin>
-	<volmax>1.0</volmax>
-	<pitchmin>0.95</pitchmin>
-	<pitchmax>1.05</pitchmax>
 	<metasound>0</metasound>
 </event>
 <event name="Interact Sword Sharp Hit">
@@ -817,20 +525,6 @@
 	<pitchmax>1.1</pitchmax>
 	<metasound>0</metasound>
 </event>
-<event name="Interact Sword Soft Draw">
-	<descriptible>
-		<nickname>Interact Sword Soft Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<path>newsound/matmos_interactions/blunt_draw.ogg</path>
-	<volmin>1.0</volmin>
-	<volmax>1.0</volmax>
-	<pitchmin>0.95</pitchmin>
-	<pitchmax>1.05</pitchmax>
-	<metasound>0</metasound>
-</event>
 <event name="Interact Sword Soft Hit">
 	<descriptible>
 		<nickname>Interact Sword Soft Hit</nickname>
@@ -867,20 +561,6 @@
 	<pitchmax>1.8</pitchmax>
 	<metasound>0</metasound>
 </event>
-<event name="Interact Tool Sharp Draw">
-	<descriptible>
-		<nickname>Interact Tool Sharp Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<path>newsound/matmos_interactions/tool_draw.ogg</path>
-	<volmin>1.0</volmin>
-	<volmax>1.0</volmax>
-	<pitchmin>0.95</pitchmin>
-	<pitchmax>1.05</pitchmax>
-	<metasound>0</metasound>
-</event>
 <event name="Interact Tool Sharp Swing">
 	<descriptible>
 		<nickname>Interact Tool Sharp Swing</nickname>
@@ -893,20 +573,6 @@
 	<volmax>1.0</volmax>
 	<pitchmin>0.95</pitchmin>
 	<pitchmax>1.15</pitchmax>
-	<metasound>0</metasound>
-</event>
-<event name="Interact Tool Soft Draw">
-	<descriptible>
-		<nickname>Interact Tool Soft Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<path>newsound/matmos_interactions/blunt_draw.ogg</path>
-	<volmin>1.0</volmin>
-	<volmax>1.0</volmax>
-	<pitchmin>0.95</pitchmin>
-	<pitchmax>1.05</pitchmax>
 	<metasound>0</metasound>
 </event>
 <event name="Interact Tool Soft Swing">
@@ -927,71 +593,6 @@
 	<pitchmax>1.8</pitchmax>
 	<metasound>0</metasound>
 </event>
-<event name="Interact Utility Draw">
-	<descriptible>
-		<nickname>Interact Utility Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<path>newsound/matmos_interactions/utility_draw.ogg</path>
-	<volmin>1.0</volmin>
-	<volmax>1.0</volmax>
-	<pitchmin>0.95</pitchmin>
-	<pitchmax>1.05</pitchmax>
-	<metasound>0</metasound>
-</event>
-<machine name="Interact Block Stance To Off">
-	<descriptible>
-		<nickname>Interact Block Stance To Off</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<allow>Interact Block Stance To Off</allow>
-	<eventtimed>
-		<eventname>Interact Generic Holster</eventname>
-		<delaymin>10.0</delaymin>
-		<delaymax>10.0</delaymax>
-		<delaystart>-1.0</delaystart>
-		<volmod>1.0</volmod>
-		<pitchmod>1.0</pitchmod>
-	</eventtimed>
-</machine>
-<machine name="Interact Block Stance To On">
-	<descriptible>
-		<nickname>Interact Block Stance To On</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<allow>Interact Block Stance To On</allow>
-	<eventtimed>
-		<eventname>Interact Generic Draw</eventname>
-		<delaymin>10.0</delaymin>
-		<delaymax>10.0</delaymax>
-		<delaystart>-1.0</delaystart>
-		<volmod>1.0</volmod>
-		<pitchmod>1.0</pitchmod>
-	</eventtimed>
-</machine>
-<machine name="Interact Bow Draw">
-	<descriptible>
-		<nickname>Interact Bow Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<allow>Interact Bow Draw</allow>
-	<eventtimed>
-		<eventname>Interact Bow Draw</eventname>
-		<delaymin>10.0</delaymin>
-		<delaymax>10.0</delaymax>
-		<delaystart>-1.0</delaystart>
-		<volmod>1.0</volmod>
-		<pitchmod>1.0</pitchmod>
-	</eventtimed>
-</machine>
 <machine name="Interact Bow Flaming Fire">
 	<descriptible>
 		<nickname>Interact Bow Flaming Fire</nickname>
@@ -1019,25 +620,8 @@
 	<allow>Interact Bow Stretching</allow>
 	<eventtimed>
 		<eventname>Interact Bow Stretch</eventname>
-		<delaymin>10.0</delaymin>
-		<delaymax>10.0</delaymax>
-		<delaystart>-1.0</delaystart>
-		<volmod>1.0</volmod>
-		<pitchmod>1.0</pitchmod>
-	</eventtimed>
-</machine>
-<machine name="Interact Consumable Food Draw">
-	<descriptible>
-		<nickname>Interact Consumable Food Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<allow>Interact Consumable Food Draw</allow>
-	<eventtimed>
-		<eventname>Interact Consumable Food Draw</eventname>
-		<delaymin>10.0</delaymin>
-		<delaymax>10.0</delaymax>
+		<delaymin>10000.0</delaymin>
+		<delaymax>10000.0</delaymax>
 		<delaystart>-1.0</delaystart>
 		<volmod>1.0</volmod>
 		<pitchmod>1.0</pitchmod>
@@ -1055,65 +639,6 @@
 	<allow>Interact Bow Critical (2)</allow>
 	<eventtimed>
 		<eventname>Interact Critical Emit</eventname>
-		<delaymin>10.0</delaymin>
-		<delaymax>10.0</delaymax>
-		<delaystart>-1.0</delaystart>
-		<volmod>1.0</volmod>
-		<pitchmod>1.0</pitchmod>
-	</eventtimed>
-</machine>
-<machine name="Interact Generic Draw">
-	<descriptible>
-		<nickname>Interact Generic Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<allow>Interact Item Select</allow>
-	<restrict>Interact Hands</restrict>
-	<restrict>Interact Sword Sharp Draw</restrict>
-	<restrict>Interact Sword Soft Draw</restrict>
-	<restrict>Interact Tool Sharp Draw</restrict>
-	<restrict>Interact Bow Draw</restrict>
-	<restrict>Interact Consumable Food Draw</restrict>
-	<restrict>Interact Tool Soft Draw</restrict>
-	<restrict>Interact Utility Draw</restrict>
-	<eventtimed>
-		<eventname>Interact Generic Draw</eventname>
-		<delaymin>10.0</delaymin>
-		<delaymax>10.0</delaymax>
-		<delaystart>-1.0</delaystart>
-		<volmod>1.0</volmod>
-		<pitchmod>1.0</pitchmod>
-	</eventtimed>
-</machine>
-<machine name="Interact Generic Hands Select">
-	<descriptible>
-		<nickname>Interact Generic Hands Select</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<allow>Interact Hands Select</allow>
-	<eventtimed>
-		<eventname>Interact Generic Holster</eventname>
-		<delaymin>10.0</delaymin>
-		<delaymax>10.0</delaymax>
-		<delaystart>-1.0</delaystart>
-		<volmod>0.5</volmod>
-		<pitchmod>1.0</pitchmod>
-	</eventtimed>
-</machine>
-<machine name="Interact Sword Sharp Draw">
-	<descriptible>
-		<nickname>Interact Sword Sharp Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<allow>Interact Sword Sharp Draw</allow>
-	<eventtimed>
-		<eventname>Interact Sword Sharp Draw</eventname>
 		<delaymin>10.0</delaymin>
 		<delaymax>10.0</delaymax>
 		<delaystart>-1.0</delaystart>
@@ -1155,23 +680,6 @@
 		<pitchmod>1.0</pitchmod>
 	</eventtimed>
 </machine>
-<machine name="Interact Sword Soft Draw">
-	<descriptible>
-		<nickname>Interact Sword Soft Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<allow>Interact Sword Soft Draw</allow>
-	<eventtimed>
-		<eventname>Interact Sword Soft Draw</eventname>
-		<delaymin>10.0</delaymin>
-		<delaymax>10.0</delaymax>
-		<delaystart>-1.0</delaystart>
-		<volmod>1.0</volmod>
-		<pitchmod>1.0</pitchmod>
-	</eventtimed>
-</machine>
 <machine name="Interact Sword Soft Hit">
 	<descriptible>
 		<nickname>Interact Sword Soft Hit</nickname>
@@ -1206,23 +714,6 @@
 		<pitchmod>1.0</pitchmod>
 	</eventtimed>
 </machine>
-<machine name="Interact Tool Sharp Draw">
-	<descriptible>
-		<nickname>Interact Tool Sharp Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<allow>Interact Tool Sharp Draw</allow>
-	<eventtimed>
-		<eventname>Interact Tool Sharp Draw</eventname>
-		<delaymin>10.0</delaymin>
-		<delaymax>10.0</delaymax>
-		<delaystart>-1.0</delaystart>
-		<volmod>1.0</volmod>
-		<pitchmod>1.0</pitchmod>
-	</eventtimed>
-</machine>
 <machine name="Interact Tool Sharp Swing to Miss">
 	<descriptible>
 		<nickname>Interact Tool Sharp Swing to Miss</nickname>
@@ -1240,23 +731,6 @@
 		<pitchmod>1.0</pitchmod>
 	</eventtimed>
 </machine>
-<machine name="Interact Tool Soft Draw">
-	<descriptible>
-		<nickname>Interact Tool Soft Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<allow>Interact Tool Soft Draw</allow>
-	<eventtimed>
-		<eventname>Interact Tool Soft Draw</eventname>
-		<delaymin>10.0</delaymin>
-		<delaymax>10.0</delaymax>
-		<delaystart>-1.0</delaystart>
-		<volmod>1.0</volmod>
-		<pitchmod>1.0</pitchmod>
-	</eventtimed>
-</machine>
 <machine name="Interact Tool Soft Swing to Miss">
 	<descriptible>
 		<nickname>Interact Tool Soft Swing to Miss</nickname>
@@ -1267,23 +741,6 @@
 	<allow>Interact Tool Soft Swing to Miss</allow>
 	<eventtimed>
 		<eventname>Interact Tool Soft Swing</eventname>
-		<delaymin>10.0</delaymin>
-		<delaymax>10.0</delaymax>
-		<delaystart>-1.0</delaystart>
-		<volmod>1.0</volmod>
-		<pitchmod>1.0</pitchmod>
-	</eventtimed>
-</machine>
-<machine name="Interact Utility Draw">
-	<descriptible>
-		<nickname>Interact Utility Draw</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<allow>Interact Utility Draw</allow>
-	<eventtimed>
-		<eventname>Interact Utility Draw</eventname>
 		<delaymin>10.0</delaymin>
 		<delaymax>10.0</delaymax>
 		<delaystart>-1.0</delaystart>
