@@ -94,6 +94,8 @@
 		<data id="79">Server Data: Computed actual IP address hashcode</data>
 		<data id="80">Server Data: Computed actual port</data>
 		
+		<data id="86">BlockID under the cursor</data>
+		
 		<data id="100">Protection</data>
 		<data id="101">Fire  Protection</data>
 		<data id="102">Feather Falling</data>

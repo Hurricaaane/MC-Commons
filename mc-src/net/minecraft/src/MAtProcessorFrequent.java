@@ -163,6 +163,13 @@ public class MAtProcessorFrequent extends MAtProcessorModel
 		setValue(73, rmz);
 		setValue(74, player.ridingEntity != null ? (int) Math.floor(Math.sqrt(rmx * rmx + rmz * rmz)) : 0);
 		
+		// 75-85 relaxed server
+		
+		setValue(
+			86,
+			mc.objectMouseOver == null ? -1 : mc.objectMouseOver.typeOfHit == EnumMovingObjectType.TILE ? w.getBlockId(
+				mc.objectMouseOver.blockX, mc.objectMouseOver.blockY, mc.objectMouseOver.blockZ) : -1);
+		
 		//
 		
 		for (int i = 0; i < 64; i++)
