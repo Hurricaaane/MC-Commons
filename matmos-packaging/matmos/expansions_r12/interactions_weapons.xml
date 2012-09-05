@@ -1,5 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <contents>
+<list name="Interactibles">
+	<descriptible>
+		<nickname>Interactibles</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<constant>23</constant>
+	<constant>26</constant>
+	<constant>30</constant>
+	<constant>54</constant>
+	<constant>58</constant>
+	<constant>61</constant>
+	<constant>62</constant>
+	<constant>64</constant>
+	<constant>69</constant>
+	<constant>71</constant>
+	<constant>77</constant>
+	<constant>84</constant>
+	<constant>92</constant>
+	<constant>93</constant>
+	<constant>94</constant>
+	<constant>95</constant>
+	<constant>96</constant>
+	<constant>116</constant>
+	<constant>117</constant>
+	<constant>118</constant>
+	<constant>120</constant>
+	<constant>122</constant>
+	<constant>130</constant>
+	<constant>131</constant>
+	<constant>140</constant>
+	<constant>143</constant>
+</list>
 <list name="Sword Sharp">
 	<descriptible>
 		<nickname>Sword Sharp</nickname>
@@ -292,6 +326,19 @@
 	<constant>0</constant>
 	<list>Tool Soft</list>
 </condition>
+<condition name="Is looking at an interactible">
+	<descriptible>
+		<nickname>Is looking at an interactible</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<sheet>Instants</sheet>
+	<key>86</key>
+	<symbol>in</symbol>
+	<constant>0</constant>
+	<list>Interactibles</list>
+</condition>
 <set name="Interact Bow Critical (1)">
 	<descriptible>
 		<nickname>Interact Bow Critical (1)</nickname>
@@ -349,15 +396,6 @@
 	<truepart>Interact Swing</truepart>
 	<truepart>Interact Critical Hit (4)</truepart>
 </set>
-<set name="Interact Item Select">
-	<descriptible>
-		<nickname>Interact Item Select</nickname>
-		<description></description>
-		<icon></icon>
-		<meta></meta>
-	</descriptible>
-	<truepart>Interact Item Select</truepart>
-</set>
 <set name="Interact Sword Sharp Hit">
 	<descriptible>
 		<nickname>Interact Sword Sharp Hit</nickname>
@@ -367,6 +405,7 @@
 	</descriptible>
 	<truepart>Interact Sword Sharp</truepart>
 	<truepart>Interact Target</truepart>
+	<falsepart>Is looking at an interactible</falsepart>
 	<truepart>Interact Hit</truepart>
 </set>
 <set name="Interact Sword Sharp Swing">
@@ -377,6 +416,7 @@
 		<meta></meta>
 	</descriptible>
 	<truepart>Interact Sword Sharp</truepart>
+	<falsepart>Is looking at an interactible</falsepart>
 	<truepart>Interact Swing</truepart>
 </set>
 <set name="Interact Sword Soft Hit">
@@ -388,6 +428,7 @@
 	</descriptible>
 	<truepart>Interact Target</truepart>
 	<truepart>Interact Sword Soft</truepart>
+	<falsepart>Is looking at an interactible</falsepart>
 	<truepart>Interact Hit</truepart>
 </set>
 <set name="Interact Sword Soft Swing">
@@ -398,6 +439,7 @@
 		<meta></meta>
 	</descriptible>
 	<truepart>Interact Sword Soft</truepart>
+	<falsepart>Is looking at an interactible</falsepart>
 	<truepart>Interact Swing</truepart>
 </set>
 <set name="Interact Tool Sharp Swing to Miss">
