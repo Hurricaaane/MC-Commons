@@ -43,11 +43,11 @@ public class MAtmosCondition extends MAtmosSwitchable
 		//setSymbol(symbolIn);
 		//constant = constantIn;
 		
-		sheet = "";
-		key = 0;
-		dynamicKey = "";
-		conditionType = 0;
-		list = "";
+		this.sheet = "";
+		this.key = 0;
+		this.dynamicKey = "";
+		this.conditionType = 0;
+		this.list = "";
 		
 	}
 	
@@ -67,54 +67,63 @@ public class MAtmosCondition extends MAtmosSwitchable
 	
 	public void setSheet(String sheetIn)
 	{
-		sheet = sheetIn;
+		this.sheet = sheetIn;
 		flagNeedsTesting();
 		
 	}
 	
 	public void setKey(int keyIn)
 	{
-		key = keyIn;
+		this.key = keyIn;
 		flagNeedsTesting();
 		
 	}
 	
 	public void setDynamic(String dynamicKeyIn)
 	{
-		key = -1;
-		dynamicKey = dynamicKeyIn;
-		sheet = "";
+		this.key = -1;
+		this.dynamicKey = dynamicKeyIn;
+		this.sheet = "";
 		flagNeedsTesting();
 		
 	}
 	
 	public void setSymbol(String symbol)
 	{
-		conditionType = -1;
+		this.conditionType = -1;
 		
 		if (symbol.equals("!="))
-			conditionType = 0;
-		
+		{
+			this.conditionType = 0;
+		}
 		else if (symbol.equals("=="))
-			conditionType = 1;
-		
+		{
+			this.conditionType = 1;
+		}
 		else if (symbol.equals(">"))
-			conditionType = 2;
-		
+		{
+			this.conditionType = 2;
+		}
 		else if (symbol.equals(">="))
-			conditionType = 3;
-		
+		{
+			this.conditionType = 3;
+		}
 		else if (symbol.equals("<"))
-			conditionType = 4;
-		
+		{
+			this.conditionType = 4;
+		}
 		else if (symbol.equals("<="))
-			conditionType = 5;
-		
+		{
+			this.conditionType = 5;
+		}
 		else if (symbol.equals("in"))
-			conditionType = 6;
-		
+		{
+			this.conditionType = 6;
+		}
 		else if (symbol.equals("!in"))
-			conditionType = 7;
+		{
+			this.conditionType = 7;
+		}
 		
 		flagNeedsTesting();
 		
@@ -122,72 +131,72 @@ public class MAtmosCondition extends MAtmosSwitchable
 	
 	public void setConstant(int constantIn)
 	{
-		constant = constantIn;
+		this.constant = constantIn;
 		flagNeedsTesting(); // Not required.
 		
 	}
 	
 	public void setList(String listIn)
 	{
-		list = listIn;
+		this.list = listIn;
 		flagNeedsTesting(); // Required.
 		
 	}
 	
 	public boolean isDynamic()
 	{
-		return key == -1;
+		return this.key == -1;
 		
 	}
 	
 	public String getSheet()
 	{
-		return sheet;
+		return this.sheet;
 		
 	}
 	
 	public int getKey()
 	{
-		return key;
+		return this.key;
 		
 	}
 	
 	public String getDynamic()
 	{
-		return dynamicKey;
+		return this.dynamicKey;
 		
 	}
 	
 	public String getList()
 	{
-		return list;
+		return this.list;
 		
 	}
 	
 	public int getConditionType()
 	{
-		return conditionType;
+		return this.conditionType;
 		
 	}
 	
 	public int getConstant()
 	{
-		return constant;
+		return this.constant;
 		
 	}
 	
 	@Override
 	protected boolean testIfValid()
 	{
-		if (conditionType == -1)
+		if (this.conditionType == -1)
 			return false;
 		
 		boolean valid = false;
 		if (!isDynamic())
 		{
-			if (knowledge.data.sheets.containsKey(sheet))
+			if (this.knowledge.data.sheets.containsKey(this.sheet))
 			{
-				if ((key >= 0) && (key < knowledge.data.sheets.get(sheet).size()))
+				if (this.key >= 0 && this.key < this.knowledge.data.sheets.get(this.sheet).size())
 				{
 					valid = true;
 					
@@ -198,16 +207,16 @@ public class MAtmosCondition extends MAtmosSwitchable
 		}
 		else
 		{
-			if (knowledge.dynamics.containsKey(dynamicKey))
+			if (this.knowledge.dynamics.containsKey(this.dynamicKey))
 			{
 				valid = true;
 				
 			}
 			
 		}
-		if (valid && ((conditionType == 6) || (conditionType == 7)))
+		if (valid && (this.conditionType == 6 || this.conditionType == 7))
 		{
-			valid = knowledge.lists.containsKey(list);
+			valid = this.knowledge.lists.containsKey(this.list);
 			
 		}
 		
@@ -220,20 +229,18 @@ public class MAtmosCondition extends MAtmosSwitchable
 		if (!isValid())
 			return false;
 		
-		boolean pre = isTrueEvaluated;
-		isTrueEvaluated = testIfTrue();
+		boolean pre = this.isTrueEvaluated;
+		this.isTrueEvaluated = testIfTrue();
 		
-		if (pre != isTrueEvaluated)
+		if (pre != this.isTrueEvaluated)
 		{
 			//MAtmosEngine.logger; //TODO Logger
-			MAtmosLogger.LOGGER.finer(new StringBuilder("C:").append(
-					nickname)
-					.append(isTrueEvaluated ? " now On." : " now Off.")
-					.toString());
+			MAtmosLogger.LOGGER.finer(new StringBuilder("C:")
+				.append(this.nickname).append(this.isTrueEvaluated ? " now On." : " now Off.").toString());
 			
 		}
 		
-		return isTrueEvaluated;
+		return this.isTrueEvaluated;
 		
 	}
 	
@@ -246,7 +253,7 @@ public class MAtmosCondition extends MAtmosSwitchable
 	
 	public boolean isTrue()
 	{
-		return isTrueEvaluated;
+		return this.isTrueEvaluated;
 		
 	}
 	
@@ -257,38 +264,41 @@ public class MAtmosCondition extends MAtmosSwitchable
 		
 		int gotValue;
 		
-		if (!isDynamic()) //Is Not Dynamic
-			gotValue = knowledge.data.sheets.get(sheet).get(key);
+		if (!isDynamic())
+		{
+			gotValue = this.knowledge.data.sheets.get(this.sheet).get(this.key);
+		}
+		else
+		{
+			gotValue = this.knowledge.dynamics.get(this.dynamicKey).value;
+		}
+		
+		if (this.conditionType == 0)
+			return gotValue != this.constant;
+		
+		else if (this.conditionType == 1)
+			return gotValue == this.constant;
+		
+		else if (this.conditionType == 2)
+			return gotValue > this.constant;
+		
+		else if (this.conditionType == 3)
+			return gotValue >= this.constant;
+		
+		else if (this.conditionType == 4)
+			return gotValue < this.constant;
+		
+		else if (this.conditionType == 5)
+			return gotValue <= this.constant;
+		
+		else if (this.conditionType == 6)
+			return this.knowledge.lists.get(this.list).contains(gotValue);
+		
+		else if (this.conditionType == 7)
+			return !this.knowledge.lists.get(this.list).contains(gotValue);
 		
 		else
-			gotValue = knowledge.dynamics.get(dynamicKey).value;
-		
-		if (conditionType == 0)
-			return gotValue != constant;
-		
-		else if (conditionType == 1)
-			return gotValue == constant;
-		
-		else if (conditionType == 2)
-			return gotValue > constant;
-			
-			else if (conditionType == 3)
-				return gotValue >= constant;
-				
-				else if (conditionType == 4)
-					return gotValue < constant;
-		
-				else if (conditionType == 5)
-					return gotValue <= constant;
-		
-				else if (conditionType == 6)
-					return knowledge.lists.get(list).contains(gotValue);
-		
-				else if (conditionType == 7)
-					return !knowledge.lists.get(list).contains(gotValue);
-		
-				else
-					return false;
+			return false;
 		
 	}
 	
@@ -299,46 +309,56 @@ public class MAtmosCondition extends MAtmosSwitchable
 		
 		if (!isDynamic())
 		{
-			createNode(eventWriter, "sheet", sheet);
-			createNode(eventWriter, "key", "" + key);
+			createNode(eventWriter, "sheet", this.sheet);
+			createNode(eventWriter, "key", "" + this.key);
 			
 		}
 		else
 		{
-			createNode(eventWriter, "key", "" + key);
-			createNode(eventWriter, "dynamickey", dynamicKey);
+			createNode(eventWriter, "key", "" + this.key);
+			createNode(eventWriter, "dynamickey", this.dynamicKey);
 			
 		}
 		
-		if (conditionType == 0)
+		if (this.conditionType == 0)
+		{
 			createNode(eventWriter, "symbol", "!=");
-		
-		else if (conditionType == 1)
+		}
+		else if (this.conditionType == 1)
+		{
 			createNode(eventWriter, "symbol", "==");
-		
-		else if (conditionType == 2)
+		}
+		else if (this.conditionType == 2)
+		{
 			createNode(eventWriter, "symbol", ">");
-		
-		else if (conditionType == 3)
+		}
+		else if (this.conditionType == 3)
+		{
 			createNode(eventWriter, "symbol", ">=");
-		
-		else if (conditionType == 4)
+		}
+		else if (this.conditionType == 4)
+		{
 			createNode(eventWriter, "symbol", "<");
-		
-		else if (conditionType == 5)
+		}
+		else if (this.conditionType == 5)
+		{
 			createNode(eventWriter, "symbol", "<=");
-		
-		else if (conditionType == 6)
+		}
+		else if (this.conditionType == 6)
+		{
 			createNode(eventWriter, "symbol", "in");
-		
-		else if (conditionType == 7)
+		}
+		else if (this.conditionType == 7)
+		{
 			createNode(eventWriter, "symbol", "!in");
-		
+		}
 		else
+		{
 			createNode(eventWriter, "symbol", "><"); // TODO Exceptions?
+		}
 		
-		createNode(eventWriter, "constant", "" + constant);
-		createNode(eventWriter, "list", "" + list);
+		createNode(eventWriter, "constant", "" + this.constant);
+		createNode(eventWriter, "list", "" + this.list);
 		
 		return "";
 	}
@@ -348,8 +368,10 @@ public class MAtmosCondition extends MAtmosSwitchable
 		if (!isDynamic())
 			return;
 		
-		if (dynamicKey.equals(name))
-			dynamicKey = newName;
+		if (this.dynamicKey.equals(name))
+		{
+			this.dynamicKey = newName;
+		}
 		
 		flagNeedsTesting();
 		
@@ -357,8 +379,10 @@ public class MAtmosCondition extends MAtmosSwitchable
 	
 	public void replaceListName(String name, String newName)
 	{
-		if (list.equals(name))
-			list = newName;
+		if (this.list.equals(name))
+		{
+			this.list = newName;
+		}
 		
 		flagNeedsTesting();
 		

@@ -47,111 +47,120 @@ public class MAtmosStream extends MAtmosDescriptible
 	
 	MAtmosStream(MAtmosMachine machineIn)
 	{
-		path = "";
+		this.path = "";
 		
-		machine = machineIn;
+		this.machine = machineIn;
 		
-		volume = 1F;
-		pitch = 1F;
-		fadeInTime = 0F;
-		fadeOutTime = 0F;
-		delayBeforeFadeIn = 0F;
-		delayBeforeFadeOut = 0F;
-		isLooping = true;
-		isUsingPause = false;
+		this.volume = 1F;
+		this.pitch = 1F;
+		this.fadeInTime = 0F;
+		this.fadeOutTime = 0F;
+		this.delayBeforeFadeIn = 0F;
+		this.delayBeforeFadeOut = 0F;
+		this.isLooping = true;
+		this.isUsingPause = false;
 		
-		isTurnedOn = false;
-		isPlaying = false;
+		this.isTurnedOn = false;
+		this.isPlaying = false;
 		
-		firstCall = true;
+		this.firstCall = true;
 		
-		token = -1;
+		this.token = -1;
 		
-		startTime = 0;
-		stopTime = 0;
+		this.startTime = 0;
+		this.stopTime = 0;
 		
 	}
+	
 	void setMachine(MAtmosMachine machineIn)
 	{
-		machine = machineIn;
+		this.machine = machineIn;
 		
 	}
 	
 	public void signalPlayable()
 	{
-		if (isTurnedOn)
+		if (this.isTurnedOn)
 			return;
 		
-		startTime = machine.knowledge.getTimeMillis() + (long) (delayBeforeFadeIn * 1000);
-		isTurnedOn = true;
+		this.startTime = this.machine.knowledge.getTimeMillis() + (long) (this.delayBeforeFadeIn * 1000);
+		this.isTurnedOn = true;
 		
 	}
+	
 	public void signalStoppable()
 	{
-		if (!isTurnedOn)
+		if (!this.isTurnedOn)
 			return;
 		
-		stopTime = machine.knowledge.getTimeMillis() + (long) (delayBeforeFadeOut * 1000);
-		isTurnedOn = false;
+		this.stopTime = this.machine.knowledge.getTimeMillis() + (long) (this.delayBeforeFadeOut * 1000);
+		this.isTurnedOn = false;
 		
 	}
 	
 	public void clearToken()
 	{
-		if (firstCall) return;
+		if (this.firstCall)
+			return;
 		
-		machine.knowledge.soundManager.eraseStreamingToken(token);
-		isPlaying = false;
+		this.machine.knowledge.soundManager.eraseStreamingToken(this.token);
+		this.isPlaying = false;
 		
-		token = -1;
-		firstCall = true;
+		this.token = -1;
+		this.firstCall = true;
 		
 	}
 	
 	public void routine()
 	{
-		if (!isLooping && isUsingPause)
+		if (!this.isLooping && this.isUsingPause)
 			return; // FIXME: A non-looping sound cannot use the pause scheme.
-		
-		if (isTurnedOn && !isPlaying)
+			
+		if (this.isTurnedOn && !this.isPlaying)
 		{
-			if (machine.knowledge.getTimeMillis() > startTime)
+			if (this.machine.knowledge.getTimeMillis() > this.startTime)
 			{
-				isPlaying = true;
+				this.isPlaying = true;
 				
-				if (firstCall)
+				if (this.firstCall)
 				{
-					token = machine.knowledge.soundManager.getNewStreamingToken();
+					this.token = this.machine.knowledge.soundManager.getNewStreamingToken();
 					
 					// FIXME: Blatent crash prevention: Find new implementation
-					if (machine.knowledge.soundManager.setupStreamingToken(token, path, volume, pitch))
+					if (this.machine.knowledge.soundManager.setupStreamingToken(
+						this.token, this.path, this.volume, this.pitch))
 					{
-						firstCall = false;
-						machine.knowledge.soundManager.startStreaming(token, fadeInTime, isLooping ? 0 : 1);
+						this.firstCall = false;
+						this.machine.knowledge.soundManager.startStreaming(this.token, this.fadeInTime, this.isLooping
+							? 0 : 1);
 						
 					}
 					
 				}
 				else
 				{
-					machine.knowledge.soundManager.startStreaming(token, fadeInTime, isLooping ? 0 : 1);
+					this.machine.knowledge.soundManager.startStreaming(this.token, this.fadeInTime, this.isLooping
+						? 0 : 1);
 					
 				}
 				
 			}
 			
 		}
-		else if (!isTurnedOn && isPlaying)
+		else if (!this.isTurnedOn && this.isPlaying)
 		{
-			if (machine.knowledge.getTimeMillis() > stopTime)
+			if (this.machine.knowledge.getTimeMillis() > this.stopTime)
 			{
-				isPlaying = false;
+				this.isPlaying = false;
 				
-				if (!isUsingPause)
-					machine.knowledge.soundManager.stopStreaming(token, fadeOutTime);
-				
+				if (!this.isUsingPause)
+				{
+					this.machine.knowledge.soundManager.stopStreaming(this.token, this.fadeOutTime);
+				}
 				else
-					machine.knowledge.soundManager.pauseStreaming(token, fadeOutTime);
+				{
+					this.machine.knowledge.soundManager.pauseStreaming(this.token, this.fadeOutTime);
+				}
 				
 			}
 			
@@ -159,10 +168,9 @@ public class MAtmosStream extends MAtmosDescriptible
 		
 	}
 	
-	
 	@Override
-	public String serialize(XMLEventWriter eventWriter)
-	throws XMLStreamException {
+	public String serialize(XMLEventWriter eventWriter) throws XMLStreamException
+	{
 		XMLEventFactory eventFactory = XMLEventFactory.newInstance();
 		XMLEvent ret = eventFactory.createDTD("\n");
 		XMLEvent tab = eventFactory.createDTD("\t");
@@ -170,22 +178,20 @@ public class MAtmosStream extends MAtmosDescriptible
 		eventWriter.add(tab);
 		eventWriter.add(eventFactory.createStartElement("", "", "stream"));
 		eventWriter.add(ret);
-		createNode(eventWriter, "path", path, 2);
-		createNode(eventWriter, "volume", "" + volume, 2);
-		createNode(eventWriter, "pitch", "" + pitch, 2);
-		createNode(eventWriter, "fadeintime", "" + fadeInTime, 2);
-		createNode(eventWriter, "fadeouttime", "" + fadeOutTime, 2);
-		createNode(eventWriter, "delaybeforefadein", "" + delayBeforeFadeIn, 2);
-		createNode(eventWriter, "delaybeforefadeout", "" + delayBeforeFadeOut, 2);
-		createNode(eventWriter, "islooping", isLooping ? "1" : "0", 2);
-		createNode(eventWriter, "isusingpause", isUsingPause ? "1" : "0", 2);
+		createNode(eventWriter, "path", this.path, 2);
+		createNode(eventWriter, "volume", "" + this.volume, 2);
+		createNode(eventWriter, "pitch", "" + this.pitch, 2);
+		createNode(eventWriter, "fadeintime", "" + this.fadeInTime, 2);
+		createNode(eventWriter, "fadeouttime", "" + this.fadeOutTime, 2);
+		createNode(eventWriter, "delaybeforefadein", "" + this.delayBeforeFadeIn, 2);
+		createNode(eventWriter, "delaybeforefadeout", "" + this.delayBeforeFadeOut, 2);
+		createNode(eventWriter, "islooping", this.isLooping ? "1" : "0", 2);
+		createNode(eventWriter, "isusingpause", this.isUsingPause ? "1" : "0", 2);
 		eventWriter.add(tab);
 		eventWriter.add(eventFactory.createEndElement("", "", "stream"));
 		eventWriter.add(ret);
 		
 		return "";
 	}
-	
-	
 	
 }

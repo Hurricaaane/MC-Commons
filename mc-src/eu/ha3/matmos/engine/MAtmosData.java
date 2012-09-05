@@ -36,33 +36,34 @@ public class MAtmosData
 	
 	public MAtmosData()
 	{
-		sheets = new HashMap<String, ArrayList<Integer>>();
-		updateVersion = 0;
+		this.sheets = new HashMap<String, ArrayList<Integer>>();
+		this.updateVersion = 0;
 		
 	}
+	
 	public void flagUpdate()
 	{
-		updateVersion = updateVersion + 1;
+		this.updateVersion = this.updateVersion + 1;
 		
 	}
 	
 	public String createXML() throws XMLStreamException
 	{
-		StreamResult serialized = new StreamResult(new StringWriter()); 
+		StreamResult serialized = new StreamResult(new StringWriter());
 		
 		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 		XMLEventFactory eventFactory = XMLEventFactory.newInstance();
 		
 		XMLEventWriter eventWriter = outputFactory.createXMLEventWriter(serialized);
-
+		
 		XMLEvent ret = eventFactory.createDTD("\n");
 		XMLEvent tab = eventFactory.createDTD("\t");
 		XMLEvent end = eventFactory.createDTD("\n");
-
+		
 		eventWriter.add(eventFactory.createStartDocument());
 		eventWriter.add(ret);
 		eventWriter.add(eventFactory.createStartElement("", "", "contents"));
-		for (Iterator<Entry<String, ArrayList<Integer>>> iter = sheets.entrySet().iterator(); iter.hasNext();)
+		for (Iterator<Entry<String, ArrayList<Integer>>> iter = this.sheets.entrySet().iterator(); iter.hasNext();)
 		{
 			Entry<String, ArrayList<Integer>> entry = iter.next();
 			
@@ -71,7 +72,7 @@ public class MAtmosData
 			eventWriter.add(eventFactory.createAttribute("name", entry.getKey()));
 			eventWriter.add(eventFactory.createAttribute("size", entry.getValue().size() + ""));
 			eventWriter.add(ret);
-
+			
 			int i = 0;
 			for (Iterator<Integer> idter = entry.getValue().iterator(); idter.hasNext();)
 			{
@@ -88,14 +89,13 @@ public class MAtmosData
 			
 			eventWriter.add(eventFactory.createEndElement("", "", "sheet"));
 		}
-
+		
 		eventWriter.add(ret);
 		eventWriter.add(eventFactory.createEndElement("", "", "contents"));
 		
 		eventWriter.add(end);
 		eventWriter.add(eventFactory.createEndDocument());
 		eventWriter.close();
-		
 		
 		return serialized.getWriter().toString();
 	}

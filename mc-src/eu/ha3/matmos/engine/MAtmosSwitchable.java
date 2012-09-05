@@ -24,23 +24,23 @@ public abstract class MAtmosSwitchable extends MAtmosDescriptible
 	
 	MAtmosSwitchable(MAtmosKnowledge knowledgeIn)
 	{
-		knowledge = knowledgeIn;
-		isValid = false;
-		needsTesting = true;
+		this.knowledge = knowledgeIn;
+		this.isValid = false;
+		this.needsTesting = true;
 		
 	}
 	
 	public abstract boolean isActive();
 	
 	/**
-	 * Flags the fact that this Switchable might
-	 * start/stop working due to an update on the internal data.
+	 * Flags the fact that this Switchable might start/stop working due to an
+	 * update on the internal data.
 	 * 
 	 */
 	public void flagNeedsTesting()
 	{
 		//System.out.println("TESTING");
-		needsTesting = true;
+		this.needsTesting = true;
 	}
 	
 	/**
@@ -48,41 +48,41 @@ public abstract class MAtmosSwitchable extends MAtmosDescriptible
 	 */
 	public void setKnowledge(MAtmosKnowledge knowledgeIn)
 	{
-		knowledge = knowledgeIn;
+		this.knowledge = knowledgeIn;
 		flagNeedsTesting();
 		
 	}
-
+	
 	/**
-	 * Tests if this Switchable is ought to work. A Switchable that
-	 * references existing elements that are not valid doesn't mean
-	 * this Switchable won't be valid. An non-existing reference usually
-	 * causes the Switchable to stop being valid.
+	 * Tests if this Switchable is ought to work. A Switchable that references
+	 * existing elements that are not valid doesn't mean this Switchable won't
+	 * be valid. An non-existing reference usually causes the Switchable to stop
+	 * being valid.
 	 */
 	public boolean isValid()
 	{
 		validateUsability();
-		return isValid;
+		return this.isValid;
 		
 	}
 	
 	/**
-	 * Rests if tjis Switchable is actually useable.
-	 * Called by isValid. Don't call this.
+	 * Rests if tjis Switchable is actually useable. Called by isValid. Don't
+	 * call this.
 	 */
 	private void validateUsability()
 	{
-		if (!needsTesting) return;
+		if (!this.needsTesting)
+			return;
 		
-		isValid = testIfValid();
-		needsTesting = false;
+		this.isValid = testIfValid();
+		this.needsTesting = false;
 		
 	}
 	
 	/**
-	 * Returns if the Switchable is valid. Usually, if some references
-	 * lead to non-existing elements, this Switchable should be marked
-	 * as invalid.
+	 * Returns if the Switchable is valid. Usually, if some references lead to
+	 * non-existing elements, this Switchable should be marked as invalid.
 	 */
 	protected abstract boolean testIfValid();
 	

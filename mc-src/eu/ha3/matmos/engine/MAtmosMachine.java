@@ -24,22 +24,23 @@ import javax.xml.stream.XMLStreamException;
 
 /**
  * 
- * @author Hurry
- * A Machine is an indexed entity in a Knowledge.
+ * @author Hurry A Machine is an indexed entity in a Knowledge.
  * 
  * 
- * The purpose of a Machine is to generate noises by the storage of EventTimed.
+ *         The purpose of a Machine is to generate noises by the storage of
+ *         EventTimed.
  * 
- * A Machine can be powered on/off and turned on/off.
+ *         A Machine can be powered on/off and turned on/off.
  * 
- * Powering a machine on allows its routine to execute events that
- * happen while the Machine is turned off.
+ *         Powering a machine on allows its routine to execute events that
+ *         happen while the Machine is turned off.
  * 
- * A Machine is turned on whenever it is powered and its routine executes,
- * and all of the Restricts are false while any of the Allows is true.
+ *         A Machine is turned on whenever it is powered and its routine
+ *         executes, and all of the Restricts are false while any of the Allows
+ *         is true.
  * 
  * 
- * For a Machine to be valid, it needs to have at least one Allow.
+ *         For a Machine to be valid, it needs to have at least one Allow.
  * 
  */
 
@@ -58,23 +59,22 @@ public class MAtmosMachine extends MAtmosSwitchable
 	{
 		super(knowledgeIn);
 		
-		etimes = new ArrayList<MAtmosEventTimed>();
-		streams = new ArrayList<MAtmosStream>();
+		this.etimes = new ArrayList<MAtmosEventTimed>();
+		this.streams = new ArrayList<MAtmosStream>();
 		
-		anyallows = new ArrayList<String>();
-		anyrestricts = new ArrayList<String>();
+		this.anyallows = new ArrayList<String>();
+		this.anyrestricts = new ArrayList<String>();
 		
-		powered = false;
-		switchedOn = false;
-		
+		this.powered = false;
+		this.switchedOn = false;
 		
 	}
 	
 	public void routine()
 	{
-		if (switchedOn)
+		if (this.switchedOn)
 		{
-			for (Iterator<MAtmosEventTimed> iter = etimes.iterator(); iter.hasNext();)
+			for (Iterator<MAtmosEventTimed> iter = this.etimes.iterator(); iter.hasNext();)
 			{
 				MAtmosEventTimed etime = iter.next();
 				etime.routine();
@@ -82,10 +82,12 @@ public class MAtmosMachine extends MAtmosSwitchable
 			}
 			
 		}
-		if (powered && !streams.isEmpty())
+		if (this.powered && !this.streams.isEmpty())
 		{
-			for (Iterator<MAtmosStream> iter = streams.iterator(); iter.hasNext();)
+			for (Iterator<MAtmosStream> iter = this.streams.iterator(); iter.hasNext();)
+			{
 				iter.next().routine();
+			}
 			
 		}
 		
@@ -96,18 +98,22 @@ public class MAtmosMachine extends MAtmosSwitchable
 	 */
 	public void turnOn()
 	{
-		if (!powered)
+		if (!this.powered)
 			return;
 		
-		if (switchedOn)
+		if (this.switchedOn)
 			return;
 		
-		switchedOn = true;
-		for (Iterator<MAtmosEventTimed> iter = etimes.iterator(); iter.hasNext();)
+		this.switchedOn = true;
+		for (Iterator<MAtmosEventTimed> iter = this.etimes.iterator(); iter.hasNext();)
+		{
 			iter.next().restart();
+		}
 		
-		for (Iterator<MAtmosStream> iter = streams.iterator(); iter.hasNext();)
+		for (Iterator<MAtmosStream> iter = this.streams.iterator(); iter.hasNext();)
+		{
 			iter.next().signalPlayable();
+		}
 		
 	}
 	
@@ -116,16 +122,18 @@ public class MAtmosMachine extends MAtmosSwitchable
 	 */
 	public void turnOff()
 	{
-		if (!powered)
+		if (!this.powered)
 			return;
 		
-		if (!switchedOn)
+		if (!this.switchedOn)
 			return;
 		
-		switchedOn = false;
+		this.switchedOn = false;
 		
-		for (Iterator<MAtmosStream> iter = streams.iterator(); iter.hasNext();)
+		for (Iterator<MAtmosStream> iter = this.streams.iterator(); iter.hasNext();)
+		{
 			iter.next().signalStoppable();
+		}
 		
 	}
 	
@@ -134,7 +142,7 @@ public class MAtmosMachine extends MAtmosSwitchable
 	 */
 	public void powerOn()
 	{
-		powered = true;
+		this.powered = true;
 		
 	}
 	
@@ -143,34 +151,38 @@ public class MAtmosMachine extends MAtmosSwitchable
 	 */
 	public void powerOff()
 	{
-		for (Iterator<MAtmosStream> iter = streams.iterator(); iter.hasNext();)
+		for (Iterator<MAtmosStream> iter = this.streams.iterator(); iter.hasNext();)
+		{
 			iter.next().clearToken();
+		}
 		
 		turnOff();
-		powered = false;
+		this.powered = false;
 		
 	}
 	
 	public boolean isPowered()
 	{
-		return powered;
-		
-	}
-	public boolean isOn()
-	{
-		return switchedOn;
+		return this.powered;
 		
 	}
 	
+	public boolean isOn()
+	{
+		return this.switchedOn;
+		
+	}
 	
 	public ArrayList<String> getAllows()
 	{
-		return anyallows;
+		return this.anyallows;
 	}
+	
 	public ArrayList<String> getRestricts()
 	{
-		return anyrestricts;
+		return this.anyrestricts;
 	}
+	
 	public void addAllow(String name)
 	{
 		/*if (anyrestricts.contains(name))
@@ -180,11 +192,12 @@ public class MAtmosMachine extends MAtmosSwitchable
 			return;
 		 */
 		
-		anyallows.add(name);
+		this.anyallows.add(name);
 		flagNeedsTesting();
 		
 		return;
 	}
+	
 	public void addRestrict(String name)
 	{
 		/*if (anyallows.contains(name))
@@ -194,31 +207,33 @@ public class MAtmosMachine extends MAtmosSwitchable
 			return;
 		 */
 		
-		anyrestricts.add(name);
+		this.anyrestricts.add(name);
 		flagNeedsTesting();
 		
 		return;
 	}
+	
 	public void removeSet(String name)
 	{
-		anyallows.remove(name);
-		anyrestricts.remove(name);
+		this.anyallows.remove(name);
+		this.anyrestricts.remove(name);
 		flagNeedsTesting();
 		
 		return;
 		
 	}
+	
 	public void replaceSetName(String name, String newName)
 	{
-		if (anyallows.contains(name))
+		if (this.anyallows.contains(name))
 		{
-			anyallows.add(newName);
-			anyallows.remove(name);
+			this.anyallows.add(newName);
+			this.anyallows.remove(name);
 		}
-		if (anyrestricts.contains(name))
+		if (this.anyrestricts.contains(name))
 		{
-			anyrestricts.add(newName);
-			anyrestricts.remove(name);
+			this.anyrestricts.add(newName);
+			this.anyrestricts.remove(name);
 		}
 		flagNeedsTesting();
 		
@@ -226,83 +241,83 @@ public class MAtmosMachine extends MAtmosSwitchable
 	
 	public ArrayList<MAtmosEventTimed> getEventsTimed()
 	{
-		return etimes;
+		return this.etimes;
 		
 	}
+	
 	public int addEventTimed()
 	{
-		etimes.add(new MAtmosEventTimed(this));
+		this.etimes.add(new MAtmosEventTimed(this));
 		
-		return etimes.size();
+		return this.etimes.size();
 		
 	}
+	
 	public int removeEventTimed(int index)
 	{
-		etimes.remove(index);
+		this.etimes.remove(index);
 		
-		return etimes.size();
+		return this.etimes.size();
 		
 	}
+	
 	public MAtmosEventTimed getEventTimed(int index)
 	{
-		return etimes.get(index);
+		return this.etimes.get(index);
 		
 	}
 	
 	public ArrayList<MAtmosStream> getStreams()
 	{
-		return streams;
+		return this.streams;
 		
 	}
+	
 	public int addStream()
 	{
-		streams.add(new MAtmosStream(this));
+		this.streams.add(new MAtmosStream(this));
 		
-		return streams.size();
+		return this.streams.size();
 		
 	}
+	
 	public int removeStream(int index)
 	{
-		streams.remove(index);
+		this.streams.remove(index);
 		
-		return streams.size();
+		return this.streams.size();
 		
 	}
+	
 	public MAtmosStream getStream(int index)
 	{
-		return streams.get(index);
+		return this.streams.get(index);
 		
 	}
 	
 	@Override
 	protected boolean testIfValid()
 	{
-		if (anyallows.size() == 0)
+		if (this.anyallows.size() == 0)
 			return false;
 		
-		Iterator<String> iterAnyallows = anyallows.iterator();
+		Iterator<String> iterAnyallows = this.anyallows.iterator();
 		while (iterAnyallows.hasNext())
 		{
 			String cset = iterAnyallows.next();
 			
-			if (!knowledge.csets.containsKey(cset))
-			{
+			if (!this.knowledge.csets.containsKey(cset))
 				return false;
-				
-			}
 			
 		}
 		
-		Iterator<String> iterAnyrestricts = anyrestricts.iterator();
+		Iterator<String> iterAnyrestricts = this.anyrestricts.iterator();
 		while (iterAnyrestricts.hasNext())
 		{
 			String cset = iterAnyrestricts.next();
 			
-			if (!knowledge.csets.containsKey(cset))
-			{
+			if (!this.knowledge.csets.containsKey(cset))
 				return false;
-				
-			}
 			
 		}
 		
@@ -315,29 +330,30 @@ public class MAtmosMachine extends MAtmosSwitchable
 		if (!isValid())
 			return false;
 		
-		if (!powered)
+		if (!this.powered)
 			return false;
 		
-		boolean pre = switchedOn;
+		boolean pre = this.switchedOn;
 		boolean shallBeOn = testIfTrue();
 		
 		if (pre != shallBeOn)
 		{
 			if (shallBeOn)
+			{
 				turnOn();
-			
+			}
 			else
+			{
 				turnOff();
+			}
 			
 			//MAtmosEngine.logger; //TODO Logger
-			MAtmosLogger.LOGGER.fine(new StringBuilder("M:").append(
-					nickname).append(switchedOn ? " now On." : " now Off.")
-					.toString());
-			
+			MAtmosLogger.LOGGER.fine(new StringBuilder("M:")
+				.append(this.nickname).append(this.switchedOn ? " now On." : " now Off.").toString());
 			
 		}
 		
-		return switchedOn;
+		return this.switchedOn;
 		
 	}
 	
@@ -347,11 +363,13 @@ public class MAtmosMachine extends MAtmosSwitchable
 		return isTrue();
 		
 	}
+	
 	public boolean isTrue()
 	{
-		return switchedOn;
+		return this.switchedOn;
 		
 	}
+	
 	public boolean testIfTrue()
 	{
 		if (!isValid())
@@ -359,12 +377,12 @@ public class MAtmosMachine extends MAtmosSwitchable
 		
 		boolean isTrue = false;
 		
-		Iterator<String> iterAnyallows = anyallows.iterator();
+		Iterator<String> iterAnyallows = this.anyallows.iterator();
 		while (!isTrue && iterAnyallows.hasNext())
 		{
 			String cset = iterAnyallows.next();
 			
-			if (knowledge.csets.get(cset).isTrue())
+			if (this.knowledge.csets.get(cset).isTrue())
 			{
 				isTrue = true; // If any Allows is true, it's true (exit the loop)
 				
@@ -374,12 +392,12 @@ public class MAtmosMachine extends MAtmosSwitchable
 		
 		/// Unless...
 		
-		Iterator<String> iterAnyrestricts = anyrestricts.iterator();
+		Iterator<String> iterAnyrestricts = this.anyrestricts.iterator();
 		while (isTrue && iterAnyrestricts.hasNext())
 		{
 			String cset = iterAnyrestricts.next();
 			
-			if (knowledge.csets.get(cset).isTrue())
+			if (this.knowledge.csets.get(cset).isTrue())
 			{
 				isTrue = false; // If any Restrict is true, it's false
 				
@@ -390,22 +408,31 @@ public class MAtmosMachine extends MAtmosSwitchable
 		return isTrue;
 		
 	}
+	
 	@Override
 	public String serialize(XMLEventWriter eventWriter) throws XMLStreamException
 	{
 		buildDescriptibleSerialized(eventWriter);
 		
-		for (Iterator<String> iter = anyallows.iterator(); iter.hasNext();)
+		for (Iterator<String> iter = this.anyallows.iterator(); iter.hasNext();)
+		{
 			createNode(eventWriter, "allow", iter.next());
+		}
 		
-		for (Iterator<String> iter = anyrestricts.iterator(); iter.hasNext();)
+		for (Iterator<String> iter = this.anyrestricts.iterator(); iter.hasNext();)
+		{
 			createNode(eventWriter, "restrict", iter.next());
+		}
 		
-		for (Iterator<MAtmosEventTimed> iter = etimes.iterator(); iter.hasNext();)
+		for (Iterator<MAtmosEventTimed> iter = this.etimes.iterator(); iter.hasNext();)
+		{
 			iter.next().serialize(eventWriter);
+		}
 		
-		for (Iterator<MAtmosStream> iter = streams.iterator(); iter.hasNext();)
+		for (Iterator<MAtmosStream> iter = this.streams.iterator(); iter.hasNext();)
+		{
 			iter.next().serialize(eventWriter);
+		}
 		
 		return "";
 		

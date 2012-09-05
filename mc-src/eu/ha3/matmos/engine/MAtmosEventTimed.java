@@ -41,53 +41,66 @@ public class MAtmosEventTimed extends MAtmosDescriptible
 	{
 		//event = eventIn;
 		
-		event = "";
+		this.event = "";
 		
-		machine = machineIn;
-		volMod = 1F;
-		pitchMod = 1F;
+		this.machine = machineIn;
+		this.volMod = 1F;
+		this.pitchMod = 1F;
 		
-		delayMin = 10F;
-		delayMax = 10F;
+		this.delayMin = 10F;
+		this.delayMax = 10F;
 		
-		delayStart = 0F;
+		this.delayStart = 0F;
 		
 	}
+	
 	void setMachine(MAtmosMachine machineIn)
 	{
-		machine = machineIn;
+		this.machine = machineIn;
 		
 	}
+	
 	public void routine()
 	{
-		if (machine.knowledge.getTimeMillis() < nextPlayTime)
+		if (this.machine.knowledge.getTimeMillis() < this.nextPlayTime)
 			return;
 		
-		if (machine.knowledge.events.containsKey(event))
-			machine.knowledge.events.get(event).playSound(volMod, pitchMod);
-		
-		if ((delayMin == delayMax) && (delayMin > 0))
+		if (this.machine.knowledge.events.containsKey(this.event))
 		{
-			while (nextPlayTime < machine.knowledge.getTimeMillis())
+			this.machine.knowledge.events.get(this.event).playSound(this.volMod, this.pitchMod);
+		}
+		
+		if (this.delayMin == this.delayMax && this.delayMin > 0)
+		{
+			while (this.nextPlayTime < this.machine.knowledge.getTimeMillis())
 			{
-				nextPlayTime = nextPlayTime + (long) (delayMin * 1000);
+				this.nextPlayTime = this.nextPlayTime + (long) (this.delayMin * 1000);
 				
 			}
 			
 		}
 		else
-			nextPlayTime = machine.knowledge.getTimeMillis()
-			+ (long) ((delayMin + machine.knowledge.random.nextFloat()
-					* (delayMax - delayMin)) * 1000);
+		{
+			this.nextPlayTime =
+				this.machine.knowledge.getTimeMillis()
+					+ (long) ((this.delayMin + this.machine.knowledge.random.nextFloat()
+						* (this.delayMax - this.delayMin)) * 1000);
+		}
 		
 	}
+	
 	public void restart()
 	{
-		if (delayStart == 0)
-			nextPlayTime = machine.knowledge.getTimeMillis() + (long)(machine.knowledge.random.nextFloat() * delayMax * 1000);
-		
+		if (this.delayStart == 0)
+		{
+			this.nextPlayTime =
+				this.machine.knowledge.getTimeMillis()
+					+ (long) (this.machine.knowledge.random.nextFloat() * this.delayMax * 1000);
+		}
 		else
-			nextPlayTime = machine.knowledge.getTimeMillis() + (long)(delayStart * 1000);
+		{
+			this.nextPlayTime = this.machine.knowledge.getTimeMillis() + (long) (this.delayStart * 1000);
+		}
 		
 	}
 	
@@ -101,12 +114,12 @@ public class MAtmosEventTimed extends MAtmosDescriptible
 		eventWriter.add(tab);
 		eventWriter.add(eventFactory.createStartElement("", "", "eventtimed"));
 		eventWriter.add(ret);
-		createNode(eventWriter, "eventname", event, 2);
-		createNode(eventWriter, "delaymin", "" + delayMin, 2);
-		createNode(eventWriter, "delaymax", "" + delayMax, 2);
-		createNode(eventWriter, "delaystart", "" + delayStart, 2);
-		createNode(eventWriter, "volmod", "" + volMod, 2);
-		createNode(eventWriter, "pitchmod", "" + pitchMod, 2);
+		createNode(eventWriter, "eventname", this.event, 2);
+		createNode(eventWriter, "delaymin", "" + this.delayMin, 2);
+		createNode(eventWriter, "delaymax", "" + this.delayMax, 2);
+		createNode(eventWriter, "delaystart", "" + this.delayStart, 2);
+		createNode(eventWriter, "volmod", "" + this.volMod, 2);
+		createNode(eventWriter, "pitchmod", "" + this.pitchMod, 2);
 		eventWriter.add(tab);
 		eventWriter.add(eventFactory.createEndElement("", "", "eventtimed"));
 		eventWriter.add(ret);

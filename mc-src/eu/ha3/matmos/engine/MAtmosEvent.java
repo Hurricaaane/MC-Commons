@@ -27,7 +27,7 @@ public class MAtmosEvent extends MAtmosDescriptible
 	MAtmosKnowledge knowledge;
 	
 	public ArrayList<String> paths;
-	 
+	
 	public float volMin;
 	public float volMax;
 	public float pitchMin;
@@ -37,29 +37,29 @@ public class MAtmosEvent extends MAtmosDescriptible
 	
 	MAtmosEvent(MAtmosKnowledge knowledgeIn)
 	{
-		paths = new ArrayList<String>();
-		knowledge = knowledgeIn;
+		this.paths = new ArrayList<String>();
+		this.knowledge = knowledgeIn;
 		
-		volMin = 1F;
-		volMax = 1F;
-		pitchMin = 1F;
-		pitchMax = 1F;
+		this.volMin = 1F;
+		this.volMax = 1F;
+		this.pitchMin = 1F;
+		this.pitchMax = 1F;
 		
-		metaSound = 0;
+		this.metaSound = 0;
 		
 	}
 	
 	void setKnowledge(MAtmosKnowledge knowledgeIn)
 	{
-		knowledge = knowledgeIn;
-	
+		this.knowledge = knowledgeIn;
+		
 	}
 	
 	public void cacheSounds()
 	{
-		for (Iterator<String> iter = paths.iterator(); iter.hasNext();)
+		for (Iterator<String> iter = this.paths.iterator(); iter.hasNext();)
 		{
-			knowledge.soundManager.cacheSound(iter.next());
+			this.knowledge.soundManager.cacheSound(iter.next());
 			
 		}
 		
@@ -67,40 +67,42 @@ public class MAtmosEvent extends MAtmosDescriptible
 	
 	public void playSound(float volMod, float pitchMod)
 	{
-		if (paths.isEmpty()) return;
+		if (this.paths.isEmpty())
+			return;
 		
 		//float volume = volMin + knowledge.random.nextFloat() * (volMax - volMin);
 		//float pitch = pitchMin + knowledge.random.nextFloat() * (pitchMax - pitchMin);
 		
-		float volume = volMax - volMin;
-		float pitch = pitchMax - pitchMin;
-		volume = volMin + (volume > 0 ? knowledge.random.nextFloat() * volume : 0);
-		pitch = pitchMin + (pitch > 0 ? knowledge.random.nextFloat() * pitch : 0);
+		float volume = this.volMax - this.volMin;
+		float pitch = this.pitchMax - this.pitchMin;
+		volume = this.volMin + (volume > 0 ? this.knowledge.random.nextFloat() * volume : 0);
+		pitch = this.pitchMin + (pitch > 0 ? this.knowledge.random.nextFloat() * pitch : 0);
 		
-		String path = paths.get( knowledge.random.nextInt(paths.size()) );
+		String path = this.paths.get(this.knowledge.random.nextInt(this.paths.size()));
 		
 		volume = volume * volMod;
 		pitch = pitch * pitchMod;
 		
-		knowledge.soundManager.playSound(path, volume, pitch, metaSound);
+		this.knowledge.soundManager.playSound(path, volume, pitch, this.metaSound);
 		
 	}
-
+	
+	@Override
 	public String serialize(XMLEventWriter eventWriter) throws XMLStreamException
 	{
 		buildDescriptibleSerialized(eventWriter);
 		
-		for (Iterator<String> iter = paths.iterator(); iter.hasNext();)
+		for (Iterator<String> iter = this.paths.iterator(); iter.hasNext();)
 		{
 			createNode(eventWriter, "path", iter.next());
 			
 		}
 		
-		createNode(eventWriter, "volmin", volMin + "");
-		createNode(eventWriter, "volmax", volMax + "");
-		createNode(eventWriter, "pitchmin", pitchMin + "");
-		createNode(eventWriter, "pitchmax", pitchMax + "");
-		createNode(eventWriter, "metasound", metaSound + "");
+		createNode(eventWriter, "volmin", this.volMin + "");
+		createNode(eventWriter, "volmax", this.volMax + "");
+		createNode(eventWriter, "pitchmin", this.pitchMin + "");
+		createNode(eventWriter, "pitchmax", this.pitchMax + "");
+		createNode(eventWriter, "metasound", this.metaSound + "");
 		
 		return "";
 	}

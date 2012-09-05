@@ -35,135 +35,136 @@ public class MAtmosDynamic extends MAtmosSwitchable
 	{
 		super(knowledgeIn);
 		
-		sheets = new ArrayList<String>();
-		keys = new ArrayList<Integer>();
+		this.sheets = new ArrayList<String>();
+		this.keys = new ArrayList<Integer>();
 		
-		value = 0;
+		this.value = 0;
 		
 	}
 	
 	public void addCouple(String sheet, int key)
 	{
-		sheets.add(sheet);
-		keys.add(key);
-		flagNeedsTesting();
-		
-	}
-	public void removeCouple(int id)
-	{
-		sheets.remove(id);
-		keys.remove(id);
-		flagNeedsTesting();
-		
-	}
-
-	public void setSheet(int id, String sheet)
-	{
-		sheets.set(id, sheet);
-		flagNeedsTesting();
-		
-	}
-	public void setKey(int id, int key)
-	{
-		keys.set(id, key);
+		this.sheets.add(sheet);
+		this.keys.add(key);
 		flagNeedsTesting();
 		
 	}
 	
+	public void removeCouple(int id)
+	{
+		this.sheets.remove(id);
+		this.keys.remove(id);
+		flagNeedsTesting();
+		
+	}
+	
+	public void setSheet(int id, String sheet)
+	{
+		this.sheets.set(id, sheet);
+		flagNeedsTesting();
+		
+	}
+	
+	public void setKey(int id, int key)
+	{
+		this.keys.set(id, key);
+		flagNeedsTesting();
+		
+	}
 	
 	public ArrayList<String> getSheets()
 	{
-		return sheets;
+		return this.sheets;
 		
 	}
+	
 	public ArrayList<Integer> getKeys()
 	{
-		return keys;
+		return this.keys;
 		
 	}
+	
 	public String getSheet(int id)
 	{
-		return sheets.get(id);
+		return this.sheets.get(id);
 		
 	}
+	
 	public int getKey(int id)
 	{
-		return keys.get(id);
+		return this.keys.get(id);
 		
 	}
-
+	
+	@Override
 	public boolean isActive()
 	{
 		return false;
 		
 	}
+	
 	public void evaluate()
 	{
-		value = 0;
+		this.value = 0;
 		
 		if (!isValid())
 			return;
-
-		Iterator<String> iterSheets = sheets.iterator();
-		Iterator<Integer> iterKeys = keys.iterator();
+		
+		Iterator<String> iterSheets = this.sheets.iterator();
+		Iterator<Integer> iterKeys = this.keys.iterator();
 		
 		while (iterSheets.hasNext())
 		{
 			String sheet = iterSheets.next();
 			Integer key = iterKeys.next();
 			
-			value = value + knowledge.data.sheets.get(sheet).get(key);
+			this.value = this.value + this.knowledge.data.sheets.get(sheet).get(key);
 			
 		}
 		
 	}
-
+	
+	@Override
 	protected boolean testIfValid()
 	{
-		Iterator<String> iterSheets = sheets.iterator();
-		Iterator<Integer> iterKeys = keys.iterator();
+		Iterator<String> iterSheets = this.sheets.iterator();
+		Iterator<Integer> iterKeys = this.keys.iterator();
 		
 		while (iterSheets.hasNext())
 		{
 			String sheet = iterSheets.next();
 			Integer key = iterKeys.next();
 			
-			if (knowledge.data.sheets.containsKey(sheet))
+			if (this.knowledge.data.sheets.containsKey(sheet))
 			{
-				if ( !((key >= 0) && (key < knowledge.data.sheets.get(sheet).size())) )
-				{
+				if (!(key >= 0 && key < this.knowledge.data.sheets.get(sheet).size()))
 					return false;
-					
-				}
-				//else continue;
 				
 			}
 			else
-			{
 				return false;
-				
-			}
 			
 		}
 		
 		return true;
 	}
-    
+	
+	@Override
 	public String serialize(XMLEventWriter eventWriter) throws XMLStreamException
 	{
 		buildDescriptibleSerialized(eventWriter);
-
+		
 		XMLEventFactory eventFactory = XMLEventFactory.newInstance();
-
+		
 		XMLEvent tab = eventFactory.createDTD("\t");
 		XMLEvent ret = eventFactory.createDTD("\n");
 		
-		for (int i = 0; i < sheets.size(); i++)
+		for (int i = 0; i < this.sheets.size(); i++)
 		{
 			eventWriter.add(tab);
 			eventWriter.add(eventFactory.createStartElement("", "", "entry"));
-			eventWriter.add(eventFactory.createAttribute("sheet", sheets.get(i)));
-			eventWriter.add(eventFactory.createCharacters(keys.get(i) + ""));
+			eventWriter.add(eventFactory.createAttribute("sheet", this.sheets.get(i)));
+			eventWriter.add(eventFactory.createCharacters(this.keys.get(i) + ""));
 			eventWriter.add(eventFactory.createEndElement("", "", "entry"));
 			eventWriter.add(ret);
 			
@@ -171,5 +172,5 @@ public class MAtmosDynamic extends MAtmosSwitchable
 		
 		return null;
 	}
-
+	
 }

@@ -55,15 +55,15 @@ public class MAtmosKnowledge
 	
 	public MAtmosKnowledge()
 	{
-		data = new MAtmosData();
-		soundManager = null;
+		this.data = new MAtmosData();
+		this.soundManager = null;
 		
-		dataLastVersion = 0;
-		isRunning = false;
+		this.dataLastVersion = 0;
+		this.isRunning = false;
 		
-		random = new Random(System.currentTimeMillis());
+		this.random = new Random(System.currentTimeMillis());
 		
-		clock = new MAtmosClock();
+		this.clock = new MAtmosClock();
 		
 		patchKnowledge();
 		
@@ -83,31 +83,31 @@ public class MAtmosKnowledge
 	{
 		turnOff();
 		
-		dynamics = new HashMap<String, MAtmosDynamic>();
-		lists = new HashMap<String, MAtmosList>();
+		this.dynamics = new HashMap<String, MAtmosDynamic>();
+		this.lists = new HashMap<String, MAtmosList>();
 		
-		conditions = new HashMap<String, MAtmosCondition>();
-		csets = new HashMap<String, MAtmosConditionSet>();
-		machines = new HashMap<String, MAtmosMachine>();
+		this.conditions = new HashMap<String, MAtmosCondition>();
+		this.csets = new HashMap<String, MAtmosConditionSet>();
+		this.machines = new HashMap<String, MAtmosMachine>();
 		
-		events = new HashMap<String, MAtmosEvent>();
+		this.events = new HashMap<String, MAtmosEvent>();
 		
 	}
 	
 	public void turnOn()
 	{
-		if (soundManager == null)
+		if (this.soundManager == null)
 			return;
 		
-		if (isRunning)
+		if (this.isRunning)
 			return;
 		
 		reclaimKeyring();
-		isRunning = true;
+		this.isRunning = true;
 		
 		// FIXME Why do i have to do that -> look at the UML sheet
 		// Machines have to be powered on for their routines to run even if the machines are turned off
-		for (MAtmosMachine machine : machines.values())
+		for (MAtmosMachine machine : this.machines.values())
 		{
 			machine.powerOn();
 			
@@ -117,14 +117,14 @@ public class MAtmosKnowledge
 	
 	public void turnOff()
 	{
-		if (!isRunning)
+		if (!this.isRunning)
 			return;
 		
-		isRunning = false;
+		this.isRunning = false;
 		
 		// FIXME Why do i have to do that -> look at the UML sheet
 		// Machines have to be powered on for their routines to run even if the machines are turned off
-		for (MAtmosMachine machine : machines.values())
+		for (MAtmosMachine machine : this.machines.values())
 		{
 			machine.powerOff();
 			
@@ -134,43 +134,43 @@ public class MAtmosKnowledge
 	
 	public boolean isTurnedOn()
 	{
-		return isRunning;
+		return this.isRunning;
 		
 	}
 	
 	public Set<String> getDynamicsKeySet()
 	{
-		return dynamics.keySet();
+		return this.dynamics.keySet();
 		
 	}
 	
 	public Set<String> getListsKeySet()
 	{
-		return lists.keySet();
+		return this.lists.keySet();
 		
 	}
 	
 	public Set<String> getConditionsKeySet()
 	{
-		return conditions.keySet();
+		return this.conditions.keySet();
 		
 	}
 	
 	public Set<String> getConditionSetsKeySet()
 	{
-		return csets.keySet();
+		return this.csets.keySet();
 		
 	}
 	
 	public Set<String> getMachinesKeySet()
 	{
-		return machines.keySet();
+		return this.machines.keySet();
 		
 	}
 	
 	public Set<String> getEventsKeySet()
 	{
-		return events.keySet();
+		return this.events.keySet();
 		
 	}
 	
@@ -181,22 +181,32 @@ public class MAtmosKnowledge
 	{
 		turnOff();
 		
-		for (MAtmosDynamic dynamic : dynamics.values())
+		for (MAtmosDynamic dynamic : this.dynamics.values())
+		{
 			dynamic.setKnowledge(this);
+		}
 		
 		// Lists don't have to be tied with the knowledge
 		
-		for (MAtmosCondition condition : conditions.values())
+		for (MAtmosCondition condition : this.conditions.values())
+		{
 			condition.setKnowledge(this);
+		}
 		
-		for (MAtmosConditionSet cset : csets.values())
+		for (MAtmosConditionSet cset : this.csets.values())
+		{
 			cset.setKnowledge(this);
+		}
 		
-		for (MAtmosMachine machine : machines.values())
+		for (MAtmosMachine machine : this.machines.values())
+		{
 			machine.setKnowledge(this);
+		}
 		
-		for (MAtmosEvent event : events.values())
+		for (MAtmosEvent event : this.events.values())
+		{
 			event.setKnowledge(this);
+		}
 		
 	}
 	
@@ -210,69 +220,75 @@ public class MAtmosKnowledge
 		if (originalKnowledge.isRunning)
 			return;
 		
-		dynamics = (HashMap<String, MAtmosDynamic>) originalKnowledge.dynamics.clone();
-		lists = (HashMap<String, MAtmosList>) originalKnowledge.lists.clone();
-		conditions = (HashMap<String, MAtmosCondition>) originalKnowledge.conditions.clone();
-		csets = (HashMap<String, MAtmosConditionSet>) originalKnowledge.csets.clone();
-		machines = (HashMap<String, MAtmosMachine>) originalKnowledge.machines.clone();
-		events = (HashMap<String, MAtmosEvent>) originalKnowledge.events.clone();
+		this.dynamics = (HashMap<String, MAtmosDynamic>) originalKnowledge.dynamics.clone();
+		this.lists = (HashMap<String, MAtmosList>) originalKnowledge.lists.clone();
+		this.conditions = (HashMap<String, MAtmosCondition>) originalKnowledge.conditions.clone();
+		this.csets = (HashMap<String, MAtmosConditionSet>) originalKnowledge.csets.clone();
+		this.machines = (HashMap<String, MAtmosMachine>) originalKnowledge.machines.clone();
+		this.events = (HashMap<String, MAtmosEvent>) originalKnowledge.events.clone();
 		reclaimKeyring();
 		
 	}
 	
 	public void setSoundManager(MAtmosSoundManager soundManagerIn)
 	{
-		soundManager = soundManagerIn;
+		this.soundManager = soundManagerIn;
 		
 	}
 	
 	public void cacheSounds()
 	{
-		for (MAtmosEvent event : events.values())
+		for (MAtmosEvent event : this.events.values())
+		{
 			event.cacheSounds();
+		}
 		
 	}
 	
 	public void setClock(MAtmosClock clockIn)
 	{
-		clock = clockIn;
+		this.clock = clockIn;
 	}
 	
 	public void setData(MAtmosData dataIn)
 	{
-		data = dataIn;
+		this.data = dataIn;
 		applySheetFlagNeedsTesting();
 	}
 	
 	public long getTimeMillis()
 	{
-		return clock.getTimeMillis();
+		return this.clock.getTimeMillis();
 		
 	}
 	
 	void applySheetFlagNeedsTesting()
 	{
-		for (MAtmosCondition condition : conditions.values())
+		for (MAtmosCondition condition : this.conditions.values())
+		{
 			condition.flagNeedsTesting();
+		}
 		
-		for (MAtmosDynamic dynamic : dynamics.values())
+		for (MAtmosDynamic dynamic : this.dynamics.values())
+		{
 			dynamic.flagNeedsTesting();
+		}
 		
 	}
 	
 	public MAtmosEvent getEvent(String name)
 	{
-		return events.get(name);
+		return this.events.get(name);
 		
 	}
 	
 	public boolean addEvent(String name)
 	{
-		if (events.containsKey(name))
+		if (this.events.containsKey(name))
 			return false;
 		
-		events.put(name, new MAtmosEvent(this));
-		events.get(name).nickname = name;
+		this.events.put(name, new MAtmosEvent(this));
+		this.events.get(name).nickname = name;
 		
 		return true;
 		
@@ -280,10 +296,10 @@ public class MAtmosKnowledge
 	
 	public boolean removeEvent(String name)
 	{
-		if (!events.containsKey(name))
+		if (!this.events.containsKey(name))
 			return false;
 		
-		events.remove(name);
+		this.events.remove(name);
 		
 		return true;
 		
@@ -291,23 +307,25 @@ public class MAtmosKnowledge
 	
 	public boolean renameEvent(String name, String newName)
 	{
-		if (!events.containsKey(name))
+		if (!this.events.containsKey(name))
 			return false; // Error?
-		
-		if (events.containsKey(newName))
+			
+		if (this.events.containsKey(newName))
 			return false;
 		
-		events.put(newName, events.get(name));
-		events.remove(name);
-		events.get(newName).nickname = newName;
+		this.events.put(newName, this.events.get(name));
+		this.events.remove(name);
+		this.events.get(newName).nickname = newName;
 		
-		for (MAtmosMachine machine : machines.values())
+		for (MAtmosMachine machine : this.machines.values())
 		{
 			// TODO Make this a method of MAtmosMachine
 			for (MAtmosEventTimed etime : machine.etimes)
 			{
 				if (etime.event.equals(name))
+				{
 					etime.event = newName;
+				}
 				
 			}
 			
@@ -319,7 +337,7 @@ public class MAtmosKnowledge
 	
 	void applyDynamicFlagNeedsTesting()
 	{
-		for (MAtmosCondition condition : conditions.values())
+		for (MAtmosCondition condition : this.conditions.values())
 		{
 			condition.flagNeedsTesting();
 			
@@ -329,17 +347,17 @@ public class MAtmosKnowledge
 	
 	public MAtmosDynamic getDynamic(String name)
 	{
-		return dynamics.get(name);
+		return this.dynamics.get(name);
 		
 	}
 	
 	public boolean addDynamic(String name)
 	{
-		if (dynamics.containsKey(name))
+		if (this.dynamics.containsKey(name))
 			return false;
 		
-		dynamics.put(name, new MAtmosDynamic(this));
-		dynamics.get(name).nickname = name;
+		this.dynamics.put(name, new MAtmosDynamic(this));
+		this.dynamics.get(name).nickname = name;
 		
 		applyDynamicFlagNeedsTesting();
 		
@@ -349,10 +367,10 @@ public class MAtmosKnowledge
 	
 	public boolean removeDynamic(String name)
 	{
-		if (!dynamics.containsKey(name))
+		if (!this.dynamics.containsKey(name))
 			return false;
 		
-		dynamics.remove(name);
+		this.dynamics.remove(name);
 		
 		applyDynamicFlagNeedsTesting();
 		
@@ -362,18 +380,20 @@ public class MAtmosKnowledge
 	
 	public boolean renameDynamic(String name, String newName)
 	{
-		if (!dynamics.containsKey(name))
+		if (!this.dynamics.containsKey(name))
 			return false; // Error?
-		
-		if (dynamics.containsKey(newName))
+			
+		if (this.dynamics.containsKey(newName))
 			return false;
 		
-		dynamics.put(newName, dynamics.get(name));
-		dynamics.remove(name);
-		dynamics.get(newName).nickname = newName;
+		this.dynamics.put(newName, this.dynamics.get(name));
+		this.dynamics.remove(name);
+		this.dynamics.get(newName).nickname = newName;
 		
-		for (MAtmosCondition condition : conditions.values())
+		for (MAtmosCondition condition : this.conditions.values())
+		{
 			condition.replaceDynamicName(name, newName);
+		}
 		
 		return true;
 		
@@ -381,7 +401,7 @@ public class MAtmosKnowledge
 	
 	void applyListFlagNeedsTesting()
 	{
-		for (MAtmosCondition condition : conditions.values())
+		for (MAtmosCondition condition : this.conditions.values())
 		{
 			condition.flagNeedsTesting();
 			
@@ -391,17 +411,17 @@ public class MAtmosKnowledge
 	
 	public MAtmosList getList(String name)
 	{
-		return lists.get(name);
+		return this.lists.get(name);
 		
 	}
 	
 	public boolean addList(String name)
 	{
-		if (lists.containsKey(name))
+		if (this.lists.containsKey(name))
 			return false;
 		
-		lists.put(name, new MAtmosList());
-		lists.get(name).nickname = name;
+		this.lists.put(name, new MAtmosList());
+		this.lists.get(name).nickname = name;
 		
 		applyDynamicFlagNeedsTesting();
 		
@@ -411,10 +431,10 @@ public class MAtmosKnowledge
 	
 	public boolean removeList(String name)
 	{
-		if (!lists.containsKey(name))
+		if (!this.lists.containsKey(name))
 			return false;
 		
-		lists.remove(name);
+		this.lists.remove(name);
 		
 		applyDynamicFlagNeedsTesting();
 		
@@ -424,18 +444,20 @@ public class MAtmosKnowledge
 	
 	public boolean renameList(String name, String newName)
 	{
-		if (!lists.containsKey(name))
+		if (!this.lists.containsKey(name))
 			return false; // Error?
-		
-		if (lists.containsKey(newName))
+			
+		if (this.lists.containsKey(newName))
 			return false;
 		
-		lists.put(newName, lists.get(name));
-		lists.remove(name);
-		lists.get(newName).nickname = newName;
+		this.lists.put(newName, this.lists.get(name));
+		this.lists.remove(name);
+		this.lists.get(newName).nickname = newName;
 		
-		for (MAtmosCondition condition : conditions.values())
+		for (MAtmosCondition condition : this.conditions.values())
+		{
 			condition.replaceListName(name, newName);
+		}
 		
 		return true;
 		
@@ -443,24 +465,26 @@ public class MAtmosKnowledge
 	
 	void applyDataConditionNeedsTesting()
 	{
-		for (MAtmosConditionSet cset : csets.values())
+		for (MAtmosConditionSet cset : this.csets.values())
+		{
 			cset.flagNeedsTesting();
+		}
 		
 	}
 	
 	public MAtmosCondition getDataCondition(String name)
 	{
-		return conditions.get(name);
+		return this.conditions.get(name);
 		
 	}
 	
 	public boolean addDataCondition(String name)
 	{
-		if (conditions.containsKey(name))
+		if (this.conditions.containsKey(name))
 			return false;
 		
-		conditions.put(name, new MAtmosCondition(this));
-		conditions.get(name).nickname = name;
+		this.conditions.put(name, new MAtmosCondition(this));
+		this.conditions.get(name).nickname = name;
 		
 		applyDataConditionNeedsTesting();
 		
@@ -470,18 +494,20 @@ public class MAtmosKnowledge
 	
 	public boolean renameDataCondition(String name, String newName)
 	{
-		if (!conditions.containsKey(name))
+		if (!this.conditions.containsKey(name))
 			return false;
 		
-		if (conditions.containsKey(newName))
+		if (this.conditions.containsKey(newName))
 			return false;
 		
-		conditions.put(newName, conditions.get(name));
-		conditions.remove(name);
-		conditions.get(newName).nickname = newName;
+		this.conditions.put(newName, this.conditions.get(name));
+		this.conditions.remove(name);
+		this.conditions.get(newName).nickname = newName;
 		
-		for (MAtmosConditionSet cset : csets.values())
+		for (MAtmosConditionSet cset : this.csets.values())
+		{
 			cset.replaceConditionName(name, newName);
+		}
 		
 		applyDataConditionNeedsTesting();
 		
@@ -491,10 +517,10 @@ public class MAtmosKnowledge
 	
 	public boolean removeDataCondition(String name)
 	{
-		if (!conditions.containsKey(name))
+		if (!this.conditions.containsKey(name))
 			return false;
 		
-		conditions.remove(name);
+		this.conditions.remove(name);
 		
 		applyDataConditionNeedsTesting();
 		
@@ -504,23 +530,25 @@ public class MAtmosKnowledge
 	
 	void applyConditionSetNeedsTesting()
 	{
-		for (MAtmosMachine machine : machines.values())
+		for (MAtmosMachine machine : this.machines.values())
+		{
 			machine.flagNeedsTesting();
+		}
 		
 	}
 	
 	public MAtmosConditionSet getConditionSet(String name)
 	{
-		return csets.get(name);
+		return this.csets.get(name);
 	}
 	
 	public boolean addConditionSet(String name)
 	{
-		if (csets.containsKey(name))
+		if (this.csets.containsKey(name))
 			return false;
 		
-		csets.put(name, new MAtmosConditionSet(this));
-		csets.get(name).nickname = name;
+		this.csets.put(name, new MAtmosConditionSet(this));
+		this.csets.get(name).nickname = name;
 		
 		applyConditionSetNeedsTesting();
 		
@@ -530,17 +558,17 @@ public class MAtmosKnowledge
 	
 	public boolean renameConditionSet(String name, String newName)
 	{
-		if (!csets.containsKey(name))
+		if (!this.csets.containsKey(name))
 			return false;
 		
-		if (csets.containsKey(newName))
+		if (this.csets.containsKey(newName))
 			return false;
 		
-		csets.put(newName, csets.get(name));
-		csets.remove(name);
-		csets.get(newName).nickname = newName;
+		this.csets.put(newName, this.csets.get(name));
+		this.csets.remove(name);
+		this.csets.get(newName).nickname = newName;
 		
-		for (MAtmosMachine machine : machines.values())
+		for (MAtmosMachine machine : this.machines.values())
 		{
 			machine.replaceSetName(name, newName);
 			
@@ -554,15 +582,12 @@ public class MAtmosKnowledge
 	
 	public boolean removeConditionSet(String name)
 	{
-		if (!csets.containsKey(name))
-		{
+		if (!this.csets.containsKey(name))
 			// MAtmosEngine.logger;
 			// Not an exception!
 			return false;
-			
-		}
 		
-		csets.remove(name);
+		this.csets.remove(name);
 		
 		applyConditionSetNeedsTesting();
 		
@@ -577,16 +602,16 @@ public class MAtmosKnowledge
 	
 	public MAtmosMachine getMachine(String name)
 	{
-		return machines.get(name);
+		return this.machines.get(name);
 	}
 	
 	public boolean addMachine(String name)
 	{
-		if (machines.containsKey(name))
+		if (this.machines.containsKey(name))
 			return false;
 		
-		machines.put(name, new MAtmosMachine(this));
-		machines.get(name).nickname = name;
+		this.machines.put(name, new MAtmosMachine(this));
+		this.machines.get(name).nickname = name;
 		
 		applyMachineNeedsTesting();
 		
@@ -596,10 +621,10 @@ public class MAtmosKnowledge
 	
 	public boolean removeMachine(String name)
 	{
-		if (!machines.containsKey(name))
+		if (!this.machines.containsKey(name))
 			return false;
 		
-		machines.remove(name);
+		this.machines.remove(name);
 		
 		applyMachineNeedsTesting();
 		
@@ -609,15 +634,15 @@ public class MAtmosKnowledge
 	
 	public boolean renameMachine(String name, String newName)
 	{
-		if (!machines.containsKey(name))
+		if (!this.machines.containsKey(name))
 			return false;
 		
-		if (machines.containsKey(newName))
+		if (this.machines.containsKey(newName))
 			return false;
 		
-		machines.put(newName, machines.get(name));
-		machines.remove(name);
-		machines.get(newName).nickname = newName;
+		this.machines.put(newName, this.machines.get(name));
+		this.machines.remove(name);
+		this.machines.get(newName).nickname = newName;
 		
 		// Nothing to do!
 		
@@ -629,18 +654,18 @@ public class MAtmosKnowledge
 	
 	public void routine()
 	{
-		if (!isRunning)
+		if (!this.isRunning)
 			return;
 		
-		if (dataLastVersion != data.updateVersion)
+		if (this.dataLastVersion != this.data.updateVersion)
 		{
 			evaluate();
-			dataLastVersion = data.updateVersion;
+			this.dataLastVersion = this.data.updateVersion;
 			
 		}
 		
-		soundManager.routine();
-		for (Iterator<MAtmosMachine> iter = machines.values().iterator(); iter.hasNext();)
+		this.soundManager.routine();
+		for (Iterator<MAtmosMachine> iter = this.machines.values().iterator(); iter.hasNext();)
 		{
 			iter.next().routine();
 			
@@ -650,12 +675,11 @@ public class MAtmosKnowledge
 	
 	public void soundRoutine()
 	{
-		if (!isRunning)
+		if (!this.isRunning)
 			return;
 		
-		soundManager.routine();
-		for (Iterator<MAtmosMachine> iter = machines.values().iterator(); iter
-				.hasNext();)
+		this.soundManager.routine();
+		for (Iterator<MAtmosMachine> iter = this.machines.values().iterator(); iter.hasNext();)
 		{
 			iter.next().routine();
 			
@@ -665,13 +689,13 @@ public class MAtmosKnowledge
 	
 	public void dataRoutine()
 	{
-		if (!isRunning)
+		if (!this.isRunning)
 			return;
 		
-		if (dataLastVersion != data.updateVersion)
+		if (this.dataLastVersion != this.data.updateVersion)
 		{
 			evaluate();
-			dataLastVersion = data.updateVersion;
+			this.dataLastVersion = this.data.updateVersion;
 			
 		}
 		
@@ -679,26 +703,26 @@ public class MAtmosKnowledge
 	
 	void evaluate()
 	{
-		if (!isRunning) // The keyring may not be reclaimed: If running then it must have been reclaimed. Do not perform if not running.
+		if (!this.isRunning) // The keyring may not be reclaimed: If running then it must have been reclaimed. Do not perform if not running.
 			return;
 		
-		for (MAtmosDynamic dynamic : dynamics.values())
+		for (MAtmosDynamic dynamic : this.dynamics.values())
 		{
 			dynamic.evaluate();
 			
 		}
 		// Lists don't have to be tied with the knowledge
-		for (MAtmosCondition condition : conditions.values())
+		for (MAtmosCondition condition : this.conditions.values())
 		{
 			condition.evaluate();
 			
 		}
-		for (MAtmosConditionSet cset : csets.values())
+		for (MAtmosConditionSet cset : this.csets.values())
 		{
 			cset.evaluate();
 			
 		}
-		for (MAtmosMachine machine : machines.values())
+		for (MAtmosMachine machine : this.machines.values())
 		{
 			machine.evaluate();
 			
@@ -724,7 +748,7 @@ public class MAtmosKnowledge
 		eventWriter.add(ret);
 		eventWriter.add(eventFactory.createStartElement("", "", "contents"));
 		
-		keysArray = dynamics.keySet().toArray();
+		keysArray = this.dynamics.keySet().toArray();
 		Arrays.sort(keysArray);
 		for (int i = 0; i < keysArray.length; i++)
 		{
@@ -734,11 +758,11 @@ public class MAtmosKnowledge
 			eventWriter.add(eventFactory.createStartElement("", "", "dynamic"));
 			eventWriter.add(eventFactory.createAttribute("name", name));
 			eventWriter.add(ret);
-			dynamics.get(name).serialize(eventWriter);
+			this.dynamics.get(name).serialize(eventWriter);
 			eventWriter.add(eventFactory.createEndElement("", "", "dynamic"));
 			
 		}
-		keysArray = lists.keySet().toArray();
+		keysArray = this.lists.keySet().toArray();
 		Arrays.sort(keysArray);
 		for (int i = 0; i < keysArray.length; i++)
 		{
@@ -748,11 +772,11 @@ public class MAtmosKnowledge
 			eventWriter.add(eventFactory.createStartElement("", "", "list"));
 			eventWriter.add(eventFactory.createAttribute("name", name));
 			eventWriter.add(ret);
-			lists.get(name).serialize(eventWriter);
+			this.lists.get(name).serialize(eventWriter);
 			eventWriter.add(eventFactory.createEndElement("", "", "list"));
 			
 		}
-		keysArray = conditions.keySet().toArray();
+		keysArray = this.conditions.keySet().toArray();
 		Arrays.sort(keysArray);
 		for (int i = 0; i < keysArray.length; i++)
 		{
@@ -762,11 +786,11 @@ public class MAtmosKnowledge
 			eventWriter.add(eventFactory.createStartElement("", "", "condition"));
 			eventWriter.add(eventFactory.createAttribute("name", name));
 			eventWriter.add(ret);
-			conditions.get(name).serialize(eventWriter);
+			this.conditions.get(name).serialize(eventWriter);
 			eventWriter.add(eventFactory.createEndElement("", "", "condition"));
 			
 		}
-		keysArray = csets.keySet().toArray();
+		keysArray = this.csets.keySet().toArray();
 		Arrays.sort(keysArray);
 		for (int i = 0; i < keysArray.length; i++)
 		{
@@ -776,11 +800,11 @@ public class MAtmosKnowledge
 			eventWriter.add(eventFactory.createStartElement("", "", "set"));
 			eventWriter.add(eventFactory.createAttribute("name", name));
 			eventWriter.add(ret);
-			csets.get(name).serialize(eventWriter);
+			this.csets.get(name).serialize(eventWriter);
 			eventWriter.add(eventFactory.createEndElement("", "", "set"));
 			
 		}
-		keysArray = events.keySet().toArray();
+		keysArray = this.events.keySet().toArray();
 		Arrays.sort(keysArray);
 		for (int i = 0; i < keysArray.length; i++)
 		{
@@ -790,11 +814,11 @@ public class MAtmosKnowledge
 			eventWriter.add(eventFactory.createStartElement("", "", "event"));
 			eventWriter.add(eventFactory.createAttribute("name", name));
 			eventWriter.add(ret);
-			events.get(name).serialize(eventWriter);
+			this.events.get(name).serialize(eventWriter);
 			eventWriter.add(eventFactory.createEndElement("", "", "event"));
 			
 		}
-		keysArray = machines.keySet().toArray();
+		keysArray = this.machines.keySet().toArray();
 		Arrays.sort(keysArray);
 		for (int i = 0; i < keysArray.length; i++)
 		{
@@ -804,7 +828,7 @@ public class MAtmosKnowledge
 			eventWriter.add(eventFactory.createStartElement("", "", "machine"));
 			eventWriter.add(eventFactory.createAttribute("name", name));
 			eventWriter.add(ret);
-			machines.get(name).serialize(eventWriter);
+			this.machines.get(name).serialize(eventWriter);
 			eventWriter.add(eventFactory.createEndElement("", "", "machine"));
 			
 		}

@@ -35,10 +35,10 @@ public abstract class MAtmosDescriptible
 	@Override
 	public String toString()
 	{
-		return "[(" + this.getClass().toString() + ") " + nickname + "]";
+		return "[(" + this.getClass().toString() + ") " + this.nickname + "]";
 		
 	}
-
+	
 	protected void buildDescriptibleSerialized(XMLEventWriter eventWriter) throws XMLStreamException
 	{
 		XMLEventFactory eventFactory = XMLEventFactory.newInstance();
@@ -48,18 +48,19 @@ public abstract class MAtmosDescriptible
 		eventWriter.add(tab);
 		eventWriter.add(eventFactory.createStartElement("", "", "descriptible"));
 		eventWriter.add(ret);
-		createNode(eventWriter, "nickname", nickname, 2);
-		createNode(eventWriter, "description", description, 2);
-		createNode(eventWriter, "icon", icon, 2);
-		createNode(eventWriter, "meta", meta, 2);
+		createNode(eventWriter, "nickname", this.nickname, 2);
+		createNode(eventWriter, "description", this.description, 2);
+		createNode(eventWriter, "icon", this.icon, 2);
+		createNode(eventWriter, "meta", this.meta, 2);
 		eventWriter.add(tab);
 		eventWriter.add(eventFactory.createEndElement("", "", "descriptible"));
 		eventWriter.add(ret);
 		
 	}
-	protected void createNode(XMLEventWriter eventWriter, String name,
-			String value, int tabCount) throws XMLStreamException
-			{
+	
+	protected void createNode(XMLEventWriter eventWriter, String name, String value, int tabCount)
+		throws XMLStreamException
+	{
 		XMLEventFactory eventFactory = XMLEventFactory.newInstance();
 		XMLEvent tab = eventFactory.createDTD("\t");
 		XMLEvent end = eventFactory.createDTD("\n");
@@ -77,20 +78,22 @@ public abstract class MAtmosDescriptible
 		eventWriter.add(eElement);
 		eventWriter.add(end);*/
 		
-		for (int i=0;i<tabCount;i++)
+		for (int i = 0; i < tabCount; i++)
+		{
 			eventWriter.add(tab);
+		}
 		
 		eventWriter.add(eventFactory.createStartElement("", "", name));
 		eventWriter.add(eventFactory.createCharacters(value));
 		eventWriter.add(eventFactory.createEndElement("", "", name));
 		eventWriter.add(end);
 		
-			}
-	protected void createNode(XMLEventWriter eventWriter, String name,
-			String value) throws XMLStreamException
-			{
+	}
+	
+	protected void createNode(XMLEventWriter eventWriter, String name, String value) throws XMLStreamException
+	{
 		createNode(eventWriter, name, value, 1);
 		
-			}
+	}
 	
 }

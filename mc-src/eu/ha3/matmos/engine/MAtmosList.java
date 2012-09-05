@@ -29,36 +29,39 @@ public class MAtmosList extends MAtmosDescriptible
 	
 	MAtmosList()
 	{
-		list = new ArrayList<Integer>();
+		this.list = new ArrayList<Integer>();
 		
 	}
 	
 	public ArrayList<Integer> getList()
 	{
-		return list;
+		return this.list;
 		
 	}
 	
 	public boolean contains(int in)
 	{
-		return list.contains(in);
+		return this.list.contains(in);
 		
 	}
+	
 	public void add(int in)
 	{
-		if (list.contains(in))
+		if (this.list.contains(in))
 			return;
 		
-		list.add(in);
-		Collections.sort( list );
+		this.list.add(in);
+		Collections.sort(this.list);
 	}
+	
 	public void remove(int in)
 	{
-		list.remove(in);
+		this.list.remove(in);
 	}
+	
 	public void clear()
 	{
-		list.clear();
+		this.list.clear();
 	}
 	
 	@Override
@@ -66,7 +69,7 @@ public class MAtmosList extends MAtmosDescriptible
 	{
 		buildDescriptibleSerialized(eventWriter);
 		
-		for (Iterator<Integer> iter = list.iterator(); iter.hasNext();)
+		for (Iterator<Integer> iter = this.list.iterator(); iter.hasNext();)
 		{
 			createNode(eventWriter, "constant", iter.next().toString());
 			

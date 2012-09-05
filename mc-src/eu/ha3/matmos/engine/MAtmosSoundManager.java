@@ -21,6 +21,7 @@ public interface MAtmosSoundManager
 	void routine();
 	
 	void cacheSound(String path);
+	
 	void playSound(String path, float volume, float pitch, int meta);
 	
 	int getNewStreamingToken();
@@ -28,8 +29,10 @@ public interface MAtmosSoundManager
 	boolean setupStreamingToken(int token, String path, float volume, float pitch);
 	
 	void startStreaming(int token, float fadeDuration, int timesToPlay);
+	
 	//void restartStreaming(int token, float fadeDuration, int timesToPlay);
 	void stopStreaming(int token, float fadeDuration);
+	
 	void pauseStreaming(int token, float fadeDuration);
 	
 	void eraseStreamingToken(int token);
