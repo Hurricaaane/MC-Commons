@@ -82,6 +82,8 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		// Haddon constructors don't have superclass constructor calls
 		// for convenience, so nothing is initialized.
 		
+		this.phase = MAtModPhase.NOT_INITIALIZED;
+		
 		Formatter formatter = new Formatter() {
 			@Override
 			public String format(LogRecord record)
@@ -161,6 +163,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		
 		this.configuration = new ConfigProperty();
 		this.configuration.setProperty("dump.enabled", true);
+		this.configuration.setProperty("start.enabled", true);
 		this.configuration.setProperty("globalvolume.scale", 1f);
 		this.configuration.setProperty("update_found.enabled", true);
 		this.configuration.setProperty("update_found.version", MAtMod.VERSION);
@@ -183,19 +186,37 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		this.soundManagerMaster.setVolume(this.configuration.getFloat("globalvolume.scale"));
 		this.updateNotifier.loadConfiguration(this.configuration);
 		
-		doLoad();
-		
 		MAtMod.LOGGER.info("Took " + this.timeStatistic.getSecondsAsString(1) + " seconds to load MAtmos.");
+		
+		preLoad();
 		
 	}
 	
-	private void doLoad()
+	private void preLoad()
 	{
+		MAtMod.LOGGER.info("Pre-loading.");
+		
+		this.userControl.load();
+		
+		this.phase = MAtModPhase.NOT_YET_ENABLED;
+		if (this.configuration.getBoolean("start.enabled"))
+		{
+			doLoad();
+		}
+		
+	}
+	
+	public void doLoad()
+	{
+		if (this.phase != MAtModPhase.NOT_YET_ENABLED)
+			return;
+		
+		this.timeStatistic = new TimeStatistic(Locale.ENGLISH);
+		
 		this.phase = MAtModPhase.CONSTRUCTING;
 		
 		MAtMod.LOGGER.info("Constructing.");
 		
-		this.userControl.load();
 		this.dataGatherer.load();
 		// note: soundManager needs to be loaded post sndcomms
 		
@@ -217,6 +238,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		});
 		
 		this.expansionManager.loadExpansions();
+		MAtMod.LOGGER.info("Took " + this.timeStatistic.getSecondsAsString(1) + " seconds to enable MAtmos.");
 		
 	}
 	
@@ -617,6 +639,17 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	public ConfigProperty getConfiguration()
 	{
 		return this.configuration;
+		
+	}
+	
+	public boolean isStartEnabled()
+	{
+		return this.configuration.getBoolean("start.enabled");
+	}
+	
+	public void setStartEnabled(boolean startEnabled)
+	{
+		this.configuration.setProperty("start.enabled", startEnabled);
 		
 	}
 	

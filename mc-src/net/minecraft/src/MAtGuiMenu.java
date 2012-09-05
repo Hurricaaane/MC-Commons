@@ -138,7 +138,9 @@ public class MAtGuiMenu extends GuiScreen
 			
 		}
 		
-		this.controlList.add(new GuiButton(200, this.width / 2 - 100, this.height / 6 + 168, "Save"));
+		this.controlList.add(new GuiButton(200, leftHinge + 22 + 120 + 5, this.height / 6 + 168, 140, 20, "Save"));
+		this.controlList.add(new GuiButton(210, leftHinge + 22, this.height / 6 + 168, 120, 20, this.matmos
+			.isStartEnabled() ? "Start Enabled: ON" : "Start Enabled: OFF"));
 		if (this.pageFromZero != 0)
 		{
 			this.controlList.add(new GuiButton(201, leftHinge, this.height / 6 + 168 - 22, 150, 20, stringtranslate
@@ -188,6 +190,12 @@ public class MAtGuiMenu extends GuiScreen
 		else if (par1GuiButton.id == 202)
 		{
 			this.mc.displayGuiScreen(new MAtGuiMenu(this.parentScreen, this.matmos, this.pageFromZero + 1));
+		}
+		else if (par1GuiButton.id == 210)
+		{
+			this.matmos.setStartEnabled(!this.matmos.isStartEnabled());
+			par1GuiButton.displayString = this.matmos.isStartEnabled() ? "Start Enabled: ON" : "Start Enabled: OFF";
+			this.matmos.saveConfig();
 		}
 	}
 	
