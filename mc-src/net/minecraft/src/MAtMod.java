@@ -164,6 +164,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		this.configuration = new ConfigProperty();
 		this.configuration.setProperty("dump.enabled", true);
 		this.configuration.setProperty("start.enabled", true);
+		this.configuration.setProperty("reversed.controls", false);
 		this.configuration.setProperty("globalvolume.scale", 1f);
 		this.configuration.setProperty("update_found.enabled", true);
 		this.configuration.setProperty("update_found.version", MAtMod.VERSION);

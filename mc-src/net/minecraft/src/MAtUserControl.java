@@ -69,17 +69,6 @@ public class MAtUserControl
 	{
 	}
 	
-	public void beginHold()
-	{
-		if (this.mod.isRunning() && this.mod.util().isCurrentScreen(null))
-		{
-			this.mod
-				.manager().getMinecraft()
-				.displayGuiScreen(new MAtGuiMenu((GuiScreen) this.mod.util().getCurrentScreen(), this.mod));
-		}
-		
-	}
-	
 	public void printUnusualMessages()
 	{
 		if (!this.mod.isReady())
@@ -149,7 +138,53 @@ public class MAtUserControl
 	
 	private int loadingCount;
 	
+	public void beginHold()
+	{
+		if (this.mod.getConfiguration().getBoolean("reversed.controls"))
+		{
+			displayMenu();
+		}
+		else
+		{
+			whenWantsToggle();
+		}
+		
+	}
+	
 	public void signalShortPress()
+	{
+		if (this.mod.getConfiguration().getBoolean("reversed.controls"))
+		{
+			whenWantsToggle();
+		}
+		else
+		{
+			if (!this.mod.isRunning())
+			{
+				whenWantsToggle();
+			}
+			else
+			{
+				displayMenu();
+			}
+		}
+		
+		printUnusualMessages();
+		
+	}
+	
+	public void endHold()
+	{
+		if (this.mod.getConfiguration().getBoolean("reversed.controls"))
+		{
+			whenWantsForcing();
+		}
+		
+		printUnusualMessages();
+		
+	}
+	
+	private void whenWantsToggle()
 	{
 		if (this.mod.isRunning())
 		{
@@ -173,7 +208,6 @@ public class MAtUserControl
 			this.hasFirstHit = true;
 			
 		}
-		
 		else if (this.mod.isReady())
 		{
 			if (this.loadingCount != 0)
@@ -182,10 +216,20 @@ public class MAtUserControl
 			}
 			else
 			{
-				this.mod.printChat(
-					Ha3Utility.COLOR_BRIGHTGREEN, "Loading...", Ha3Utility.COLOR_YELLOW, " (Hold ",
-					Ha3Utility.COLOR_WHITE, getKeyBindingMainFriendlyName() + " down", Ha3Utility.COLOR_YELLOW,
-					" to tweak the volume)");
+				if (this.mod.getConfiguration().getBoolean("reversed.controls"))
+				{
+					this.mod.printChat(
+						Ha3Utility.COLOR_BRIGHTGREEN, "Loading...", Ha3Utility.COLOR_YELLOW, " (Hold ",
+						Ha3Utility.COLOR_WHITE, getKeyBindingMainFriendlyName() + " down", Ha3Utility.COLOR_YELLOW,
+						" to tweak the volume)");
+				}
+				else
+				{
+					this.mod.printChat(
+						Ha3Utility.COLOR_BRIGHTGREEN, "Loading...", Ha3Utility.COLOR_YELLOW, " (Press ",
+						Ha3Utility.COLOR_WHITE, getKeyBindingMainFriendlyName() + "", Ha3Utility.COLOR_YELLOW,
+						" to tweak the volume)");
+				}
 			}
 			
 			this.loadingCount++;
@@ -194,24 +238,31 @@ public class MAtUserControl
 		}
 		else if (this.mod.getPhase() == MAtModPhase.NOT_YET_ENABLED)
 		{
-			this.mod.printChat(
-				Ha3Utility.COLOR_BRIGHTGREEN, "Initializing...", Ha3Utility.COLOR_GRAY,
-				" (This can take several seconds to load!)");
-			new Thread() {
-				@Override
-				public void run()
-				{
-					MAtUserControl.this.mod.doLoad();
-				}
-			}.start();
+			whenUninitializedAction();
 			
 		}
 		
-		printUnusualMessages();
+	}
+	
+	private void whenUninitializedAction()
+	{
+		if (this.mod.getPhase() != MAtModPhase.NOT_YET_ENABLED)
+			return;
+		
+		this.mod.printChat(
+			Ha3Utility.COLOR_BRIGHTGREEN, "Initializing...", Ha3Utility.COLOR_GRAY,
+			" (This can take several seconds to load!)");
+		new Thread() {
+			@Override
+			public void run()
+			{
+				MAtUserControl.this.mod.doLoad();
+			}
+		}.start();
 		
 	}
 	
-	public void endHold()
+	private void whenWantsForcing()
 	{
 		if (!this.mod.isRunning() && this.mod.isReady())
 		{
@@ -219,16 +270,25 @@ public class MAtUserControl
 			this.mod.reloadAndStart();
 			
 		}
-		else if (!this.mod.isRunning() && !this.mod.isReady())
+		else if (this.mod.getPhase() == MAtModPhase.NOT_YET_ENABLED)
 		{
-			this.mod.printChat(Ha3Utility.COLOR_RED, "MAtmos is set to be disabled when Minecraft starts.");
+			whenUninitializedAction();
+			/*this.mod.printChat(Ha3Utility.COLOR_RED, "MAtmos is set to be disabled when Minecraft starts.");
 			this.mod.printChatShort(
 				Ha3Utility.COLOR_GOLD, "Press ", Ha3Utility.COLOR_WHITE, getKeyBindingMainFriendlyName(),
-				Ha3Utility.COLOR_GOLD, " to start MAtmos.");
+				Ha3Utility.COLOR_GOLD, " to start MAtmos.");*/
 			
 		}
-		
-		printUnusualMessages();
+	}
+	
+	private void displayMenu()
+	{
+		if (this.mod.isRunning() && this.mod.util().isCurrentScreen(null))
+		{
+			this.mod
+				.manager().getMinecraft()
+				.displayGuiScreen(new MAtGuiMenu((GuiScreen) this.mod.util().getCurrentScreen(), this.mod));
+		}
 		
 	}
 	

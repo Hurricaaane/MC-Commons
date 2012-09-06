@@ -41,7 +41,7 @@ public class MAtGuiMenu extends GuiScreen
 	private int buttonId;
 	
 	private int pageFromZero;
-	private final int IDS_PER_PAGE = 6;
+	private final int IDS_PER_PAGE = 5;
 	
 	private static int in_memory_page = 0;
 	
@@ -69,7 +69,9 @@ public class MAtGuiMenu extends GuiScreen
 	public void initGui()
 	{
 		StringTranslate stringtranslate = StringTranslate.getInstance();
-		int leftHinge = this.width / 2 - 155;
+		int inWidth = 155 * 2;
+		int leftHinge = this.width / 2 - inWidth / 2;
+		int rightHinge = this.width / 2 + inWidth / 2;
 		
 		Map<String, MAtExpansion> expansions = this.matmos.getExpansionLoader().getExpansions();
 		int id = 0;
@@ -138,19 +140,31 @@ public class MAtGuiMenu extends GuiScreen
 			
 		}
 		
-		this.controlList.add(new GuiButton(200, leftHinge + 22 + 120 + 5, this.height / 6 + 168, 140, 20, "Save"));
-		this.controlList.add(new GuiButton(210, leftHinge + 22, this.height / 6 + 168, 120, 20, this.matmos
-			.isStartEnabled() ? "Start Enabled: ON" : "Start Enabled: OFF"));
 		if (this.pageFromZero != 0)
 		{
-			this.controlList.add(new GuiButton(201, leftHinge, this.height / 6 + 168 - 22, 150, 20, stringtranslate
-				.translateKey("Previous")));
+			this.controlList.add(new GuiButton(
+				201, leftHinge + 22, 22 * (this.IDS_PER_PAGE + 2), 100, 20, stringtranslate.translateKey("Previous")));
 		}
 		if (this.pageFromZero * this.IDS_PER_PAGE + this.IDS_PER_PAGE < identifiers.size())
 		{
-			this.controlList.add(new GuiButton(
-				202, leftHinge + 160, this.height / 6 + 168 - 22, 150, 20, stringtranslate.translateKey("Next")));
+			this.controlList
+				.add(new GuiButton(202, rightHinge - 22 - 100, 22 * (this.IDS_PER_PAGE + 2), 100, 20, stringtranslate
+					.translateKey("Next")));
 		}
+		
+		int splitty = 2;
+		int gappy = 2;
+		int widdy = inWidth / splitty - gappy * (splitty - 1) / 2;
+		
+		this.controlList.add(new GuiButton(210, leftHinge, 10 + 22 * (this.IDS_PER_PAGE + 3), widdy, 20, this.matmos
+			.isStartEnabled() ? "Start Enabled: ON" : "Start Enabled: OFF"));
+		
+		this.controlList.add(new GuiButton(
+			211, leftHinge + widdy + gappy, 10 + 22 * (this.IDS_PER_PAGE + 3), widdy, 20, this.matmos
+				.getConfiguration().getBoolean("reversed.controls") ? "Menu: Hold Down Key" : "Menu: Press Key"));
+		
+		this.controlList.add(new GuiButton(
+			200, leftHinge + 50, 10 + 22 * (this.IDS_PER_PAGE + 4), 155 * 2 - 100, 20, "Done"));
 		
 		//this.screenTitle = stringtranslate.translateKey("controls.title");
 	}
@@ -164,24 +178,9 @@ public class MAtGuiMenu extends GuiScreen
 	{
 		if (par1GuiButton.id == 200)
 		{
-			Map<String, MAtExpansion> expansions = this.matmos.getExpansionLoader().getExpansions();
-			for (MAtExpansion expansion : expansions.values())
-			{
-				if (expansion.getVolume() == 0f && expansion.isRunning())
-				{
-					expansion.turnOff();
-					
-				}
-				
-			}
+			// This is triggered by onGuiClosed
+			//aboutToClose();
 			this.mc.displayGuiScreen(this.parentScreen);
-			
-			this.matmos.saveConfig();
-			for (MAtExpansion expansion : expansions.values())
-			{
-				expansion.saveConfig();
-				
-			}
 		}
 		else if (par1GuiButton.id == 201)
 		{
@@ -197,6 +196,46 @@ public class MAtGuiMenu extends GuiScreen
 			par1GuiButton.displayString = this.matmos.isStartEnabled() ? "Start Enabled: ON" : "Start Enabled: OFF";
 			this.matmos.saveConfig();
 		}
+		else if (par1GuiButton.id == 211)
+		{
+			this.matmos.getConfiguration().setProperty(
+				"reversed.controls", !this.matmos.getConfiguration().getBoolean("reversed.controls"));
+			par1GuiButton.displayString =
+				this.matmos.getConfiguration().getBoolean("reversed.controls")
+					? "Menu: Hold Down Key" : "Menu: Press Key";
+			this.matmos.saveConfig();
+		}
+		
+	}
+	
+	private void aboutToClose()
+	{
+		MAtMod.LOGGER.info("Saving configuration...");
+		
+		Map<String, MAtExpansion> expansions = this.matmos.getExpansionLoader().getExpansions();
+		for (MAtExpansion expansion : expansions.values())
+		{
+			if (expansion.getVolume() == 0f && expansion.isRunning())
+			{
+				expansion.turnOff();
+				
+			}
+			
+		}
+		
+		this.matmos.saveConfig();
+		for (MAtExpansion expansion : expansions.values())
+		{
+			expansion.saveConfig();
+			
+		}
+	}
+	
+	@Override
+	public void onGuiClosed()
+	{
+		aboutToClose();
+		
 	}
 	
 	/**
