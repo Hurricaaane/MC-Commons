@@ -78,13 +78,13 @@ public class LBReport
 		
 	}
 	
-	public List<LBChange> getStoredChanges()
+	public synchronized List<LBChange> getStoredChanges()
 	{
 		return this.changes;
 		
 	}
 	
-	public void addChange(LBChange change)
+	public synchronized void addChange(LBChange change)
 	{
 		this.changes.add(change);
 		

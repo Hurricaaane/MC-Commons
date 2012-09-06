@@ -9,6 +9,8 @@ import net.minecraft.client.Minecraft;
 
 import org.lwjgl.opengl.GL11;
 
+import eu.ha3.easy.EdgeModel;
+import eu.ha3.easy.EdgeTrigger;
 import eu.ha3.mc.haddon.SupportsChatEvents;
 import eu.ha3.mc.haddon.SupportsTickEvents;
 
@@ -43,12 +45,32 @@ public class LBVisHaddon extends HaddonImpl implements SupportsTickEvents, Suppo
 	private World lastWorld;
 	private EntityPlayer lastPlayer;
 	
-	private LBVisRenderEntity renderEntity;
+	private RenderLB renderRelay;
+	
+	private EdgeTrigger repeater;
+	
+	private ArrayList<Runnable> queue;
 	
 	public LBVisHaddon()
 	{
 		this.step = LBVisStep.WAITING_FOR_START;
 		this.reports = new ArrayList<LBReport>();
+		this.queue = new ArrayList<Runnable>();
+		
+		this.repeater = new EdgeTrigger(new EdgeModel() {
+			
+			@Override
+			public void onTrueEdge()
+			{
+				manager().getMinecraft().thePlayer.sendChatMessage("/lb next");
+			}
+			
+			@Override
+			public void onFalseEdge()
+			{
+				
+			}
+		});
 		
 		makePatterns();
 		
@@ -57,9 +79,12 @@ public class LBVisHaddon extends HaddonImpl implements SupportsTickEvents, Suppo
 	@Override
 	public void onLoad()
 	{
+		this.renderRelay = new RenderLB(manager().getMinecraft());
+		
 		manager().hookTickEvents(true);
 		manager().hookChatEvents(true);
-		manager().addRenderable(LBVisRenderEntity.class, new LBVisRenderHooks(this));
+		
+		manager().addRenderable(this.renderRelay.getRenderEntityClass(), this.renderRelay.getRenderHook());
 		
 	}
 	
@@ -75,37 +100,45 @@ public class LBVisHaddon extends HaddonImpl implements SupportsTickEvents, Suppo
 	}
 	
 	@Override
-	public void onChat(String contents)
+	public void onChat(final String contents)
 	{
-		boolean win = false;
-		
-		switch (this.step)
-		{
-		case WAITING_FOR_CHANGECOUNT:
-			win = tryMatchChangeCount(contents);
-			break;
-		case WAITING_FOR_PAGECOUNT:
-			win = tryMatchPageCount(contents);
-			break;
-		case WAITING_FOR_LOGLINE:
-			win = tryMatchLogLine(contents);
-			break;
-		default:
-			break;
-		
-		}
-		
-		if (!win)
-		{
-			boolean pass = tryMatchPageCount(contents);
-			
-			if (!pass)
+		this.queue.add(new Runnable() {
+			@Override
+			public void run()
 			{
-				tryMatchStart(contents);
 				
+				boolean win = false;
+				
+				switch (LBVisHaddon.this.step)
+				{
+				case WAITING_FOR_CHANGECOUNT:
+					win = tryMatchChangeCount(contents);
+					break;
+				case WAITING_FOR_PAGECOUNT:
+					win = tryMatchPageCount(contents);
+					break;
+				case WAITING_FOR_LOGLINE:
+					win = tryMatchLogLine(contents);
+					break;
+				default:
+					break;
+				
+				}
+				
+				if (!win)
+				{
+					boolean pass = tryMatchPageCount(contents);
+					
+					if (!pass)
+					{
+						tryMatchStart(contents);
+						
+					}
+					
+				}
 			}
 			
-		}
+		});
 		
 		//System.out.println(step);
 		
@@ -205,29 +238,26 @@ public class LBVisHaddon extends HaddonImpl implements SupportsTickEvents, Suppo
 	public void onTick()
 	{
 		Minecraft mc = manager().getMinecraft();
-		
-		if (mc.theWorld != this.lastWorld || mc.thePlayer != this.lastPlayer)
+		if (this.renderRelay.ensureExists())
 		{
-			this.renderEntity = new LBVisRenderEntity(this, mc.theWorld);
-			this.renderEntity.setPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);
-			mc.theWorld.spawnEntityInWorld(this.renderEntity);
-			this.renderEntity.setPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);
-			
-			this.lastWorld = mc.theWorld;
-			this.lastPlayer = mc.thePlayer;
-			
-			System.out.println("f");
-			changedLocation();
+			System.out.println("Respawned Render Entity");
+		}
+		this.repeater.signalState(util().areKeysDown(29, 42, 38));
+		
+		while (!this.queue.isEmpty())
+		{
+			this.queue.remove(0).run();
 			
 		}
 		
-		/*if (manager().getMinecraft().thePlayer != null)
-			if (manager().getMinecraft().thePlayer.posX != lastPosX)
-			{
-				lastPosX = manager().getMinecraft().thePlayer.posX;
-				manager().getMinecraft().thePlayer.sendChatMessage("/lb next");
-				
-			}*/
+		if (mc.theWorld != this.lastWorld || mc.thePlayer != this.lastPlayer)
+		{
+			this.lastWorld = mc.theWorld;
+			this.lastPlayer = mc.thePlayer;
+			
+			changedLocation();
+			
+		}
 		
 	}
 	
@@ -301,60 +331,128 @@ public class LBVisHaddon extends HaddonImpl implements SupportsTickEvents, Suppo
 		
 	}
 	
-	public void render(double dx, double dy, double dz, float f, float f1)
+	class RenderLB extends Ha3RenderRelay
 	{
-		double ax = 0, ay = 0, az = 0;
-		int count = 0;
-		
-		for (LBReport report : this.reports)
+		public RenderLB(Minecraft mc)
 		{
-			//if (report.isValid())
-			for (LBChange change : report.getStoredChanges())
-			{
-				count++;
-				
-				ax = ax + change.getX();
-				ay = ay + change.getY();
-				az = az + change.getZ();
-				
-				qdb(change.getX(), change.getY(), change.getZ(), f);
-				
-			}
+			super(mc);
 		}
 		
-		ax = (float) ax / count;
-		ay = (float) ay / count;
-		az = (float) az / count;
+		@Override
+		public void doRender(Entity entity, double dx, double dy, double dz, float f, float semi)
+		{
+			beginTrace();
+			
+			double ax = 0, ay = 0, az = 0;
+			int count = 0;
+			
+			for (LBReport report : LBVisHaddon.this.reports)
+			{
+				//if (report.isValid())
+				for (LBChange change : report.getStoredChanges())
+				{
+					count++;
+					
+					ax = ax + change.getX();
+					ay = ay + change.getY();
+					az = az + change.getZ();
+					
+					if (change.getAction().startsWith("destroyed"))
+					{
+						traceColor(255, 0, 0);
+					}
+					else if (change.getAction().startsWith("created"))
+					{
+						traceColor(0, 0, 255);
+					}
+					else if (change.getAction().startsWith("replaced"))
+					{
+						traceColor(255, 255, 0);
+					}
+					
+					int x = change.getX();
+					int y = change.getY();
+					int z = change.getZ();
+					
+					GL11.glLineWidth(1.5f);
+					trace(dx, dy, dz, x, y, z, x + 1, y, z);
+					trace(dx, dy, dz, x + 1, y, z + 1, x + 1, y, z);
+					trace(dx, dy, dz, x + 1, y, z + 1, x, y, z + 1);
+					trace(dx, dy, dz, x, y, z + 1, x, y, z);
+					
+				}
+			}
+			
+			ax = (float) ax / count;
+			ay = (float) ay / count;
+			az = (float) az / count;
+			
+			finishTrace();
+		}
 		
-		trace(ax, ay, az, f1);
+		private void beginTrace()
+		{
+			RenderHelper.disableStandardItemLighting();
+			
+			GL11.glDisable(GL11.GL_DEPTH_TEST);
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
+			GL11.glDisable(GL11.GL_ALPHA_TEST);
+			
+			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ZERO);
+		}
 		
-	}
-	
-	private void trace(double ax, double ay, double az, float delta)
-	{
-		EntityPlayer ply = manager().getMinecraft().thePlayer;
+		private void traceColor(int r, int g, int b)
+		{
+			GL11.glColor3f(r / 255f, g / 255f, b / 255f);
+		}
 		
-		double px = ply.posX + (ply.posX - ply.lastTickPosX) * delta;
-		double py = ply.posY + (ply.posY - ply.lastTickPosY) * delta;
-		double pz = ply.posZ + (ply.posZ - ply.lastTickPosZ) * delta;
+		private void traceColor(int color)
+		{
+			GL11.glColor3b((byte) (color >> 16 & 0xff), (byte) (color >> 8 & 0xff), (byte) (color & 0xff));
+		}
 		
-		RenderHelper.disableStandardItemLighting();
+		private void finishTrace()
+		{
+			GL11.glDisable(GL11.GL_BLEND);
+			
+			GL11.glEnable(GL11.GL_ALPHA_TEST);
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			GL11.glEnable(GL11.GL_DEPTH_TEST);
+			
+			RenderHelper.enableStandardItemLighting();
+		}
 		
-		Tessellator tessellator = Tessellator.instance;
-		tessellator.startDrawing(GL11.GL_LINE_LOOP);
-		GL11.glColor4f(1f, 0f, 1f, 1f);
-		GL11.glLineWidth(4f);
-		GL11.glDepthFunc(GL11.GL_NOTEQUAL);
+		private void trace(
+			double dx, double dy, double dz, double xa, double ya, double za, double xb, double yb, double zb)
+		{
+			//GL11.glColor3f(1f, 0f, 0f);
+			Tessellator tessellator = Tessellator.instance;
+			tessellator.startDrawing(GL11.GL_LINE_STRIP);
+			
+			tessellator.setTranslation(-dx, -dy, -dz);
+			tessellator.addVertex(xa, ya, za);
+			tessellator.addVertex(xb, yb, zb);
+			
+			tessellator.draw();
+			tessellator.setTranslation(0, 0, 0);
+		}
 		
-		tessellator.setTranslation(-px, -py, -pz);
-		tessellator.addVertex(ax, ay, az);
-		tessellator.addVertex(px, py, pz);
+		@Override
+		public Class<?> getRenderEntityClass()
+		{
+			return MyRenderEntity.class;
+		}
 		
-		tessellator.draw();
-		tessellator.setTranslation(0, 0, 0);
+		@Override
+		public Entity newRenderEntity()
+		{
+			return new MyRenderEntity();
+		}
 		
-		RenderHelper.enableStandardItemLighting();
-		GL11.glDepthFunc(GL11.GL_LEQUAL);
+		private class MyRenderEntity extends HRenderEntity
+		{
+		}
 		
 	}
 	
