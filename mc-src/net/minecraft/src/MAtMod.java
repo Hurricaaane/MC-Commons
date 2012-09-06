@@ -44,7 +44,7 @@ import eu.ha3.util.property.simple.ConfigProperty;
 public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents/*, SupportsGuiTickEvents, Ha3Personalizable*/
 {
 	final static public Logger LOGGER = Logger.getLogger("MAtmos");
-	final static public int VERSION = 16; // Remember to change the thing on mod_Matmos_forModLoader
+	final static public int VERSION = 17; // Remember to change the thing on mod_Matmos_forModLoader
 	
 	private ConsoleHandler conMod;
 	private ConsoleHandler conEngine;
