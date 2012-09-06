@@ -252,6 +252,13 @@ public class MAtUserControl
 		this.mod.printChat(
 			Ha3Utility.COLOR_BRIGHTGREEN, "Initializing...", Ha3Utility.COLOR_GRAY,
 			" (This can take several seconds to load!)");
+		if (this.mod.manager().getMinecraft().gameSettings.soundVolume <= 0)
+		{
+			this.mod.printChat(
+				Ha3Utility.COLOR_RED, "Warning: ", Ha3Utility.COLOR_WHITE,
+				"MAtmos cannot load yet because sounds are turned off in your game settings!");
+			
+		}
 		new Thread() {
 			@Override
 			public void run()
