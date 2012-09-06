@@ -17,6 +17,7 @@ import org.lwjgl.opengl.GL11;
 import eu.ha3.easy.EdgeModel;
 import eu.ha3.easy.EdgeTrigger;
 import eu.ha3.mc.haddon.PrivateAccessException;
+import eu.ha3.mc.haddon.SupportsChatEvents;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
 import eu.ha3.mc.haddon.SupportsTickEvents;
 
@@ -36,7 +37,8 @@ import eu.ha3.mc.haddon.SupportsTickEvents;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class DebuggingHa3Haddon extends HaddonImpl implements SupportsTickEvents, SupportsFrameEvents
+public class DebuggingHa3Haddon extends HaddonImpl
+	implements SupportsTickEvents, SupportsFrameEvents, SupportsChatEvents
 {
 	private EdgeTrigger button;
 	private boolean toggle;
@@ -63,23 +65,12 @@ public class DebuggingHa3Haddon extends HaddonImpl implements SupportsTickEvents
 		
 		manager().hookTickEvents(true);
 		manager().hookFrameEvents(true);
+		manager().hookChatEvents(true);
 		manager().addRenderable(this.renderRelay.getRenderEntityClass(), this.renderRelay.getRenderHook());
 	}
 	
 	protected void in()
 	{
-		/*Minecraft mc = manager().getMinecraft();
-		mc.thePlayer.sendChatMessage("beep boop i am a robot1");
-		mc.thePlayer.sendChatMessage("beep boop i am a robot2");
-		mc.thePlayer.sendChatMessage("beep boop i am a robot3");
-		mc.thePlayer.sendChatMessage("beep boop i am a robot4");
-		mc.thePlayer.sendChatMessage("beep boop i am a robot5");
-		mc.thePlayer.sendChatMessage("beep boop i am a robot6");
-		mc.thePlayer.sendChatMessage("beep boop i am a robot7");
-		mc.theWorld.sendQuittingDisconnectingPacket();
-		mc.loadWorld((WorldClient) null);
-		mc.displayGuiScreen(new GuiMainMenu());*/
-		
 		this.toggle = !this.toggle;
 	}
 	
@@ -121,6 +112,8 @@ public class DebuggingHa3Haddon extends HaddonImpl implements SupportsTickEvents
 	@Override
 	public void onFrame(float semi)
 	{
+		//System.out.println(manager().getMinecraft().thePlayer.attackTime);
+		
 		if (!this.toggle)
 			return;
 		
@@ -161,7 +154,7 @@ public class DebuggingHa3Haddon extends HaddonImpl implements SupportsTickEvents
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);*/
 		
-		boolean inWorld = true;
+		boolean inWorld = false;
 		if (inWorld)
 		{
 			showGPS(1523, 736, 0x00FF00);
@@ -171,7 +164,8 @@ public class DebuggingHa3Haddon extends HaddonImpl implements SupportsTickEvents
 		}
 		else
 		{
-			showGPS(1497 / 8, 672 / 8, 0x0000FF); // inverse nether portal for sandstone village
+			//showGPS(1497 / 8, 672 / 8, 0x0000FF); // inverse nether portal for sandstone village
+			showGPS(-484 / 8, -720 / 8, 0x0000FF); // inverse nether portal for special village
 		}
 		
 		//showGPS(34, -509, 0x00FF00);
@@ -367,6 +361,13 @@ public class DebuggingHa3Haddon extends HaddonImpl implements SupportsTickEvents
 		{
 			Minecraft.main(altArgs);
 		}
+		
+	}
+	
+	@Override
+	public void onChat(String contents)
+	{
+		System.err.println("(C) " + contents);
 		
 	}
 	
