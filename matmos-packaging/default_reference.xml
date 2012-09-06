@@ -56,7 +56,7 @@
 		<data id="41">Is Swinging</data>
 		<data id="42">Is Jumping</data>
 		<data id="43">Fall distance (x1000)</data>
-		<data id="44">Is In Web</data>
+		<data id="44">Is in Web</data>
 		<data id="45">Player Motion XZ (x1000) Pythagore</data>
 		<data id="46">Selected item slot</data>
 		<data id="47">Has object on mouseover</data>
@@ -95,6 +95,7 @@
 		<data id="80">Server Data: Computed actual port</data>
 		
 		<data id="86">BlockID under the cursor</data>
+		<data id="87">Metadata of block under the cursor</data>
 		
 		<data id="100">Protection</data>
 		<data id="101">Fire  Protection</data>

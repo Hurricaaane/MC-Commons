@@ -165,10 +165,18 @@ public class MAtProcessorFrequent extends MAtProcessorModel
 		
 		// 75-85 relaxed server
 		
-		setValue(
-			86,
-			mc.objectMouseOver == null ? -1 : mc.objectMouseOver.typeOfHit == EnumMovingObjectType.TILE ? w.getBlockId(
-				mc.objectMouseOver.blockX, mc.objectMouseOver.blockY, mc.objectMouseOver.blockZ) : -1);
+		if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == EnumMovingObjectType.TILE)
+		{
+			setValue(86, w.getBlockId(mc.objectMouseOver.blockX, mc.objectMouseOver.blockY, mc.objectMouseOver.blockZ));
+			setValue(
+				87, w.getBlockMetadata(mc.objectMouseOver.blockX, mc.objectMouseOver.blockY, mc.objectMouseOver.blockZ));
+		}
+		else
+		{
+			setValue(86, 0);
+			setValue(87, 0);
+			
+		}
 		
 		//
 		
