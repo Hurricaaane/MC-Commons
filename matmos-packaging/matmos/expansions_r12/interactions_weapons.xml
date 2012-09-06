@@ -24,6 +24,7 @@
 	<constant>94</constant>
 	<constant>95</constant>
 	<constant>96</constant>
+	<constant>107</constant>
 	<constant>116</constant>
 	<constant>117</constant>
 	<constant>118</constant>
@@ -416,8 +417,8 @@
 		<meta></meta>
 	</descriptible>
 	<truepart>Interact Sword Sharp</truepart>
-	<falsepart>Is looking at an interactible</falsepart>
 	<truepart>Interact Swing</truepart>
+	<falsepart>Is looking at an interactible</falsepart>
 </set>
 <set name="Interact Sword Soft Hit">
 	<descriptible>
@@ -439,8 +440,8 @@
 		<meta></meta>
 	</descriptible>
 	<truepart>Interact Sword Soft</truepart>
-	<falsepart>Is looking at an interactible</falsepart>
 	<truepart>Interact Swing</truepart>
+	<falsepart>Is looking at an interactible</falsepart>
 </set>
 <set name="Interact Tool Sharp Swing to Miss">
 	<descriptible>
