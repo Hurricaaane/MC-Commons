@@ -83,6 +83,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		
 		this.phase = MAtModPhase.NOT_INITIALIZED;
 		
+		// Setup the formatters!
 		Formatter formatter = new Formatter() {
 			@Override
 			public String format(LogRecord record)
@@ -97,18 +98,14 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		this.conEngine = new ConsoleHandler();
 		this.conEngine.setFormatter(formatter);
 		
-		Level levelMod = Level.INFO;
 		MAtMod.LOGGER.addHandler(this.conMod);
 		MAtMod.LOGGER.setUseParentHandlers(false);
-		MAtMod.LOGGER.setLevel(levelMod);
-		this.conMod.setLevel(levelMod);
 		
-		Level levelEngine = Level.INFO;
 		MAtmosLogger.LOGGER.addHandler(this.conEngine);
 		MAtmosLogger.LOGGER.setUseParentHandlers(false);
-		MAtmosLogger.LOGGER.setLevel(levelEngine);
-		this.conEngine.setLevel(levelEngine);
 		
+		setModLogger(Level.INFO);
+		setEngineLogger(Level.INFO);
 	}
 	
 	/**
