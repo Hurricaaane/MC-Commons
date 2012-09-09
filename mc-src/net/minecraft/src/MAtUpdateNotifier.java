@@ -39,21 +39,15 @@ public class MAtUpdateNotifier extends Thread// implements Ha3Personalizable
 {
 	private MAtMod mod;
 	
-	private int lastFound;
-	private int displayCount;
-	private int displayRemaining;
-	private boolean enabled;
+	private int lastFound = MAtMod.VERSION;
 	
-	final private boolean defEnabled = true;
+	private int displayCount = 3;
+	private int displayRemaining = 0;
+	private boolean enabled = true;
 	
 	MAtUpdateNotifier(MAtMod mAtmosHaddon)
 	{
 		this.mod = mAtmosHaddon;
-		
-		this.lastFound = MAtMod.VERSION;
-		this.displayCount = 3;
-		this.displayRemaining = 0;
-		this.enabled = this.defEnabled;
 	}
 	
 	public void attempt()
