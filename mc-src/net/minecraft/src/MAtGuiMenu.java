@@ -88,7 +88,7 @@ public class MAtGuiMenu extends GuiScreen
 				{
 					central.setVolume(value * 2);
 					slider.displayString = "Global Volume Control: " + (int) Math.floor(value * 200) + "%";
-					MAtGuiMenu.this.matmos.getConfiguration().setProperty("globalvolume.scale", central.getVolume());
+					MAtGuiMenu.this.matmos.getConfig().setProperty("globalvolume.scale", central.getVolume());
 				}
 			});
 			this.controlList.add(sliderControl);
@@ -161,7 +161,7 @@ public class MAtGuiMenu extends GuiScreen
 		
 		this.controlList.add(new GuiButton(
 			211, leftHinge + widdy + gappy, 10 + 22 * (this.IDS_PER_PAGE + 3), widdy, 20, this.matmos
-				.getConfiguration().getBoolean("reversed.controls") ? "Menu: Hold Down Key" : "Menu: Press Key"));
+				.getConfig().getBoolean("reversed.controls") ? "Menu: Hold Down Key" : "Menu: Press Key"));
 		
 		this.controlList.add(new GuiButton(
 			200, leftHinge + 50, 10 + 22 * (this.IDS_PER_PAGE + 4), 155 * 2 - 100, 20, "Done"));
@@ -198,10 +198,10 @@ public class MAtGuiMenu extends GuiScreen
 		}
 		else if (par1GuiButton.id == 211)
 		{
-			this.matmos.getConfiguration().setProperty(
-				"reversed.controls", !this.matmos.getConfiguration().getBoolean("reversed.controls"));
+			this.matmos.getConfig().setProperty(
+				"reversed.controls", !this.matmos.getConfig().getBoolean("reversed.controls"));
 			par1GuiButton.displayString =
-				this.matmos.getConfiguration().getBoolean("reversed.controls")
+				this.matmos.getConfig().getBoolean("reversed.controls")
 					? "Menu: Hold Down Key" : "Menu: Press Key";
 			this.matmos.saveConfig();
 		}

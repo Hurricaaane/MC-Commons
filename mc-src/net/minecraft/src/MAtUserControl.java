@@ -140,7 +140,7 @@ public class MAtUserControl
 	
 	public void beginHold()
 	{
-		if (this.mod.getConfiguration().getBoolean("reversed.controls"))
+		if (this.mod.getConfig().getBoolean("reversed.controls"))
 		{
 			displayMenu();
 		}
@@ -153,7 +153,7 @@ public class MAtUserControl
 	
 	public void signalShortPress()
 	{
-		if (this.mod.getConfiguration().getBoolean("reversed.controls"))
+		if (this.mod.getConfig().getBoolean("reversed.controls"))
 		{
 			whenWantsToggle();
 		}
@@ -175,7 +175,7 @@ public class MAtUserControl
 	
 	public void endHold()
 	{
-		if (this.mod.getConfiguration().getBoolean("reversed.controls"))
+		if (this.mod.getConfig().getBoolean("reversed.controls"))
 		{
 			whenWantsForcing();
 		}
@@ -216,7 +216,7 @@ public class MAtUserControl
 			}
 			else
 			{
-				if (this.mod.getConfiguration().getBoolean("reversed.controls"))
+				if (this.mod.getConfig().getBoolean("reversed.controls"))
 				{
 					this.mod.printChat(
 						Ha3Utility.COLOR_BRIGHTGREEN, "Loading...", Ha3Utility.COLOR_YELLOW, " (Hold ",

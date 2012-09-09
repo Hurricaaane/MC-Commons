@@ -121,8 +121,8 @@ public class MAtUpdateNotifier extends Thread// implements Ha3Personalizable
 					this.displayRemaining = this.displayCount;
 					
 					needsSave = true;
-					this.mod.getConfiguration().setProperty("update_found.version", this.lastFound);
-					this.mod.getConfiguration().setProperty(
+					this.mod.getConfig().setProperty("update_found.version", this.lastFound);
+					this.mod.getConfig().setProperty(
 						"update_found.display.remaining.value", this.displayRemaining);
 					
 				}
@@ -130,7 +130,7 @@ public class MAtUpdateNotifier extends Thread// implements Ha3Personalizable
 				if (this.displayRemaining > 0)
 				{
 					this.displayRemaining = this.displayRemaining - 1;
-					this.mod.getConfiguration().setProperty(
+					this.mod.getConfig().setProperty(
 						"update_found.display.remaining.value", this.displayRemaining);
 					
 					int vc = maxvn - MAtMod.VERSION;

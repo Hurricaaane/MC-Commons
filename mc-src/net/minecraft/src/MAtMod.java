@@ -71,7 +71,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	
 	private MAtModPhase phase;
 	
-	private ConfigProperty configuration;
+	private ConfigProperty config;
 	
 	public MAtMod()
 	{
@@ -160,21 +160,21 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		manager().hookFrameEvents(true);
 		manager().hookTickEvents(true);
 		
-		this.configuration = new ConfigProperty();
-		this.configuration.setProperty("dump.enabled", true);
-		this.configuration.setProperty("start.enabled", true);
-		this.configuration.setProperty("reversed.controls", false);
-		this.configuration.setProperty("globalvolume.scale", 1f);
-		this.configuration.setProperty("update_found.enabled", true);
-		this.configuration.setProperty("update_found.version", MAtMod.VERSION);
-		this.configuration.setProperty("update_found.display.remaining.value", 0);
-		this.configuration.setProperty("update_found.display.count.value", 3);
-		this.configuration.commit();
+		this.config = new ConfigProperty();
+		this.config.setProperty("dump.enabled", true);
+		this.config.setProperty("start.enabled", true);
+		this.config.setProperty("reversed.controls", false);
+		this.config.setProperty("globalvolume.scale", 1f);
+		this.config.setProperty("update_found.enabled", true);
+		this.config.setProperty("update_found.version", MAtMod.VERSION);
+		this.config.setProperty("update_found.display.remaining.value", 0);
+		this.config.setProperty("update_found.display.count.value", 3);
+		this.config.commit();
 		try
 		{
-			this.configuration.setSource(new File(Minecraft.getMinecraftDir(), "matmos/userconfig.cfg")
+			this.config.setSource(new File(Minecraft.getMinecraftDir(), "matmos/userconfig.cfg")
 				.getCanonicalPath());
-			this.configuration.load();
+			this.config.load();
 		}
 		catch (IOException e)
 		{
@@ -182,9 +182,9 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 			throw new RuntimeException("Error caused config not to work: " + e.getMessage());
 		}
 		
-		this.shouldDumpData = this.configuration.getBoolean("dump.enabled");
-		this.soundManagerMaster.setVolume(this.configuration.getFloat("globalvolume.scale"));
-		this.updateNotifier.loadConfiguration(this.configuration);
+		this.shouldDumpData = this.config.getBoolean("dump.enabled");
+		this.soundManagerMaster.setVolume(this.config.getFloat("globalvolume.scale"));
+		this.updateNotifier.loadConfiguration(this.config);
 		
 		MAtMod.LOGGER.info("Took " + this.timeStatistic.getSecondsAsString(1) + " seconds to load MAtmos.");
 		
@@ -199,7 +199,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		this.userControl.load();
 		
 		this.phase = MAtModPhase.NOT_YET_ENABLED;
-		if (this.configuration.getBoolean("start.enabled"))
+		if (this.config.getBoolean("start.enabled"))
 		{
 			doLoad();
 		}
@@ -627,28 +627,28 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	public void saveConfig()
 	{
 		// If there were changes...
-		if (this.configuration.commit())
+		if (this.config.commit())
 		{
 			// Write changes on disk.
-			this.configuration.save();
+			this.config.save();
 		}
 		
 	}
 	
-	public ConfigProperty getConfiguration()
+	public ConfigProperty getConfig()
 	{
-		return this.configuration;
+		return this.config;
 		
 	}
 	
 	public boolean isStartEnabled()
 	{
-		return this.configuration.getBoolean("start.enabled");
+		return this.config.getBoolean("start.enabled");
 	}
 	
 	public void setStartEnabled(boolean startEnabled)
 	{
-		this.configuration.setProperty("start.enabled", startEnabled);
+		this.config.setProperty("start.enabled", startEnabled);
 		
 	}
 	
