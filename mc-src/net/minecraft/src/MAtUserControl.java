@@ -263,7 +263,7 @@ public class MAtUserControl
 			@Override
 			public void run()
 			{
-				MAtUserControl.this.mod.doLoad();
+				MAtUserControl.this.mod.initializeAndEnable();
 			}
 		}.start();
 		

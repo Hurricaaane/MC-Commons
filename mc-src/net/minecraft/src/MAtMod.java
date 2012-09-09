@@ -172,8 +172,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		this.config.commit();
 		try
 		{
-			this.config.setSource(new File(Minecraft.getMinecraftDir(), "matmos/userconfig.cfg")
-				.getCanonicalPath());
+			this.config.setSource(new File(Minecraft.getMinecraftDir(), "matmos/userconfig.cfg").getCanonicalPath());
 			this.config.load();
 		}
 		catch (IOException e)
@@ -186,14 +185,8 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		this.soundManagerMaster.setVolume(this.config.getFloat("globalvolume.scale"));
 		this.updateNotifier.loadConfiguration(this.config);
 		
-		MAtMod.LOGGER.info("Took " + this.timeStatistic.getSecondsAsString(1) + " seconds to load MAtmos.");
+		MAtMod.LOGGER.info("Took " + this.timeStatistic.getSecondsAsString(1) + " seconds to setup MAtmos base.");
 		
-		preLoad();
-		
-	}
-	
-	private void preLoad()
-	{
 		MAtMod.LOGGER.info("Pre-loading.");
 		
 		this.userControl.load();
@@ -201,12 +194,12 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		this.phase = MAtModPhase.NOT_YET_ENABLED;
 		if (this.config.getBoolean("start.enabled"))
 		{
-			doLoad();
+			initializeAndEnable();
 		}
 		
 	}
 	
-	public void doLoad()
+	public void initializeAndEnable()
 	{
 		if (this.phase != MAtModPhase.NOT_YET_ENABLED)
 			return;
