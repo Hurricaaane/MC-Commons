@@ -60,7 +60,7 @@ public class MAtExpansionManager
 		
 	}
 	
-	private synchronized void renewExpansionProngs(MAtExpansion expansion)
+	private void renewExpansionProngs(MAtExpansion expansion)
 	{
 		MAtSoundManagerChild soundManager = new MAtSoundManagerChild(this.mod);
 		this.soundManagers.add(soundManager);
@@ -94,7 +94,7 @@ public class MAtExpansionManager
 		
 	}
 	
-	public synchronized void removeExpansion(String userDefinedIdentifier)
+	/*public void removeExpansion(String userDefinedIdentifier)
 	{
 		if (this.expansions.containsKey(userDefinedIdentifier))
 		{
@@ -105,9 +105,9 @@ public class MAtExpansionManager
 			this.expansions.remove(userDefinedIdentifier);
 		}
 		
-	}
+	}*/
 	
-	public synchronized void addExpansion(String userDefinedIdentifier, InputStream stream)
+	public void addExpansion(String userDefinedIdentifier, InputStream stream)
 	{
 		if (!this.expansions.containsKey(userDefinedIdentifier))
 		{
@@ -123,7 +123,7 @@ public class MAtExpansionManager
 		
 	}
 	
-	private synchronized void tryTurnOn(MAtExpansion expansion)
+	private void tryTurnOn(MAtExpansion expansion)
 	{
 		if (expansion == null)
 			return;
@@ -135,7 +135,7 @@ public class MAtExpansionManager
 		
 	}
 	
-	public synchronized void signalReadyToTurnOn()
+	public void signalReadyToTurnOn()
 	{
 		this.canBuildKnowledge = true;
 		
@@ -147,7 +147,7 @@ public class MAtExpansionManager
 		
 	}
 	
-	private void turnOnOrOff(MAtExpansion expansion)
+	private synchronized void turnOnOrOff(MAtExpansion expansion)
 	{
 		if (expansion == null)
 			return;
@@ -201,7 +201,7 @@ public class MAtExpansionManager
 		
 	}
 	
-	public void clearExpansions()
+	public synchronized void clearExpansions()
 	{
 		for (MAtExpansion expansion : this.expansions.values())
 		{
@@ -216,18 +216,23 @@ public class MAtExpansionManager
 		clearExpansions();
 		
 		List<File> offline = new ArrayList<File>();
-		
 		gatherOffline(this.expansionsFolder, offline);
 		
-		for (File file : offline)
-		{
-			MAtMod.LOGGER.info("ExpansionLoader found offline " + file.getName() + ".");
-			createExpansionEntry(file.getName());
-		}
+		createExpansionEntries(offline);
 		
 		for (File file : offline)
 		{
 			addExpansionFromFile(file.getName(), file);
+		}
+		
+	}
+	
+	private synchronized void createExpansionEntries(List<File> offline)
+	{
+		for (File file : offline)
+		{
+			MAtMod.LOGGER.info("ExpansionLoader found offline " + file.getName() + ".");
+			createExpansionEntry(file.getName());
 		}
 		
 	}
