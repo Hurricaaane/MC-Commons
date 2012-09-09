@@ -61,7 +61,6 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	private MAtUpdateNotifier updateNotifier;
 	
 	private boolean isFatalError;
-	private boolean isReady;
 	private boolean isRunning;
 	
 	private boolean firstTickPassed;
@@ -378,11 +377,8 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		
 		MAtMod.LOGGER.info("ResourceReloader finished (after " + this.timeStatistic.getSecondsAsString(3) + " s.).");
 		
-		//this.expansionManager.signalBuildKnowledge();
-		
 		this.phase = MAtModPhase.READY;
 		
-		this.isReady = true;
 		MAtMod.LOGGER.info("Ready.");
 		
 		startRunning();
@@ -392,7 +388,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	
 	public void reloadAndStart()
 	{
-		if (!this.isReady)
+		if (!isReady())
 			return;
 		
 		if (this.isRunning)
@@ -414,7 +410,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	
 	public void startRunning()
 	{
-		if (!this.isReady)
+		if (!isReady())
 			return;
 		
 		if (this.isRunning)
@@ -430,7 +426,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	
 	public void stopRunning()
 	{
-		if (!this.isReady)
+		if (!isReady())
 			return;
 		
 		if (!this.isRunning)
@@ -532,7 +528,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	
 	public boolean isReady()
 	{
-		return this.isReady;
+		return this.phase == MAtModPhase.READY;
 		
 	}
 	
