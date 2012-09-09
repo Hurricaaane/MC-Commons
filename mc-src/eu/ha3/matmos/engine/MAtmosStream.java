@@ -25,43 +25,29 @@ public class MAtmosStream extends MAtmosDescriptible
 {
 	MAtmosMachine machine;
 	
-	int token;
+	private int token;
 	
-	public String path;
-	public float volume;
-	public float pitch;
-	public float fadeInTime;
-	public float fadeOutTime;
-	public float delayBeforeFadeIn;
-	public float delayBeforeFadeOut;
-	public boolean isLooping;
-	public boolean isUsingPause;
+	public String path = "";
+	public float volume = 1f;
+	public float pitch = 1f;
+	public float delayBeforeFadeIn = 0f;
+	public float delayBeforeFadeOut = 0f;
+	public float fadeInTime = 0f;
+	public float fadeOutTime = 0f;
+	public boolean isLooping = true;
+	public boolean isUsingPause = false;
 	
-	boolean isTurnedOn;
-	boolean isPlaying;
+	private boolean isTurnedOn;
+	private boolean isPlaying;
 	
-	long startTime;
-	long stopTime;
+	private long startTime;
+	private long stopTime;
 	
-	boolean firstCall;
+	private boolean firstCall;
 	
 	MAtmosStream(MAtmosMachine machineIn)
 	{
-		this.path = "";
-		
 		this.machine = machineIn;
-		
-		this.volume = 1F;
-		this.pitch = 1F;
-		this.fadeInTime = 0F;
-		this.fadeOutTime = 0F;
-		this.delayBeforeFadeIn = 0F;
-		this.delayBeforeFadeOut = 0F;
-		this.isLooping = true;
-		this.isUsingPause = false;
-		
-		this.isTurnedOn = false;
-		this.isPlaying = false;
 		
 		this.firstCall = true;
 		
