@@ -188,7 +188,7 @@ public class MAtUserControl
 	{
 		if (this.mod.isRunning())
 		{
-			if (!this.hasFirstHit && this.mod.getExpansionManager().getLoadingCount() > 0)
+			/*if (!this.hasFirstHit && this.mod.getExpansionManager().getLoadingCount() > 0)
 			{
 				int glc = this.mod.getExpansionManager().getLoadingCount();
 				this.mod.printChat(Ha3Utility.COLOR_GOLD, "Warning: "
@@ -199,12 +199,12 @@ public class MAtUserControl
 				
 			}
 			else
-			{
-				this.mod.stopRunning();
-				this.mod.printChat(
-					Ha3Utility.COLOR_YELLOW, "Stopped. Press ", Ha3Utility.COLOR_WHITE,
-					getKeyBindingMainFriendlyName(), Ha3Utility.COLOR_YELLOW, " to re-enable.");
-			}
+			{*/
+			this.mod.stopRunning();
+			this.mod.printChat(
+				Ha3Utility.COLOR_YELLOW, "Stopped. Press ", Ha3Utility.COLOR_WHITE, getKeyBindingMainFriendlyName(),
+				Ha3Utility.COLOR_YELLOW, " to re-enable.");
+			//}
 			this.hasFirstHit = true;
 			
 		}

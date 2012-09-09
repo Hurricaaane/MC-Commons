@@ -35,7 +35,6 @@ public class MAtExpansionManager
 	
 	private File expansionsFolder;
 	private File userconfigFolder;
-	//private File onlineStorageFolder;
 	
 	private boolean canBuildKnowledge;
 	
@@ -48,7 +47,6 @@ public class MAtExpansionManager
 		
 		this.expansionsFolder = new File(Minecraft.getMinecraftDir(), "matmos/expansions_r12/");
 		this.userconfigFolder = new File(Minecraft.getMinecraftDir(), "matmos/expansions_r12_userconfig/");
-		//this.onlineStorageFolder = new File(Minecraft.getMinecraftDir(), "matmos/internal/storage/");
 		
 		if (!this.expansionsFolder.exists())
 		{
@@ -59,11 +57,6 @@ public class MAtExpansionManager
 		{
 			this.userconfigFolder.mkdirs();
 		}
-		
-		/*if (!this.onlineStorageFolder.exists())
-		{
-			this.onlineStorageFolder.mkdirs();
-		}*/
 		
 	}
 	
@@ -101,81 +94,6 @@ public class MAtExpansionManager
 		
 	}
 	
-	/*public void addExpansionFromURL(String userDefinedIdentifier, URL url)
-	{
-		MAtExpansionFetcher fetcher = new MAtExpansionFetcher(this, userDefinedIdentifier);
-		//this.expansions.put(userDefinedIdentifier, null);
-		
-		fetcher.getDatabase(url);
-		
-	}*/
-	
-	/*public synchronized void fetcherSuccess(String userDefinedIdentifier, InputStream stream)
-	{
-		MAtMod.LOGGER.info("ExpansionLoader fetched " + userDefinedIdentifier + ".");
-		
-		addExpansion(userDefinedIdentifier, stream);
-		if (this.expansions.get(userDefinedIdentifier).hasStructure())
-		{
-			writeExpansion(userDefinedIdentifier);
-			
-		}
-		else
-		{
-			this.expansions.remove(userDefinedIdentifier);
-			fetherRescue(userDefinedIdentifier);
-			
-		}
-		
-	}
-	
-	public void fetcherFailure(String userDefinedIdentifier)
-	{
-		MAtMod.LOGGER.info("ExpansionLoader failed fetching " + userDefinedIdentifier + ".");
-		
-		fetherRescue(userDefinedIdentifier);
-		
-	}
-	
-	private void fetherRescue(String userDefinedIdentifier)
-	{
-		addExpansionFromFile(userDefinedIdentifier, identifierToStorage(userDefinedIdentifier));
-		
-	}
-	
-	private void writeExpansion(String userDefinedIdentifier)
-	{
-		if (!this.expansions.containsKey(userDefinedIdentifier))
-			return;
-		
-		String form = this.expansions.get(userDefinedIdentifier).getDocumentStringForm();
-		
-		if (form != null)
-		{
-			FileWriter fileWriter;
-			try
-			{
-				fileWriter = new FileWriter(identifierToStorage(userDefinedIdentifier));
-				fileWriter.write(form);
-				fileWriter.close();
-			}
-			catch (IOException e)
-			{
-				MAtMod.LOGGER.warning("Error with I/O on ExpansionLoader about "
-					+ userDefinedIdentifier + "(Could not store).");
-				e.printStackTrace();
-			}
-			
-		}
-		
-	}
-	
-	private File identifierToStorage(String userDefinedIdentifier)
-	{
-		return new File(this.onlineStorageFolder, userDefinedIdentifier + ".xmlo");
-		
-	}*/
-	
 	public synchronized void removeExpansion(String userDefinedIdentifier)
 	{
 		if (this.expansions.containsKey(userDefinedIdentifier))
@@ -212,20 +130,6 @@ public class MAtExpansionManager
 		
 		if (!this.canBuildKnowledge)
 			return;
-		
-		// TODO If the expansion is set by the user not to load, don't load it
-		// XXX If the expansion is set by the user not to load, don't load it
-		
-		/*TimeStatistic stat = new TimeStatistic(Locale.ENGLISH);
-		expansion.buildKnowledge();
-		
-		MAtMod.LOGGER.info("Expansion "
-			+ expansion.getUserDefinedName() + " loaded (" + stat.getSecondsAsString(1) + "s).");
-		
-		if (!expansion.hasStructure())
-		{
-			MAtMod.LOGGER.warning("Expansion " + expansion.getUserDefinedName() + " has no structure.");
-		}*/
 		
 		turnOnOrOff(expansion);
 		
@@ -312,10 +216,8 @@ public class MAtExpansionManager
 		clearExpansions();
 		
 		List<File> offline = new ArrayList<File>();
-		//List<File> online = new ArrayList<File>();
 		
 		gatherOffline(this.expansionsFolder, offline);
-		//gatherOnline(this.expansionsFolder, online);
 		
 		for (File file : offline)
 		{
@@ -323,16 +225,6 @@ public class MAtExpansionManager
 			createExpansionEntry(file.getName());
 		}
 		
-		/*for (File file : online)
-		{
-			MAtMod.LOGGER.info("ExpansionLoader found online " + file.getName() + ".");
-			createExpansionEntry(file.getName());
-		}
-		
-		for (File file : online)
-		{
-			addOnlineFromFile(file.getName(), file);
-		}*/
 		for (File file : offline)
 		{
 			addExpansionFromFile(file.getName(), file);
@@ -358,78 +250,6 @@ public class MAtExpansionManager
 			
 		}
 		
-	}
-	
-	/*private void gatherOnline(File file, List<File> files)
-	{
-		if (!file.exists())
-			return;
-		
-		for (File individual : file.listFiles())
-		{
-			if (individual.isDirectory())
-			{
-			}
-			else if (individual.getName().endsWith(".xrl"))
-			{
-				//files.add(individual);
-				MAtMod.LOGGER
-					.severe("ATTENTION: .xrl are disabled in this version of MAtmos. Please use .xml files instead.");
-				this.mod.printChat(
-					Ha3Utility.COLOR_RED, "ATTENTION:", Ha3Utility.COLOR_YELLOW,
-					".xrl are disabled in this version of MAtmos. Please use .xml files instead.");
-				
-			}
-			
-		}
-		
-	}*/
-	
-	/*private void addOnlineFromFile(String userDefinedIdentifier, File file)
-	{
-		// TODO Weird exception handling
-		try
-		{
-			BufferedReader buff = new BufferedReader(new FileReader(file));
-			try
-			{
-				addExpansionFromURL(userDefinedIdentifier, new URL(buff.readLine()));
-				
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
-			finally
-			{
-				buff.close();
-				
-			}
-			
-		}
-		catch (FileNotFoundException e)
-		{
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			MAtMod.LOGGER.warning(e.getMessage());
-		}
-		
-	}*/
-	
-	public int getLoadingCount()
-	{
-		int count = 0;
-		for (MAtExpansion e : this.expansions.values())
-		{
-			if (e == null)
-			{
-				count = count + 1;
-			}
-		}
-		
-		return count;
 	}
 	
 }
