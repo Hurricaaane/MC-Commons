@@ -1,14 +1,9 @@
 package net.minecraft.src;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +35,7 @@ public class MAtExpansionManager
 	
 	private File expansionsFolder;
 	private File userconfigFolder;
-	private File onlineStorageFolder;
+	//private File onlineStorageFolder;
 	
 	private boolean canBuildKnowledge;
 	
@@ -53,7 +48,7 @@ public class MAtExpansionManager
 		
 		this.expansionsFolder = new File(Minecraft.getMinecraftDir(), "matmos/expansions_r12/");
 		this.userconfigFolder = new File(Minecraft.getMinecraftDir(), "matmos/expansions_r12_userconfig/");
-		this.onlineStorageFolder = new File(Minecraft.getMinecraftDir(), "matmos/internal/storage/");
+		//this.onlineStorageFolder = new File(Minecraft.getMinecraftDir(), "matmos/internal/storage/");
 		
 		if (!this.expansionsFolder.exists())
 		{
@@ -65,10 +60,10 @@ public class MAtExpansionManager
 			this.userconfigFolder.mkdirs();
 		}
 		
-		if (!this.onlineStorageFolder.exists())
+		/*if (!this.onlineStorageFolder.exists())
 		{
 			this.onlineStorageFolder.mkdirs();
-		}
+		}*/
 		
 	}
 	
@@ -106,16 +101,16 @@ public class MAtExpansionManager
 		
 	}
 	
-	public void addExpansionFromURL(String userDefinedIdentifier, URL url)
+	/*public void addExpansionFromURL(String userDefinedIdentifier, URL url)
 	{
 		MAtExpansionFetcher fetcher = new MAtExpansionFetcher(this, userDefinedIdentifier);
 		//this.expansions.put(userDefinedIdentifier, null);
 		
 		fetcher.getDatabase(url);
 		
-	}
+	}*/
 	
-	public synchronized void fetcherSuccess(String userDefinedIdentifier, InputStream stream)
+	/*public synchronized void fetcherSuccess(String userDefinedIdentifier, InputStream stream)
 	{
 		MAtMod.LOGGER.info("ExpansionLoader fetched " + userDefinedIdentifier + ".");
 		
@@ -179,7 +174,7 @@ public class MAtExpansionManager
 	{
 		return new File(this.onlineStorageFolder, userDefinedIdentifier + ".xmlo");
 		
-	}
+	}*/
 	
 	public synchronized void removeExpansion(String userDefinedIdentifier)
 	{
@@ -317,10 +312,10 @@ public class MAtExpansionManager
 		clearExpansions();
 		
 		List<File> offline = new ArrayList<File>();
-		List<File> online = new ArrayList<File>();
+		//List<File> online = new ArrayList<File>();
 		
 		gatherOffline(this.expansionsFolder, offline);
-		gatherOnline(this.expansionsFolder, online);
+		//gatherOnline(this.expansionsFolder, online);
 		
 		for (File file : offline)
 		{
@@ -328,7 +323,7 @@ public class MAtExpansionManager
 			createExpansionEntry(file.getName());
 		}
 		
-		for (File file : online)
+		/*for (File file : online)
 		{
 			MAtMod.LOGGER.info("ExpansionLoader found online " + file.getName() + ".");
 			createExpansionEntry(file.getName());
@@ -337,7 +332,7 @@ public class MAtExpansionManager
 		for (File file : online)
 		{
 			addOnlineFromFile(file.getName(), file);
-		}
+		}*/
 		for (File file : offline)
 		{
 			addExpansionFromFile(file.getName(), file);
@@ -365,7 +360,7 @@ public class MAtExpansionManager
 		
 	}
 	
-	private void gatherOnline(File file, List<File> files)
+	/*private void gatherOnline(File file, List<File> files)
 	{
 		if (!file.exists())
 			return;
@@ -388,9 +383,9 @@ public class MAtExpansionManager
 			
 		}
 		
-	}
+	}*/
 	
-	private void addOnlineFromFile(String userDefinedIdentifier, File file)
+	/*private void addOnlineFromFile(String userDefinedIdentifier, File file)
 	{
 		// TODO Weird exception handling
 		try
@@ -421,7 +416,7 @@ public class MAtExpansionManager
 			MAtMod.LOGGER.warning(e.getMessage());
 		}
 		
-	}
+	}*/
 	
 	public int getLoadingCount()
 	{
