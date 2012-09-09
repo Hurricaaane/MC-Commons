@@ -43,6 +43,7 @@ public class MAtGuiMenu extends GuiScreen
 	private int pageFromZero;
 	private final int IDS_PER_PAGE = 5;
 	
+	// Keep the active page in memory. Globally... (herpderp)
 	private static int in_memory_page = 0;
 	
 	public MAtGuiMenu(GuiScreen par1GuiScreen, MAtMod matmos)
@@ -178,8 +179,7 @@ public class MAtGuiMenu extends GuiScreen
 	{
 		if (par1GuiButton.id == 200)
 		{
-			// This is triggered by onGuiClosed
-			//aboutToClose();
+			// This triggers onGuiClosed
 			this.mc.displayGuiScreen(this.parentScreen);
 		}
 		else if (par1GuiButton.id == 201)
@@ -198,11 +198,10 @@ public class MAtGuiMenu extends GuiScreen
 		}
 		else if (par1GuiButton.id == 211)
 		{
-			this.mod.getConfig().setProperty(
-				"reversed.controls", !this.mod.getConfig().getBoolean("reversed.controls"));
+			this.mod
+				.getConfig().setProperty("reversed.controls", !this.mod.getConfig().getBoolean("reversed.controls"));
 			par1GuiButton.displayString =
-				this.mod.getConfig().getBoolean("reversed.controls")
-					? "Menu: Hold Down Key" : "Menu: Press Key";
+				this.mod.getConfig().getBoolean("reversed.controls") ? "Menu: Hold Down Key" : "Menu: Press Key";
 			this.mod.saveConfig();
 		}
 		

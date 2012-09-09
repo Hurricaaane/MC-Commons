@@ -1,6 +1,7 @@
 package net.minecraft.src;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -243,22 +244,6 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	
 	private String getFirstBlocker()
 	{
-		// Disabled because even if we bypass that it causes an issue where
-		// sounds from MAtmos are not loaded in memory al all (resources not installed)
-		/*try
-		{
-			// Try to check if ThreadDownloadResources is altered by a third party
-			// Like SoundModEnabler
-			HaddonUtilitySingleton.getInstance().getPrivateValueViaName(ThreadDownloadResources.class, null, "logger");
-			// If it doesn't throw an exception, it means it is a third party class
-			return "SoundModEnabler was likely detected. The unobfuscated field called \"logger\" exists, assume SoundModEnabled is installed.";
-			
-		}
-		catch (PrivateAccessException e2)
-		{
-			// Else, it's not a third party class, or it may not have been detected as such.
-		}*/
-		
 		File folder = new File(Minecraft.getMinecraftDir(), "matmos/reloader_blacklist/");
 		
 		if (!folder.exists())
@@ -296,22 +281,15 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 					}
 					catch (IOException e)
 					{
-						
 					}
 					finally
 					{
-						try
-						{
-							reader.close();
-						}
-						catch (IOException e)
-						{
-						}
-						
+						closeAndShutUp(reader);
 					}
 				}
 				catch (FileNotFoundException e1)
 				{
+					// welp
 					e1.printStackTrace();
 				}
 				
@@ -321,6 +299,17 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		
 		return null;
 		
+	}
+	
+	private void closeAndShutUp(Closeable closeable)
+	{
+		try
+		{
+			closeable.close();
+		}
+		catch (IOException e)
+		{
+		}
 	}
 	
 	private void loadResourcesPhase()
@@ -529,15 +518,9 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		
 	}
 	
-	public boolean isReady()
+	public MAtModPhase getPhase()
 	{
-		return this.isReady;
-		
-	}
-	
-	public boolean isRunning()
-	{
-		return this.isRunning;
+		return this.phase;
 		
 	}
 	
@@ -547,9 +530,15 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		
 	}
 	
-	public MAtModPhase getPhase()
+	public boolean isReady()
 	{
-		return this.phase;
+		return this.isReady;
+		
+	}
+	
+	public boolean isRunning()
+	{
+		return this.isRunning;
 		
 	}
 	
