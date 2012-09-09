@@ -147,7 +147,7 @@ public class MAtExpansionManager
 		
 	}
 	
-	private synchronized void turnOnOrOff(MAtExpansion expansion)
+	private void turnOnOrOff(MAtExpansion expansion)
 	{
 		if (expansion == null)
 			return;
