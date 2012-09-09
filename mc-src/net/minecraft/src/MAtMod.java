@@ -49,29 +49,22 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	private ConsoleHandler conMod;
 	private ConsoleHandler conEngine;
 	
+	private MAtModPhase phase;
+	private ConfigProperty config;
+	
 	private Ha3SoundCommunicator sndComm;
-	
-	//private boolean shouldSkipResourceReloader = true;
-	private boolean shouldDumpData;
-	
 	private MAtUserControl userControl;
 	private MAtDataGatherer dataGatherer;
 	private MAtExpansionManager expansionManager;
+	private MAtSoundManagerMaster soundManagerMaster;
 	private MAtUpdateNotifier updateNotifier;
 	
-	private MAtSoundManagerMaster soundManagerMaster;
-	
-	private boolean isRunning;
-	private TimeStatistic timeStatistic;
-	
+	private boolean isFatalError;
 	private boolean isReady;
-	private boolean fatalError;
+	private boolean isRunning;
 	
 	private boolean firstTickPassed;
-	
-	private MAtModPhase phase;
-	
-	private ConfigProperty config;
+	private TimeStatistic timeStatistic;
 	
 	public MAtMod()
 	{
@@ -137,7 +130,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	{
 		if (!new File(Minecraft.getMinecraftDir(), "matmos/").exists())
 		{
-			this.fatalError = true;
+			this.isFatalError = true;
 			manager().hookTickEvents(true);
 			return;
 			
@@ -181,7 +174,6 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 			throw new RuntimeException("Error caused config not to work: " + e.getMessage());
 		}
 		
-		this.shouldDumpData = this.config.getBoolean("dump.enabled");
 		this.soundManagerMaster.setVolume(this.config.getFloat("globalvolume.scale"));
 		this.updateNotifier.loadConfig(this.config);
 		
@@ -244,7 +236,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		MAtMod.LOGGER.severe("CRITICAL Error with SoundCommunicator (after "
 			+ this.timeStatistic.getSecondsAsString(3) + " s.). Will not load.");
 		
-		this.fatalError = true;
+		this.isFatalError = true;
 		this.phase = MAtModPhase.SOUNDCOMMUNICATOR_FAILURE;
 		
 	}
@@ -467,7 +459,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	
 	private void createDataDump()
 	{
-		if (!this.shouldDumpData)
+		if (!this.config.getBoolean("dump.enabled"))
 			return;
 		
 		MAtMod.LOGGER.fine("Dumping data.");
@@ -551,7 +543,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	
 	public boolean isFatalError()
 	{
-		return this.fatalError;
+		return this.isFatalError;
 		
 	}
 	
@@ -571,7 +563,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	@Override
 	public void onFrame(float semi)
 	{
-		if (this.fatalError)
+		if (this.isFatalError)
 			return;
 		
 		if (!this.isRunning)
@@ -585,7 +577,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	@Override
 	public void onTick()
 	{
-		if (this.fatalError)
+		if (this.isFatalError)
 		{
 			
 			printChat(Ha3Utility.COLOR_YELLOW, "A fatal error has occured. MAtmos will not load.");
