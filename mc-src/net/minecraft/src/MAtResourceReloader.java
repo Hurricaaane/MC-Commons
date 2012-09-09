@@ -8,21 +8,24 @@ import net.minecraft.client.Minecraft;
 import eu.ha3.mc.convenience.Ha3Signal;
 import eu.ha3.mc.haddon.PrivateAccessException;
 
-public class MAtResourceReloader extends Thread
+public class MAtResourceReloader //extends Thread
 {
 	private MAtMod mod;
-	private Ha3Signal onSuccess;
+	
+	//private Ha3Signal onSuccess;
 	
 	MAtResourceReloader(MAtMod modIn, Ha3Signal onSuccess)
 	{
 		this.mod = modIn;
-		setDaemon(true);
+		//setDaemon(true);
 		
-		this.onSuccess = onSuccess;
+		//this.onSuccess = onSuccess;
 		
 	}
 	
-	@Override
+	// Commented out this whole code because it hasn't been updated since MAtmos
+	// only loads files from certain directories now
+	/*@Override
 	public void run()
 	{
 		try
@@ -112,7 +115,7 @@ public class MAtResourceReloader extends Thread
 			
 		}
 		
-	}
+	}*/
 	
 	private SoundPool sps;
 	private List<String> myStack;

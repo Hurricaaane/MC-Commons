@@ -51,7 +51,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	
 	private Ha3SoundCommunicator sndComm;
 	
-	private boolean shouldSkipResourceReloader = true;
+	//private boolean shouldSkipResourceReloader = true;
 	private boolean shouldDumpData = true;
 	
 	private MAtUserControl userControl;
@@ -358,7 +358,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 			loadFinalPhase();
 			
 		}
-		else if (!this.shouldSkipResourceReloader)
+		/*else if (!this.shouldSkipResourceReloader)
 		{
 			new MAtResourceReloader(this, new Ha3Signal() {
 				
@@ -371,7 +371,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 				
 			}).start();
 			
-		}
+		}*/
 		else
 		{
 			MAtMod.LOGGER.info("Bypassing Resource Reloader threaded wait. This may cause issues.");
