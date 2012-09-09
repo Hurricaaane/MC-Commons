@@ -394,6 +394,9 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		if (this.isRunning)
 			return;
 		
+		// prevent the expansions from running before the thread could even start
+		this.expansionManager.clearExpansions();
+		
 		new Thread() {
 			@Override
 			public void run()
