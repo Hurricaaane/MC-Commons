@@ -52,7 +52,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	private Ha3SoundCommunicator sndComm;
 	
 	//private boolean shouldSkipResourceReloader = true;
-	private boolean shouldDumpData = true;
+	private boolean shouldDumpData;
 	
 	private MAtUserControl userControl;
 	private MAtDataGatherer dataGatherer;
@@ -157,6 +157,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		manager().hookFrameEvents(true);
 		manager().hookTickEvents(true);
 		
+		// Create default configuration
 		this.config = new ConfigProperty();
 		this.config.setProperty("dump.enabled", true);
 		this.config.setProperty("start.enabled", true);
@@ -167,6 +168,8 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		this.config.setProperty("update_found.display.remaining.value", 0);
 		this.config.setProperty("update_found.display.count.value", 3);
 		this.config.commit();
+		
+		// Load configuration from source
 		try
 		{
 			this.config.setSource(new File(Minecraft.getMinecraftDir(), "matmos/userconfig.cfg").getCanonicalPath());
@@ -180,12 +183,15 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		
 		this.shouldDumpData = this.config.getBoolean("dump.enabled");
 		this.soundManagerMaster.setVolume(this.config.getFloat("globalvolume.scale"));
-		this.updateNotifier.loadConfiguration(this.config);
+		this.updateNotifier.loadConfig(this.config);
 		
 		MAtMod.LOGGER.info("Took " + this.timeStatistic.getSecondsAsString(1) + " seconds to setup MAtmos base.");
 		
+		//
+		
 		MAtMod.LOGGER.info("Pre-loading.");
 		
+		// This registers stuff to Minecraft (key bindings...)
 		this.userControl.load();
 		
 		this.phase = MAtModPhase.NOT_YET_ENABLED;

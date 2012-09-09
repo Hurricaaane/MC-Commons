@@ -190,7 +190,7 @@ public class MAtUpdateNotifier extends Thread// implements Ha3Personalizable
 		}
 	}
 	
-	public void loadConfiguration(ConfigProperty configuration)
+	public void loadConfig(ConfigProperty configuration)
 	{
 		this.enabled = configuration.getBoolean("update_found.enabled");
 		this.lastFound = configuration.getInteger("update_found.version");
