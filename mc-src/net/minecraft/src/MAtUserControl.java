@@ -188,9 +188,9 @@ public class MAtUserControl
 	{
 		if (this.mod.isRunning())
 		{
-			if (!this.hasFirstHit && this.mod.getExpansionLoader().getLoadingCount() > 0)
+			if (!this.hasFirstHit && this.mod.getExpansionManager().getLoadingCount() > 0)
 			{
-				int glc = this.mod.getExpansionLoader().getLoadingCount();
+				int glc = this.mod.getExpansionManager().getLoadingCount();
 				this.mod.printChat(Ha3Utility.COLOR_GOLD, "Warning: "
 					+ glc + " expansion" + (glc > 1 ? "s are" : " is") + " still loading.");
 				this.mod.printChatShort(

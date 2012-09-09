@@ -525,7 +525,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	}
 	
 	// XXX Blatant design.
-	public MAtExpansionManager getExpansionLoader()
+	public MAtExpansionManager getExpansionManager()
 	{
 		return this.expansionManager;
 		

@@ -35,7 +35,7 @@ public class MAtGuiMenu extends GuiScreen
 	/** The title string that is displayed in the top-center of the screen. */
 	protected String screenTitle;
 	
-	private MAtMod matmos;
+	private MAtMod mod;
 	
 	/** The ID of the button that has been pressed. */
 	private int buttonId;
@@ -55,7 +55,7 @@ public class MAtGuiMenu extends GuiScreen
 		this.screenTitle = "Expansions";
 		this.buttonId = -1;
 		this.parentScreen = par1GuiScreen;
-		this.matmos = matmos;
+		this.mod = matmos;
 		this.pageFromZero = pageFromZero;
 		
 		in_memory_page = this.pageFromZero;
@@ -73,11 +73,11 @@ public class MAtGuiMenu extends GuiScreen
 		int leftHinge = this.width / 2 - inWidth / 2;
 		int rightHinge = this.width / 2 + inWidth / 2;
 		
-		Map<String, MAtExpansion> expansions = this.matmos.getExpansionLoader().getExpansions();
+		Map<String, MAtExpansion> expansions = this.mod.getExpansionManager().getExpansions();
 		int id = 0;
 		
 		{
-			final MAtSoundManagerMaster central = this.matmos.getSoundManagerMaster();
+			final MAtSoundManagerMaster central = this.mod.getSoundManagerMaster();
 			String display = "Global Volume Control: " + (int) Math.floor(central.getVolume() * 100) + "%";
 			
 			HGuiSliderControl sliderControl =
@@ -88,7 +88,7 @@ public class MAtGuiMenu extends GuiScreen
 				{
 					central.setVolume(value * 2);
 					slider.displayString = "Global Volume Control: " + (int) Math.floor(value * 200) + "%";
-					MAtGuiMenu.this.matmos.getConfig().setProperty("globalvolume.scale", central.getVolume());
+					MAtGuiMenu.this.mod.getConfig().setProperty("globalvolume.scale", central.getVolume());
 				}
 			});
 			this.controlList.add(sliderControl);
@@ -156,11 +156,11 @@ public class MAtGuiMenu extends GuiScreen
 		int gappy = 2;
 		int widdy = inWidth / splitty - gappy * (splitty - 1) / 2;
 		
-		this.controlList.add(new GuiButton(210, leftHinge, 10 + 22 * (this.IDS_PER_PAGE + 3), widdy, 20, this.matmos
+		this.controlList.add(new GuiButton(210, leftHinge, 10 + 22 * (this.IDS_PER_PAGE + 3), widdy, 20, this.mod
 			.isStartEnabled() ? "Start Enabled: ON" : "Start Enabled: OFF"));
 		
 		this.controlList.add(new GuiButton(
-			211, leftHinge + widdy + gappy, 10 + 22 * (this.IDS_PER_PAGE + 3), widdy, 20, this.matmos
+			211, leftHinge + widdy + gappy, 10 + 22 * (this.IDS_PER_PAGE + 3), widdy, 20, this.mod
 				.getConfig().getBoolean("reversed.controls") ? "Menu: Hold Down Key" : "Menu: Press Key"));
 		
 		this.controlList.add(new GuiButton(
@@ -184,26 +184,26 @@ public class MAtGuiMenu extends GuiScreen
 		}
 		else if (par1GuiButton.id == 201)
 		{
-			this.mc.displayGuiScreen(new MAtGuiMenu(this.parentScreen, this.matmos, this.pageFromZero - 1));
+			this.mc.displayGuiScreen(new MAtGuiMenu(this.parentScreen, this.mod, this.pageFromZero - 1));
 		}
 		else if (par1GuiButton.id == 202)
 		{
-			this.mc.displayGuiScreen(new MAtGuiMenu(this.parentScreen, this.matmos, this.pageFromZero + 1));
+			this.mc.displayGuiScreen(new MAtGuiMenu(this.parentScreen, this.mod, this.pageFromZero + 1));
 		}
 		else if (par1GuiButton.id == 210)
 		{
-			this.matmos.setStartEnabled(!this.matmos.isStartEnabled());
-			par1GuiButton.displayString = this.matmos.isStartEnabled() ? "Start Enabled: ON" : "Start Enabled: OFF";
-			this.matmos.saveConfig();
+			this.mod.setStartEnabled(!this.mod.isStartEnabled());
+			par1GuiButton.displayString = this.mod.isStartEnabled() ? "Start Enabled: ON" : "Start Enabled: OFF";
+			this.mod.saveConfig();
 		}
 		else if (par1GuiButton.id == 211)
 		{
-			this.matmos.getConfig().setProperty(
-				"reversed.controls", !this.matmos.getConfig().getBoolean("reversed.controls"));
+			this.mod.getConfig().setProperty(
+				"reversed.controls", !this.mod.getConfig().getBoolean("reversed.controls"));
 			par1GuiButton.displayString =
-				this.matmos.getConfig().getBoolean("reversed.controls")
+				this.mod.getConfig().getBoolean("reversed.controls")
 					? "Menu: Hold Down Key" : "Menu: Press Key";
-			this.matmos.saveConfig();
+			this.mod.saveConfig();
 		}
 		
 	}
@@ -212,7 +212,7 @@ public class MAtGuiMenu extends GuiScreen
 	{
 		MAtMod.LOGGER.info("Saving configuration...");
 		
-		Map<String, MAtExpansion> expansions = this.matmos.getExpansionLoader().getExpansions();
+		Map<String, MAtExpansion> expansions = this.mod.getExpansionManager().getExpansions();
 		for (MAtExpansion expansion : expansions.values())
 		{
 			if (expansion.getVolume() == 0f && expansion.isRunning())
@@ -223,7 +223,7 @@ public class MAtGuiMenu extends GuiScreen
 			
 		}
 		
-		this.matmos.saveConfig();
+		this.mod.saveConfig();
 		for (MAtExpansion expansion : expansions.values())
 		{
 			expansion.saveConfig();
