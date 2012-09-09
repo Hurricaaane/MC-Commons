@@ -626,8 +626,10 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	
 	public void saveConfig()
 	{
+		// If there were changes...
 		if (this.configuration.commit())
 		{
+			// Write changes on disk.
 			this.configuration.save();
 		}
 		
