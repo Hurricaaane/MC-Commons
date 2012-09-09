@@ -130,7 +130,7 @@ public class MAtSoundManagerChild implements MAtmosSoundManager, MAtCustomVolume
 			ny = ny + this.random.nextFloat() * meta * 0.2F - meta * 0.01F;
 			nz = nz + (float) (Math.sin(angle) * meta);
 			
-			this.mod.sound().playSound(equivalent, nx, ny, nz, soundEffectiveVolume, pitch, 0, 0F);
+			this.mod.getSoundCommunicator().playSound(equivalent, nx, ny, nz, soundEffectiveVolume, pitch, 0, 0F);
 		}
 		else
 		{
@@ -141,7 +141,7 @@ public class MAtSoundManagerChild implements MAtmosSoundManager, MAtCustomVolume
 			//   ...and that somehow does the trick!
 			
 			ny = ny + 2048;
-			this.mod.sound().playSound(equivalent, nx, ny, nz, soundEffectiveVolume, pitch, 0, 0F);
+			this.mod.getSoundCommunicator().playSound(equivalent, nx, ny, nz, soundEffectiveVolume, pitch, 0, 0F);
 			
 		}
 		
@@ -220,7 +220,7 @@ public class MAtSoundManagerChild implements MAtmosSoundManager, MAtCustomVolume
 	
 	public SoundSystem getSoundSystem()
 	{
-		return this.mod.sound().getSoundSystem();
+		return this.mod.getSoundCommunicator().getSoundSystem();
 	}
 	
 	@Override

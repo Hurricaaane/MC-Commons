@@ -126,7 +126,7 @@ public class MAtScroller extends Ha3Scroller
 			float posY = (float) ply.posY;
 			float posZ = (float) ply.posZ;
 			
-			this.mod.sound().playSoundViaManager("random.click", posX, posY, posZ, hgn, res);
+			this.mod.getSoundCommunicator().playSoundViaManager("random.click", posX, posY, posZ, hgn, res);
 			
 		}
 		

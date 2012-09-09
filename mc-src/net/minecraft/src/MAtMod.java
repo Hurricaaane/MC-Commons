@@ -238,25 +238,6 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		
 	}
 	
-	public MAtSoundManagerMaster getSoundManagerMaster()
-	{
-		return this.soundManagerMaster;
-		
-	}
-	
-	public MAtDataGatherer getDataGatherer()
-	{
-		return this.dataGatherer;
-		
-	}
-	
-	// XXX Blatant design.
-	public MAtExpansionManager getExpansionLoader()
-	{
-		return this.expansionManager;
-		
-	}
-	
 	private void sndCommFailed()
 	{
 		this.phase = MAtModPhase.SOUNDCOMMUNICATOR_FAILURE;
@@ -531,7 +512,26 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		
 	}
 	
-	public Ha3SoundCommunicator sound()
+	public MAtSoundManagerMaster getSoundManagerMaster()
+	{
+		return this.soundManagerMaster;
+		
+	}
+	
+	public MAtDataGatherer getDataGatherer()
+	{
+		return this.dataGatherer;
+		
+	}
+	
+	// XXX Blatant design.
+	public MAtExpansionManager getExpansionLoader()
+	{
+		return this.expansionManager;
+		
+	}
+	
+	public Ha3SoundCommunicator getSoundCommunicator()
 	{
 		return this.sndComm;
 		

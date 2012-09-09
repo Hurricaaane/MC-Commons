@@ -132,7 +132,7 @@ public class MAtResourceReloader //extends Thread
 					.getManager()
 					.getUtility()
 					.getPrivateValueLiteral(
-						net.minecraft.src.SoundManager.class, this.mod.sound().getSoundManager(), "b", 1);
+						net.minecraft.src.SoundManager.class, this.mod.getSoundCommunicator().getSoundManager(), "b", 1);
 			
 			this.myStack = new ArrayList<String>();
 			this.myAddedFiles = new ArrayList<String>();

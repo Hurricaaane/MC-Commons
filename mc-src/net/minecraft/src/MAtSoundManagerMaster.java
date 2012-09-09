@@ -53,7 +53,7 @@ public class MAtSoundManagerMaster implements MAtmosSoundManager, MAtCustomVolum
 	
 	public SoundSystem sndSystem()
 	{
-		return this.mod.sound().getSoundSystem();
+		return this.mod.getSoundCommunicator().getSoundSystem();
 		
 	}
 	
