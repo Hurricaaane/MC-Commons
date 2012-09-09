@@ -67,7 +67,6 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	private boolean isReady;
 	private boolean fatalError;
 	
-	private boolean userKnowsFatalError;
 	private boolean firstTickPassed;
 	
 	private MAtModPhase phase;
@@ -590,27 +589,8 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	@Override
 	public void onTick()
 	{
-		if (!this.fatalError)
+		if (this.fatalError)
 		{
-			this.userControl.tickRoutine();
-			if (this.isRunning)
-			{
-				this.dataGatherer.tickRoutine();
-				this.expansionManager.dataRoutine();
-				
-			}
-			
-			if (!this.firstTickPassed)
-			{
-				this.firstTickPassed = true;
-				this.updateNotifier.attempt();
-				
-			}
-			
-		}
-		else if (!this.userKnowsFatalError)
-		{
-			this.userKnowsFatalError = true;
 			
 			printChat(Ha3Utility.COLOR_YELLOW, "A fatal error has occured. MAtmos will not load.");
 			if (!new File(Minecraft.getMinecraftDir(), "matmos/").exists())
@@ -623,6 +603,22 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 			}
 			manager().hookTickEvents(false);
 			manager().hookFrameEvents(false);
+			return;
+			
+		}
+		
+		this.userControl.tickRoutine();
+		if (this.isRunning)
+		{
+			this.dataGatherer.tickRoutine();
+			this.expansionManager.dataRoutine();
+			
+		}
+		
+		if (!this.firstTickPassed)
+		{
+			this.firstTickPassed = true;
+			this.updateNotifier.attempt();
 			
 		}
 		
