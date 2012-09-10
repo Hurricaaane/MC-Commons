@@ -21,14 +21,12 @@ import javax.xml.stream.events.XMLEvent;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public abstract class MAtmosDescriptible
+public abstract class Descriptible
 {
-	public String nickname = new String();
-	public String description = new String();
-	
-	public String icon = new String();
-	
-	public String meta = new String();
+	public String nickname = "";
+	public String description = "";
+	public String icon = "";
+	public String meta = "";
 	
 	public abstract String serialize(XMLEventWriter eventWriter) throws XMLStreamException;
 	
@@ -64,19 +62,6 @@ public abstract class MAtmosDescriptible
 		XMLEventFactory eventFactory = XMLEventFactory.newInstance();
 		XMLEvent tab = eventFactory.createDTD("\t");
 		XMLEvent end = eventFactory.createDTD("\n");
-		
-		// Create Start node
-		/*StartElement sElement = eventFactory.createStartElement("", "", name);
-		for (int i=0;i<tabCount;i++)
-			eventWriter.add(tab);
-		eventWriter.add(sElement);
-		// Create Content
-		Characters characters = eventFactory.createCharacters(value);
-		eventWriter.add(characters);
-		// Create End node
-		EndElement eElement = eventFactory.createEndElement("", "", name);
-		eventWriter.add(eElement);
-		eventWriter.add(end);*/
 		
 		for (int i = 0; i < tabCount; i++)
 		{

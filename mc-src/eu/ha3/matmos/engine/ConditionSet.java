@@ -2,6 +2,7 @@ package eu.ha3.matmos.engine;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.xml.stream.XMLEventWriter;
@@ -23,12 +24,12 @@ import javax.xml.stream.XMLStreamException;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class MAtmosConditionSet extends MAtmosSwitchable
+public class ConditionSet extends Switchable
 {
-	HashMap<String, Boolean> conditions;
+	private Map<String, Boolean> conditions;
 	private boolean isTrueEvaluated;
 	
-	MAtmosConditionSet(MAtmosKnowledge knowledgeIn)
+	public ConditionSet(Knowledge knowledgeIn)
 	{
 		super(knowledgeIn);
 		this.isTrueEvaluated = false;
@@ -114,7 +115,7 @@ public class MAtmosConditionSet extends MAtmosSwitchable
 		
 	}
 	
-	public HashMap<String, Boolean> getSet()
+	public Map<String, Boolean> getSet()
 	{
 		return this.conditions;
 		

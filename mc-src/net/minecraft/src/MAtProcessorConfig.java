@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
-import eu.ha3.matmos.engine.MAtmosData;
+import eu.ha3.matmos.engine.Data;
 import eu.ha3.util.property.simple.ConfigProperty;
 import eu.ha3.util.property.simple.PropertyMissingException;
 import eu.ha3.util.property.simple.PropertyTypeException;
@@ -32,7 +32,7 @@ public class MAtProcessorConfig extends MAtProcessorModel
 	
 	private ConfigProperty config;
 	
-	MAtProcessorConfig(MAtMod modIn, MAtmosData dataIn, String normalNameIn, String deltaNameIn)
+	MAtProcessorConfig(MAtMod modIn, Data dataIn, String normalNameIn, String deltaNameIn)
 	{
 		super(modIn, dataIn, normalNameIn, deltaNameIn);
 		this.defaultsConfig = new File(Minecraft.getMinecraftDir(), "matmos/dataconfigvars_defaults.cfg");

@@ -19,51 +19,21 @@ import javax.xml.stream.XMLStreamException;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class MAtmosCondition extends MAtmosSwitchable
+public class Condition extends Switchable
 {
-	String sheet;
-	int key;
-	String dynamicKey;
-	int conditionType;
-	int constant;
-	String list;
+	private String sheet = "";
+	private int key = 0;
+	private String dynamicKey = "";
+	private int conditionType = 0;
+	private int constant = 0;
+	private String list = "";
 	
-	boolean isTrueEvaluated;
+	private boolean isTrueEvaluated;
 	
-	//MAtmosCondition(MAtmosKnowledge knowledgeIn, String sheetIn, int keyIn, String symbolIn, float constantIn)
-	MAtmosCondition(MAtmosKnowledge knowledgeIn)
+	public Condition(Knowledge knowledgeIn)
 	{
 		super(knowledgeIn);
-		
-		//sheet = sheetIn;
-		//key = keyIn;
-		
-		//dynamicKey = "";
-		
-		//setSymbol(symbolIn);
-		//constant = constantIn;
-		
-		this.sheet = "";
-		this.key = 0;
-		this.dynamicKey = "";
-		this.conditionType = 0;
-		this.list = "";
-		
 	}
-	
-	/*MAtmosCondition(MAtmosKnowledge knowledgeIn, String dynamic, String symbolIn, float constantIn)
-	{
-		super(knowledgeIn);
-		
-		sheet = "";
-		key = 0;
-		
-		setDynamic(dynamic);
-		
-		setSymbol(symbolIn);
-		constant = constantIn;
-		
-	}*/
 	
 	public void setSheet(String sheetIn)
 	{

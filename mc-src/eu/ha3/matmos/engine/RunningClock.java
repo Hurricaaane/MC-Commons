@@ -16,9 +16,9 @@ package eu.ha3.matmos.engine;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class MAtmosClock
+public class RunningClock
 {
-	public long getTimeMillis()
+	public long getMilliseconds()
 	{
 		return System.currentTimeMillis();
 		

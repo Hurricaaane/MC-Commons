@@ -3,6 +3,7 @@ package eu.ha3.matmos.engine;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamException;
@@ -23,17 +24,17 @@ import javax.xml.stream.XMLStreamException;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class MAtmosList extends MAtmosDescriptible
+public class SugarList extends Descriptible
 {
-	ArrayList<Integer> list;
+	private List<Integer> list;
 	
-	MAtmosList()
+	SugarList()
 	{
 		this.list = new ArrayList<Integer>();
 		
 	}
 	
-	public ArrayList<Integer> getList()
+	public List<Integer> getList()
 	{
 		return this.list;
 		

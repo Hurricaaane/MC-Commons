@@ -4,6 +4,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.xml.stream.XMLEventFactory;
@@ -29,12 +30,12 @@ import javax.xml.transform.stream.StreamResult;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class MAtmosData
+public class Data
 {
-	public HashMap<String, ArrayList<Integer>> sheets;
+	public Map<String, ArrayList<Integer>> sheets;
 	public int updateVersion;
 	
-	public MAtmosData()
+	public Data()
 	{
 		this.sheets = new HashMap<String, ArrayList<Integer>>();
 		this.updateVersion = 0;

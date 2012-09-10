@@ -21,9 +21,9 @@ import javax.xml.stream.events.XMLEvent;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class MAtmosEventTimed extends MAtmosDescriptible
+public class TimedEvent extends Descriptible
 {
-	MAtmosMachine machine;
+	Machine machine;
 	
 	public String event;
 	
@@ -37,7 +37,7 @@ public class MAtmosEventTimed extends MAtmosDescriptible
 	
 	public long nextPlayTime;
 	
-	MAtmosEventTimed(MAtmosMachine machineIn)
+	TimedEvent(Machine machineIn)
 	{
 		//event = eventIn;
 		
@@ -54,7 +54,7 @@ public class MAtmosEventTimed extends MAtmosDescriptible
 		
 	}
 	
-	void setMachine(MAtmosMachine machineIn)
+	void setMachine(Machine machineIn)
 	{
 		this.machine = machineIn;
 		

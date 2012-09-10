@@ -6,7 +6,7 @@ import java.util.Map;
 
 import net.minecraft.client.Minecraft;
 import paulscode.sound.SoundSystem;
-import eu.ha3.matmos.engine.MAtmosSoundManager;
+import eu.ha3.matmos.engine.SoundRelay;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -24,7 +24,7 @@ import eu.ha3.matmos.engine.MAtmosSoundManager;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class MAtSoundManagerMaster implements MAtmosSoundManager, MAtCustomVolume
+public class MAtSoundManagerMaster implements SoundRelay, MAtCustomVolume
 {
 	// XXX Implement me: Does not do anything and sndcomms is down
 	

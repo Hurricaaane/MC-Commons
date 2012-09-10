@@ -28,11 +28,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import eu.ha3.easy.TimeStatistic;
-import eu.ha3.matmos.engine.MAtmosData;
+import eu.ha3.matmos.engine.Data;
 import eu.ha3.matmos.engine.MAtmosException;
-import eu.ha3.matmos.engine.MAtmosKnowledge;
-import eu.ha3.matmos.engine.MAtmosSoundManager;
-import eu.ha3.matmos.engine.MAtmosUtilityLoader;
+import eu.ha3.matmos.engine.Knowledge;
+import eu.ha3.matmos.engine.SoundRelay;
+import eu.ha3.matmos.engine.UtilityLoader;
 import eu.ha3.util.property.simple.ConfigProperty;
 
 /*
@@ -56,7 +56,7 @@ public class MAtExpansion implements MAtCustomVolume
 	private DocumentBuilder documentBuilder;
 	private Document document;
 	private XPath xpath;
-	private MAtmosKnowledge knowledge;
+	private Knowledge knowledge;
 	
 	private String userDefinedIdentifier;
 	
@@ -71,7 +71,7 @@ public class MAtExpansion implements MAtCustomVolume
 	private int dataFrequency;
 	private int dataCyclic;
 	
-	private MAtmosSoundManager soundManager;
+	private SoundRelay soundManager;
 	
 	private ConfigProperty myConfiguration;
 	private String friendlyName;
@@ -86,7 +86,7 @@ public class MAtExpansion implements MAtCustomVolume
 		this.docName = userDefinedIdentifier;
 		this.docDescription = "";
 		
-		this.knowledge = new MAtmosKnowledge();
+		this.knowledge = new Knowledge();
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		XPathFactory xpf = XPathFactory.newInstance();
@@ -137,7 +137,7 @@ public class MAtExpansion implements MAtCustomVolume
 		
 	}
 	
-	public void setSoundManager(MAtmosSoundManager soundManager)
+	public void setSoundManager(SoundRelay soundManager)
 	{
 		this.knowledge.setSoundManager(soundManager);
 		this.soundManager = soundManager;
@@ -146,7 +146,7 @@ public class MAtExpansion implements MAtCustomVolume
 		
 	}
 	
-	public void setData(MAtmosData data)
+	public void setData(Data data)
 	{
 		this.knowledge.setData(data);
 		
@@ -238,7 +238,7 @@ public class MAtExpansion implements MAtCustomVolume
 		{
 			this.knowledge.patchKnowledge();
 			// loadKnowledge returns the validity of the knowledge
-			this.isReady = MAtmosUtilityLoader.getInstance().loadKnowledge(this.knowledge, this.document, false);
+			this.isReady = UtilityLoader.getInstance().loadKnowledge(this.knowledge, this.document, false);
 			
 		}
 		catch (MAtmosException e)

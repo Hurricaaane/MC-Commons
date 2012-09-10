@@ -1,7 +1,7 @@
 package net.minecraft.src;
 
 import net.minecraft.client.Minecraft;
-import eu.ha3.matmos.engine.MAtmosData;
+import eu.ha3.matmos.engine.Data;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -22,7 +22,7 @@ import eu.ha3.matmos.engine.MAtmosData;
 public class MAtProcessorFrequent extends MAtProcessorModel
 {
 	
-	MAtProcessorFrequent(MAtMod modIn, MAtmosData dataIn, String normalNameIn, String deltaNameIn)
+	MAtProcessorFrequent(MAtMod modIn, Data dataIn, String normalNameIn, String deltaNameIn)
 	{
 		super(modIn, dataIn, normalNameIn, deltaNameIn);
 		

@@ -6,7 +6,7 @@ import java.util.Random;
 
 import net.minecraft.client.Minecraft;
 import paulscode.sound.SoundSystem;
-import eu.ha3.matmos.engine.MAtmosSoundManager;
+import eu.ha3.matmos.engine.SoundRelay;
 import eu.ha3.mc.haddon.PrivateAccessException;
 
 /*
@@ -25,7 +25,7 @@ import eu.ha3.mc.haddon.PrivateAccessException;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class MAtSoundManagerChild implements MAtmosSoundManager, MAtCustomVolume
+public class MAtSoundManagerChild implements SoundRelay, MAtCustomVolume
 {
 	private MAtMod mod;
 	

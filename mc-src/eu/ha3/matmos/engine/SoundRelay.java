@@ -16,25 +16,24 @@ package eu.ha3.matmos.engine;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public interface MAtmosSoundManager
+public interface SoundRelay
 {
-	void routine();
+	public void routine();
 	
-	void cacheSound(String path);
+	public void cacheSound(String path);
 	
-	void playSound(String path, float volume, float pitch, int meta);
+	public void playSound(String path, float volume, float pitch, int meta);
 	
-	int getNewStreamingToken();
+	public int getNewStreamingToken();
 	
-	boolean setupStreamingToken(int token, String path, float volume, float pitch);
+	public boolean setupStreamingToken(int token, String path, float volume, float pitch);
 	
-	void startStreaming(int token, float fadeDuration, int timesToPlay);
+	public void startStreaming(int token, float fadeDuration, int timesToPlay);
 	
-	//void restartStreaming(int token, float fadeDuration, int timesToPlay);
-	void stopStreaming(int token, float fadeDuration);
+	public void stopStreaming(int token, float fadeDuration);
 	
-	void pauseStreaming(int token, float fadeDuration);
+	public void pauseStreaming(int token, float fadeDuration);
 	
-	void eraseStreamingToken(int token);
+	public void eraseStreamingToken(int token);
 	
 }

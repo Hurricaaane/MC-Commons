@@ -3,7 +3,7 @@ package net.minecraft.src;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.ha3.matmos.engine.MAtmosData;
+import eu.ha3.matmos.engine.Data;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -56,7 +56,7 @@ public class MAtDataGatherer
 	private List<MAtProcessorModel> additionalRelaxedProcessors;
 	private List<MAtProcessorModel> additionalFrequentProcessors;
 	
-	private MAtmosData data;
+	private Data data;
 	
 	private int cyclicTick;
 	
@@ -87,7 +87,7 @@ public class MAtDataGatherer
 		this.additionalRelaxedProcessors = new ArrayList<MAtProcessorModel>();
 		this.additionalFrequentProcessors = new ArrayList<MAtProcessorModel>();
 		
-		this.data = new MAtmosData();
+		this.data = new Data();
 		prepareSheets();
 		
 		this.largePipeline = new MAtPipelineIDAccumulator(this.mod, this.data, LARGESCAN, LARGESCAN_THOUSAND, 1000);
@@ -103,7 +103,7 @@ public class MAtDataGatherer
 		
 	}
 	
-	public MAtmosData getData()
+	public Data getData()
 	{
 		return this.data;
 		

@@ -5,6 +5,7 @@ import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
+
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
                     Version 2, December 2004 
@@ -21,9 +22,9 @@ import javax.xml.stream.events.XMLEvent;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class MAtmosStream extends MAtmosDescriptible
+public class Stream extends Descriptible
 {
-	MAtmosMachine machine;
+	Machine machine;
 	
 	private int token;
 	
@@ -45,7 +46,7 @@ public class MAtmosStream extends MAtmosDescriptible
 	
 	private boolean firstCall;
 	
-	MAtmosStream(MAtmosMachine machineIn)
+	Stream(Machine machineIn)
 	{
 		this.machine = machineIn;
 		
@@ -58,7 +59,7 @@ public class MAtmosStream extends MAtmosDescriptible
 		
 	}
 	
-	void setMachine(MAtmosMachine machineIn)
+	void setMachine(Machine machineIn)
 	{
 		this.machine = machineIn;
 		

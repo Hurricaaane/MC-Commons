@@ -2,7 +2,7 @@ package net.minecraft.src;
 
 import java.util.ArrayList;
 
-import eu.ha3.matmos.engine.MAtmosData;
+import eu.ha3.matmos.engine.Data;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -31,7 +31,7 @@ public class MAtPipelineIDAccumulator extends MAtScanCoordsPipeline
 	private int proportionnalTotal;
 	
 	MAtPipelineIDAccumulator(
-		MAtMod mod, MAtmosData dataIn, String normalNameIn, String proportionnalNameIn, int proportionnalTotalIn)
+		MAtMod mod, Data dataIn, String normalNameIn, String proportionnalNameIn, int proportionnalTotalIn)
 	{
 		super(mod, dataIn);
 		this.tempnormal = new int[MAtDataGatherer.COUNT_WORLD_BLOCKS];

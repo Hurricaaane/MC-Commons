@@ -2,6 +2,7 @@ package eu.ha3.matmos.engine;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventWriter;
@@ -24,14 +25,14 @@ import javax.xml.stream.events.XMLEvent;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class MAtmosDynamic extends MAtmosSwitchable
+public class Dynamic extends Switchable
 {
-	public ArrayList<String> sheets;
-	public ArrayList<Integer> keys;
+	private List<String> sheets;
+	private List<Integer> keys;
 	
 	public int value;
 	
-	MAtmosDynamic(MAtmosKnowledge knowledgeIn)
+	public Dynamic(Knowledge knowledgeIn)
 	{
 		super(knowledgeIn);
 		
@@ -72,13 +73,13 @@ public class MAtmosDynamic extends MAtmosSwitchable
 		
 	}
 	
-	public ArrayList<String> getSheets()
+	public List<String> getSheets()
 	{
 		return this.sheets;
 		
 	}
 	
-	public ArrayList<Integer> getKeys()
+	public List<Integer> getKeys()
 	{
 		return this.keys;
 		

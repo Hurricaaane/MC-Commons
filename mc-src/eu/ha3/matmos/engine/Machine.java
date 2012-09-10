@@ -2,9 +2,11 @@ package eu.ha3.matmos.engine;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamException;
+
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -44,23 +46,23 @@ import javax.xml.stream.XMLStreamException;
  * 
  */
 
-public class MAtmosMachine extends MAtmosSwitchable
+public class Machine extends Switchable
 {
-	ArrayList<String> anyallows;
-	ArrayList<String> anyrestricts;
+	private List<String> anyallows;
+	private List<String> anyrestricts;
 	
-	ArrayList<MAtmosEventTimed> etimes;
-	ArrayList<MAtmosStream> streams;
+	private List<TimedEvent> etimes;
+	private List<Stream> streams;
 	
 	private boolean powered;
 	private boolean switchedOn;
 	
-	MAtmosMachine(MAtmosKnowledge knowledgeIn)
+	Machine(Knowledge knowledgeIn)
 	{
 		super(knowledgeIn);
 		
-		this.etimes = new ArrayList<MAtmosEventTimed>();
-		this.streams = new ArrayList<MAtmosStream>();
+		this.etimes = new ArrayList<TimedEvent>();
+		this.streams = new ArrayList<Stream>();
 		
 		this.anyallows = new ArrayList<String>();
 		this.anyrestricts = new ArrayList<String>();
@@ -74,9 +76,9 @@ public class MAtmosMachine extends MAtmosSwitchable
 	{
 		if (this.switchedOn)
 		{
-			for (Iterator<MAtmosEventTimed> iter = this.etimes.iterator(); iter.hasNext();)
+			for (Iterator<TimedEvent> iter = this.etimes.iterator(); iter.hasNext();)
 			{
-				MAtmosEventTimed etime = iter.next();
+				TimedEvent etime = iter.next();
 				etime.routine();
 				
 			}
@@ -84,7 +86,7 @@ public class MAtmosMachine extends MAtmosSwitchable
 		}
 		if (this.powered && !this.streams.isEmpty())
 		{
-			for (Iterator<MAtmosStream> iter = this.streams.iterator(); iter.hasNext();)
+			for (Iterator<Stream> iter = this.streams.iterator(); iter.hasNext();)
 			{
 				iter.next().routine();
 			}
@@ -105,12 +107,12 @@ public class MAtmosMachine extends MAtmosSwitchable
 			return;
 		
 		this.switchedOn = true;
-		for (Iterator<MAtmosEventTimed> iter = this.etimes.iterator(); iter.hasNext();)
+		for (Iterator<TimedEvent> iter = this.etimes.iterator(); iter.hasNext();)
 		{
 			iter.next().restart();
 		}
 		
-		for (Iterator<MAtmosStream> iter = this.streams.iterator(); iter.hasNext();)
+		for (Iterator<Stream> iter = this.streams.iterator(); iter.hasNext();)
 		{
 			iter.next().signalPlayable();
 		}
@@ -130,7 +132,7 @@ public class MAtmosMachine extends MAtmosSwitchable
 		
 		this.switchedOn = false;
 		
-		for (Iterator<MAtmosStream> iter = this.streams.iterator(); iter.hasNext();)
+		for (Iterator<Stream> iter = this.streams.iterator(); iter.hasNext();)
 		{
 			iter.next().signalStoppable();
 		}
@@ -151,7 +153,7 @@ public class MAtmosMachine extends MAtmosSwitchable
 	 */
 	public void powerOff()
 	{
-		for (Iterator<MAtmosStream> iter = this.streams.iterator(); iter.hasNext();)
+		for (Iterator<Stream> iter = this.streams.iterator(); iter.hasNext();)
 		{
 			iter.next().clearToken();
 		}
@@ -173,12 +175,12 @@ public class MAtmosMachine extends MAtmosSwitchable
 		
 	}
 	
-	public ArrayList<String> getAllows()
+	public List<String> getAllows()
 	{
 		return this.anyallows;
 	}
 	
-	public ArrayList<String> getRestricts()
+	public List<String> getRestricts()
 	{
 		return this.anyrestricts;
 	}
@@ -239,7 +241,7 @@ public class MAtmosMachine extends MAtmosSwitchable
 		
 	}
 	
-	public ArrayList<MAtmosEventTimed> getEventsTimed()
+	public List<TimedEvent> getEventsTimed()
 	{
 		return this.etimes;
 		
@@ -247,7 +249,7 @@ public class MAtmosMachine extends MAtmosSwitchable
 	
 	public int addEventTimed()
 	{
-		this.etimes.add(new MAtmosEventTimed(this));
+		this.etimes.add(new TimedEvent(this));
 		
 		return this.etimes.size();
 		
@@ -261,13 +263,13 @@ public class MAtmosMachine extends MAtmosSwitchable
 		
 	}
 	
-	public MAtmosEventTimed getEventTimed(int index)
+	public TimedEvent getEventTimed(int index)
 	{
 		return this.etimes.get(index);
 		
 	}
 	
-	public ArrayList<MAtmosStream> getStreams()
+	public List<Stream> getStreams()
 	{
 		return this.streams;
 		
@@ -275,7 +277,7 @@ public class MAtmosMachine extends MAtmosSwitchable
 	
 	public int addStream()
 	{
-		this.streams.add(new MAtmosStream(this));
+		this.streams.add(new Stream(this));
 		
 		return this.streams.size();
 		
@@ -289,7 +291,7 @@ public class MAtmosMachine extends MAtmosSwitchable
 		
 	}
 	
-	public MAtmosStream getStream(int index)
+	public Stream getStream(int index)
 	{
 		return this.streams.get(index);
 		
@@ -424,18 +426,23 @@ public class MAtmosMachine extends MAtmosSwitchable
 			createNode(eventWriter, "restrict", iter.next());
 		}
 		
-		for (Iterator<MAtmosEventTimed> iter = this.etimes.iterator(); iter.hasNext();)
+		for (Iterator<TimedEvent> iter = this.etimes.iterator(); iter.hasNext();)
 		{
 			iter.next().serialize(eventWriter);
 		}
 		
-		for (Iterator<MAtmosStream> iter = this.streams.iterator(); iter.hasNext();)
+		for (Iterator<Stream> iter = this.streams.iterator(); iter.hasNext();)
 		{
 			iter.next().serialize(eventWriter);
 		}
 		
 		return "";
 		
+	}
+	
+	public List<TimedEvent> getTimedEvents()
+	{
+		return this.etimes;
 	}
 	
 }

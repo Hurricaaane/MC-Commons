@@ -12,7 +12,7 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.InitialDirContext;
 
 import net.minecraft.client.Minecraft;
-import eu.ha3.matmos.engine.MAtmosData;
+import eu.ha3.matmos.engine.Data;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -38,7 +38,7 @@ public class MAtProcessorRelaxed extends MAtProcessorModel
 	private Map<String, Integer> serverAddresses;
 	private Map<String, Integer> serverPorts;
 	
-	MAtProcessorRelaxed(MAtMod modIn, MAtmosData dataIn, String normalNameIn, String deltaNameIn)
+	MAtProcessorRelaxed(MAtMod modIn, Data dataIn, String normalNameIn, String deltaNameIn)
 	{
 		super(modIn, dataIn, normalNameIn, deltaNameIn);
 		

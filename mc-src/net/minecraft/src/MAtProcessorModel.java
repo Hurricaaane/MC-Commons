@@ -2,7 +2,7 @@ package net.minecraft.src;
 
 import java.util.ArrayList;
 
-import eu.ha3.matmos.engine.MAtmosData;
+import eu.ha3.matmos.engine.Data;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -23,7 +23,7 @@ import eu.ha3.matmos.engine.MAtmosData;
 public abstract class MAtProcessorModel
 {
 	private MAtMod mod;
-	private MAtmosData data;
+	private Data data;
 	
 	private String normalName;
 	private String deltaName;
@@ -31,7 +31,7 @@ public abstract class MAtProcessorModel
 	private ArrayList<Integer> normalSheet;
 	private ArrayList<Integer> deltaSheet;
 	
-	MAtProcessorModel(MAtMod modIn, MAtmosData dataIn, String normalNameIn, String deltaNameIn)
+	MAtProcessorModel(MAtMod modIn, Data dataIn, String normalNameIn, String deltaNameIn)
 	{
 		this.mod = modIn;
 		this.data = dataIn;
@@ -46,7 +46,7 @@ public abstract class MAtProcessorModel
 		
 	}
 	
-	public MAtmosData data()
+	public Data data()
 	{
 		return this.data;
 		

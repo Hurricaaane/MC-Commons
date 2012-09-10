@@ -22,9 +22,9 @@ import javax.xml.stream.XMLStreamException;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class MAtmosEvent extends MAtmosDescriptible
+public class Event extends Descriptible
 {
-	MAtmosKnowledge knowledge;
+	Knowledge knowledge;
 	
 	public ArrayList<String> paths;
 	
@@ -35,7 +35,7 @@ public class MAtmosEvent extends MAtmosDescriptible
 	
 	public int metaSound;
 	
-	MAtmosEvent(MAtmosKnowledge knowledgeIn)
+	Event(Knowledge knowledgeIn)
 	{
 		this.paths = new ArrayList<String>();
 		this.knowledge = knowledgeIn;
@@ -49,7 +49,7 @@ public class MAtmosEvent extends MAtmosDescriptible
 		
 	}
 	
-	void setKnowledge(MAtmosKnowledge knowledgeIn)
+	void setKnowledge(Knowledge knowledgeIn)
 	{
 		this.knowledge = knowledgeIn;
 		

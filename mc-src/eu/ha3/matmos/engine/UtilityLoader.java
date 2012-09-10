@@ -1,5 +1,7 @@
 package eu.ha3.matmos.engine;
 
+import java.util.Locale;
+
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -9,6 +11,8 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import eu.ha3.easy.TimeStatistic;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -26,9 +30,9 @@ import org.w3c.dom.NodeList;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class MAtmosUtilityLoader
+public class UtilityLoader
 {
-	MAtmosKnowledge knowledgeWorkstation;
+	Knowledge knowledgeWorkstation;
 	
 	static final String NAME = "name";
 	
@@ -88,7 +92,7 @@ public class MAtmosUtilityLoader
 	
 	private XPath xp;
 	
-	private MAtmosUtilityLoader()
+	private UtilityLoader()
 	{
 		XPathFactory xpf = XPathFactory.newInstance();
 		this.xp = xpf.newXPath();
@@ -102,17 +106,17 @@ public class MAtmosUtilityLoader
 	 */
 	private static class MAtmosUtilityLoaderSingletonHolder
 	{
-		public static final MAtmosUtilityLoader instance = new MAtmosUtilityLoader();
+		public static final UtilityLoader instance = new UtilityLoader();
 	}
 	
-	public static MAtmosUtilityLoader getInstance()
+	public static UtilityLoader getInstance()
 	{
 		return MAtmosUtilityLoaderSingletonHolder.instance;
 	}
 	
 	///
 	
-	public boolean loadKnowledge(MAtmosKnowledge original, Document doc, boolean allowOverrides) throws MAtmosException
+	public boolean loadKnowledge(Knowledge original, Document doc, boolean allowOverrides) throws MAtmosException
 	{
 		try
 		{
@@ -149,7 +153,7 @@ public class MAtmosUtilityLoader
 		
 	}
 	
-	private void extractXMLdescriptible(MAtmosKnowledge original, Node capsule, MAtmosDescriptible descriptible)
+	private void extractXMLdescriptible(Knowledge original, Node capsule, Descriptible descriptible)
 		throws XPathExpressionException
 	{
 		if (this.xp.evaluate("./" + DESCRIPTIBLE, capsule) != null)
@@ -161,7 +165,7 @@ public class MAtmosUtilityLoader
 		
 	}
 	
-	private void parseXMLdescriptible(MAtmosKnowledge original, Node descNode, MAtmosDescriptible descriptible)
+	private void parseXMLdescriptible(Knowledge original, Node descNode, Descriptible descriptible)
 		throws XPathExpressionException
 	{
 		if (descNode == null)
@@ -191,7 +195,7 @@ public class MAtmosUtilityLoader
 		
 	}
 	
-	private void parseXMLdynamic(MAtmosKnowledge original, Node capsule, String name, boolean allowOverrides)
+	private void parseXMLdynamic(Knowledge original, Node capsule, String name, boolean allowOverrides)
 		throws XPathExpressionException
 	{
 		boolean exists = original.getDynamic(name) != null;
@@ -203,7 +207,7 @@ public class MAtmosUtilityLoader
 			original.addDynamic(name);
 		}
 		
-		MAtmosDynamic descriptible = original.getDynamic(name);
+		Dynamic descriptible = original.getDynamic(name);
 		extractXMLdescriptible(original, capsule, descriptible);
 		
 		int entrycount =
@@ -224,7 +228,7 @@ public class MAtmosUtilityLoader
 		
 	}
 	
-	private void parseXMLlist(MAtmosKnowledge original, Node capsule, String name, boolean allowOverrides)
+	private void parseXMLlist(Knowledge original, Node capsule, String name, boolean allowOverrides)
 		throws XPathExpressionException
 	{
 		boolean exists = original.getList(name) != null;
@@ -236,7 +240,7 @@ public class MAtmosUtilityLoader
 			original.addList(name);
 		}
 		
-		MAtmosList descriptible = original.getList(name);
+		SugarList descriptible = original.getList(name);
 		extractXMLdescriptible(original, capsule, descriptible);
 		
 		int constcount =
@@ -251,7 +255,7 @@ public class MAtmosUtilityLoader
 		
 	}
 	
-	private void parseXMLcondition(MAtmosKnowledge original, Node capsule, String name, boolean allowOverrides)
+	private void parseXMLcondition(Knowledge original, Node capsule, String name, boolean allowOverrides)
 		throws XPathExpressionException
 	{
 		boolean exists = original.getDataCondition(name) != null;
@@ -263,7 +267,7 @@ public class MAtmosUtilityLoader
 			original.addDataCondition(name);
 		}
 		
-		MAtmosCondition descriptible = original.getDataCondition(name);
+		Condition descriptible = original.getDataCondition(name);
 		extractXMLdescriptible(original, capsule, descriptible);
 		
 		String sheet = this.xp.evaluate("./" + SHEET, capsule);
@@ -305,7 +309,7 @@ public class MAtmosUtilityLoader
 		
 	}
 	
-	private void parseXMLset(MAtmosKnowledge original, Node capsule, String name, boolean allowOverrides)
+	private void parseXMLset(Knowledge original, Node capsule, String name, boolean allowOverrides)
 		throws XPathExpressionException
 	{
 		boolean exists = original.getConditionSet(name) != null;
@@ -317,7 +321,7 @@ public class MAtmosUtilityLoader
 			original.addConditionSet(name);
 		}
 		
-		MAtmosConditionSet descriptible = original.getConditionSet(name);
+		ConditionSet descriptible = original.getConditionSet(name);
 		extractXMLdescriptible(original, capsule, descriptible);
 		
 		int truepartcount =
@@ -342,7 +346,7 @@ public class MAtmosUtilityLoader
 		
 	}
 	
-	private void parseXMLevent(MAtmosKnowledge original, Node capsule, String name, boolean allowOverrides)
+	private void parseXMLevent(Knowledge original, Node capsule, String name, boolean allowOverrides)
 		throws XPathExpressionException
 	{
 		boolean exists = original.getEvent(name) != null;
@@ -354,7 +358,7 @@ public class MAtmosUtilityLoader
 			original.addEvent(name);
 		}
 		
-		MAtmosEvent descriptible = original.getEvent(name);
+		Event descriptible = original.getEvent(name);
 		extractXMLdescriptible(original, capsule, descriptible);
 		
 		String volmin = this.xp.evaluate("./" + VOLMIN, capsule);
@@ -400,7 +404,7 @@ public class MAtmosUtilityLoader
 		
 	}
 	
-	private void parseXMLmachine(MAtmosKnowledge original, Node capsule, String name, boolean allowOverrides)
+	private void parseXMLmachine(Knowledge original, Node capsule, String name, boolean allowOverrides)
 		throws XPathExpressionException
 	{
 		boolean exists = original.getMachine(name) != null;
@@ -412,7 +416,7 @@ public class MAtmosUtilityLoader
 			original.addMachine(name);
 		}
 		
-		MAtmosMachine descriptible = original.getMachine(name);
+		Machine descriptible = original.getMachine(name);
 		extractXMLdescriptible(original, capsule, descriptible);
 		
 		int eventtimedcount =
@@ -458,7 +462,7 @@ public class MAtmosUtilityLoader
 		
 	}
 	
-	private void inscriptXMLeventTimed(MAtmosEventTimed inscriptible, Node specs) throws XPathExpressionException
+	private void inscriptXMLeventTimed(TimedEvent inscriptible, Node specs) throws XPathExpressionException
 	{
 		String eventname = this.xp.evaluate("./" + EVENTNAME, specs);
 		String volmod = this.xp.evaluate("./" + VOLMOD, specs);
@@ -499,7 +503,7 @@ public class MAtmosUtilityLoader
 		
 	}
 	
-	private void inscriptXMLstream(MAtmosStream inscriptible, Node specs) throws XPathExpressionException
+	private void inscriptXMLstream(Stream inscriptible, Node specs) throws XPathExpressionException
 	{
 		String _PATH = this.xp.evaluate("./" + PATH, specs);
 		String _VOLUME = this.xp.evaluate("./" + VOLUME, specs);
@@ -558,7 +562,7 @@ public class MAtmosUtilityLoader
 		
 	}
 	
-	private void parseXML(MAtmosKnowledge original, Document doc, boolean allowOverrides)
+	private void parseXML(Knowledge original, Document doc, boolean allowOverrides)
 		throws XPathExpressionException, DOMException
 	{
 		
@@ -596,6 +600,7 @@ public class MAtmosUtilityLoader
 			
 		}
 		
+		TimeStatistic stat = new TimeStatistic(Locale.ENGLISH);
 		{
 			NodeList cat = doc.getElementsByTagName(CONDITION);
 			for (int i = 0; i < cat.getLength(); i++)
@@ -612,6 +617,7 @@ public class MAtmosUtilityLoader
 			}
 			
 		}
+		System.out.println(stat.getMilliseconds());
 		
 		{
 			NodeList cat = doc.getElementsByTagName(SET);

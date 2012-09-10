@@ -16,13 +16,13 @@ package eu.ha3.matmos.engine;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public abstract class MAtmosSwitchable extends MAtmosDescriptible
+public abstract class Switchable extends Descriptible
 {
-	MAtmosKnowledge knowledge;
+	Knowledge knowledge;
 	boolean needsTesting;
 	boolean isValid;
 	
-	MAtmosSwitchable(MAtmosKnowledge knowledgeIn)
+	Switchable(Knowledge knowledgeIn)
 	{
 		this.knowledge = knowledgeIn;
 		this.isValid = false;
@@ -46,7 +46,7 @@ public abstract class MAtmosSwitchable extends MAtmosDescriptible
 	/**
 	 * Changes the Knowledge this Switchable belongs to.
 	 */
-	public void setKnowledge(MAtmosKnowledge knowledgeIn)
+	public void setKnowledge(Knowledge knowledgeIn)
 	{
 		this.knowledge = knowledgeIn;
 		flagNeedsTesting();

@@ -1,6 +1,6 @@
 package net.minecraft.src;
 
-import eu.ha3.matmos.engine.MAtmosData;
+import eu.ha3.matmos.engine.Data;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -21,11 +21,11 @@ import eu.ha3.matmos.engine.MAtmosData;
 public abstract class MAtScanCoordsPipeline implements MAtScanCoordsOps
 {
 	private MAtMod mod;
-	private MAtmosData data;
+	private Data data;
 	
 	private MAtScanCoordsPipeline next;
 	
-	MAtScanCoordsPipeline(MAtMod mod2, MAtmosData dataIn)
+	MAtScanCoordsPipeline(MAtMod mod2, Data dataIn)
 	{
 		this.mod = mod2;
 		this.data = dataIn;
@@ -39,7 +39,7 @@ public abstract class MAtScanCoordsPipeline implements MAtScanCoordsOps
 		
 	}
 	
-	public MAtmosData data()
+	public Data data()
 	{
 		return this.data;
 		
