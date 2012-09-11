@@ -88,6 +88,24 @@ public class Ha3SoundCommunicator
 	
 	public SoundSystem getSoundSystem()
 	{
+		SoundSystem soundSystemBeforeLoading = this.sndSystem;
+		
+		// Ensure the sound system is always the same as the soundManager references
+		try
+		{
+			loadSoundSystem();
+		}
+		catch (PrivateAccessException e)
+		{
+			e.printStackTrace();
+		}
+		
+		if (soundSystemBeforeLoading != this.sndSystem)
+		{
+			System.err.println("(Ha3SoundCommunicator) WARNING: SoundSystem was altered during runtime.");
+			System.err.println("(Ha3SoundCommunicator) Behavior cannot be predicted at this point.");
+		}
+		
 		return this.sndSystem;
 		
 	}
