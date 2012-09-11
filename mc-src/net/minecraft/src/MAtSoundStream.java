@@ -114,6 +114,9 @@ public class MAtSoundStream
 		{
 			this.poolURL = poolEntry.soundUrl;
 			
+			MAtMod.LOGGER.info("Source: "
+				+ this.sourceName + " is being initialized with URL: " + poolEntry.soundUrl.toString());
+			
 			SoundSystem sndSystem = this.refer.getSoundSystem();
 			
 			sndSystem.newStreamingSource(true, this.sourceName, poolEntry.soundUrl, this.path, true, 0, 0, 0, 0, 0);
@@ -194,7 +197,8 @@ public class MAtSoundStream
 	
 	public void interruptStreaming()
 	{
-		stopStreaming(0f);
+		SoundSystem sndSystem = this.refer.getSoundSystem();
+		sndSystem.stop(this.sourceName);
 		
 	}
 	
