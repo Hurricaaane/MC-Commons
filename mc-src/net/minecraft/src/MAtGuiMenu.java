@@ -165,7 +165,10 @@ public class MAtGuiMenu extends GuiScreen
 				.getConfig().getBoolean("reversed.controls") ? "Menu: Hold Down Key" : "Menu: Press Key"));
 		
 		this.controlList.add(new GuiButton(
-			200, leftHinge + 50, 10 + 22 * (this.IDS_PER_PAGE + 4), 155 * 2 - 100, 20, "Done"));
+			200, leftHinge + 20, 10 + 22 * (this.IDS_PER_PAGE + 4), inWidth - 100, 20, "Done"));
+		
+		this.controlList.add(new GuiButton(
+			212, leftHinge + 20 + inWidth - 100 + 2, 10 + 22 * (this.IDS_PER_PAGE + 4), 60 - 3, 20, "Turn Off"));
 		
 		//this.screenTitle = stringtranslate.translateKey("controls.title");
 	}
@@ -203,6 +206,11 @@ public class MAtGuiMenu extends GuiScreen
 			par1GuiButton.displayString =
 				this.mod.getConfig().getBoolean("reversed.controls") ? "Menu: Hold Down Key" : "Menu: Press Key";
 			this.mod.saveConfig();
+		}
+		else if (par1GuiButton.id == 212)
+		{
+			this.mc.displayGuiScreen(this.parentScreen);
+			this.mod.stopRunning();
 		}
 		
 	}
