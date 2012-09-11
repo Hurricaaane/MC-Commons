@@ -71,11 +71,34 @@ public class DebuggingHa3Haddon extends HaddonImpl
 	
 	protected void in()
 	{
-		this.toggle = !this.toggle;
+		if (util().getCurrentScreen() instanceof GuiChat)
+		{
+			GuiTextField textField;
+			try
+			{
+				textField = (GuiTextField) util().getPrivateValue(GuiChat.class, util().getCurrentScreen(), 7);
+				if (textField != null)
+				{
+					textField.setText("/rs_channelc g <&cHurricaaane&r> " + textField.getText());
+					
+				}
+			}
+			catch (PrivateAccessException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			this.toggle = !this.toggle;
+		}
 	}
 	
 	protected void out()
 	{
+		if (util().getCurrentScreen() instanceof GuiChat)
+			return;
+		
 		Set set = WorldClient.getEntityList(manager().getMinecraft().theWorld);
 		Map<String, Integer> types = new HashMap<String, Integer>();
 		for (Object o : set)
