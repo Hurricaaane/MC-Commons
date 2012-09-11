@@ -319,7 +319,6 @@ public class Knowledge
 		
 		for (Machine machine : this.machines.values())
 		{
-			// TODO Make this a method of MAtmosMachine
 			for (TimedEvent etime : machine.getTimedEvents())
 			{
 				if (etime.event.equals(name))
