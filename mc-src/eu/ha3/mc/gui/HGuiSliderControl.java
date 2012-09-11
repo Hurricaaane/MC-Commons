@@ -122,6 +122,8 @@ public class HGuiSliderControl extends GuiButton
 			}
 			
 			this.isBeingDragged = true;
+			this.listener.sliderPressed(this);
+			
 			return true;
 		}
 		else
@@ -136,5 +138,7 @@ public class HGuiSliderControl extends GuiButton
 	public void mouseReleased(int par1, int par2)
 	{
 		this.isBeingDragged = false;
+		
+		this.listener.sliderReleased(this);
 	}
 }

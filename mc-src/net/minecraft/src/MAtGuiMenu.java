@@ -43,6 +43,8 @@ public class MAtGuiMenu extends GuiScreen
 	private int pageFromZero;
 	private final int IDS_PER_PAGE = 5;
 	
+	private List<MAtExpansion> expansionList;
+	
 	// Keep the active page in memory. Globally... (herpderp)
 	private static int in_memory_page = 0;
 	
@@ -58,6 +60,8 @@ public class MAtGuiMenu extends GuiScreen
 		this.parentScreen = par1GuiScreen;
 		this.mod = matmos;
 		this.pageFromZero = pageFromZero;
+		
+		this.expansionList = new ArrayList<MAtExpansion>();
 		
 		in_memory_page = this.pageFromZero;
 	}
@@ -91,6 +95,16 @@ public class MAtGuiMenu extends GuiScreen
 					slider.displayString = "Global Volume Control: " + (int) Math.floor(value * 200) + "%";
 					MAtGuiMenu.this.mod.getConfig().setProperty("globalvolume.scale", central.getVolume());
 				}
+				
+				@Override
+				public void sliderPressed(HGuiSliderControl hGuiSliderControl)
+				{
+				}
+				
+				@Override
+				public void sliderReleased(HGuiSliderControl hGuiSliderControl)
+				{
+				}
 			});
 			this.controlList.add(sliderControl);
 			id++;
@@ -106,6 +120,7 @@ public class MAtGuiMenu extends GuiScreen
 		{
 			final String uniqueIdentifier = identifiers.get(indexedIdentifier);
 			final MAtExpansion expansion = expansions.get(uniqueIdentifier);
+			this.expansionList.add(expansion);
 			
 			String display = expansion.getFriendlyName() + ": " + (int) Math.floor(expansion.getVolume() * 100) + "%";
 			if (expansion.getVolume() == 0f)
@@ -135,8 +150,25 @@ public class MAtGuiMenu extends GuiScreen
 					slider.displayString = display;
 					
 				}
+				
+				@Override
+				public void sliderPressed(HGuiSliderControl hGuiSliderControl)
+				{
+				}
+				
+				@Override
+				public void sliderReleased(HGuiSliderControl hGuiSliderControl)
+				{
+					if (MAtGuiMenu.this.mod.getConfig().getBoolean("sound.autopreview"))
+					{
+						expansion.playSample();
+					}
+				}
 			});
 			this.controlList.add(sliderControl);
+			
+			this.controlList.add(new GuiButton(400 + id - 1, leftHinge + 22 + 310 - 44 + 2, 22 + 22 * id, 22, 20, "?"));
+			
 			id++;
 			
 		}
@@ -152,6 +184,10 @@ public class MAtGuiMenu extends GuiScreen
 				.add(new GuiButton(202, rightHinge - 22 - 100, 22 * (this.IDS_PER_PAGE + 2), 100, 20, stringtranslate
 					.translateKey("Next")));
 		}
+		
+		this.controlList.add(new GuiButton(
+			220, leftHinge + 22 + 310 - 44 + 2, 22 * (this.IDS_PER_PAGE + 2), 22, 20, this.mod.getConfig().getBoolean(
+				"sound.autopreview") ? "^o^" : "^_^"));
 		
 		int splitty = 2;
 		int gappy = 2;
@@ -212,13 +248,30 @@ public class MAtGuiMenu extends GuiScreen
 			this.mc.displayGuiScreen(this.parentScreen);
 			this.mod.stopRunning();
 		}
+		else if (par1GuiButton.id == 220)
+		{
+			this.mod
+				.getConfig().setProperty("sound.autopreview", !this.mod.getConfig().getBoolean("sound.autopreview"));
+			par1GuiButton.displayString = this.mod.getConfig().getBoolean("sound.autopreview") ? "^o^" : "^_^";
+			this.mod.saveConfig();
+		}
+		else if (par1GuiButton.id >= 400)
+		{
+			int id = par1GuiButton.id - 400;
+			MAtExpansion expansion = this.expansionList.get(id);
+			
+			if (expansion.isRunning())
+			{
+				expansion.playSample();
+				
+			}
+			
+		}
 		
 	}
 	
 	private void aboutToClose()
 	{
-		MAtMod.LOGGER.info("Saving configuration...");
-		
 		Map<String, MAtExpansion> expansions = this.mod.getExpansionManager().getExpansions();
 		for (MAtExpansion expansion : expansions.values())
 		{
@@ -267,7 +320,7 @@ public class MAtGuiMenu extends GuiScreen
 	public void drawScreen(int par1, int par2, float par3)
 	{
 		drawDefaultBackground();
-		drawCenteredString(this.fontRenderer, this.screenTitle, this.width / 2, 5, 0xffffff);
+		drawCenteredString(this.fontRenderer, this.screenTitle, this.width / 2, 8, 0xffffff);
 		
 		super.drawScreen(par1, par2, par3);
 		
