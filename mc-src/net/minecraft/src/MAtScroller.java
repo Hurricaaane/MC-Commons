@@ -113,7 +113,8 @@ public class MAtScroller extends Ha3Scroller
 	protected void doRoutineBefore()
 	{
 		final int caps = 10;
-		if (Math.floor((this.prevPitch + 90F) / caps) != Math.floor((getPitch() + 90F) / caps))
+		if (this.mod.getConfig().getBoolean("sound.autopreview")
+			&& Math.floor((this.prevPitch + 90F) / caps) != Math.floor((getPitch() + 90F) / caps))
 		{
 			// Calculate volume from 0f to 2f
 			float hgn = (-getPitch() + 90F) / 90F;
