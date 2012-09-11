@@ -560,6 +560,8 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		this.expansionManager.soundRoutine();
 		this.soundManagerMaster.routine();
 		
+		this.userControl.frameRoutine(semi);
+		
 	}
 	
 	@Override

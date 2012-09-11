@@ -27,6 +27,8 @@ public class MAtUserControl
 	private KeyBinding keyBindingMain;
 	private Ha3KeyManager keyManager;
 	
+	private MAtScroller scroller;
+	
 	private boolean hasFirstHit;
 	
 	public MAtUserControl(MAtMod mAtmosHaddon)
@@ -39,6 +41,8 @@ public class MAtUserControl
 	{
 		this.keyBindingMain = new KeyBinding("key.matmos", 65);
 		this.keyManager = new Ha3KeyManager();
+		
+		this.scroller = new MAtScroller(this.mod);
 		
 		this.mod.manager().addKeyBinding(this.keyBindingMain, "MAtmos");
 		this.keyManager.addKeyBinding(this.keyBindingMain, new MAtKeyMain(this));
@@ -57,6 +61,19 @@ public class MAtUserControl
 	{
 		this.keyManager.handleRuntime();
 		
+		this.scroller.routine();
+		if (this.scroller.isRunning())
+		{
+			this.mod.getSoundManagerMaster().setVolume(this.scroller.getValue());
+			
+		}
+		
+	}
+	
+	public void frameRoutine(float fspan)
+	{
+		this.scroller.draw(fspan);
+
 	}
 	
 	public void communicateKeyBindingEvent(KeyBinding event)
@@ -146,7 +163,14 @@ public class MAtUserControl
 		}
 		else
 		{
-			whenWantsToggle();
+			if (this.mod.isRunning())
+			{
+				this.scroller.start();
+			}
+			else
+			{
+				whenWantsToggle();
+			}
 		}
 		
 	}
@@ -175,6 +199,11 @@ public class MAtUserControl
 	
 	public void endHold()
 	{
+		if (this.scroller.isRunning())
+		{
+			this.scroller.stop();
+		}
+		
 		if (this.mod.getConfig().getBoolean("reversed.controls"))
 		{
 			whenWantsForcing();

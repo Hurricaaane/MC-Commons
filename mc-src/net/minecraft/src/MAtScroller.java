@@ -21,12 +21,9 @@ import eu.ha3.mc.convenience.Ha3Scroller;
 
 public class MAtScroller extends Ha3Scroller
 {
-	final String msgvol = "MAtmos Volume";
-	final String msgmus = "MAtmos Music";
+	final String msgd = "MAtmos Volume";
 	final String msgup = "+";
 	final String msgdown = "-";
-	
-	private String msgd = this.msgvol;
 	
 	private MAtMod mod;
 	private float prevPitch;
@@ -34,7 +31,7 @@ public class MAtScroller extends Ha3Scroller
 	private boolean knowsHowToUse;
 	private float doneValue;
 	
-	public MAtScroller(MAtUserControl userControlIn, MAtMod mod2)
+	public MAtScroller(MAtMod mod2)
 	{
 		super(mod2.manager().getMinecraft());
 		this.mod = mod2;
@@ -63,7 +60,7 @@ public class MAtScroller extends Ha3Scroller
 		mc.fontRenderer.drawStringWithShadow(this.msgd, uposx + uwidth * 2, scrHeight / 2, 0xffffff);
 		
 		mc.fontRenderer.drawStringWithShadow(msgper, uposx + uwidth * 2, scrHeight / 2 + 10, 255 << 16
-			| (int) (200 + 55 * (this.doneValue < 1 ? 1 : (4 - this.doneValue) / 3F)) << 8);
+			| (int) (200 + 55 * (this.doneValue < 1 ? 1 : 2 - this.doneValue)) << 8);
 		
 		if (!this.knowsHowToUse)
 		{
@@ -118,7 +115,10 @@ public class MAtScroller extends Ha3Scroller
 		final int caps = 10;
 		if (Math.floor((this.prevPitch + 90F) / caps) != Math.floor((getPitch() + 90F) / caps))
 		{
-			float hgn = (float) Math.pow((-getPitch() + 90F) / 90F, 2);
+			// Calculate volume from 0f to 2f
+			float hgn = (-getPitch() + 90F) / 90F;
+			
+			// Calculate pitch
 			float res = (float) Math.pow(2, -Math.floor(getPitch() / caps) / 12);
 			
 			EntityPlayer ply = this.mod.manager().getMinecraft().thePlayer;
@@ -131,7 +131,6 @@ public class MAtScroller extends Ha3Scroller
 		}
 		
 		this.doneValue = -getPitch() / 90F + 1F;
-		this.doneValue = (float) Math.pow(this.doneValue, 2);
 		if (Math.abs(getPitch()) < 3)
 		{
 			this.doneValue = 1F;
@@ -163,21 +162,6 @@ public class MAtScroller extends Ha3Scroller
 	@Override
 	protected void doStop()
 	{
-		
-	}
-	
-	public void start(boolean scrollModeIsMusic)
-	{
-		if (!scrollModeIsMusic)
-		{
-			this.msgd = this.msgvol;
-		}
-		else
-		{
-			this.msgd = this.msgmus;
-		}
-		
-		this.start();
 		
 	}
 	
