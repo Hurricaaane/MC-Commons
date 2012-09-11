@@ -73,7 +73,7 @@ public class MAtUserControl
 	public void frameRoutine(float fspan)
 	{
 		this.scroller.draw(fspan);
-
+		
 	}
 	
 	public void communicateKeyBindingEvent(KeyBinding event)
@@ -202,6 +202,8 @@ public class MAtUserControl
 		if (this.scroller.isRunning())
 		{
 			this.scroller.stop();
+			this.mod.getConfig().setProperty("globalvolume.scale", this.mod.getSoundManagerMaster().getVolume());
+			this.mod.saveConfig();
 		}
 		
 		if (this.mod.getConfig().getBoolean("reversed.controls"))
