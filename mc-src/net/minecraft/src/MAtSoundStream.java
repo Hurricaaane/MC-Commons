@@ -208,6 +208,7 @@ public class MAtSoundStream
 			return;
 		
 		SoundSystem sndSystem = this.refer.getSoundSystem();
+		interruptStreaming();
 		sndSystem.removeSource(this.sourceName);
 		
 	}
