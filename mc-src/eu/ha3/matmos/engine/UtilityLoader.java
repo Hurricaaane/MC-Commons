@@ -617,7 +617,6 @@ public class UtilityLoader
 			}
 			
 		}
-		System.out.println(stat.getMilliseconds());
 		
 		{
 			NodeList cat = doc.getElementsByTagName(SET);
