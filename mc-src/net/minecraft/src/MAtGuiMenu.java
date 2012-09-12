@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import eu.ha3.mc.gui.HDisplayStringProvider;
 import eu.ha3.mc.gui.HGuiSliderControl;
 import eu.ha3.mc.gui.HSliderListener;
 
@@ -74,25 +75,30 @@ public class MAtGuiMenu extends GuiScreen
 	public void initGui()
 	{
 		StringTranslate stringtranslate = StringTranslate.getInstance();
-		int inWidth = 155 * 2;
-		int leftHinge = this.width / 2 - inWidth / 2;
-		int rightHinge = this.width / 2 + inWidth / 2;
+		
+		final int _GAP = 2;
+		final int _UNIT = 20;
+		final int _WIDTH = 155 * 2;
+		
+		final int _MIX = _GAP + _UNIT;
+		
+		final int _LEFT = this.width / 2 - _WIDTH / 2;
+		final int _RIGHT = this.width / 2 + _WIDTH / 2;
 		
 		Map<String, MAtExpansion> expansions = this.mod.getExpansionManager().getExpansions();
 		int id = 0;
 		
 		{
 			final MAtSoundManagerMaster central = this.mod.getSoundManagerMaster();
-			String display = "Global Volume Control: " + (int) Math.floor(central.getVolume() * 100) + "%";
 			
 			HGuiSliderControl sliderControl =
-				new HGuiSliderControl(id, leftHinge, 22 + 22 * id, 310, 20, display, central.getVolume() * 0.5f);
+				new HGuiSliderControl(id, _LEFT, _MIX, _WIDTH, _UNIT, "", central.getVolume() * 0.5f);
 			sliderControl.setListener(new HSliderListener() {
 				@Override
 				public void sliderValueChanged(HGuiSliderControl slider, float value)
 				{
 					central.setVolume(value * 2);
-					slider.displayString = "Global Volume Control: " + (int) Math.floor(value * 200) + "%";
+					slider.updateDisplayString();
 					MAtGuiMenu.this.mod.getConfig().setProperty("globalvolume.scale", central.getVolume());
 				}
 				
@@ -106,31 +112,34 @@ public class MAtGuiMenu extends GuiScreen
 				{
 				}
 			});
+			sliderControl.setDisplayStringProvider(new HDisplayStringProvider() {
+				@Override
+				public String provideDisplayString()
+				{
+					return "Global Volume Control: " + (int) Math.floor(central.getVolume() * 100) + "%";
+				}
+			});
+			sliderControl.updateDisplayString();
+			
 			this.controlList.add(sliderControl);
 			id++;
 			
 		}
 		
-		List<String> identifiers = new ArrayList<String>(expansions.keySet());
-		Collections.sort(identifiers);
+		List<String> sortedNames = new ArrayList<String>(expansions.keySet());
+		Collections.sort(sortedNames);
 		
-		for (int indexedIdentifier = this.pageFromZero * this.IDS_PER_PAGE; indexedIdentifier < this.pageFromZero
+		for (int expansionIndex = this.pageFromZero * this.IDS_PER_PAGE; expansionIndex < this.pageFromZero
 			* this.IDS_PER_PAGE + this.IDS_PER_PAGE
-			&& indexedIdentifier < identifiers.size(); indexedIdentifier++)
+			&& expansionIndex < sortedNames.size(); expansionIndex++)
 		{
-			final String uniqueIdentifier = identifiers.get(indexedIdentifier);
+			final String uniqueIdentifier = sortedNames.get(expansionIndex);
 			final MAtExpansion expansion = expansions.get(uniqueIdentifier);
 			this.expansionList.add(expansion);
 			
-			String display = expansion.getFriendlyName() + ": " + (int) Math.floor(expansion.getVolume() * 100) + "%";
-			if (expansion.getVolume() == 0f)
-			{
-				display = expansion.getFriendlyName() + " (Disabled)";
-			}
-			
 			HGuiSliderControl sliderControl =
 				new HGuiSliderControl(
-					id, leftHinge + 22, 22 + 22 * id, 310 - 44, 20, display, expansion.getVolume() * 0.5f);
+					id, _LEFT + _MIX, _MIX * (id + 1), _WIDTH - _MIX * 2, _UNIT, "", expansion.getVolume() * 0.5f);
 			sliderControl.setListener(new HSliderListener() {
 				@Override
 				public void sliderValueChanged(HGuiSliderControl slider, float value)
@@ -140,14 +149,7 @@ public class MAtGuiMenu extends GuiScreen
 					{
 						expansion.turnOn();
 					}
-					
-					String display =
-						expansion.getFriendlyName() + ": " + (int) Math.floor(expansion.getVolume() * 100) + "%";
-					if (value == 0f)
-					{
-						display = display + " (Will be disabled)";
-					}
-					slider.displayString = display;
+					slider.updateDisplayString();
 					
 				}
 				
@@ -165,46 +167,79 @@ public class MAtGuiMenu extends GuiScreen
 					}
 				}
 			});
+			
+			sliderControl.setDisplayStringProvider(new HDisplayStringProvider() {
+				@Override
+				public String provideDisplayString()
+				{
+					String display = expansion.getFriendlyName() + ": ";
+					if (expansion.getVolume() == 0f)
+					{
+						if (expansion.isRunning())
+						{
+							display = display + "Will be disabled";
+						}
+						else
+						{
+							display = display + "Disabled";
+						}
+					}
+					else
+					{
+						display = display + (int) Math.floor(expansion.getVolume() * 100) + "%";
+					}
+					
+					return display;
+				}
+			});
+			sliderControl.updateDisplayString();
+			
 			this.controlList.add(sliderControl);
 			
-			this.controlList.add(new GuiButton(400 + id - 1, leftHinge + 22 + 310 - 44 + 2, 22 + 22 * id, 22, 20, "?"));
+			this.controlList.add(new GuiButton(400 + id - 1, _RIGHT - _UNIT, _MIX * (id + 1), _UNIT, _UNIT, "?"));
 			
 			id++;
 			
 		}
 		
+		this.controlList.add(new GuiButton(220, _RIGHT - _UNIT, _MIX * (this.IDS_PER_PAGE + 2), _UNIT, _UNIT, this.mod
+			.getConfig().getBoolean("sound.autopreview") ? "^o^" : "^_^"));
+		
+		final int _PREVNEWTWIDTH = _WIDTH / 3;
+		
 		if (this.pageFromZero != 0)
 		{
 			this.controlList.add(new GuiButton(
-				201, leftHinge + 22, 22 * (this.IDS_PER_PAGE + 2), 100, 20, stringtranslate.translateKey("Previous")));
+				201, _LEFT + _MIX, _MIX * (this.IDS_PER_PAGE + 2), _PREVNEWTWIDTH, _UNIT, stringtranslate
+					.translateKey("Previous")));
 		}
-		if (this.pageFromZero * this.IDS_PER_PAGE + this.IDS_PER_PAGE < identifiers.size())
+		if (this.pageFromZero * this.IDS_PER_PAGE + this.IDS_PER_PAGE < sortedNames.size())
 		{
-			this.controlList
-				.add(new GuiButton(202, rightHinge - 22 - 100, 22 * (this.IDS_PER_PAGE + 2), 100, 20, stringtranslate
-					.translateKey("Next")));
+			this.controlList.add(new GuiButton(
+				202, _RIGHT - _MIX - _PREVNEWTWIDTH, _MIX * (this.IDS_PER_PAGE + 2), _PREVNEWTWIDTH, _UNIT,
+				stringtranslate.translateKey("Next")));
 		}
 		
-		this.controlList.add(new GuiButton(
-			220, leftHinge + 22 + 310 - 44 + 2, 22 * (this.IDS_PER_PAGE + 2), 22, 20, this.mod.getConfig().getBoolean(
-				"sound.autopreview") ? "^o^" : "^_^"));
+		final int _ASPLIT = 2;
+		final int _AWID = _WIDTH / _ASPLIT - _GAP * (_ASPLIT - 1) / 2;
 		
-		int splitty = 2;
-		int gappy = 2;
-		int widdy = inWidth / splitty - gappy * (splitty - 1) / 2;
-		
-		this.controlList.add(new GuiButton(210, leftHinge, 10 + 22 * (this.IDS_PER_PAGE + 3), widdy, 20, this.mod
-			.isStartEnabled() ? "Start Enabled: ON" : "Start Enabled: OFF"));
+		final int _SEPARATOR = 10;
 		
 		this.controlList.add(new GuiButton(
-			211, leftHinge + widdy + gappy, 10 + 22 * (this.IDS_PER_PAGE + 3), widdy, 20, this.mod
+			210, _LEFT, _SEPARATOR + _MIX * (this.IDS_PER_PAGE + 3), _AWID, _UNIT, this.mod.getConfig().getBoolean(
+				"start.enabled") ? "Start Enabled: ON" : "Start Enabled: OFF"));
+		
+		this.controlList.add(new GuiButton(
+			211, _LEFT + _AWID + _GAP, _SEPARATOR + _MIX * (this.IDS_PER_PAGE + 3), _AWID, _UNIT, this.mod
 				.getConfig().getBoolean("reversed.controls") ? "Menu: Hold Down Key" : "Menu: Press Key"));
 		
-		this.controlList.add(new GuiButton(
-			200, leftHinge + 20, 10 + 22 * (this.IDS_PER_PAGE + 4), inWidth - 100, 20, "Done"));
+		final int _TURNOFFWIDTH = _WIDTH / 5;
 		
-		this.controlList.add(new GuiButton(
-			212, leftHinge + 20 + inWidth - 100 + 2, 10 + 22 * (this.IDS_PER_PAGE + 4), 60 - 3, 20, "Turn Off"));
+		this.controlList.add(new GuiButton(200, _LEFT + _MIX, _SEPARATOR + _MIX * (this.IDS_PER_PAGE + 4), _WIDTH
+			- _MIX * 2 - _GAP - _TURNOFFWIDTH, _UNIT, "Done"));
+		
+		this.controlList.add(new GuiButton(212, _RIGHT - _TURNOFFWIDTH - _MIX, _SEPARATOR
+			+ _MIX * (this.IDS_PER_PAGE + 4), _TURNOFFWIDTH, _UNIT, "Turn Off"));
 		
 		//this.screenTitle = stringtranslate.translateKey("controls.title");
 	}
@@ -231,8 +266,9 @@ public class MAtGuiMenu extends GuiScreen
 		}
 		else if (par1GuiButton.id == 210)
 		{
-			this.mod.setStartEnabled(!this.mod.isStartEnabled());
-			par1GuiButton.displayString = this.mod.isStartEnabled() ? "Start Enabled: ON" : "Start Enabled: OFF";
+			boolean newEnabledState = this.mod.getConfig().getBoolean("start.enabled");
+			this.mod.getConfig().setProperty("start.enabled", !this.mod.getConfig().getBoolean("start.enabled"));
+			par1GuiButton.displayString = newEnabledState ? "Start Enabled: ON" : "Start Enabled: OFF";
 			this.mod.saveConfig();
 		}
 		else if (par1GuiButton.id == 211)
@@ -247,6 +283,7 @@ public class MAtGuiMenu extends GuiScreen
 		{
 			this.mc.displayGuiScreen(this.parentScreen);
 			this.mod.stopRunning();
+			
 		}
 		else if (par1GuiButton.id == 220)
 		{
