@@ -40,12 +40,8 @@ import eu.ha3.util.property.simple.ConfigProperty;
 
 public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents/*, SupportsGuiTickEvents, Ha3Personalizable*/
 {
-	//final static public Logger LOGGER = Logger.getLogger("MAtmos");
 	final static public MAtLogger LOGGER = new MAtLogger();
 	final static public int VERSION = 18; // Remember to change the thing on mod_Matmos_forModLoader
-	
-	//private ConsoleHandler conMod;
-	//private ConsoleHandler conEngine;
 	
 	private MAtModPhase phase;
 	private ConfigProperty config;
@@ -73,27 +69,6 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		
 		this.phase = MAtModPhase.NOT_INITIALIZED;
 		
-		// Setup the formatters!
-		/*Formatter formatter = new Formatter() {
-			@Override
-			public String format(LogRecord record)
-			{
-				return "(" + record.getLoggerName() + " : " + record.getLevel() + ") " + record.getMessage() + "\n";
-			}
-		};*/
-		
-		/*this.conMod = new ConsoleHandler();
-		this.conMod.setFormatter(formatter);
-		
-		this.conEngine = new ConsoleHandler();
-		this.conEngine.setFormatter(formatter);*/
-		
-		//MAtMod.LOGGER.addHandler(this.conMod);
-		//MAtMod.LOGGER.setUseParentHandlers(false);
-		
-		//MAtmosLogger.LOGGER.addHandler(this.conEngine);
-		//MAtmosLogger.LOGGER.setUseParentHandlers(false);
-		
 		setModLogger(Level.INFO);
 		setEngineLogger(Level.OFF);
 	}
@@ -118,7 +93,6 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	public void setEngineLogger(Level lvl)
 	{
 		MAtmosLogger.LOGGER.setLevel(lvl);
-		//this.conEngine.setLevel(lvl);
 		
 	}
 	
