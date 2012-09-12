@@ -21,12 +21,13 @@ import org.lwjgl.opengl.GL11;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class HGuiSliderControl extends GuiButton
+public class HGuiSliderControl extends GuiButton implements HDisplayStringHolder
 {
 	protected float value = 1.0F;
 	protected boolean isBeingDragged = false;
 	
 	protected HSliderListener listener;
+	private HDisplayStringProvider dsProvider;
 	
 	public HGuiSliderControl(int id, int xPos, int yPos, String label, float value)
 	{
@@ -140,5 +141,22 @@ public class HGuiSliderControl extends GuiButton
 		this.isBeingDragged = false;
 		
 		this.listener.sliderReleased(this);
+	}
+	
+	@Override
+	public void updateDisplayString()
+	{
+		if (this.dsProvider == null)
+			return;
+		
+		this.displayString = this.dsProvider.provideDisplayString();
+		
+	}
+	
+	@Override
+	public void setDisplayStringProvider(HDisplayStringProvider provider)
+	{
+		this.dsProvider = provider;
+		
 	}
 }
