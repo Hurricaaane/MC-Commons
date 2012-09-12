@@ -26,10 +26,7 @@ public class MAtUserControl
 	
 	private KeyBinding keyBindingMain;
 	private Ha3KeyManager keyManager;
-	
 	private MAtScroller scroller;
-	
-	private boolean hasFirstHit;
 	
 	public MAtUserControl(MAtMod mAtmosHaddon)
 	{
@@ -219,24 +216,10 @@ public class MAtUserControl
 	{
 		if (this.mod.isRunning())
 		{
-			/*if (!this.hasFirstHit && this.mod.getExpansionManager().getLoadingCount() > 0)
-			{
-				int glc = this.mod.getExpansionManager().getLoadingCount();
-				this.mod.printChat(Ha3Utility.COLOR_GOLD, "Warning: "
-					+ glc + " expansion" + (glc > 1 ? "s are" : " is") + " still loading.");
-				this.mod.printChatShort(
-					Ha3Utility.COLOR_GOLD, "Press ", Ha3Utility.COLOR_WHITE, getKeyBindingMainFriendlyName(),
-					Ha3Utility.COLOR_GOLD, " to stop MAtmos.");
-				
-			}
-			else
-			{*/
 			this.mod.stopRunning();
 			this.mod.printChat(
 				Ha3Utility.COLOR_YELLOW, "Stopped. Press ", Ha3Utility.COLOR_WHITE, getKeyBindingMainFriendlyName(),
 				Ha3Utility.COLOR_YELLOW, " to re-enable.");
-			//}
-			this.hasFirstHit = true;
 			
 		}
 		else if (this.mod.isReady())
