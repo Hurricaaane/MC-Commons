@@ -99,6 +99,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	@Override
 	public void onLoad()
 	{
+		// Look for installation errors (1)
 		if (!new File(Minecraft.getMinecraftDir(), "matmos/").exists())
 		{
 			this.isFatalError = true;
@@ -297,20 +298,6 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 			loadFinalPhase();
 			
 		}
-		/*else if (!this.shouldSkipResourceReloader)
-		{
-			new MAtResourceReloader(this, new Ha3Signal() {
-				
-				@Override
-				public void signal()
-				{
-					loadFinalPhase();
-					
-				}
-				
-			}).start();
-			
-		}*/
 		else
 		{
 			MAtMod.LOGGER.info("Bypassing Resource Reloader threaded wait. This may cause issues.");
@@ -539,9 +526,9 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	@Override
 	public void onTick()
 	{
+		// Inform the user of fatal errors and shut down MAtmos (2)
 		if (this.isFatalError)
 		{
-			
 			printChat(Ha3Utility.COLOR_YELLOW, "A fatal error has occured. MAtmos will not load.");
 			if (!new File(Minecraft.getMinecraftDir(), "matmos/").exists())
 			{
@@ -592,7 +579,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		return this.config;
 		
 	}
-	
+	/*
 	public boolean isStartEnabled()
 	{
 		return this.config.getBoolean("start.enabled");
@@ -602,6 +589,6 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	{
 		this.config.setProperty("start.enabled", startEnabled);
 		
-	}
+	}*/
 	
 }
