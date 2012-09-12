@@ -16,19 +16,32 @@ package net.minecraft.src;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class mod_MAtmos_forModLoader extends HaddonBridgeModLoader
+public class MAtLogger
 {
-	public mod_MAtmos_forModLoader()
+	final private static String modName = "MAtmos";
+	
+	public void fine(String message)
 	{
-		super(new MAtMod());
-		
+		//print(message, "FINE");
 	}
 	
-	@Override
-	public String getVersion()
+	public void info(String message)
 	{
-		return "r18 for 1.3.2"; // Remember to change the thing on MAtMod
-		
+		print(message, "INFO");
 	}
 	
+	public void warning(String message)
+	{
+		print(message, "WARNING");
+	}
+	
+	public void severe(String message)
+	{
+		print(message, "SEVERE");
+	}
+	
+	private void print(String message, String type)
+	{
+		System.out.println("(" + modName + ": " + type + ") " + message);
+	}
 }

@@ -10,11 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Locale;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Formatter;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
 import eu.ha3.easy.TimeStatistic;
@@ -44,11 +40,12 @@ import eu.ha3.util.property.simple.ConfigProperty;
 
 public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents/*, SupportsGuiTickEvents, Ha3Personalizable*/
 {
-	final static public Logger LOGGER = Logger.getLogger("MAtmos");
-	final static public int VERSION = 17; // Remember to change the thing on mod_Matmos_forModLoader
+	//final static public Logger LOGGER = Logger.getLogger("MAtmos");
+	final static public MAtLogger LOGGER = new MAtLogger();
+	final static public int VERSION = 18; // Remember to change the thing on mod_Matmos_forModLoader
 	
-	private ConsoleHandler conMod;
-	private ConsoleHandler conEngine;
+	//private ConsoleHandler conMod;
+	//private ConsoleHandler conEngine;
 	
 	private MAtModPhase phase;
 	private ConfigProperty config;
@@ -77,28 +74,28 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		this.phase = MAtModPhase.NOT_INITIALIZED;
 		
 		// Setup the formatters!
-		Formatter formatter = new Formatter() {
+		/*Formatter formatter = new Formatter() {
 			@Override
 			public String format(LogRecord record)
 			{
 				return "(" + record.getLoggerName() + " : " + record.getLevel() + ") " + record.getMessage() + "\n";
 			}
-		};
+		};*/
 		
-		this.conMod = new ConsoleHandler();
+		/*this.conMod = new ConsoleHandler();
 		this.conMod.setFormatter(formatter);
 		
 		this.conEngine = new ConsoleHandler();
-		this.conEngine.setFormatter(formatter);
+		this.conEngine.setFormatter(formatter);*/
 		
-		MAtMod.LOGGER.addHandler(this.conMod);
-		MAtMod.LOGGER.setUseParentHandlers(false);
+		//MAtMod.LOGGER.addHandler(this.conMod);
+		//MAtMod.LOGGER.setUseParentHandlers(false);
 		
-		MAtmosLogger.LOGGER.addHandler(this.conEngine);
-		MAtmosLogger.LOGGER.setUseParentHandlers(false);
+		//MAtmosLogger.LOGGER.addHandler(this.conEngine);
+		//MAtmosLogger.LOGGER.setUseParentHandlers(false);
 		
 		setModLogger(Level.INFO);
-		setEngineLogger(Level.INFO);
+		setEngineLogger(Level.OFF);
 	}
 	
 	/**
@@ -108,8 +105,8 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	 */
 	public void setModLogger(Level lvl)
 	{
-		MAtMod.LOGGER.setLevel(lvl);
-		this.conMod.setLevel(lvl);
+		//MAtMod.LOGGER.setLevel(lvl);
+		//this.conMod.setLevel(lvl);
 		
 	}
 	
@@ -121,7 +118,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	public void setEngineLogger(Level lvl)
 	{
 		MAtmosLogger.LOGGER.setLevel(lvl);
-		this.conEngine.setLevel(lvl);
+		//this.conEngine.setLevel(lvl);
 		
 	}
 	
