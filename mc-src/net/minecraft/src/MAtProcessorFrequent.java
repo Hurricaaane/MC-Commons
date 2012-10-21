@@ -178,6 +178,8 @@ public class MAtProcessorFrequent extends MAtProcessorModel
 			
 		}
 		
+		setValue(88, w.getMoonPhase(0)); // the argument apparently means nothing
+		
 		//
 		
 		for (int i = 0; i < 64; i++)
