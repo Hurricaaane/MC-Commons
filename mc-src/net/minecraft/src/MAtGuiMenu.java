@@ -266,8 +266,8 @@ public class MAtGuiMenu extends GuiScreen
 		}
 		else if (par1GuiButton.id == 210)
 		{
-			boolean newEnabledState = this.mod.getConfig().getBoolean("start.enabled");
-			this.mod.getConfig().setProperty("start.enabled", !this.mod.getConfig().getBoolean("start.enabled"));
+			boolean newEnabledState = !this.mod.getConfig().getBoolean("start.enabled");
+			this.mod.getConfig().setProperty("start.enabled", newEnabledState);
 			par1GuiButton.displayString = newEnabledState ? "Start Enabled: ON" : "Start Enabled: OFF";
 			this.mod.saveConfig();
 		}
