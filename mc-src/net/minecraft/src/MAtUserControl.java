@@ -166,7 +166,7 @@ public class MAtUserControl
 			}
 			else
 			{
-				whenWantsToggle();
+				//whenWantsToggle();
 			}
 		}
 		
@@ -203,10 +203,10 @@ public class MAtUserControl
 			this.mod.saveConfig();
 		}
 		
-		if (this.mod.getConfig().getBoolean("reversed.controls"))
-		{
-			whenWantsForcing();
-		}
+		//if (this.mod.getConfig().getBoolean("reversed.controls"))
+		//{
+		whenWantsForcing();
+		//}
 		
 		printUnusualMessages();
 		
