@@ -178,7 +178,8 @@ public class MAtProcessorFrequent extends MAtProcessorModel
 			
 		}
 		
-		setValue(88, w.getMoonPhase(0)); // the argument apparently means nothing
+		// 88 - moon phase
+		
 		setValue(89, player.inventory.armorInventory[0] != null ? player.inventory.armorInventory[0].itemID : -1);
 		setValue(90, player.inventory.armorInventory[1] != null ? player.inventory.armorInventory[1].itemID : -1);
 		setValue(91, player.inventory.armorInventory[2] != null ? player.inventory.armorInventory[2].itemID : -1);
