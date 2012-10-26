@@ -1,7 +1,7 @@
 package eu.ha3.matmos.engine;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -34,7 +34,7 @@ public class ConditionSet extends Switchable
 		super(knowledgeIn);
 		this.isTrueEvaluated = false;
 		
-		this.conditions = new HashMap<String, Boolean>();
+		this.conditions = new LinkedHashMap<String, Boolean>();
 		
 		//setSet(args);
 		

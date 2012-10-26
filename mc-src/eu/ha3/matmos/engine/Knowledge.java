@@ -2,8 +2,8 @@ package eu.ha3.matmos.engine;
 
 import java.io.StringWriter;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Random;
 import java.util.Set;
 
@@ -35,14 +35,14 @@ import javax.xml.transform.stream.StreamResult;
  */
 public class Knowledge
 {
-	HashMap<String, Dynamic> dynamics;
-	HashMap<String, SugarList> lists;
+	LinkedHashMap<String, Dynamic> dynamics;
+	LinkedHashMap<String, SugarList> lists;
 	
-	HashMap<String, Condition> conditions;
-	HashMap<String, ConditionSet> csets;
-	HashMap<String, Machine> machines;
+	LinkedHashMap<String, Condition> conditions;
+	LinkedHashMap<String, ConditionSet> csets;
+	LinkedHashMap<String, Machine> machines;
 	
-	HashMap<String, Event> events;
+	LinkedHashMap<String, Event> events;
 	
 	Data data;
 	SoundRelay soundManager;
@@ -83,14 +83,14 @@ public class Knowledge
 	{
 		turnOff();
 		
-		this.dynamics = new HashMap<String, Dynamic>();
-		this.lists = new HashMap<String, SugarList>();
+		this.dynamics = new LinkedHashMap<String, Dynamic>();
+		this.lists = new LinkedHashMap<String, SugarList>();
 		
-		this.conditions = new HashMap<String, Condition>();
-		this.csets = new HashMap<String, ConditionSet>();
-		this.machines = new HashMap<String, Machine>();
+		this.conditions = new LinkedHashMap<String, Condition>();
+		this.csets = new LinkedHashMap<String, ConditionSet>();
+		this.machines = new LinkedHashMap<String, Machine>();
 		
-		this.events = new HashMap<String, Event>();
+		this.events = new LinkedHashMap<String, Event>();
 		
 	}
 	
@@ -220,12 +220,12 @@ public class Knowledge
 		if (originalKnowledge.isRunning)
 			return;
 		
-		this.dynamics = (HashMap<String, Dynamic>) originalKnowledge.dynamics.clone();
-		this.lists = (HashMap<String, SugarList>) originalKnowledge.lists.clone();
-		this.conditions = (HashMap<String, Condition>) originalKnowledge.conditions.clone();
-		this.csets = (HashMap<String, ConditionSet>) originalKnowledge.csets.clone();
-		this.machines = (HashMap<String, Machine>) originalKnowledge.machines.clone();
-		this.events = (HashMap<String, Event>) originalKnowledge.events.clone();
+		this.dynamics = (LinkedHashMap<String, Dynamic>) originalKnowledge.dynamics.clone();
+		this.lists = (LinkedHashMap<String, SugarList>) originalKnowledge.lists.clone();
+		this.conditions = (LinkedHashMap<String, Condition>) originalKnowledge.conditions.clone();
+		this.csets = (LinkedHashMap<String, ConditionSet>) originalKnowledge.csets.clone();
+		this.machines = (LinkedHashMap<String, Machine>) originalKnowledge.machines.clone();
+		this.events = (LinkedHashMap<String, Event>) originalKnowledge.events.clone();
 		reclaimKeyring();
 		
 	}

@@ -2,8 +2,8 @@ package eu.ha3.matmos.engine;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -37,7 +37,7 @@ public class Data
 	
 	public Data()
 	{
-		this.sheets = new HashMap<String, ArrayList<Integer>>();
+		this.sheets = new LinkedHashMap<String, ArrayList<Integer>>();
 		this.updateVersion = 0;
 		
 	}
