@@ -368,3 +368,4 @@ mc-src/net/minecraftforge/client/MinecraftForgeClient.java
 mc-src/net/minecraftforge/client/ModCompatibilityClient.java
 mc-src/net/minecraftforge/client/SkyProvider.java
 mc-src/paulscode/sound/codecs/CodecIBXM.java
+mc-src/mcp.png
