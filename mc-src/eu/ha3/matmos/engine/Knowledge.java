@@ -2,6 +2,7 @@ package eu.ha3.matmos.engine;
 
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Random;
@@ -39,7 +40,7 @@ public class Knowledge
 	LinkedHashMap<String, SugarList> lists;
 	
 	LinkedHashMap<String, Condition> conditions;
-	LinkedHashMap<String, ConditionSet> csets;
+	LinkedHashMap<String, ConditionSet> sets;
 	LinkedHashMap<String, Machine> machines;
 	
 	LinkedHashMap<String, Event> events;
@@ -87,7 +88,7 @@ public class Knowledge
 		this.lists = new LinkedHashMap<String, SugarList>();
 		
 		this.conditions = new LinkedHashMap<String, Condition>();
-		this.csets = new LinkedHashMap<String, ConditionSet>();
+		this.sets = new LinkedHashMap<String, ConditionSet>();
 		this.machines = new LinkedHashMap<String, Machine>();
 		
 		this.events = new LinkedHashMap<String, Event>();
@@ -158,7 +159,7 @@ public class Knowledge
 	
 	public Set<String> getConditionSetsKeySet()
 	{
-		return this.csets.keySet();
+		return this.sets.keySet();
 		
 	}
 	
@@ -193,7 +194,7 @@ public class Knowledge
 			condition.setKnowledge(this);
 		}
 		
-		for (ConditionSet cset : this.csets.values())
+		for (ConditionSet cset : this.sets.values())
 		{
 			cset.setKnowledge(this);
 		}
@@ -223,11 +224,83 @@ public class Knowledge
 		this.dynamics = (LinkedHashMap<String, Dynamic>) originalKnowledge.dynamics.clone();
 		this.lists = (LinkedHashMap<String, SugarList>) originalKnowledge.lists.clone();
 		this.conditions = (LinkedHashMap<String, Condition>) originalKnowledge.conditions.clone();
-		this.csets = (LinkedHashMap<String, ConditionSet>) originalKnowledge.csets.clone();
+		this.sets = (LinkedHashMap<String, ConditionSet>) originalKnowledge.sets.clone();
 		this.machines = (LinkedHashMap<String, Machine>) originalKnowledge.machines.clone();
 		this.events = (LinkedHashMap<String, Event>) originalKnowledge.events.clone();
 		reclaimKeyring();
 		
+	}
+	
+	public int purgeUnused()
+	{
+		int purgedTotal = 0;
+		Set<String> toPurge = new HashSet<String>();
+		
+		// SETS
+		
+		toPurge.clear();
+		for (String o : this.sets.keySet())
+		{
+			toPurge.add(o);
+		}
+		for (Machine o : this.machines.values())
+		{
+			for (String keepable : o.getAllows())
+			{
+				toPurge.remove(keepable);
+			}
+			for (String keepable : o.getRestricts())
+			{
+				toPurge.remove(keepable);
+			}
+		}
+		for (String removable : toPurge)
+		{
+			purgedTotal = purgedTotal + 1;
+			removeConditionSet(removable);
+		}
+		
+		// CONDITIONS
+		
+		toPurge.clear();
+		for (String o : this.conditions.keySet())
+		{
+			toPurge.add(o);
+		}
+		for (ConditionSet o : this.sets.values())
+		{
+			for (String keepable : o.getSet().keySet())
+			{
+				toPurge.remove(keepable);
+			}
+		}
+		for (String removable : toPurge)
+		{
+			purgedTotal = purgedTotal + 1;
+			removeCondition(removable);
+		}
+		
+		// LISTS
+		
+		toPurge.clear();
+		for (String o : this.lists.keySet())
+		{
+			toPurge.add(o);
+		}
+		for (Condition o : this.conditions.values())
+		{
+			if (o.getList() != null && o.getList() != "")
+			{
+				toPurge.remove(o.getList());
+			}
+		}
+		for (String removable : toPurge)
+		{
+			purgedTotal = purgedTotal + 1;
+			removeList(removable);
+		}
+		
+		return purgedTotal;
 	}
 	
 	public void setSoundManager(SoundRelay soundManagerIn)
@@ -462,22 +535,22 @@ public class Knowledge
 		
 	}
 	
-	void applyDataConditionNeedsTesting()
+	void applyConditionNeedsTesting()
 	{
-		for (ConditionSet cset : this.csets.values())
+		for (ConditionSet cset : this.sets.values())
 		{
 			cset.flagNeedsTesting();
 		}
 		
 	}
 	
-	public Condition getDataCondition(String name)
+	public Condition getCondition(String name)
 	{
 		return this.conditions.get(name);
 		
 	}
 	
-	public boolean addDataCondition(String name)
+	public boolean addCondition(String name)
 	{
 		if (this.conditions.containsKey(name))
 			return false;
@@ -485,13 +558,13 @@ public class Knowledge
 		this.conditions.put(name, new Condition(this));
 		this.conditions.get(name).nickname = name;
 		
-		applyDataConditionNeedsTesting();
+		applyConditionNeedsTesting();
 		
 		return true;
 		
 	}
 	
-	public boolean renameDataCondition(String name, String newName)
+	public boolean renameCondition(String name, String newName)
 	{
 		if (!this.conditions.containsKey(name))
 			return false;
@@ -503,25 +576,25 @@ public class Knowledge
 		this.conditions.remove(name);
 		this.conditions.get(newName).nickname = newName;
 		
-		for (ConditionSet cset : this.csets.values())
+		for (ConditionSet cset : this.sets.values())
 		{
 			cset.replaceConditionName(name, newName);
 		}
 		
-		applyDataConditionNeedsTesting();
+		applyConditionNeedsTesting();
 		
 		return true;
 		
 	}
 	
-	public boolean removeDataCondition(String name)
+	public boolean removeCondition(String name)
 	{
 		if (!this.conditions.containsKey(name))
 			return false;
 		
 		this.conditions.remove(name);
 		
-		applyDataConditionNeedsTesting();
+		applyConditionNeedsTesting();
 		
 		return true;
 		
@@ -538,16 +611,16 @@ public class Knowledge
 	
 	public ConditionSet getConditionSet(String name)
 	{
-		return this.csets.get(name);
+		return this.sets.get(name);
 	}
 	
 	public boolean addConditionSet(String name)
 	{
-		if (this.csets.containsKey(name))
+		if (this.sets.containsKey(name))
 			return false;
 		
-		this.csets.put(name, new ConditionSet(this));
-		this.csets.get(name).nickname = name;
+		this.sets.put(name, new ConditionSet(this));
+		this.sets.get(name).nickname = name;
 		
 		applyConditionSetNeedsTesting();
 		
@@ -557,15 +630,15 @@ public class Knowledge
 	
 	public boolean renameConditionSet(String name, String newName)
 	{
-		if (!this.csets.containsKey(name))
+		if (!this.sets.containsKey(name))
 			return false;
 		
-		if (this.csets.containsKey(newName))
+		if (this.sets.containsKey(newName))
 			return false;
 		
-		this.csets.put(newName, this.csets.get(name));
-		this.csets.remove(name);
-		this.csets.get(newName).nickname = newName;
+		this.sets.put(newName, this.sets.get(name));
+		this.sets.remove(name);
+		this.sets.get(newName).nickname = newName;
 		
 		for (Machine machine : this.machines.values())
 		{
@@ -581,12 +654,12 @@ public class Knowledge
 	
 	public boolean removeConditionSet(String name)
 	{
-		if (!this.csets.containsKey(name))
+		if (!this.sets.containsKey(name))
 			// MAtmosEngine.logger;
 			// Not an exception!
 			return false;
 		
-		this.csets.remove(name);
+		this.sets.remove(name);
 		
 		applyConditionSetNeedsTesting();
 		
@@ -716,7 +789,7 @@ public class Knowledge
 			condition.evaluate();
 			
 		}
-		for (ConditionSet cset : this.csets.values())
+		for (ConditionSet cset : this.sets.values())
 		{
 			cset.evaluate();
 			
@@ -789,7 +862,7 @@ public class Knowledge
 			eventWriter.add(eventFactory.createEndElement("", "", "condition"));
 			
 		}
-		keysArray = this.csets.keySet().toArray();
+		keysArray = this.sets.keySet().toArray();
 		Arrays.sort(keysArray);
 		for (int i = 0; i < keysArray.length; i++)
 		{
@@ -799,7 +872,7 @@ public class Knowledge
 			eventWriter.add(eventFactory.createStartElement("", "", "set"));
 			eventWriter.add(eventFactory.createAttribute("name", name));
 			eventWriter.add(ret);
-			this.csets.get(name).serialize(eventWriter);
+			this.sets.get(name).serialize(eventWriter);
 			eventWriter.add(eventFactory.createEndElement("", "", "set"));
 			
 		}

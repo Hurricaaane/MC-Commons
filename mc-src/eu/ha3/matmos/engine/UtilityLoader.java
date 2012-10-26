@@ -258,16 +258,16 @@ public class UtilityLoader
 	private void parseXMLcondition(Knowledge original, Node capsule, String name, boolean allowOverrides)
 		throws XPathExpressionException
 	{
-		boolean exists = original.getDataCondition(name) != null;
+		boolean exists = original.getCondition(name) != null;
 		if (exists && !allowOverrides)
 			return;
 		
 		if (!exists)
 		{
-			original.addDataCondition(name);
+			original.addCondition(name);
 		}
 		
-		Condition descriptible = original.getDataCondition(name);
+		Condition descriptible = original.getCondition(name);
 		extractXMLdescriptible(original, capsule, descriptible);
 		
 		String sheet = this.xp.evaluate("./" + SHEET, capsule);

@@ -308,7 +308,7 @@ public class Machine extends Switchable
 		{
 			String cset = iterAnyallows.next();
 			
-			if (!this.knowledge.csets.containsKey(cset))
+			if (!this.knowledge.sets.containsKey(cset))
 				return false;
 			
 		}
@@ -318,7 +318,7 @@ public class Machine extends Switchable
 		{
 			String cset = iterAnyrestricts.next();
 			
-			if (!this.knowledge.csets.containsKey(cset))
+			if (!this.knowledge.sets.containsKey(cset))
 				return false;
 			
 		}
@@ -384,7 +384,7 @@ public class Machine extends Switchable
 		{
 			String cset = iterAnyallows.next();
 			
-			if (this.knowledge.csets.get(cset).isTrue())
+			if (this.knowledge.sets.get(cset).isTrue())
 			{
 				isTrue = true; // If any Allows is true, it's true (exit the loop)
 				
@@ -399,7 +399,7 @@ public class Machine extends Switchable
 		{
 			String cset = iterAnyrestricts.next();
 			
-			if (this.knowledge.csets.get(cset).isTrue())
+			if (this.knowledge.sets.get(cset).isTrue())
 			{
 				isTrue = false; // If any Restrict is true, it's false
 				
