@@ -100,8 +100,8 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<sheet>Instants</sheet>
-	<key>150</key>
+	<sheet>CurrentItemEnchantments</sheet>
+	<key>50</key>
 	<symbol>&gt;</symbol>
 	<constant>0</constant>
 	<list></list>
@@ -340,6 +340,19 @@
 	<constant>0</constant>
 	<list>Interactibles</list>
 </condition>
+<condition name="Is underwater">
+	<descriptible>
+		<nickname>Is underwater</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<sheet>Instants</sheet>
+	<key>23</key>
+	<symbol>&lt;</symbol>
+	<constant>300</constant>
+	<list></list>
+</condition>
 <set name="Interact Bow Critical (1)">
 	<descriptible>
 		<nickname>Interact Bow Critical (1)</nickname>
@@ -465,6 +478,41 @@
 	<truepart>Interact Tool Soft</truepart>
 	<truepart>Interact Swing</truepart>
 </set>
+<set name="Is out of water">
+	<descriptible>
+		<nickname>Is out of water</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<falsepart>Is underwater</falsepart>
+</set>
+<set name="Is underwater">
+	<descriptible>
+		<nickname>Is underwater</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<truepart>Is underwater</truepart>
+</set>
+<event name="Hit in water">
+	<descriptible>
+		<nickname>Hit in water</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<path>sound3/matmos_interactions/water_underwater_a.ogg</path>
+	<path>sound3/matmos_interactions/water_underwater_b.ogg</path>
+	<path>sound3/matmos_interactions/water_underwater_c.ogg</path>
+	<path>sound3/matmos_interactions/water_underwater_d.ogg</path>
+	<volmin>1.4</volmin>
+	<volmax>1.5</volmax>
+	<pitchmin>0.7</pitchmin>
+	<pitchmax>0.8</pitchmax>
+	<metasound>0</metasound>
+</event>
 <event name="Interact Bow Flaming Fire">
 	<descriptible>
 		<nickname>Interact Bow Flaming Fire</nickname>
@@ -472,10 +520,10 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<path>newsound/matmos_interactions/bow_flame_a.ogg</path>
-	<path>newsound/matmos_interactions/bow_flame_b.ogg</path>
-	<path>newsound/matmos_interactions/bow_flame_c.ogg</path>
-	<volmin>0.8</volmin>
+	<path>sound3/matmos_interactions/bow_flame_a.ogg</path>
+	<path>sound3/matmos_interactions/bow_flame_b.ogg</path>
+	<path>sound3/matmos_interactions/bow_flame_c.ogg</path>
+	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>0.9</pitchmin>
 	<pitchmax>1.05</pitchmax>
@@ -488,11 +536,11 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<path>newsound/matmos_interactions/bow_stretch_a.ogg</path>
-	<path>newsound/matmos_interactions/bow_stretch_b.ogg</path>
-	<path>newsound/matmos_interactions/bow_stretch_c.ogg</path>
-	<path>newsound/matmos_interactions/bow_stretch_d.ogg</path>
-	<path>newsound/matmos_interactions/bow_stretch_e.ogg</path>
+	<path>sound3/matmos_interactions/bow_stretch_a.ogg</path>
+	<path>sound3/matmos_interactions/bow_stretch_b.ogg</path>
+	<path>sound3/matmos_interactions/bow_stretch_c.ogg</path>
+	<path>sound3/matmos_interactions/bow_stretch_d.ogg</path>
+	<path>sound3/matmos_interactions/bow_stretch_e.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>0.8</pitchmin>
@@ -506,9 +554,9 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<path>newsound/matmos_interactions/crit_emit_a.ogg</path>
-	<path>newsound/matmos_interactions/crit_emit_b.ogg</path>
-	<path>newsound/matmos_interactions/crit_emit_c.ogg</path>
+	<path>sound3/matmos_interactions/crit_emit_a.ogg</path>
+	<path>sound3/matmos_interactions/crit_emit_b.ogg</path>
+	<path>sound3/matmos_interactions/crit_emit_c.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>0.9</pitchmin>
@@ -522,7 +570,7 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<path>newsound/matmos_interactions/generic_draw.ogg</path>
+	<path>sound3/matmos_interactions/generic_draw.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>0.7</pitchmin>
@@ -536,10 +584,10 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<path>newsound/matmos_interactions/sword_hit_a.ogg</path>
-	<path>newsound/matmos_interactions/sword_hit_b.ogg</path>
-	<path>newsound/matmos_interactions/sword_hit_c.ogg</path>
-	<path>newsound/matmos_interactions/sword_hit_d.ogg</path>
+	<path>sound3/matmos_interactions/sword_hit_a.ogg</path>
+	<path>sound3/matmos_interactions/sword_hit_b.ogg</path>
+	<path>sound3/matmos_interactions/sword_hit_c.ogg</path>
+	<path>sound3/matmos_interactions/sword_hit_d.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>0.95</pitchmin>
@@ -553,15 +601,15 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<path>newsound/matmos_interactions/sword_attack_a.ogg</path>
-	<path>newsound/matmos_interactions/sword_attack_b.ogg</path>
-	<path>newsound/matmos_interactions/sword_attack_c.ogg</path>
-	<path>newsound/matmos_interactions/sword_attack_d.ogg</path>
-	<path>newsound/matmos_interactions/sword_attack_e.ogg</path>
-	<path>newsound/matmos_interactions/sword_attack_f.ogg</path>
-	<path>newsound/matmos_interactions/sword_attack_g.ogg</path>
-	<path>newsound/matmos_interactions/sword_attack_h.ogg</path>
-	<path>newsound/matmos_interactions/sword_attack_i.ogg</path>
+	<path>sound3/matmos_interactions/sword_attack_a.ogg</path>
+	<path>sound3/matmos_interactions/sword_attack_b.ogg</path>
+	<path>sound3/matmos_interactions/sword_attack_c.ogg</path>
+	<path>sound3/matmos_interactions/sword_attack_d.ogg</path>
+	<path>sound3/matmos_interactions/sword_attack_e.ogg</path>
+	<path>sound3/matmos_interactions/sword_attack_f.ogg</path>
+	<path>sound3/matmos_interactions/sword_attack_g.ogg</path>
+	<path>sound3/matmos_interactions/sword_attack_h.ogg</path>
+	<path>sound3/matmos_interactions/sword_attack_i.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>0.9</pitchmin>
@@ -575,11 +623,11 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<path>newsound/matmos_interactions/blunt_hit_a.ogg</path>
-	<path>newsound/matmos_interactions/blunt_hit_b.ogg</path>
-	<path>newsound/matmos_interactions/blunt_hit_c.ogg</path>
-	<path>newsound/matmos_interactions/blunt_hit_d.ogg</path>
-	<path>newsound/matmos_interactions/blunt_hit_e.ogg</path>
+	<path>sound3/matmos_interactions/blunt_hit_a.ogg</path>
+	<path>sound3/matmos_interactions/blunt_hit_b.ogg</path>
+	<path>sound3/matmos_interactions/blunt_hit_c.ogg</path>
+	<path>sound3/matmos_interactions/blunt_hit_d.ogg</path>
+	<path>sound3/matmos_interactions/blunt_hit_e.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>1.3</pitchmin>
@@ -593,11 +641,11 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<path>newsound/matmos_interactions/blunt_attack_a.ogg</path>
-	<path>newsound/matmos_interactions/blunt_attack_b.ogg</path>
-	<path>newsound/matmos_interactions/blunt_attack_c.ogg</path>
-	<path>newsound/matmos_interactions/blunt_attack_d.ogg</path>
-	<path>newsound/matmos_interactions/blunt_attack_e.ogg</path>
+	<path>sound3/matmos_interactions/blunt_attack_a.ogg</path>
+	<path>sound3/matmos_interactions/blunt_attack_b.ogg</path>
+	<path>sound3/matmos_interactions/blunt_attack_c.ogg</path>
+	<path>sound3/matmos_interactions/blunt_attack_d.ogg</path>
+	<path>sound3/matmos_interactions/blunt_attack_e.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>1.5</pitchmin>
@@ -611,7 +659,7 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<path>newsound/matmos_interactions/tool_swing.ogg</path>
+	<path>sound3/matmos_interactions/tool_swing.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>0.95</pitchmin>
@@ -625,11 +673,63 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<path>newsound/matmos_interactions/blunt_attack_a.ogg</path>
-	<path>newsound/matmos_interactions/blunt_attack_b.ogg</path>
-	<path>newsound/matmos_interactions/blunt_attack_c.ogg</path>
-	<path>newsound/matmos_interactions/blunt_attack_d.ogg</path>
-	<path>newsound/matmos_interactions/blunt_attack_e.ogg</path>
+	<path>sound3/matmos_interactions/blunt_attack_a.ogg</path>
+	<path>sound3/matmos_interactions/blunt_attack_b.ogg</path>
+	<path>sound3/matmos_interactions/blunt_attack_c.ogg</path>
+	<path>sound3/matmos_interactions/blunt_attack_d.ogg</path>
+	<path>sound3/matmos_interactions/blunt_attack_e.ogg</path>
+	<volmin>1.0</volmin>
+	<volmax>1.0</volmax>
+	<pitchmin>1.5</pitchmin>
+	<pitchmax>1.8</pitchmax>
+	<metasound>0</metasound>
+</event>
+<event name="Stretch in water">
+	<descriptible>
+		<nickname>Stretch in water</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<path>sound3/matmos_interactions/water_underwater_a.ogg</path>
+	<path>sound3/matmos_interactions/water_underwater_b.ogg</path>
+	<path>sound3/matmos_interactions/water_underwater_c.ogg</path>
+	<path>sound3/matmos_interactions/water_underwater_d.ogg</path>
+	<volmin>1.3</volmin>
+	<volmax>1.4</volmax>
+	<pitchmin>0.6</pitchmin>
+	<pitchmax>0.7</pitchmax>
+	<metasound>0</metasound>
+</event>
+<event name="Swing in water">
+	<descriptible>
+		<nickname>Swing in water</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<path>sound3/matmos_interactions/water_underwater_a.ogg</path>
+	<path>sound3/matmos_interactions/water_underwater_b.ogg</path>
+	<path>sound3/matmos_interactions/water_underwater_c.ogg</path>
+	<path>sound3/matmos_interactions/water_underwater_d.ogg</path>
+	<volmin>1.3</volmin>
+	<volmax>1.4</volmax>
+	<pitchmin>1.7</pitchmin>
+	<pitchmax>2.4</pitchmax>
+	<metasound>0</metasound>
+</event>
+<event name="__SAMPLE">
+	<descriptible>
+		<nickname>__SAMPLE</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<path>sound3/matmos_interactions/blunt_attack_a.ogg</path>
+	<path>sound3/matmos_interactions/blunt_attack_b.ogg</path>
+	<path>sound3/matmos_interactions/blunt_attack_c.ogg</path>
+	<path>sound3/matmos_interactions/blunt_attack_d.ogg</path>
+	<path>sound3/matmos_interactions/blunt_attack_e.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>1.5</pitchmin>
@@ -644,6 +744,7 @@
 		<meta></meta>
 	</descriptible>
 	<allow>Interact Bow Release with Flaming</allow>
+	<restrict>Is underwater</restrict>
 	<eventtimed>
 		<eventname>Interact Bow Flaming Fire</eventname>
 		<delaymin>10.0</delaymin>
@@ -661,10 +762,29 @@
 		<meta></meta>
 	</descriptible>
 	<allow>Interact Bow Stretching</allow>
+	<restrict>Is underwater</restrict>
 	<eventtimed>
 		<eventname>Interact Bow Stretch</eventname>
 		<delaymin>10000.0</delaymin>
 		<delaymax>10000.0</delaymax>
+		<delaystart>-1.0</delaystart>
+		<volmod>1.0</volmod>
+		<pitchmod>1.0</pitchmod>
+	</eventtimed>
+</machine>
+<machine name="Interact Bow Stretch UW">
+	<descriptible>
+		<nickname>Interact Bow Stretch UW</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<allow>Interact Bow Stretching</allow>
+	<restrict>Is out of water</restrict>
+	<eventtimed>
+		<eventname>Stretch in water</eventname>
+		<delaymin>100.0</delaymin>
+		<delaymax>100.0</delaymax>
 		<delaystart>-1.0</delaystart>
 		<volmod>1.0</volmod>
 		<pitchmod>1.0</pitchmod>
@@ -689,6 +809,25 @@
 		<pitchmod>1.0</pitchmod>
 	</eventtimed>
 </machine>
+<machine name="Interact Hit UW">
+	<descriptible>
+		<nickname>Interact Hit UW</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<allow>Interact Sword Sharp Hit</allow>
+	<allow>Interact Sword Soft Hit</allow>
+	<restrict>Is out of water</restrict>
+	<eventtimed>
+		<eventname>Hit in water</eventname>
+		<delaymin>100.0</delaymin>
+		<delaymax>100.0</delaymax>
+		<delaystart>-1.0</delaystart>
+		<volmod>1.0</volmod>
+		<pitchmod>1.0</pitchmod>
+	</eventtimed>
+</machine>
 <machine name="Interact Sword Sharp Hit">
 	<descriptible>
 		<nickname>Interact Sword Sharp Hit</nickname>
@@ -697,6 +836,7 @@
 		<meta></meta>
 	</descriptible>
 	<allow>Interact Sword Sharp Hit</allow>
+	<restrict>Is underwater</restrict>
 	<eventtimed>
 		<eventname>Interact Sword Sharp Hit</eventname>
 		<delaymin>10.0</delaymin>
@@ -714,6 +854,7 @@
 		<meta></meta>
 	</descriptible>
 	<allow>Interact Sword Sharp Swing</allow>
+	<restrict>Is underwater</restrict>
 	<eventtimed>
 		<eventname>Interact Sword Sharp Swing</eventname>
 		<delaymin>10.0</delaymin>
@@ -731,6 +872,7 @@
 		<meta></meta>
 	</descriptible>
 	<allow>Interact Sword Soft Hit</allow>
+	<restrict>Is underwater</restrict>
 	<eventtimed>
 		<eventname>Interact Sword Soft Hit</eventname>
 		<delaymin>10.0</delaymin>
@@ -748,10 +890,30 @@
 		<meta></meta>
 	</descriptible>
 	<allow>Interact Sword Soft Swing</allow>
+	<restrict>Is underwater</restrict>
 	<eventtimed>
 		<eventname>Interact Sword Soft Swing</eventname>
 		<delaymin>10.0</delaymin>
 		<delaymax>10.0</delaymax>
+		<delaystart>-1.0</delaystart>
+		<volmod>1.0</volmod>
+		<pitchmod>1.0</pitchmod>
+	</eventtimed>
+</machine>
+<machine name="Interact Sword Swing UW">
+	<descriptible>
+		<nickname>Interact Sword Swing UW</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<allow>Interact Sword Sharp Swing</allow>
+	<allow>Interact Sword Soft Swing</allow>
+	<restrict>Is out of water</restrict>
+	<eventtimed>
+		<eventname>Swing in water</eventname>
+		<delaymin>100.0</delaymin>
+		<delaymax>100.0</delaymax>
 		<delaystart>-1.0</delaystart>
 		<volmod>1.0</volmod>
 		<pitchmod>1.0</pitchmod>
@@ -765,6 +927,7 @@
 		<meta></meta>
 	</descriptible>
 	<allow>Interact Tool Sharp Swing to Miss</allow>
+	<restrict>Is underwater</restrict>
 	<eventtimed>
 		<eventname>Interact Tool Sharp Swing</eventname>
 		<delaymin>10.0</delaymin>
@@ -782,10 +945,30 @@
 		<meta></meta>
 	</descriptible>
 	<allow>Interact Tool Soft Swing to Miss</allow>
+	<restrict>Is underwater</restrict>
 	<eventtimed>
 		<eventname>Interact Tool Soft Swing</eventname>
 		<delaymin>10.0</delaymin>
 		<delaymax>10.0</delaymax>
+		<delaystart>-1.0</delaystart>
+		<volmod>1.0</volmod>
+		<pitchmod>1.0</pitchmod>
+	</eventtimed>
+</machine>
+<machine name="Interact Tool Swing to Miss UW">
+	<descriptible>
+		<nickname>Interact Tool Swing to Miss UW</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<allow>Interact Tool Sharp Swing to Miss</allow>
+	<allow>Interact Tool Soft Swing to Miss</allow>
+	<restrict>Is out of water</restrict>
+	<eventtimed>
+		<eventname>Swing in water</eventname>
+		<delaymin>100.0</delaymin>
+		<delaymax>100.0</delaymax>
 		<delaystart>-1.0</delaystart>
 		<volmod>1.0</volmod>
 		<pitchmod>1.0</pitchmod>

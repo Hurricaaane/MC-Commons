@@ -10,8 +10,15 @@
 	<sheet name="SpecialLarge">spelarge</sheet>
 	<sheet name="SpecialSmall">spesmall</sheet>
 	<sheet name="ConfigVars">configvars</sheet>
+	<sheet name="CurrentItemEnchantments">enchantments</sheet>
+	<sheet name="Armor1Enchantments">enchantments</sheet>
+	<sheet name="Armor2Enchantments">enchantments</sheet>
+	<sheet name="Armor3Enchantments">enchantments</sheet>
+	<sheet name="Armor4Enchantments">enchantments</sheet>
+	<sheet name="PotionEffectsPower">potioneffects</sheet>
+	<sheet name="PotionEffectsDuration">potioneffects</sheet>
 
-	<list name="instants" id_max="255">
+	<list name="instants" id_max="127">
 		<data id="0">Sun LightLevel in memory</data>
 		<data id="1">Block LightLevel in memory</data>
 		<data id="2">Current LightLevel</data>
@@ -41,7 +48,7 @@
 		<data id="26">Can rain reach this block</data>
 		<data id="27">Top solid block level</data>
 		<data id="28">Thickness overhead to sky</data>
-		<data id="29">Biome ID</data>
+		<data id="29">LEGACY, DO NOT USE, see instant 93 (Biome ID)</data>
 		<data id="30">Seed (Most significant 32 bit)</data>
 		<data id="31">Seed (Least significant 32 bit)</data>
 		<data id="32">Current held item</data>
@@ -93,52 +100,62 @@
 		<data id="78">Server Data: Player-defined Server Name hashcode</data>
 		<data id="79">Server Data: Computed actual IP address hashcode</data>
 		<data id="80">Server Data: Computed actual port</data>
-		
 		<data id="86">BlockID under the cursor</data>
 		<data id="87">Metadata of block under the cursor</data>
+		<data id="88">Moon phase</data>
+		<data id="89">Armor slot 1 (Feet)</data>
+		<data id="90">Armor slot 2 (Legs)</data>
+		<data id="91">Armor slot 3 (Chest)</data>
+		<data id="92">Armor slot 4 (Head)</data>
+		<data id="93">Minecraft-encoded Biome ID</data>
 		
-		<data id="100">Protection</data>
-		<data id="101">Fire  Protection</data>
-		<data id="102">Feather Falling</data>
-		<data id="103">Blast Protection</data>
-		<data id="104">Projectile Protection</data>
-		<data id="105">Respiration</data>
-		<data id="106">Aqua Affinity</data>
-		<data id="116">Sharpness</data>
-		<data id="117">Smite</data>
-		<data id="118">Bane of Arthropods</data>
-		<data id="119">Knockback</data>
-		<data id="120">Fire Aspect</data>
-		<data id="121">Looting</data>
-		<data id="132">Efficiency</data>
-		<data id="133">Silk Touch</data>
-		<data id="134">Unbreaking</data>
-		<data id="135">Fortune</data>
-		<data id="148">Power</data>
-		<data id="149">Punch</data>
-		<data id="150">Flame</data>
-		<data id="151">Infinity</data>
-		
-		<data id="201">Speed</data>
-		<data id="202">Slowness</data>
-		<data id="203">Haste</data>
-		<data id="204">Mining Fatigue</data>
-		<data id="205">Strength</data>
-		<data id="206">Instant Health</data>
-		<data id="207">Instant Damage</data>
-		<data id="208">Jump Boost</data>
-		<data id="209">Nausea</data>
-		<data id="210">Regeneration</data>
-		<data id="211">Resistance</data>
-		<data id="212">Fire Resistance</data>
-		<data id="213">Water Breathing</data>
-		<data id="214">Invisibility</data>
-		<data id="215">Blindness</data>
-		<data id="216">Night Vision</data>
-		<data id="217">Hunger</data>
-		<data id="218">Weakness</data>
-		<data id="219">Poison</data>
-		<data id="220">Wither</data>
+	</list>
+	
+	<list name="enchantments" id_max="63">
+		<data id="0">Protection</data>
+		<data id="1">Fire  Protection</data>
+		<data id="2">Feather Falling</data>
+		<data id="3">Blast Protection</data>
+		<data id="4">Projectile Protection</data>
+		<data id="5">Respiration</data>
+		<data id="06">Aqua Affinity</data>
+		<data id="16">Sharpness</data>
+		<data id="17">Smite</data>
+		<data id="18">Bane of Arthropods</data>
+		<data id="19">Knockback</data>
+		<data id="20">Fire Aspect</data>
+		<data id="21">Looting</data>
+		<data id="32">Efficiency</data>
+		<data id="33">Silk Touch</data>
+		<data id="34">Unbreaking</data>
+		<data id="35">Fortune</data>
+		<data id="48">Power</data>
+		<data id="49">Punch</data>
+		<data id="50">Flame</data>
+		<data id="51">Infinity</data>
+	</list>
+	
+	<list name="potioneffects" id_max="32">
+		<data id="1">Speed</data>
+		<data id="2">Slowness</data>
+		<data id="3">Haste</data>
+		<data id="4">Mining Fatigue</data>
+		<data id="5">Strength</data>
+		<data id="6">Instant Health</data>
+		<data id="7">Instant Damage</data>
+		<data id="8">Jump Boost</data>
+		<data id="9">Nausea</data>
+		<data id="10">Regeneration</data>
+		<data id="11">Resistance</data>
+		<data id="12">Fire Resistance</data>
+		<data id="13">Water Breathing</data>
+		<data id="14">Invisibility</data>
+		<data id="15">Blindness</data>
+		<data id="16">Night Vision</data>
+		<data id="17">Hunger</data>
+		<data id="18">Weakness</data>
+		<data id="19">Poison</data>
+		<data id="20">Wither</data>
 	</list>
 	
 	<list name="datavalues" id_max="255">
@@ -286,6 +303,8 @@
 		<data id="141">Carrots</data>
 		<data id="142">Potatoes</data>
 		<data id="143">Wooden Button</data>
+		<data id="144">Skull</data>
+		<data id="145">Anvil</data>
 		
 		
 		

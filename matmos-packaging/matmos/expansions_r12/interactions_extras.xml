@@ -78,14 +78,14 @@
 		<icon/>
 		<meta/>
 	</descriptible>
-	<path>newsound/matmos_extras/minecart1.ogg</path>
-	<path>newsound/matmos_extras/minecart2.ogg</path>
-	<path>newsound/matmos_extras/minecart3.ogg</path>
-	<path>newsound/matmos_extras/minecart4.ogg</path>
-	<path>newsound/matmos_extras/minecart5.ogg</path>
-	<path>newsound/matmos_extras/minecart6.ogg</path>
-	<path>newsound/matmos_extras/minecart7.ogg</path>
-	<path>newsound/matmos_extras/minecart8.ogg</path>
+	<path>sound3/matmos_extras/minecart1.ogg</path>
+	<path>sound3/matmos_extras/minecart2.ogg</path>
+	<path>sound3/matmos_extras/minecart3.ogg</path>
+	<path>sound3/matmos_extras/minecart4.ogg</path>
+	<path>sound3/matmos_extras/minecart5.ogg</path>
+	<path>sound3/matmos_extras/minecart6.ogg</path>
+	<path>sound3/matmos_extras/minecart7.ogg</path>
+	<path>sound3/matmos_extras/minecart8.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>0.98</pitchmin>
@@ -99,14 +99,14 @@
 		<icon/>
 		<meta/>
 	</descriptible>
-	<path>newsound/matmos_extras/minecart1.ogg</path>
-	<path>newsound/matmos_extras/minecart2.ogg</path>
-	<path>newsound/matmos_extras/minecart3.ogg</path>
-	<path>newsound/matmos_extras/minecart4.ogg</path>
-	<path>newsound/matmos_extras/minecart5.ogg</path>
-	<path>newsound/matmos_extras/minecart6.ogg</path>
-	<path>newsound/matmos_extras/minecart7.ogg</path>
-	<path>newsound/matmos_extras/minecart8.ogg</path>
+	<path>sound3/matmos_extras/minecart1.ogg</path>
+	<path>sound3/matmos_extras/minecart2.ogg</path>
+	<path>sound3/matmos_extras/minecart3.ogg</path>
+	<path>sound3/matmos_extras/minecart4.ogg</path>
+	<path>sound3/matmos_extras/minecart5.ogg</path>
+	<path>sound3/matmos_extras/minecart6.ogg</path>
+	<path>sound3/matmos_extras/minecart7.ogg</path>
+	<path>sound3/matmos_extras/minecart8.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>1.25</pitchmin>

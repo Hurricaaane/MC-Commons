@@ -265,6 +265,19 @@
 	<constant>0</constant>
 	<list>Utility</list>
 </condition>
+<condition name="Is underwater">
+	<descriptible>
+		<nickname>Is underwater</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<sheet>Instants</sheet>
+	<key>23</key>
+	<symbol>&lt;</symbol>
+	<constant>300</constant>
+	<list></list>
+</condition>
 <set name="Interact Block Stance To Off">
 	<descriptible>
 		<nickname>Interact Block Stance To Off</nickname>
@@ -392,6 +405,24 @@
 	<truepart>Interact Utility</truepart>
 	<truepart>Interact Item Select</truepart>
 </set>
+<set name="Is out of water">
+	<descriptible>
+		<nickname>Is out of water</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<falsepart>Is underwater</falsepart>
+</set>
+<set name="Is underwater">
+	<descriptible>
+		<nickname>Is underwater</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<truepart>Is underwater</truepart>
+</set>
 <event name="Interact Bow Draw">
 	<descriptible>
 		<nickname>Interact Bow Draw</nickname>
@@ -399,7 +430,7 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<path>newsound/matmos_interactions/bow_draw.ogg</path>
+	<path>sound3/matmos_interactions/bow_draw.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>0.95</pitchmin>
@@ -413,7 +444,7 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<path>newsound/matmos_interactions/food_draw.ogg</path>
+	<path>sound3/matmos_interactions/food_draw.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>0.9</pitchmin>
@@ -427,7 +458,7 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<path>newsound/matmos_interactions/generic_draw.ogg</path>
+	<path>sound3/matmos_interactions/generic_draw.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>0.9</pitchmin>
@@ -441,7 +472,7 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<path>newsound/matmos_interactions/generic_draw.ogg</path>
+	<path>sound3/matmos_interactions/generic_draw.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>0.7</pitchmin>
@@ -455,7 +486,7 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<path>newsound/matmos_interactions/sword_draw.ogg</path>
+	<path>sound3/matmos_interactions/sword_draw.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>0.95</pitchmin>
@@ -469,7 +500,7 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<path>newsound/matmos_interactions/blunt_draw.ogg</path>
+	<path>sound3/matmos_interactions/blunt_draw.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>0.95</pitchmin>
@@ -483,7 +514,7 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<path>newsound/matmos_interactions/tool_draw.ogg</path>
+	<path>sound3/matmos_interactions/tool_draw.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>0.95</pitchmin>
@@ -497,11 +528,28 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<path>newsound/matmos_interactions/blunt_draw.ogg</path>
+	<path>sound3/matmos_interactions/blunt_draw.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>0.95</pitchmin>
 	<pitchmax>1.05</pitchmax>
+	<metasound>0</metasound>
+</event>
+<event name="Interact Underwater Switch">
+	<descriptible>
+		<nickname>Interact Underwater Switch</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<path>sound3/matmos_interactions/water_underwater_a.ogg</path>
+	<path>sound3/matmos_interactions/water_underwater_b.ogg</path>
+	<path>sound3/matmos_interactions/water_underwater_c.ogg</path>
+	<path>sound3/matmos_interactions/water_underwater_d.ogg</path>
+	<volmin>1.0</volmin>
+	<volmax>1.0</volmax>
+	<pitchmin>0.7</pitchmin>
+	<pitchmax>0.8</pitchmax>
 	<metasound>0</metasound>
 </event>
 <event name="Interact Utility Draw">
@@ -511,7 +559,21 @@
 		<icon></icon>
 		<meta></meta>
 	</descriptible>
-	<path>newsound/matmos_interactions/utility_draw.ogg</path>
+	<path>sound3/matmos_interactions/utility_draw.ogg</path>
+	<volmin>1.0</volmin>
+	<volmax>1.0</volmax>
+	<pitchmin>0.95</pitchmin>
+	<pitchmax>1.05</pitchmax>
+	<metasound>0</metasound>
+</event>
+<event name="__SAMPLE">
+	<descriptible>
+		<nickname>__SAMPLE</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<path>sound3/matmos_interactions/sword_draw.ogg</path>
 	<volmin>1.0</volmin>
 	<volmax>1.0</volmax>
 	<pitchmin>0.95</pitchmin>
@@ -526,6 +588,7 @@
 		<meta></meta>
 	</descriptible>
 	<allow>Interact Block Stance To Off</allow>
+	<restrict>Is underwater</restrict>
 	<eventtimed>
 		<eventname>Interact Generic Holster</eventname>
 		<delaymin>10.0</delaymin>
@@ -543,6 +606,7 @@
 		<meta></meta>
 	</descriptible>
 	<allow>Interact Block Stance To On</allow>
+	<restrict>Is underwater</restrict>
 	<eventtimed>
 		<eventname>Interact Generic Draw</eventname>
 		<delaymin>10.0</delaymin>
@@ -560,6 +624,7 @@
 		<meta></meta>
 	</descriptible>
 	<allow>Interact Bow Draw</allow>
+	<restrict>Is underwater</restrict>
 	<eventtimed>
 		<eventname>Interact Bow Draw</eventname>
 		<delaymin>10.0</delaymin>
@@ -577,6 +642,7 @@
 		<meta></meta>
 	</descriptible>
 	<allow>Interact Consumable Food Draw</allow>
+	<restrict>Is underwater</restrict>
 	<eventtimed>
 		<eventname>Interact Consumable Food Draw</eventname>
 		<delaymin>10.0</delaymin>
@@ -602,6 +668,7 @@
 	<restrict>Interact Consumable Food Draw</restrict>
 	<restrict>Interact Tool Soft Draw</restrict>
 	<restrict>Interact Utility Draw</restrict>
+	<restrict>Is underwater</restrict>
 	<eventtimed>
 		<eventname>Interact Generic Draw</eventname>
 		<delaymin>10.0</delaymin>
@@ -619,6 +686,7 @@
 		<meta></meta>
 	</descriptible>
 	<allow>Interact Hands Select</allow>
+	<restrict>Is underwater</restrict>
 	<eventtimed>
 		<eventname>Interact Generic Holster</eventname>
 		<delaymin>10.0</delaymin>
@@ -636,6 +704,7 @@
 		<meta></meta>
 	</descriptible>
 	<allow>Interact Sword Sharp Draw</allow>
+	<restrict>Is underwater</restrict>
 	<eventtimed>
 		<eventname>Interact Sword Sharp Draw</eventname>
 		<delaymin>10.0</delaymin>
@@ -653,6 +722,7 @@
 		<meta></meta>
 	</descriptible>
 	<allow>Interact Sword Soft Draw</allow>
+	<restrict>Is underwater</restrict>
 	<eventtimed>
 		<eventname>Interact Sword Soft Draw</eventname>
 		<delaymin>10.0</delaymin>
@@ -670,6 +740,7 @@
 		<meta></meta>
 	</descriptible>
 	<allow>Interact Tool Sharp Draw</allow>
+	<restrict>Is underwater</restrict>
 	<eventtimed>
 		<eventname>Interact Tool Sharp Draw</eventname>
 		<delaymin>10.0</delaymin>
@@ -687,10 +758,30 @@
 		<meta></meta>
 	</descriptible>
 	<allow>Interact Tool Soft Draw</allow>
+	<restrict>Is underwater</restrict>
 	<eventtimed>
 		<eventname>Interact Tool Soft Draw</eventname>
 		<delaymin>10.0</delaymin>
 		<delaymax>10.0</delaymax>
+		<delaystart>-1.0</delaystart>
+		<volmod>1.0</volmod>
+		<pitchmod>1.0</pitchmod>
+	</eventtimed>
+</machine>
+<machine name="Interact Underwater Stance">
+	<descriptible>
+		<nickname>Interact Underwater Stance</nickname>
+		<description></description>
+		<icon></icon>
+		<meta></meta>
+	</descriptible>
+	<allow>Interact Hands Select</allow>
+	<allow>Interact Item Select</allow>
+	<restrict>Is out of water</restrict>
+	<eventtimed>
+		<eventname>Interact Underwater Switch</eventname>
+		<delaymin>100.0</delaymin>
+		<delaymax>100.0</delaymax>
 		<delaystart>-1.0</delaystart>
 		<volmod>1.0</volmod>
 		<pitchmod>1.0</pitchmod>
@@ -704,6 +795,7 @@
 		<meta></meta>
 	</descriptible>
 	<allow>Interact Utility Draw</allow>
+	<restrict>Is underwater</restrict>
 	<eventtimed>
 		<eventname>Interact Utility Draw</eventname>
 		<delaymin>10.0</delaymin>
