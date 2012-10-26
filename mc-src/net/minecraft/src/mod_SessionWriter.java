@@ -34,7 +34,7 @@ import net.minecraft.client.Minecraft;
  */
 public class mod_SessionWriter extends BaseMod
 {
-	mod_SessionWriter()
+	public mod_SessionWriter()
 	{
 		Minecraft mc = ModLoader.getMinecraftInstance();
 		String username = mc.session.username;

@@ -56,7 +56,7 @@ public class mod_Navstrate extends BaseMod
 		
 	}
 	
-	mod_Navstrate()
+	public mod_Navstrate()
 	{
 		this.isOn = false;
 		this.needsRebuffering = true;
