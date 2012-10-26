@@ -314,7 +314,7 @@ public class DVHaddon extends HaddonImpl implements SupportsFrameEvents, Support
 			
 			boolean first = true;
 			
-			List infoList = stack.getItemNameandInformation();
+			/*List infoList = stack.getItemNameandInformation();
 			for (Object objInfo : infoList)
 			{
 				String info = (String) objInfo;
@@ -335,7 +335,7 @@ public class DVHaddon extends HaddonImpl implements SupportsFrameEvents, Support
 				{
 					System.out.println(info);
 				}
-			}
+			}*/
 			
 		}
 		

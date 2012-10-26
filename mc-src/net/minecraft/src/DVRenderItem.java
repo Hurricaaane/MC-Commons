@@ -2,11 +2,6 @@ package net.minecraft.src;
 
 import java.util.Random;
 
-import net.minecraft.client.Minecraft;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
 public class DVRenderItem extends Render
 {
 	private RenderBlocks renderBlocks = new RenderBlocks();
@@ -29,7 +24,7 @@ public class DVRenderItem extends Render
 	 */
 	public void doRenderItem(EntityItem par1EntityItem, double par2, double par4, double par6, float par8, float par9)
 	{
-		this.random.setSeed(187L);
+		/*this.random.setSeed(187L);
 		ItemStack var10 = par1EntityItem.item;
 		GL11.glPushMatrix();
 		float var11 = MathHelper.sin((par1EntityItem.age + par9) / 10.0F + par1EntityItem.hoverStart) * 0.1F + 0.1F;
@@ -153,10 +148,10 @@ public class DVRenderItem extends Render
 		
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 		GL11.glPopMatrix();
-	}
-	
-	private void func_77020_a(int par1, int par2)
-	{
+		}
+		
+		private void func_77020_a(int par1, int par2)
+		{
 		Tessellator var3 = Tessellator.instance;
 		float var4 = (par1 % 16 * 16 + 0) / 256.0F;
 		float var5 = (par1 % 16 * 16 + 16) / 256.0F;
@@ -187,13 +182,13 @@ public class DVRenderItem extends Render
 			var3.addVertexWithUV(0.0F - var9, 1.0F - var10, 0.0D, var4, var6);
 			var3.draw();
 			GL11.glPopMatrix();
-		}
+		}*/
 	}
 	
 	public void drawItemIntoGui(
 		FontRenderer par1FontRenderer, RenderEngine par2RenderEngine, int par3, int par4, int par5, int par6, int par7)
 	{
-		int var8;
+		/*int var8;
 		float var9;
 		float var10;
 		float var11;
@@ -222,11 +217,11 @@ public class DVRenderItem extends Render
 				var11 = (var8 >> 16 & 255) / 255.0F;
 				var9 = (var8 >> 8 & 255) / 255.0F;
 				var10 = (var8 & 255) / 255.0F;
-				/*
-				if (this.field_77024_a)
-				{
-					GL11.glColor4f(var11, var9, var10, 1.0F);
-				}*/
+				
+				//if (this.field_77024_a)
+				//{
+				//	GL11.glColor4f(var11, var9, var10, 1.0F);
+				//}
 				
 				GL11.glRotatef(-90.0F, 0.0F, 1.0F, 0.0F);
 				this.renderBlocks.useInventoryTint = this.field_77024_a;
@@ -253,10 +248,10 @@ public class DVRenderItem extends Render
 				GL11.glDisable(GL11.GL_LIGHTING);
 				par2RenderEngine.bindTexture(par2RenderEngine.getTexture("/gui/items.png"));
 				
-				for (var12 = 0; var12 <= 1; ++var12)
+				for (this.var12 = 0; this.var12 <= 1; ++this.var12)
 				{
-					var8 = Item.itemsList[par3].getIconFromDamageForRenderPass(par4, var12);
-					int var13 = Item.itemsList[par3].getColorFromDamage(par4, var12);
+					var8 = Item.itemsList[par3].getIconFromDamageForRenderPass(par4, this.var12);
+					int var13 = Item.itemsList[par3].getColorFromDamage(par4, this.var12);
 					var9 = (var13 >> 16 & 255) / 255.0F;
 					var10 = (var13 >> 8 & 255) / 255.0F;
 					float var14 = (var13 & 255) / 255.0F;
@@ -284,10 +279,10 @@ public class DVRenderItem extends Render
 					par2RenderEngine.bindTexture(par2RenderEngine.getTexture("/gui/items.png"));
 				}
 				
-				var12 = Item.itemsList[par3].getColorFromDamage(par4, 0);
-				float var16 = (var12 >> 16 & 255) / 255.0F;
-				var11 = (var12 >> 8 & 255) / 255.0F;
-				var9 = (var12 & 255) / 255.0F;
+				this.var12 = Item.itemsList[par3].getColorFromDamage(par4, 0);
+				float var16 = (this.var12 >> 16 & 255) / 255.0F;
+				var11 = (this.var12 >> 8 & 255) / 255.0F;
+				var9 = (this.var12 & 255) / 255.0F;
 				
 				if (this.field_77024_a)
 				{
@@ -299,7 +294,7 @@ public class DVRenderItem extends Render
 			}
 		}
 		
-		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glEnable(GL11.GL_CULL_FACE);*/
 	}
 	
 	/**
@@ -308,7 +303,7 @@ public class DVRenderItem extends Render
 	public void renderItemIntoGUI(
 		FontRenderer par1FontRenderer, RenderEngine par2RenderEngine, ItemStack par3ItemStack, int par4, int par5)
 	{
-		if (par3ItemStack != null)
+		/*if (par3ItemStack != null)
 		{
 			drawItemIntoGui(
 				par1FontRenderer, par2RenderEngine, par3ItemStack.itemID, par3ItemStack.getItemDamage(),
@@ -332,10 +327,10 @@ public class DVRenderItem extends Render
 				GL11.glDepthFunc(GL11.GL_LEQUAL);
 			}
 		}
-	}
-	
-	private void func_77018_a(int par1, int par2, int par3, int par4, int par5)
-	{
+		}
+		
+		private void func_77018_a(int par1, int par2, int par3, int par4, int par5)
+		{
 		for (int var6 = 0; var6 < 2; ++var6)
 		{
 			if (var6 == 0)
@@ -368,7 +363,7 @@ public class DVRenderItem extends Render
 			var11.addVertexWithUV(par2 + par4, par3 + 0, this.zLevel, (var9 + par4) * var7, (var10 + 0.0F) * var8);
 			var11.addVertexWithUV(par2 + 0, par3 + 0, this.zLevel, (var9 + 0.0F) * var7, (var10 + 0.0F) * var8);
 			var11.draw();
-		}
+		}*/
 	}
 	
 	/**
@@ -378,7 +373,7 @@ public class DVRenderItem extends Render
 	public void renderItemOverlayIntoGUI(
 		FontRenderer par1FontRenderer, RenderEngine par2RenderEngine, ItemStack par3ItemStack, int par4, int par5)
 	{
-		if (par3ItemStack != null)
+		/*if (par3ItemStack != null)
 		{
 			if (par3ItemStack.stackSize > 1)
 			{
@@ -413,7 +408,7 @@ public class DVRenderItem extends Render
 				GL11.glEnable(GL11.GL_DEPTH_TEST);
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			}
-		}
+		}*/
 	}
 	
 	/**
