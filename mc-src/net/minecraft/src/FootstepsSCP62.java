@@ -78,37 +78,37 @@ public class FootstepsSCP62 extends Packet62LevelSound
 	}
 	
 	@Override
-	public String func_73570_d()
+	public String getSoundName()
 	{
 		return this.soundName;
 	}
 	
 	@Override
-	public double func_73572_f()
+	public double getEffectX()
 	{
 		return this.field_73577_b / 8.0F;
 	}
 	
 	@Override
-	public double func_73568_g()
+	public double getEffectY()
 	{
 		return this.field_73578_c / 8.0F;
 	}
 	
 	@Override
-	public double func_73569_h()
+	public double getEffectZ()
 	{
 		return this.field_73575_d / 8.0F;
 	}
 	
 	@Override
-	public float func_73571_i()
+	public float getVolume()
 	{
 		return this.volume;
 	}
 	
 	@Override
-	public float func_73573_j()
+	public float getPitch()
 	{
 		return this.pitch / 63.0F;
 	}
