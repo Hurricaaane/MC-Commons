@@ -179,9 +179,13 @@ public class MAtProcessorFrequent extends MAtProcessorModel
 		}
 		
 		setValue(88, w.getMoonPhase(0)); // the argument apparently means nothing
+		setValue(89, player.inventory.armorInventory[0] != null ? player.inventory.armorInventory[0].itemID : -1);
+		setValue(90, player.inventory.armorInventory[1] != null ? player.inventory.armorInventory[1].itemID : -1);
+		setValue(91, player.inventory.armorInventory[2] != null ? player.inventory.armorInventory[2].itemID : -1);
+		setValue(92, player.inventory.armorInventory[3] != null ? player.inventory.armorInventory[3].itemID : -1);
 		
 		//
-		
+		/*
 		for (int i = 0; i < 64; i++)
 		{
 			setValue(100 + i, 0);
@@ -204,8 +208,8 @@ public class MAtProcessorFrequent extends MAtProcessorModel
 					setValue(100 + id, lvl);
 				}
 			}
-		}
-		
+		}*/
+		/*
 		for (int i = 0; i < 32; i++)
 		{
 			setValue(200 + i, 0);
@@ -219,7 +223,7 @@ public class MAtProcessorFrequent extends MAtProcessorModel
 			{
 				setValue(200 + id, 1 + effect.getAmplifier());
 			}
-		}
+		}*/
 		// Remember to increase the data size.
 		
 	}

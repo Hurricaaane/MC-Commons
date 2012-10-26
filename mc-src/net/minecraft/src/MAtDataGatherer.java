@@ -34,9 +34,21 @@ public class MAtDataGatherer
 	final static String CONTACTSCAN = "ContactScan";
 	final static String CONFIGVARS = "ConfigVars";
 	
+	final static String POTIONPOWER = "PotionEffectsPower";
+	final static String POTIONDURATION = "PotionEffectsDuration";
+	
+	final static String CURRENTITEM_E = "CurrentItemEnchantments";
+	final static String ARMOR1_E = "Armor1Enchantments";
+	final static String ARMOR2_E = "Armor2Enchantments";
+	final static String ARMOR3_E = "Armor3Enchantments";
+	final static String ARMOR4_E = "Armor4Enchantments";
+	
 	final static int COUNT_WORLD_BLOCKS = 4096;
-	final static int COUNT_INSTANTS = 256;
+	final static int COUNT_INSTANTS = 128;
 	final static int COUNT_CONFIGVARS = 256;
+	
+	final static int COUNT_POTIONEFFECTS = 32;
+	final static int COUNT_ENCHANTMENTS = 64;
 	
 	final static int MAX_LARGESCAN_PASS = 10;
 	
@@ -52,6 +64,15 @@ public class MAtDataGatherer
 	private MAtProcessorModel frequentProcessor;
 	private MAtProcessorModel contactProcessor;
 	private MAtProcessorModel configVarsProcessor;
+	
+	private MAtProcessorEnchantments enchantmentsCurrentItem;
+	private MAtProcessorEnchantments enchantmentsArmor1;
+	private MAtProcessorEnchantments enchantmentsArmor2;
+	private MAtProcessorEnchantments enchantmentsArmor3;
+	private MAtProcessorEnchantments enchantmentsArmor4;
+	
+	private MAtProcessorPotionQuality potionPowerProcessor;
+	private MAtProcessorPotionQuality potionDurationProcessor;
 	
 	private List<MAtProcessorModel> additionalRelaxedProcessors;
 	private List<MAtProcessorModel> additionalFrequentProcessors;
@@ -100,6 +121,57 @@ public class MAtDataGatherer
 		this.frequentProcessor = new MAtProcessorFrequent(this.mod, this.data, INSTANTS, DELTAS);
 		this.contactProcessor = new MAtProcessorContact(this.mod, this.data, CONTACTSCAN, null);
 		this.configVarsProcessor = new MAtProcessorConfig(this.mod, this.data, CONFIGVARS, null);
+		
+		this.enchantmentsCurrentItem = new MAtProcessorEnchantments(this.mod, this.data, CURRENTITEM_E, null) {
+			@Override
+			protected ItemStack getItem(EntityPlayer player)
+			{
+				return player.inventory.getCurrentItem();
+			}
+		};
+		this.enchantmentsArmor1 = new MAtProcessorEnchantments(this.mod, this.data, ARMOR1_E, null) {
+			@Override
+			protected ItemStack getItem(EntityPlayer player)
+			{
+				return player.inventory.armorInventory[0];
+			}
+		};
+		this.enchantmentsArmor2 = new MAtProcessorEnchantments(this.mod, this.data, ARMOR2_E, null) {
+			@Override
+			protected ItemStack getItem(EntityPlayer player)
+			{
+				return player.inventory.armorInventory[1];
+			}
+		};
+		this.enchantmentsArmor3 = new MAtProcessorEnchantments(this.mod, this.data, ARMOR3_E, null) {
+			@Override
+			protected ItemStack getItem(EntityPlayer player)
+			{
+				return player.inventory.armorInventory[2];
+			}
+		};
+		this.enchantmentsArmor4 = new MAtProcessorEnchantments(this.mod, this.data, ARMOR4_E, null) {
+			@Override
+			protected ItemStack getItem(EntityPlayer player)
+			{
+				return player.inventory.armorInventory[3];
+			}
+		};
+		
+		this.potionPowerProcessor = new MAtProcessorPotionQuality(this.mod, this.data, POTIONPOWER, null) {
+			@Override
+			protected int getQuality(PotionEffect effect)
+			{
+				return effect.getAmplifier() + 1;
+			}
+		};
+		this.potionDurationProcessor = new MAtProcessorPotionQuality(this.mod, this.data, POTIONDURATION, null) {
+			@Override
+			protected int getQuality(PotionEffect effect)
+			{
+				return effect.getDuration();
+			}
+		};
 		
 	}
 	
@@ -155,6 +227,15 @@ public class MAtDataGatherer
 			this.contactProcessor.process();
 			this.frequentProcessor.process();
 			
+			this.enchantmentsCurrentItem.process();
+			this.enchantmentsArmor1.process();
+			this.enchantmentsArmor2.process();
+			this.enchantmentsArmor3.process();
+			this.enchantmentsArmor4.process();
+			
+			this.potionPowerProcessor.process();
+			this.potionDurationProcessor.process();
+			
 			for (MAtProcessorModel processor : this.additionalFrequentProcessors)
 			{
 				processor.process();
@@ -190,6 +271,15 @@ public class MAtDataGatherer
 		
 		createSheet(INSTANTS, COUNT_INSTANTS);
 		createSheet(DELTAS, COUNT_INSTANTS);
+		
+		createSheet(POTIONPOWER, COUNT_POTIONEFFECTS);
+		createSheet(POTIONDURATION, COUNT_POTIONEFFECTS);
+		
+		createSheet(CURRENTITEM_E, COUNT_ENCHANTMENTS);
+		createSheet(ARMOR1_E, COUNT_ENCHANTMENTS);
+		createSheet(ARMOR2_E, COUNT_ENCHANTMENTS);
+		createSheet(ARMOR3_E, COUNT_ENCHANTMENTS);
+		createSheet(ARMOR4_E, COUNT_ENCHANTMENTS);
 		
 		createSheet(SPECIAL_LARGE, 2);
 		createSheet(SPECIAL_SMALL, 1);
