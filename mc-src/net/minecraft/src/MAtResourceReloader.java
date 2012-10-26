@@ -160,7 +160,7 @@ public class MAtResourceReloader //extends Thread
 	 */
 	private void cpy_reloadResources()
 	{
-		File[] filesInThisDir = new File(Minecraft.getMinecraftDir(), "resources/newsound/").listFiles();
+		File[] filesInThisDir = new File(Minecraft.getMinecraftDir(), "resources/sound3/").listFiles();
 		
 		if (filesInThisDir != null)
 		{
@@ -168,7 +168,7 @@ public class MAtResourceReloader //extends Thread
 			{
 				if (file.getName().startsWith("matmos_"))
 				{
-					loadResource(file, "newsound/" + file.getName() + "/");
+					loadResource(file, "sound3/" + file.getName() + "/");
 					
 				}
 				
