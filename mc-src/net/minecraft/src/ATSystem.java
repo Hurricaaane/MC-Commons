@@ -46,6 +46,11 @@ public class ATSystem
 		
 	}
 	
+	public Map<String, File> getSubstituantMap()
+	{
+		return this.substituantFiles;
+	}
+	
 	public void applySubstituantLocation(File location, boolean replaceMusWithOggFiles)
 	{
 		File[] asLocations = { location };
