@@ -33,29 +33,44 @@ public class ATSystem
 {
 	private HaddonImpl mod;
 	
-	private File audiotoriLocation;
 	private Map<String, File> substituantFiles;
+	
+	private boolean replaceMusWithOggFiles;
 	
 	public ATSystem(HaddonImpl mod)
 	{
 		this.mod = mod;
 		this.substituantFiles = new LinkedHashMap<String, File>();
 		
+		this.replaceMusWithOggFiles = true;
+		
 	}
 	
-	public void applySubstituantLocation(File location)
+	public void applySubstituantLocation(File location, boolean replaceMusWithOggFiles)
 	{
-		this.audiotoriLocation = location;
+		File[] asLocations = { location };
+		applySubstituantLocations(asLocations, replaceMusWithOggFiles);
+		
+	}
+	
+	public void applySubstituantLocations(File[] locations, boolean replaceMusWithOggFiles)
+	{
+		this.replaceMusWithOggFiles = replaceMusWithOggFiles;
+		
 		this.substituantFiles.clear();
 		
-		cacheSubstituants(location);
+		for (File location : locations)
+		{
+			cacheSubstituants(location);
+		}
+		
 		performSubstitutions();
 		
 	}
 	
 	private void cacheSubstituants(File directory)
 	{
-		URI audiotoriURI = this.audiotoriLocation.toURI();
+		URI audiotoriURI = directory.toURI();
 		
 		for (File file : directory.listFiles())
 		{
@@ -89,13 +104,6 @@ public class ATSystem
 	
 	private void performSubstitutions()
 	{
-		if (this.audiotoriLocation == null)
-		{
-			log("Tried to perform substitutions without a location!");
-			return;
-			
-		}
-		
 		try
 		{
 			Minecraft mc = this.mod.manager().getMinecraft();
@@ -125,12 +133,24 @@ public class ATSystem
 		{
 			ArrayList variousSounds = entry.getValue();
 			
-			for (int i = 0; i < variousSounds.size(); i++)
+			int i = 0;
+			while (i < variousSounds.size())
 			{
 				SoundPoolEntry sound = (SoundPoolEntry) variousSounds.get(i);
 				if (sound instanceof ATSoundSubstitute)
 				{
+					debug("Unsubstituing " + sound.soundName);
 					variousSounds.set(i, ((ATSoundSubstitute) sound).getOriginal());
+					i++;
+				}
+				else if (sound instanceof ATSoundOrphan)
+				{
+					debug("Uninstalling resource " + sound.soundName);
+					variousSounds.remove(i);
+				}
+				else
+				{
+					i++;
 				}
 				
 			}
@@ -167,6 +187,7 @@ public class ATSystem
 				SoundPoolEntry sound = (SoundPoolEntry) variousSounds.get(i);
 				
 				boolean hasFoundSubstitute = false;
+				boolean hasFoundSubstituteMus = false;
 				for (String subLocation : subLocations)
 				{
 					if (allNames.contains(subLocation + sound.soundName))
@@ -176,16 +197,50 @@ public class ATSystem
 							hasFoundSubstitute = true;
 							
 							debug(sound.soundName + " has a substitute in " + subLocation + "!");
-							variousSounds.set(i, new ATSoundSubstitute(sound, new File(
-								this.audiotoriLocation, subLocation)));
+							variousSounds.set(
+								i,
+								new ATSoundSubstitute(sound, sound.soundName, this.substituantFiles.get(subLocation
+									+ sound.soundName)));
 							loadedNames.add(subLocation + sound.soundName);
 						}
 						else
 						{
 							debug(sound.soundName
 								+ " has a substitute in " + subLocation
-								+ ", but we already performed a substitution earlier!");
+								+ ", but we already performed a substitution earlier from another sublocation!");
 							
+						}
+					}
+					
+					// The reason why this is not an elseif is because
+					// if we find, say 13.ogg and 13.mus in the same folder,
+					// we want to have BOTH overridden by the same file.
+					
+					if (this.replaceMusWithOggFiles && sound.soundName.toLowerCase().endsWith(".mus"))
+					{
+						String oggifiedSoundName = sound.soundName.substring(0, sound.soundName.length() - 4) + ".ogg";
+						
+						if (allNames.contains(subLocation + oggifiedSoundName))
+						{
+							if (!hasFoundSubstituteMus)
+							{
+								hasFoundSubstituteMus = true;
+								
+								debug(sound.soundName + " has a substitute in " + subLocation + "!");
+								variousSounds.set(
+									i,
+									new ATSoundSubstitute(sound, oggifiedSoundName, this.substituantFiles
+										.get(subLocation + oggifiedSoundName)));
+								
+								loadedNames.add(subLocation + oggifiedSoundName);
+							}
+							else
+							{
+								debug(sound.soundName
+									+ " has a substitute in " + subLocation
+									+ ", but we already performed a substitution earlier from another sublocation!");
+								
+							}
 						}
 					}
 				}
@@ -198,6 +253,7 @@ public class ATSystem
 			notLoadedNames.remove(name);
 		}
 		
+		// Install orphan sounds
 		Minecraft mc = this.mod.manager().getMinecraft();
 		for (String name : notLoadedNames)
 		{
@@ -207,6 +263,26 @@ public class ATSystem
 				{
 					debug("Installing orphan resource " + name);
 					mc.installResource(name, this.substituantFiles.get(name));
+				}
+			}
+			
+		}
+		
+		// Wrap orphan sounds
+		for (Entry<String, ArrayList> entry : nameToSoundPoolEntriesMapping.entrySet())
+		{
+			//String cuteNameWithDots = entry.getKey();
+			ArrayList variousSounds = entry.getValue();
+			
+			for (int i = 0; i < variousSounds.size(); i++)
+			{
+				SoundPoolEntry sound = (SoundPoolEntry) variousSounds.get(i);
+				for (String subLocation : subLocations)
+				{
+					if (notLoadedNames.contains(subLocation + sound.soundName))
+					{
+						variousSounds.set(i, new ATSoundOrphan(sound));
+					}
 				}
 			}
 			

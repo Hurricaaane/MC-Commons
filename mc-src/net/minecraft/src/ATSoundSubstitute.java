@@ -23,7 +23,7 @@ public class ATSoundSubstitute extends SoundPoolEntry
 {
 	private SoundPoolEntry original;
 	
-	public ATSoundSubstitute(SoundPoolEntry original, File substituteRoot)
+	public ATSoundSubstitute(SoundPoolEntry original, String newSoundName, File substituant)
 	{
 		super(original.soundName, original.soundUrl);
 		
@@ -31,9 +31,9 @@ public class ATSoundSubstitute extends SoundPoolEntry
 		
 		try
 		{
-			File substituant = new File(substituteRoot, original.soundName);
 			if (substituant.exists())
 			{
+				this.soundName = newSoundName;
 				this.soundUrl = substituant.toURI().toURL();
 			}
 			else
