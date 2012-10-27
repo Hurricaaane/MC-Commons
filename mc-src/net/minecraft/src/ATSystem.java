@@ -169,7 +169,7 @@ public class ATSystem
 						}
 						else
 						{
-							log(sound.soundName
+							debug(sound.soundName
 								+ " has a substitute in " + subLocation
 								+ ", but we already performed a substitution earlier!");
 							
@@ -188,9 +188,11 @@ public class ATSystem
 		Minecraft mc = this.mod.manager().getMinecraft();
 		for (String name : notLoadedNames)
 		{
-			System.out.println("Installing orphan resource " + name);
+			debug("Installing orphan resource " + name);
 			mc.installResource(name, this.substituantFiles.get(name));
 		}
+		
+		log("Performed " + loadedNames.size() + " substitutions.");
 		
 	}
 	
