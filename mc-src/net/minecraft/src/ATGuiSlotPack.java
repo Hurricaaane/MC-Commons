@@ -22,18 +22,18 @@ public class ATGuiSlotPack extends GuiSlot
 	
 	public ATGuiSlotPack(ATGuiMenu menu)
 	{
-		super(menu.mc, menu.width, menu.height, 32, menu.height - 64, 36);
+		super(menu.mc, menu.width, menu.height, 32, menu.height - 64, 22);
 		this.menu = menu;
 	}
 	
 	@Override
 	protected int getSize()
 	{
-		return 1;
+		return this.menu.getSize();
 	}
 	
 	@Override
-	protected void elementClicked(int elementId, boolean var2)
+	protected void elementClicked(int elementId, boolean unknown)
 	{
 		if (elementId < getSize())
 		{
@@ -42,9 +42,9 @@ public class ATGuiSlotPack extends GuiSlot
 	}
 	
 	@Override
-	protected boolean isSelected(int var1)
+	protected boolean isSelected(int id)
 	{
-		return var1 == this.menu.getSelectedSlot();
+		return id == this.menu.getSelectedSlot();
 	}
 	
 	@Override
@@ -54,7 +54,39 @@ public class ATGuiSlotPack extends GuiSlot
 	}
 	
 	@Override
-	protected void drawSlot(int var1, int var2, int var3, int var4, Tessellator var5)
+	protected void drawSlot(int id, int x, int y, int ddd, Tessellator tesselator)
 	{
+		try
+		{
+			ATPack pack = this.menu.getPack(id);
+			
+			this.menu.drawString(this.menu.fontRenderer, (pack.getPrettyName() == pack.getSysName() ? "\u00A7o" : "")
+				+ pack.getPrettyName(), x + 1, y, 0xFFFFFF);
+			this.menu.drawString(this.menu.fontRenderer, pack.getSysName() + "/", x + 1, y + 10, 0x404040);
+			
+			String status = pack.isActive() ? "ON" : "OFF";
+			int statusColor = pack.isActive() ? 0x0080FF : 0xC00000;
+			int statusWidth = this.menu.fontRenderer.getStringWidth(status);
+			this.menu.drawString(this.menu.fontRenderer, status, x + 215 - statusWidth, y, statusColor);
+			
+			/*if (getSize() > 1)
+			{
+				if (this.mouseX >= x && this.mouseY >= y && this.mouseX <= x + 215 && this.mouseY <= y + ddd)
+				{
+					if (id == 0)
+					{
+						this.menu.inputTip("Top layer: May override sounds from other packs.");
+					}
+					else if (id == getSize() - 1)
+					{
+						this.menu.inputTip("Bottom layer: Layers above may override this sound pack.");
+					}
+				}
+			}*/
+		}
+		catch (ArrayIndexOutOfBoundsException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

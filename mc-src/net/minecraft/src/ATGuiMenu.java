@@ -1,8 +1,6 @@
 package net.minecraft.src;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import net.minecraft.client.Minecraft;
 
@@ -39,21 +37,10 @@ public class ATGuiMenu extends GuiScreen
 	/** The ID of the button that has been pressed. */
 	private int buttonId;
 	
-	private int pageFromZero;
-	private final int IDS_PER_PAGE = 5;
-	
-	private List<MAtExpansion> expansionList;
 	private int selectedSlot;
-	
-	// Keep the active page in memory. Globally... (herpderp)
-	private static int in_memory_page = 0;
+	private String tip;
 	
 	public ATGuiMenu(GuiScreen par1GuiScreen, ATHaddon haddon)
-	{
-		this(par1GuiScreen, haddon, in_memory_page);
-	}
-	
-	public ATGuiMenu(GuiScreen par1GuiScreen, ATHaddon haddon, int pageFromZero)
 	{
 		this.selectedSlot = -1;
 		
@@ -61,11 +48,6 @@ public class ATGuiMenu extends GuiScreen
 		this.buttonId = -1;
 		this.parentScreen = par1GuiScreen;
 		this.mod = haddon;
-		this.pageFromZero = pageFromZero;
-		
-		this.expansionList = new ArrayList<MAtExpansion>();
-		
-		in_memory_page = this.pageFromZero;
 	}
 	
 	/**
@@ -189,11 +171,11 @@ public class ATGuiMenu extends GuiScreen
 		final int _ASPLIT = 2;
 		final int _AWID = _WIDTH / _ASPLIT - _GAP * (_ASPLIT - 1) / 2;
 		
-		final int _SEPARATOR = 10;
+		final int _SEPARATOR = 4;
+		final int _HEIGHT = this.height;
 		
-		this.controlList.add(new GuiButton(
-			210, _LEFT, _SEPARATOR + _MIX * (this.IDS_PER_PAGE + 3), _AWID, _UNIT, this.mod.getConfig().getBoolean(
-				"start.enabled") ? "Start Enabled: ON" : "Start Enabled: OFF"));
+		this.controlList.add(new GuiButton(210, _LEFT, _HEIGHT - _SEPARATOR - _MIX * 2, _AWID, _UNIT, this.mod
+			.getConfig().getBoolean("start.enabled") ? "Start Enabled: ON" : "Start Enabled: OFF"));
 		
 		/*this.controlList.add(new GuiButton(
 			211, _LEFT + _AWID + _GAP, _SEPARATOR + _MIX * (this.IDS_PER_PAGE + 3), _AWID, _UNIT, this.mod
@@ -202,14 +184,14 @@ public class ATGuiMenu extends GuiScreen
 		
 		final int _TURNOFFWIDTH = _WIDTH / 5;
 		
-		this.controlList.add(new GuiButton(200, _LEFT + _MIX, _SEPARATOR + _MIX * (this.IDS_PER_PAGE + 4), _WIDTH
+		this.controlList.add(new GuiButton(200, _LEFT + _MIX, _HEIGHT - _SEPARATOR - _MIX * 1, _WIDTH
 			- _MIX * 2 - _GAP - _TURNOFFWIDTH, _UNIT, "Done"));
 		
-		this.controlList.add(new GuiButton(213, _RIGHT - _TURNOFFWIDTH - _MIX, _SEPARATOR
-			+ _MIX * (this.IDS_PER_PAGE + 3), _TURNOFFWIDTH, _UNIT, "Load"));
+		this.controlList.add(new GuiButton(
+			213, _RIGHT - _TURNOFFWIDTH - _MIX, _HEIGHT - _SEPARATOR - _MIX * 2, _TURNOFFWIDTH, _UNIT, "Load"));
 		
-		this.controlList.add(new GuiButton(212, _RIGHT - _TURNOFFWIDTH - _MIX, _SEPARATOR
-			+ _MIX * (this.IDS_PER_PAGE + 4), _TURNOFFWIDTH, _UNIT, "Unload"));
+		this.controlList.add(new GuiButton(
+			212, _RIGHT - _TURNOFFWIDTH - _MIX, _HEIGHT - _SEPARATOR - _MIX * 1, _TURNOFFWIDTH, _UNIT, "Unload"));
 		
 		//this.screenTitle = stringtranslate.translateKey("controls.title");
 	}
@@ -277,11 +259,42 @@ public class ATGuiMenu extends GuiScreen
 	@Override
 	public void drawScreen(int par1, int par2, float par3)
 	{
+		this.tip = null;
 		this.packSlotContainer.drawScreen(par1, par2, par3);
 		drawCenteredString(this.fontRenderer, this.screenTitle, this.width / 2, 8, 0xffffff);
+		drawCenteredString(this.fontRenderer, "Top layer (overrides)", this.width / 2, 20, 0xA0A0A0);
+		drawCenteredString(this.fontRenderer, "Bottom layer (compliants)", this.width / 2, this.height - 60, 0xA0A0A0);
 		
 		super.drawScreen(par1, par2, par3);
 		
+		if (this.tip != null)
+		{
+			displayFloatingNote(this.tip, par1, par2);
+		}
+	}
+	
+	private void displayFloatingNote(String tipContents, int par2, int par3)
+	{
+		if (tipContents != null)
+		{
+			int var5 = par3 - 12;
+			int var6 = this.fontRenderer.getStringWidth(tipContents);
+			int var4 = par2 - var6 / 2;
+			
+			int computedX = var4;
+			int computedWidth = var6 + 3;
+			int computedXmost = computedX + computedWidth;
+			if (computedX < 0)
+			{
+				computedX = 3;
+			}
+			else if (computedXmost > this.width)
+			{
+				computedX = computedX - computedXmost + this.width;
+			}
+			drawGradientRect(computedX - 3, var5 - 3, var4 + var6 + 3, var5 + 8 + 3, -1073741824, -1073741824);
+			this.fontRenderer.drawStringWithShadow(tipContents, computedX, var5, -1);
+		}
 	}
 	
 	public int getSelectedSlot()
@@ -293,6 +306,21 @@ public class ATGuiMenu extends GuiScreen
 	{
 		this.selectedSlot = elementId;
 		
+	}
+	
+	public int getSize()
+	{
+		return this.mod.getPackManager().getPackCount();
+	}
+	
+	public ATPack getPack(int id)
+	{
+		return this.mod.getPackManager().getPack(id);
+	}
+	
+	public String inputTip(String tip)
+	{
+		return this.tip = tip;
 	}
 	
 }

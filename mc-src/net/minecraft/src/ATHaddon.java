@@ -91,6 +91,7 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents
 			@Override
 			public void onTrueEdge()
 			{
+				ATHaddon.this.atPackManager.applyAllPacks();
 				openGUI();
 			}
 			

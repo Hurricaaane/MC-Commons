@@ -1,6 +1,12 @@
 package net.minecraft.src;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import net.minecraft.client.Minecraft;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -23,10 +29,42 @@ public class ATPackManager
 	private ATSystem atSystem;
 	private ATHaddon mod;
 	
+	private Map<String, ATPack> packs;
+	private List<String> packOrder;
+	
+	private File atDirectory;
+	
 	public ATPackManager(ATHaddon mod)
 	{
 		this.mod = mod;
 		this.atSystem = new ATSystem(mod);
+		
+		this.packs = new LinkedHashMap<String, ATPack>();
+		this.packOrder = new ArrayList<String>();
+		
+		this.atDirectory = new File(Minecraft.getMinecraftDir(), "audiotori/");
+	}
+	
+	public void applyAllPacks()
+	{
+		this.packs.clear();
+		this.packOrder.clear();
+		
+		for (File file : this.atDirectory.listFiles())
+		{
+			if (file.isDirectory())
+			{
+				this.packs.put(file.getName(), new ATPack(file));
+				this.packOrder.add(file.getName());
+				
+			}
+		}
+		
+		for (ATPack pack : this.packs.values())
+		{
+			pack.fetchInfo();
+		}
+		
 	}
 	
 	public void feedAndActivateAndSay(File[] files)
@@ -52,6 +90,16 @@ public class ATPackManager
 	{
 		this.mod.printChat(Ha3Utility.COLOR_YELLOW + "Deactivating...");
 		this.atSystem.clearSubstitutions();
+	}
+	
+	public int getPackCount()
+	{
+		return this.packs.size();
+	}
+	
+	public ATPack getPack(int id)
+	{
+		return this.packs.get(this.packOrder.get(id));
 	}
 	
 }
