@@ -10,6 +10,7 @@ import eu.ha3.mc.haddon.Bridge;
 import eu.ha3.mc.haddon.Haddon;
 import eu.ha3.mc.haddon.Manager;
 import eu.ha3.mc.haddon.SupportsChatEvents;
+import eu.ha3.mc.haddon.SupportsEverythingReady;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
 import eu.ha3.mc.haddon.SupportsGuiFrameEvents;
 import eu.ha3.mc.haddon.SupportsGuiTickEvents;
@@ -50,6 +51,7 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager, Bridge
 	private boolean supportsChat;
 	private boolean supportsKey;
 	private boolean supportsIncomingMessages;
+	private boolean supportsEverythingReady;
 	
 	private Set<String> enlistedIncomingMessages;
 	private Set<String> enlistedOutgoingMessages;
@@ -84,6 +86,7 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager, Bridge
 		this.supportsChat = haddon instanceof SupportsChatEvents;
 		this.supportsKey = haddon instanceof SupportsKeyEvents;
 		this.supportsIncomingMessages = haddon instanceof SupportsIncomingMessages;
+		this.supportsEverythingReady = haddon instanceof SupportsEverythingReady;
 		
 		this.impl_continueTicking = this.supportsTick || this.supportsFrame;
 		this.impl_continueGuiTicking = this.supportsGuiTick || this.supportsGuiFrame;
@@ -389,6 +392,15 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager, Bridge
 	{
 		return this.ticksRan;
 		
+	}
+	
+	@Override
+	public void modsLoaded()
+	{
+		if (this.supportsEverythingReady)
+		{
+			((SupportsEverythingReady) this.haddon).onEverythingReady();
+		}
 	}
 	
 }
