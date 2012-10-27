@@ -66,26 +66,24 @@ public class ATSystem
 		
 		for (File location : locations)
 		{
-			cacheSubstituants(location);
+			cacheSubstituants(location.toURI(), location);
 		}
 		
 		performSubstitutions();
 		
 	}
 	
-	private void cacheSubstituants(File directory)
+	private void cacheSubstituants(URI originURI, File directory)
 	{
-		URI audiotoriURI = directory.toURI();
-		
 		for (File file : directory.listFiles())
 		{
 			if (file.isDirectory())
 			{
-				cacheSubstituants(file);
+				cacheSubstituants(originURI, file);
 			}
 			else
 			{
-				this.substituantFiles.put(audiotoriURI.relativize(file.toURI()).toString(), file);
+				this.substituantFiles.put(originURI.relativize(file.toURI()).toString(), file);
 			}
 			
 		}
