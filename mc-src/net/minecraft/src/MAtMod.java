@@ -17,6 +17,7 @@ import eu.ha3.easy.TimeStatistic;
 import eu.ha3.matmos.engine.MAtmosLogger;
 import eu.ha3.mc.convenience.Ha3Signal;
 import eu.ha3.mc.convenience.Ha3StaticUtilities;
+import eu.ha3.mc.haddon.SupportsEverythingReady;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
 import eu.ha3.mc.haddon.SupportsKeyEvents;
 import eu.ha3.mc.haddon.SupportsTickEvents;
@@ -38,7 +39,8 @@ import eu.ha3.util.property.simple.ConfigProperty;
   0. You just DO WHAT THE FUCK YOU WANT TO.
  */
 
-public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents/*, SupportsGuiTickEvents, Ha3Personalizable*/
+public class MAtMod extends HaddonImpl
+	implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents, SupportsEverythingReady /*, Ha3Personalizable*/
 {
 	final static public MAtLogger LOGGER = new MAtLogger();
 	final static public int VERSION = 19; // Remember to change the thing on mod_Matmos_forModLoader
@@ -58,6 +60,7 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 	
 	private boolean firstTickPassed;
 	private TimeStatistic timeStatistic;
+	private boolean hasSentSignalToTurnOn;
 	
 	public MAtMod()
 	{
@@ -341,7 +344,43 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 		MAtMod.LOGGER.info("Ready.");
 		
 		startRunning();
-		this.expansionManager.signalReadyToTurnOn();
+		
+		// Do not do that when it's ready
+		// Forge loads the Sound module before mods load up, so
+		// Forge gets stuck in the loading screen for 10 seconds building the knowledge
+		
+		//this.expansionManager.signalReadyToTurnOn();
+		
+	}
+	
+	@Override
+	public void onEverythingReady()
+	{
+		if (!trySendSignalToTurnOn())
+		{
+			this.LOGGER.info("MAtmos is not yet enabled and mods are loaded: Knowledge will be built later...");
+		}
+	}
+	
+	private boolean trySendSignalToTurnOn()
+	{
+		if (this.phase != MAtModPhase.READY)
+			return false;
+		
+		if (!this.hasSentSignalToTurnOn)
+		{
+			this.hasSentSignalToTurnOn = true;
+			
+			this.LOGGER.info("Now building knowledge...");
+			new Thread() {
+				@Override
+				public void run()
+				{
+					MAtMod.this.expansionManager.signalReadyToTurnOn();
+				}
+			}.start();
+		}
+		return true;
 		
 	}
 	
@@ -543,6 +582,10 @@ public class MAtMod extends HaddonImpl implements SupportsFrameEvents, SupportsT
 			return;
 			
 		}
+		
+		// We must try this, because when onEverythingReady was triggered,
+		// it is not guaranteed that MAtMod was ready.
+		trySendSignalToTurnOn();
 		
 		this.userControl.tickRoutine();
 		if (this.isRunning)
