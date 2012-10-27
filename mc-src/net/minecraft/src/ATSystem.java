@@ -49,6 +49,7 @@ public class ATSystem
 		this.substituantFiles.clear();
 		
 		cacheSubstituants(location);
+		performSubstitutions();
 		
 	}
 	
@@ -71,7 +72,7 @@ public class ATSystem
 		
 	}
 	
-	public void performSubstitutions()
+	private void performSubstitutions()
 	{
 		if (this.audiotoriLocation == null)
 		{

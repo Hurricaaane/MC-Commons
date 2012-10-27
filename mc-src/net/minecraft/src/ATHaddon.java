@@ -32,8 +32,6 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents
 	{
 		this.atSystem = new ATSystem(this);
 		
-		this.atSystem.applySubstituantLocation(new File(Minecraft.getMinecraftDir(), "audiotori/substitute/"));
-		
 		this.sndComms = new Ha3SoundCommunicator(this, "AT_");
 		this.sndComms.load(new Ha3Signal() {
 			@Override
@@ -58,7 +56,7 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents
 	@Override
 	public void onTick()
 	{
-		this.atSystem.performSubstitutions();
+		this.atSystem.applySubstituantLocation(new File(Minecraft.getMinecraftDir(), "audiotori/substitute/"));
 		manager().hookTickEvents(false);
 		
 	}
