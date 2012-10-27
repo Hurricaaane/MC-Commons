@@ -358,7 +358,7 @@ public class MAtMod extends HaddonImpl
 	{
 		if (!trySendSignalToTurnOn())
 		{
-			this.LOGGER.info("MAtmos is not yet enabled and mods are loaded: Knowledge will be built later...");
+			MAtMod.LOGGER.info("MAtmos is not yet enabled and mods are loaded: Knowledge will be built later...");
 		}
 	}
 	
@@ -371,7 +371,7 @@ public class MAtMod extends HaddonImpl
 		{
 			this.hasSentSignalToTurnOn = true;
 			
-			this.LOGGER.info("Now building knowledge...");
+			MAtMod.LOGGER.info("Now building knowledge...");
 			new Thread() {
 				@Override
 				public void run()
