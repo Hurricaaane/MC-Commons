@@ -188,8 +188,15 @@ public class ATSystem
 		Minecraft mc = this.mod.manager().getMinecraft();
 		for (String name : notLoadedNames)
 		{
-			debug("Installing orphan resource " + name);
-			mc.installResource(name, this.substituantFiles.get(name));
+			for (String subLocation : subLocations)
+			{
+				if (name.startsWith(subLocation))
+				{
+					debug("Installing orphan resource " + name);
+					mc.installResource(name, this.substituantFiles.get(name));
+				}
+			}
+			
 		}
 		
 		log("Performed " + loadedNames.size() + " substitutions.");
