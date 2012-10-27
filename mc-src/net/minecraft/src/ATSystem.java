@@ -72,6 +72,21 @@ public class ATSystem
 		
 	}
 	
+	public void clearSubstitutions()
+	{
+		try
+		{
+			Minecraft mc = this.mod.manager().getMinecraft();
+			restoreSubstitutions(mc.sndManager.soundPoolSounds);
+			restoreSubstitutions(mc.sndManager.soundPoolStreaming);
+			restoreSubstitutions(mc.sndManager.soundPoolMusic);
+		}
+		catch (PrivateAccessException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	private void performSubstitutions()
 	{
 		if (this.audiotoriLocation == null)
@@ -86,9 +101,7 @@ public class ATSystem
 			Minecraft mc = this.mod.manager().getMinecraft();
 			String[] musicDirectories = { "music/", "newmusic/" };
 			
-			restoreSubstitutions(mc.sndManager.soundPoolSounds);
-			restoreSubstitutions(mc.sndManager.soundPoolStreaming);
-			restoreSubstitutions(mc.sndManager.soundPoolMusic);
+			clearSubstitutions();
 			
 			performSubstitutions(mc.sndManager.soundPoolSounds, "sound3/");
 			performSubstitutions(mc.sndManager.soundPoolStreaming, "streaming/");
