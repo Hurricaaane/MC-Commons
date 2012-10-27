@@ -61,6 +61,7 @@ public class MAtMod extends HaddonImpl
 	private boolean firstTickPassed;
 	private TimeStatistic timeStatistic;
 	private boolean hasSentSignalToTurnOn;
+	private boolean everythingIsReady;
 	
 	public MAtMod()
 	{
@@ -350,7 +351,10 @@ public class MAtMod extends HaddonImpl
 		// Forge gets stuck in the loading screen for 10 seconds building the knowledge
 		
 		//this.expansionManager.signalReadyToTurnOn();
-		
+		if (this.everythingIsReady)
+		{
+			trySendSignalToTurnOn();
+		}
 	}
 	
 	@Override
@@ -360,6 +364,7 @@ public class MAtMod extends HaddonImpl
 		{
 			MAtMod.LOGGER.info("MAtmos is not yet enabled and mods are loaded: Knowledge will be built later...");
 		}
+		this.everythingIsReady = true;
 	}
 	
 	private boolean trySendSignalToTurnOn()
@@ -585,7 +590,8 @@ public class MAtMod extends HaddonImpl
 		
 		// We must try this, because when onEverythingReady was triggered,
 		// it is not guaranteed that MAtMod was ready.
-		trySendSignalToTurnOn();
+		//trySendSignalToTurnOn();
+		//    moved with a boolean check
 		
 		this.userControl.tickRoutine();
 		if (this.isRunning)
