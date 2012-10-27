@@ -43,6 +43,7 @@ public class DebuggingHa3Haddon extends HaddonImpl
 	private EdgeTrigger button;
 	private boolean toggle;
 	private RenderSpawnPoints renderRelay;
+	private RenderAim renderAim;
 	
 	@Override
 	public void onLoad()
@@ -62,11 +63,27 @@ public class DebuggingHa3Haddon extends HaddonImpl
 		});
 		
 		this.renderRelay = new RenderSpawnPoints(manager().getMinecraft());
+		this.renderAim = new RenderAim(manager().getMinecraft());
 		
 		manager().hookTickEvents(true);
 		manager().hookFrameEvents(true);
 		manager().hookChatEvents(true);
 		manager().addRenderable(this.renderRelay.getRenderEntityClass(), this.renderRelay.getRenderHook());
+		manager().addRenderable(this.renderAim.getRenderEntityClass(), this.renderAim.getRenderHook());
+		
+		/*try
+		{
+			Class<EntityRenderer> entityRendererClass = EntityRenderer.class;
+			Method meth = entityRendererClass.getMethod("orientCamera", float.class);
+		}
+		catch (SecurityException e)
+		{
+			e.printStackTrace();
+		}
+		catch (NoSuchMethodException e)
+		{
+			e.printStackTrace();
+		}*/
 	}
 	
 	protected void in()
@@ -128,6 +145,7 @@ public class DebuggingHa3Haddon extends HaddonImpl
 	public void onTick()
 	{
 		this.renderRelay.ensureExists();
+		this.renderAim.ensureExists();
 		this.button.signalState(util().areKeysDown(29, 42, 49));
 		
 	}
@@ -298,6 +316,101 @@ public class DebuggingHa3Haddon extends HaddonImpl
 			GL11.glEnable(GL11.GL_ALPHA_TEST);
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
 			GL11.glEnable(GL11.GL_DEPTH_TEST);
+			
+			RenderHelper.enableStandardItemLighting();
+		}
+		
+		private void trace(
+			double dx, double dy, double dz, double xa, double ya, double za, double xb, double yb, double zb)
+		{
+			GL11.glLineWidth(2f);
+			
+			GL11.glColor3f(1f, 0f, 0f);
+			Tessellator tessellator = Tessellator.instance;
+			tessellator.startDrawing(GL11.GL_LINE_STRIP);
+			
+			tessellator.setTranslation(-dx, -dy, -dz);
+			tessellator.addVertex(xa, ya, za);
+			tessellator.addVertex(xb, yb, zb);
+			
+			tessellator.draw();
+			tessellator.setTranslation(0, 0, 0);
+		}
+		
+		@SuppressWarnings("rawtypes")
+		@Override
+		public Class getRenderEntityClass()
+		{
+			return MyRenderEntity.class;
+		}
+		
+		@Override
+		public Entity newRenderEntity()
+		{
+			return new MyRenderEntity();
+		}
+		
+		private class MyRenderEntity extends HRenderEntity
+		{
+		}
+		
+	}
+	
+	private class RenderAim extends Ha3RenderRelay
+	{
+		public RenderAim(Minecraft mc)
+		{
+			super(mc);
+		}
+		
+		@Override
+		public void doRender(Entity entity, double dx, double dy, double dz, float f, float semi)
+		{
+			if (true)
+				return;
+			
+			EntityPlayer ply = manager().getMinecraft().thePlayer;
+			
+			if (ply.inventory.getCurrentItem().itemID != 261 || ply.getItemInUseDuration() <= 5)
+				return;
+			
+			World world = manager().getMinecraft().theWorld;
+			
+			double ply_x = ply.posX;
+			double ply_y = ply.posY + ply.getEyeHeight();
+			double ply_z = ply.posZ;
+			
+			int distance = 512;
+			
+			Vec3 look = ply.getLookVec();
+			double d_x = ply_x + look.xCoord * distance;
+			double d_y = ply_y + look.yCoord * distance;
+			double d_z = ply_z + look.zCoord * distance;
+			
+			beginTrace();
+			trace(dx, dy, dz, ply_x, ply_y, ply_z, d_x, d_y, d_z);
+			finishTrace();
+		}
+		
+		private void beginTrace()
+		{
+			RenderHelper.disableStandardItemLighting();
+			
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
+			/*GL11.glDisable(GL11.GL_DEPTH_TEST);
+			GL11.glDisable(GL11.GL_ALPHA_TEST);*/
+			
+			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ZERO);
+		}
+		
+		private void finishTrace()
+		{
+			GL11.glDisable(GL11.GL_BLEND);
+			
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			/*GL11.glEnable(GL11.GL_ALPHA_TEST);
+			GL11.glEnable(GL11.GL_DEPTH_TEST);*/
 			
 			RenderHelper.enableStandardItemLighting();
 		}
