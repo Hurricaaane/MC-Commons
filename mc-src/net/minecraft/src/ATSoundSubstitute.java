@@ -2,6 +2,7 @@ package net.minecraft.src;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.Random;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -33,12 +34,16 @@ public class ATSoundSubstitute extends SoundPoolEntry
 		{
 			if (substituant.exists())
 			{
-				this.soundName = newSoundName;
+				// Why is there a random bullcrap here?
+				// For some reason, sometimes sounds get somehow cached somewhere I'm
+				// not sure of. This random bullcrap prevents cached sounds of previous
+				// loading sequences to replace this one
+				this.soundName = new Random().nextInt(99999) + newSoundName;
 				this.soundUrl = substituant.toURI().toURL();
 			}
 			else
 			{
-				System.out.println("Tried to substitute "
+				System.out.println("(ATS) Tried to substitute "
 					+ original.soundName + " but the file " + substituant.toString() + " does not exist!");
 			}
 		}
@@ -50,6 +55,13 @@ public class ATSoundSubstitute extends SoundPoolEntry
 	
 	public SoundPoolEntry getOriginal()
 	{
+		if (this.original instanceof ATSoundSubstitute)
+		{
+			System.out.println("(ATSS) Nesting occured with "
+				+ this.soundUrl.toString() + " / " + this.original.soundUrl.toString() + " !");
+			return ((ATSoundSubstitute) this.original).getOriginal();
+			
+		}
 		return this.original;
 	}
 	

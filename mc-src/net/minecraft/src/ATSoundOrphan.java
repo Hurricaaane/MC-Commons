@@ -1,5 +1,6 @@
 package net.minecraft.src;
 
+import java.util.Random;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -25,11 +26,23 @@ public class ATSoundOrphan extends SoundPoolEntry
 	{
 		super(generated.soundName, generated.soundUrl);
 		
+		// Why is there a random bullcrap here?
+		// For some reason, sometimes sounds get somehow cached somewhere I'm
+		// not sure of. This random bullcrap prevents cached sounds of previous
+		// loading sequences to replace this one
+		this.soundName = new Random().nextInt(99999) + this.soundName;
+		
 		this.generated = generated;
 	}
 	
 	public SoundPoolEntry getGenerated()
 	{
+		if (this.generated instanceof ATSoundOrphan)
+		{
+			System.out.println("(ATSO) Nesting occured with "
+				+ this.soundUrl.toString() + " / " + this.generated.soundUrl.toString() + " !");
+			return ((ATSoundOrphan) this.generated).getGenerated();
+		}
 		return this.generated;
 		
 	}

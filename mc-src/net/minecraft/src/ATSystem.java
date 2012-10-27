@@ -148,7 +148,7 @@ public class ATSystem
 				}
 				else if (sound instanceof ATSoundOrphan)
 				{
-					debug("Uninstalling resource " + sound.soundName);
+					debug("Uninstalling " + sound.soundName);
 					variousSounds.remove(i);
 				}
 				else
