@@ -21,23 +21,36 @@ import java.net.MalformedURLException;
 
 public class ATSoundSubstitute extends SoundPoolEntry
 {
+	private SoundPoolEntry original;
+	
 	public ATSoundSubstitute(SoundPoolEntry original, File substituteRoot)
 	{
 		super(original.soundName, original.soundUrl);
+		
+		this.original = original;
 		
 		try
 		{
 			File substituant = new File(substituteRoot, original.soundName);
 			if (substituant.exists())
 			{
-				System.out.println(original.soundName + " has a substitute!");
 				this.soundUrl = substituant.toURI().toURL();
+			}
+			else
+			{
+				System.out.println("Tried to substitute "
+					+ original.soundName + " but the file " + substituant.toString() + " does not exist!");
 			}
 		}
 		catch (MalformedURLException e)
 		{
 		}
 		
+	}
+	
+	public SoundPoolEntry getOriginal()
+	{
+		return this.original;
 	}
 	
 }
