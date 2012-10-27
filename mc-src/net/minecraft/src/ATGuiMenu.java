@@ -29,6 +29,7 @@ public class ATGuiMenu extends GuiScreen
 	 * between screens.
 	 */
 	private GuiScreen parentScreen;
+	private ATGuiSlotPack packSlotContainer;
 	
 	/** The title string that is displayed in the top-center of the screen. */
 	protected String screenTitle;
@@ -42,6 +43,7 @@ public class ATGuiMenu extends GuiScreen
 	private final int IDS_PER_PAGE = 5;
 	
 	private List<MAtExpansion> expansionList;
+	private int selectedSlot;
 	
 	// Keep the active page in memory. Globally... (herpderp)
 	private static int in_memory_page = 0;
@@ -53,6 +55,8 @@ public class ATGuiMenu extends GuiScreen
 	
 	public ATGuiMenu(GuiScreen par1GuiScreen, ATHaddon haddon, int pageFromZero)
 	{
+		this.selectedSlot = -1;
+		
 		this.screenTitle = "Audiotori";
 		this.buttonId = -1;
 		this.parentScreen = par1GuiScreen;
@@ -71,6 +75,8 @@ public class ATGuiMenu extends GuiScreen
 	@Override
 	public void initGui()
 	{
+		this.packSlotContainer = new ATGuiSlotPack(this);
+		
 		StringTranslate stringtranslate = StringTranslate.getInstance();
 		
 		final int _GAP = 2;
@@ -200,7 +206,7 @@ public class ATGuiMenu extends GuiScreen
 			- _MIX * 2 - _GAP - _TURNOFFWIDTH, _UNIT, "Done"));
 		
 		this.controlList.add(new GuiButton(213, _RIGHT - _TURNOFFWIDTH - _MIX, _SEPARATOR
-			+ _MIX * (this.IDS_PER_PAGE + 3), _TURNOFFWIDTH, _UNIT, "Reload"));
+			+ _MIX * (this.IDS_PER_PAGE + 3), _TURNOFFWIDTH, _UNIT, "Load"));
 		
 		this.controlList.add(new GuiButton(212, _RIGHT - _TURNOFFWIDTH - _MIX, _SEPARATOR
 			+ _MIX * (this.IDS_PER_PAGE + 4), _TURNOFFWIDTH, _UNIT, "Unload"));
@@ -229,17 +235,19 @@ public class ATGuiMenu extends GuiScreen
 		}
 		else if (par1GuiButton.id == 212)
 		{
-			this.mc.displayGuiScreen(this.parentScreen);
 			this.mod.getPackManager().deactivate();
 		}
 		else if (par1GuiButton.id == 213)
 		{
-			this.mc.displayGuiScreen(this.parentScreen);
 			File[] files =
 				{
 					new File(Minecraft.getMinecraftDir(), "audiotori/substitute/"),
 					new File(Minecraft.getMinecraftDir(), "audiotori/pony/") };
 			this.mod.getPackManager().feedAndActivateAndSay(files);
+		}
+		else
+		{
+			this.packSlotContainer.actionPerformed(par1GuiButton);
 		}
 	}
 	
@@ -269,10 +277,21 @@ public class ATGuiMenu extends GuiScreen
 	@Override
 	public void drawScreen(int par1, int par2, float par3)
 	{
-		drawDefaultBackground();
+		this.packSlotContainer.drawScreen(par1, par2, par3);
 		drawCenteredString(this.fontRenderer, this.screenTitle, this.width / 2, 8, 0xffffff);
 		
 		super.drawScreen(par1, par2, par3);
+		
+	}
+	
+	public int getSelectedSlot()
+	{
+		return this.selectedSlot;
+	}
+	
+	public void setSelected(int elementId)
+	{
+		this.selectedSlot = elementId;
 		
 	}
 	
