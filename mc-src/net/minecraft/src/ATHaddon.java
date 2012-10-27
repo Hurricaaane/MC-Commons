@@ -1,11 +1,12 @@
 package net.minecraft.src;
 
+import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.minecraft.client.Minecraft;
 import eu.ha3.mc.convenience.Ha3Signal;
 import eu.ha3.mc.haddon.PrivateAccessException;
 import eu.ha3.mc.haddon.SupportsTickEvents;
@@ -81,7 +82,8 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents
 			(Map<String, ArrayList>) util().getPrivateValueLiteral(
 				net.minecraft.src.SoundPool.class, this.sndPool, "b", 1);
 		
-		URI minecraftURI = manager().getMinecraft().getMinecraftDir().toURI();
+		URI minecraftURI = Minecraft.getMinecraftDir().toURI();
+		File substituteRoot = new File(Minecraft.getMinecraftDir(), "audiotori/substitute/");
 		
 		for (Entry<String, ArrayList> entry : nameToSoundPoolEntriesMapping.entrySet())
 		{
@@ -89,7 +91,7 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents
 			ArrayList variousSounds = entry.getValue();
 			
 			System.out.println(cuteNameWithDots);
-			for (Object object : variousSounds)
+			/*for (Object object : variousSounds)
 			{
 				SoundPoolEntry sound = (SoundPoolEntry) object;
 				try
@@ -103,7 +105,12 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents
 					
 				}
 				
+			}*/
+			for (int i = 0; i < variousSounds.size(); i++)
+			{
+				variousSounds.set(i, new ATSoundSubstitute((SoundPoolEntry) variousSounds.get(i), substituteRoot));
 			}
+			
 			System.out.println("");
 			
 		}
@@ -112,20 +119,16 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents
 	@Override
 	public void onTick()
 	{
-		if (!this.recursed)
+		try
 		{
-			try
-			{
-				recurse();
-			}
-			catch (PrivateAccessException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			manager().hookTickEvents(false);
-			
+			recurse();
 		}
+		catch (PrivateAccessException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		manager().hookTickEvents(false);
 		
 	}
 	
