@@ -64,6 +64,10 @@ public class ATGuiSlotPack extends GuiSlot
 				+ pack.getPrettyName(), x + 20, y, 0xFFFFFF);
 			this.menu.drawString(this.menu.fontRenderer, pack.getSysName() + "/", x + 20, y + 10, 0x404040);
 			
+			this.menu.drawString(
+				this.menu.fontRenderer, pack.getMadeForVersion(),
+				x + 205 - this.menu.fontRenderer.getStringWidth(pack.getMadeForVersion()), y + 10, 0x404040);
+			
 			String status = pack.isActive() ? "ON" : "OFF";
 			int statusColor = pack.isActive() ? 0x0080FF : 0xC00000;
 			int statusWidth = this.menu.fontRenderer.getStringWidth(status);
@@ -73,6 +77,24 @@ public class ATGuiSlotPack extends GuiSlot
 			int priorityColor = pack.isActive() ? 0xE0A040 : 0xC0C0C0;
 			int priorityWidth = this.menu.fontRenderer.getStringWidth(priority);
 			this.menu.drawString(this.menu.fontRenderer, priority, x + 16 - priorityWidth, y, priorityColor);
+			
+			if (this.mouseX >= x && this.mouseY >= y && this.mouseX <= x + 215 && this.mouseY <= y + ddd)
+			{
+				if (!pack.getDescription().equals("") || !pack.getDescription().equals(""))
+				{
+					String tip = pack.getDescription();
+					
+					if (!pack.getAuthor().equals(""))
+					{
+						tip = tip + " (" + pack.getAuthor() + ")";
+					}
+					
+					tip = tip.trim();
+					
+					this.menu.inputTip(tip);
+					
+				}
+			}
 			
 		}
 		catch (ArrayIndexOutOfBoundsException e)

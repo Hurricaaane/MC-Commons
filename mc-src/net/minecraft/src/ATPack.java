@@ -25,26 +25,30 @@ public class ATPack
 	private File directory;
 	
 	private String sysName;
+	
 	private String prettyName;
+	private String author;
+	private String url;
+	private String description;
+	private String madeForVersion;
 	
 	private boolean isActivated;
 	
 	public ATPack(File directory)
 	{
 		this.directory = directory;
-		
 		this.sysName = directory.getName();
+		
 		this.prettyName = this.sysName;
+		this.author = "";
+		this.url = "";
+		this.description = "";
+		this.madeForVersion = "";
 	}
 	
 	public String getSysName()
 	{
 		return this.sysName;
-	}
-	
-	public String getPrettyName()
-	{
-		return this.prettyName;
 	}
 	
 	public File getDirectory()
@@ -59,10 +63,19 @@ public class ATPack
 			return;
 		
 		ConfigProperty info = new ConfigProperty();
+		info.setProperty("pack.prettyname", this.sysName);
+		info.setProperty("pack.author", "");
+		info.setProperty("pack.url", "");
+		info.setProperty("pack.description", "");
+		info.setProperty("pack.madeforversion", "???");
 		info.setSource(metadata.getAbsolutePath());
 		if (info.load())
 		{
 			this.prettyName = info.getString("pack.prettyname");
+			this.author = info.getString("pack.author");
+			this.url = info.getString("pack.url");
+			this.description = info.getString("pack.description");
+			this.madeForVersion = info.getString("pack.madeforversion");
 		}
 	}
 	
@@ -77,5 +90,30 @@ public class ATPack
 			return;
 		
 		this.isActivated = active;
+	}
+	
+	public String getPrettyName()
+	{
+		return this.prettyName;
+	}
+	
+	public String getAuthor()
+	{
+		return this.author;
+	}
+	
+	public String getUrl()
+	{
+		return this.url;
+	}
+	
+	public String getDescription()
+	{
+		return this.description;
+	}
+	
+	public String getMadeForVersion()
+	{
+		return this.madeForVersion;
 	}
 }
