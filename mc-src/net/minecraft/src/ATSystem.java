@@ -153,9 +153,10 @@ public class ATSystem
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void restoreSubstitutions(SoundPool soundPool) throws PrivateAccessException
 	{
+		// nameToSoundPoolEntriesMapping
 		Map<String, ArrayList> nameToSoundPoolEntriesMapping =
 			(Map<String, ArrayList>) this.mod.util().getPrivateValueLiteral(
-				net.minecraft.src.SoundPool.class, soundPool, "b", 1);
+				net.minecraft.src.SoundPool.class, soundPool, "d", 1);
 		
 		for (Entry<String, ArrayList> entry : nameToSoundPoolEntriesMapping.entrySet())
 		{
@@ -201,9 +202,10 @@ public class ATSystem
 		Set<String> notLoadedNames = new LinkedHashSet<String>(this.substituantFiles.keySet());
 		Set<String> loadedNames = new HashSet<String>();
 		
+		// nameToSoundPoolEntriesMapping
 		Map<String, ArrayList> nameToSoundPoolEntriesMapping =
 			(Map<String, ArrayList>) this.mod.util().getPrivateValueLiteral(
-				net.minecraft.src.SoundPool.class, soundPool, "b", 1);
+				net.minecraft.src.SoundPool.class, soundPool, "d", 1);
 		
 		for (Entry<String, ArrayList> entry : nameToSoundPoolEntriesMapping.entrySet())
 		{
