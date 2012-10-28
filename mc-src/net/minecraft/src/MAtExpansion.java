@@ -76,6 +76,7 @@ public class MAtExpansion implements MAtCustomVolume
 	
 	private ConfigProperty myConfiguration;
 	private String friendlyName;
+	private boolean isBuilding;
 	
 	public MAtExpansion(String userDefinedIdentifier)
 	{
@@ -357,12 +358,18 @@ public class MAtExpansion implements MAtCustomVolume
 		if (getVolume() <= 0f)
 			return;
 		
+		if (this.isBuilding)
+			return;
+		
 		if (!this.isReady && this.hasStructure)
 		{
+			this.isBuilding = true;
+			
 			TimeStatistic stat = new TimeStatistic(Locale.ENGLISH);
 			buildKnowledge();
 			
 			MAtMod.LOGGER.info("Expansion " + getUserDefinedName() + " loaded (" + stat.getSecondsAsString(1) + "s).");
+			this.isBuilding = false;
 		}
 		
 		if (this.isReady)

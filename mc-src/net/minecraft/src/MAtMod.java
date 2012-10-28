@@ -367,7 +367,7 @@ public class MAtMod extends HaddonImpl
 		this.everythingIsReady = true;
 	}
 	
-	private synchronized boolean trySendSignalToTurnOn()
+	private boolean trySendSignalToTurnOn()
 	{
 		if (this.phase != MAtModPhase.READY)
 			return false;
