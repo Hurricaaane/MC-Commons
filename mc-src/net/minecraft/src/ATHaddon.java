@@ -47,6 +47,8 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 	
 	private boolean firstTickPassed;
 	
+	private int[] splitKeys;
+	
 	@Override
 	public void onLoad()
 	{
@@ -72,6 +74,8 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 		this.config.setProperty("debug.enabled", false);
 		this.config.setProperty("afterloadingscreen.enabled", false);
 		this.config.setProperty("packs.order", "");
+		this.config.setProperty("keybinding.enable", false);
+		this.config.setProperty("key.combo", "29,42,31"); // Remember to change it in the excaption handling
 		this.config.setProperty("update_found.enabled", true);
 		this.config.setProperty("update_found.version", ATHaddon.VERSION);
 		this.config.setProperty("update_found.display.remaining.value", 0);
@@ -91,6 +95,22 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 		}
 		
 		this.updateNotifier.loadConfig(this.config);
+		
+		try
+		{
+			String[] splitString = this.config.getString("key.combo").split(",");
+			this.splitKeys = new int[splitString.length];
+			
+			for (int i = 0; i < this.splitKeys.length; i++)
+			{
+				this.splitKeys[i] = Integer.parseInt(splitString[i]);
+			}
+		}
+		catch (Exception e)
+		{
+			log("Error while parsing key combo");
+			this.splitKeys = new int[] { 29, 42, 31 }; // Remember to change it in the config property
+		}
 		
 		if (this.config.getBoolean("debug.enabled"))
 		{
@@ -126,7 +146,10 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 			}
 		});
 		
-		manager().addKeyBinding(new KeyBinding("key.audiotori", 67), "Audiotori");
+		if (this.config.getBoolean("keybinding.enable"))
+		{
+			manager().addKeyBinding(new KeyBinding("key.audiotori", 67), "Audiotori");
+		}
 		manager().hookTickEvents(true);
 		
 	}
@@ -155,7 +178,7 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 		}
 		
 		// CTRL-SHIFT-T
-		this.key.signalState(util().areKeysDown(29, 42, 20));
+		this.key.signalState(util().areKeysDown(this.splitKeys));
 		
 		if (!this.firstTickPassed)
 		{
