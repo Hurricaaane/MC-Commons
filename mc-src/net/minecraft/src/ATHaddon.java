@@ -54,15 +54,7 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 	{
 		if (!new File(Minecraft.getMinecraftDir(), "audiotori/").exists())
 		{
-			try
-			{
-				new File(Minecraft.getMinecraftDir(), "audiotori/").createNewFile();
-			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			new File(Minecraft.getMinecraftDir(), "audiotori/").mkdirs();
 		}
 		
 		this.atPackManager = new ATPackManager(this);
