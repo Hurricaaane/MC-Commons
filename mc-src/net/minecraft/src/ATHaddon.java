@@ -67,7 +67,7 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 		this.config.setProperty("afterloadingscreen.enabled", false);
 		this.config.setProperty("packs.order", "");
 		this.config.setProperty("keybinding.enable", false);
-		this.config.setProperty("key.combo", "29,42,31"); // Remember to change it in the excaption handling
+		this.config.setProperty("key.combo", "29,42,23"); // Remember to change it in the excaption handling
 		this.config.setProperty("update_found.enabled", true);
 		this.config.setProperty("update_found.version", ATHaddon.VERSION);
 		this.config.setProperty("update_found.display.remaining.value", 0);
@@ -101,7 +101,7 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 		catch (Exception e)
 		{
 			log("Error while parsing key combo");
-			this.splitKeys = new int[] { 29, 42, 31 }; // Remember to change it in the config property
+			this.splitKeys = new int[] { 29, 42, 23 }; // Remember to change it in the config property
 		}
 		
 		if (this.config.getBoolean("debug.enabled"))
