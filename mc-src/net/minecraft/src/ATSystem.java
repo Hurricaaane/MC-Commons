@@ -96,10 +96,23 @@ public class ATSystem
 	{
 		try
 		{
-			Minecraft mc = this.mod.manager().getMinecraft();
-			restoreSubstitutions(mc.sndManager.soundPoolSounds);
-			restoreSubstitutions(mc.sndManager.soundPoolStreaming);
-			restoreSubstitutions(mc.sndManager.soundPoolMusic);
+			// soundPoolSounds
+			// soundPoolStreaming
+			// soundPoolMusic
+			// XXX Get rid of private value getting on runtime
+			SoundPool soundPoolSounds =
+				(SoundPool) this.mod.util().getPrivateValueLiteral(
+					net.minecraft.src.SoundManager.class, this.mod.manager().getMinecraft().sndManager, "b", 1);
+			SoundPool soundPoolStreaming =
+				(SoundPool) this.mod.util().getPrivateValueLiteral(
+					net.minecraft.src.SoundManager.class, this.mod.manager().getMinecraft().sndManager, "c", 2);
+			SoundPool soundPoolMusic =
+				(SoundPool) this.mod.util().getPrivateValueLiteral(
+					net.minecraft.src.SoundManager.class, this.mod.manager().getMinecraft().sndManager, "d", 3);
+			
+			restoreSubstitutions(soundPoolSounds);
+			restoreSubstitutions(soundPoolStreaming);
+			restoreSubstitutions(soundPoolMusic);
 		}
 		catch (PrivateAccessException e)
 		{
@@ -112,14 +125,23 @@ public class ATSystem
 		log("Performing all substitutions: BEGIN");
 		try
 		{
-			Minecraft mc = this.mod.manager().getMinecraft();
 			String[] musicDirectories = { "music/", "newmusic/" };
 			
 			clearSubstitutions();
 			
-			performSubstitutions(mc.sndManager.soundPoolSounds, "sound3/");
-			performSubstitutions(mc.sndManager.soundPoolStreaming, "streaming/");
-			performSubstitutions(mc.sndManager.soundPoolMusic, musicDirectories);
+			SoundPool soundPoolSounds =
+				(SoundPool) this.mod.util().getPrivateValueLiteral(
+					net.minecraft.src.SoundManager.class, this.mod.manager().getMinecraft().sndManager, "b", 1);
+			SoundPool soundPoolStreaming =
+				(SoundPool) this.mod.util().getPrivateValueLiteral(
+					net.minecraft.src.SoundManager.class, this.mod.manager().getMinecraft().sndManager, "c", 2);
+			SoundPool soundPoolMusic =
+				(SoundPool) this.mod.util().getPrivateValueLiteral(
+					net.minecraft.src.SoundManager.class, this.mod.manager().getMinecraft().sndManager, "d", 3);
+			
+			performSubstitutions(soundPoolSounds, "sound3/");
+			performSubstitutions(soundPoolStreaming, "streaming/");
+			performSubstitutions(soundPoolMusic, musicDirectories);
 		}
 		catch (PrivateAccessException e)
 		{
