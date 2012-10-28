@@ -35,6 +35,9 @@ public class ATGuiMenu extends GuiScreen
 	
 	private int selectedSlot;
 	private String tip;
+	private GuiButton packEnable;
+	private GuiButton packUp;
+	private GuiButton packDown;
 	
 	public ATGuiMenu(GuiScreen par1GuiScreen, ATHaddon haddon)
 	{
@@ -44,6 +47,12 @@ public class ATGuiMenu extends GuiScreen
 		this.buttonId = -1;
 		this.parentScreen = par1GuiScreen;
 		this.mod = haddon;
+		
+		// Ensure the Pack Manager is cached for things to display on
+		if (!this.mod.getPackManager().isCached())
+		{
+			this.mod.getPackManager().cacheAllPacks();
+		}
 	}
 	
 	/**
@@ -63,27 +72,41 @@ public class ATGuiMenu extends GuiScreen
 		
 		final int _LEFT = this.width / 2 - _WIDTH / 2;
 		final int _RIGHT = this.width / 2 + _WIDTH / 2;
-		
-		//final int _ASPLIT = ;
-		//final int _AWID = _WIDTH / _ASPLIT - _GAP * (_ASPLIT - 1) / 2;
+		final int _ADD = 0;
 		
 		final int _SEPARATOR = 4;
 		final int _HEIGHT = this.height;
 		
 		final int _TURNOFFWIDTH = _WIDTH / 5;
+		final int _UPDOWNWIDTH = _WIDTH / 10;
 		
-		this.controlList.add(new GuiButton(210, _LEFT + _MIX, _HEIGHT - _SEPARATOR - _MIX * 2, (_WIDTH
-			- _MIX * 2 - _GAP * 2 - _TURNOFFWIDTH) / 2, _UNIT, this.mod.getConfig().getBoolean("start.enabled")
-			? "Start Enabled: ON" : "Start Enabled: OFF"));
+		this.packEnable =
+			new GuiButton(220, _LEFT + _MIX + _ADD, _HEIGHT - _SEPARATOR - _MIX * 2, _TURNOFFWIDTH, _UNIT, "Enable");
+		this.packUp =
+			new GuiButton(
+				221, _LEFT + _ADD + _MIX + _TURNOFFWIDTH + _GAP, _HEIGHT - _SEPARATOR - _MIX * 2, _UPDOWNWIDTH, _UNIT,
+				"Up");
+		this.packDown =
+			new GuiButton(222, _LEFT + _ADD + _MIX + _TURNOFFWIDTH + _GAP + (_GAP + _UPDOWNWIDTH) * 1, _HEIGHT
+				- _SEPARATOR - _MIX * 2, _UPDOWNWIDTH, _UNIT, "Down");
+		
+		this.controlList.add(this.packEnable);
+		this.controlList.add(this.packUp);
+		this.controlList.add(this.packDown);
+		
+		this.packEnable.enabled = false;
+		this.packUp.enabled = false;
+		this.packDown.enabled = false;
+		
+		this.controlList.add(new GuiButton(
+			210, _RIGHT - _TURNOFFWIDTH - _MIX, _HEIGHT - _SEPARATOR - _MIX * 2, _TURNOFFWIDTH, _UNIT, this.mod
+				.getConfig().getBoolean("start.enabled") ? "Start: ON" : "Start: OFF"));
 		
 		this.controlList.add(new GuiButton(200, _LEFT + _MIX, _HEIGHT - _SEPARATOR - _MIX * 1, _WIDTH
 			- _MIX * 2 - _GAP - _TURNOFFWIDTH, _UNIT, "Done"));
 		
 		this.controlList.add(new GuiButton(
-			213, _RIGHT - _TURNOFFWIDTH - _MIX, _HEIGHT - _SEPARATOR - _MIX * 2, _TURNOFFWIDTH, _UNIT, "Load"));
-		
-		this.controlList.add(new GuiButton(
-			212, _RIGHT - _TURNOFFWIDTH - _MIX, _HEIGHT - _SEPARATOR - _MIX * 1, _TURNOFFWIDTH, _UNIT, "Unload"));
+			212, _RIGHT - _TURNOFFWIDTH - _MIX, _HEIGHT - _SEPARATOR - _MIX * 1, _TURNOFFWIDTH, _UNIT, "ON/OFF"));
 		
 		//this.screenTitle = stringtranslate.translateKey("controls.title");
 	}
@@ -93,31 +116,47 @@ public class ATGuiMenu extends GuiScreen
 	 * ActionListener.actionPerformed(ActionEvent e).
 	 */
 	@Override
-	protected void actionPerformed(GuiButton par1GuiButton)
+	protected void actionPerformed(GuiButton button)
 	{
-		if (par1GuiButton.id == 200)
+		if (button.id == 200)
 		{
 			// This triggers onGuiClosed
 			this.mc.displayGuiScreen(this.parentScreen);
 		}
-		else if (par1GuiButton.id == 210)
+		else if (button.id == 210)
 		{
 			boolean newEnabledState = !this.mod.getConfig().getBoolean("start.enabled");
 			this.mod.getConfig().setProperty("start.enabled", newEnabledState);
-			par1GuiButton.displayString = newEnabledState ? "Start Enabled: ON" : "Start Enabled: OFF";
+			button.displayString = newEnabledState ? "Start: ON" : "Start: OFF";
 			this.mod.saveConfig();
 		}
-		else if (par1GuiButton.id == 212)
+		else if (button.id == 220)
 		{
-			this.mod.getPackManager().deactivate(false);
+			toggleSelectedPack();
 		}
-		else if (par1GuiButton.id == 213)
+		else if (button.id == 221)
 		{
-			this.mod.getPackManager().activate(false);
+			moveSelectedPack(true);
+		}
+		else if (button.id == 222)
+		{
+			moveSelectedPack(false);
+		}
+		else if (button.id == 212)
+		{
+			boolean isActivated = this.mod.getPackManager().isActivated();
+			if (!isActivated)
+			{
+				this.mod.getPackManager().cacheAndActivate(false);
+			}
+			else
+			{
+				this.mod.getPackManager().deactivate(false);
+			}
 		}
 		else
 		{
-			this.packSlotContainer.actionPerformed(par1GuiButton);
+			this.packSlotContainer.actionPerformed(button);
 		}
 	}
 	
@@ -147,9 +186,25 @@ public class ATGuiMenu extends GuiScreen
 	@Override
 	public void drawScreen(int par1, int par2, float par3)
 	{
+		boolean isActivated = this.mod.getPackManager().isActivated();
+		int titleWidth = this.fontRenderer.getStringWidth(this.screenTitle);
+		
 		this.tip = null;
 		this.packSlotContainer.drawScreen(par1, par2, par3);
-		drawCenteredString(this.fontRenderer, this.screenTitle, this.width / 2, 8, 0xffffff);
+		drawCenteredString(this.fontRenderer, this.screenTitle, this.width / 2 - titleWidth / 4, 8, isActivated
+			? 0xffffff : 0xD0D0D0);
+		
+		if (this.mod.canFunction())
+		{
+			this.fontRenderer.drawStringWithShadow(
+				isActivated ? "ON" : "OFF", this.width / 2 + titleWidth / 4 + 10, 8, isActivated ? 0x0080FF : 0xC00000);
+		}
+		else
+		{
+			this.fontRenderer.drawStringWithShadow(
+				"Minecraft sound is OFF", this.width / 2 + titleWidth / 4 + 10, 8, 0xFFFF00);
+		}
+		
 		drawCenteredString(this.fontRenderer, "Top layer (overrides)", this.width / 2, 20, 0xA0A0A0);
 		drawCenteredString(this.fontRenderer, "Bottom layer (compliants)", this.width / 2, this.height - 60, 0xA0A0A0);
 		
@@ -193,7 +248,88 @@ public class ATGuiMenu extends GuiScreen
 	public void setSelected(int elementId)
 	{
 		this.selectedSlot = elementId;
+		updateUpDownButtons();
+	}
+	
+	public void moveSelectedPack(boolean prioritize)
+	{
+		if (this.selectedSlot < 0 || this.selectedSlot >= getSize())
+			return;
 		
+		if (prioritize && this.selectedSlot >= 1)
+		{
+			this.mod.getPackManager().swapDuetAt(this.selectedSlot - 1);
+			setSelected(this.selectedSlot - 1);
+			updateUpDownButtons();
+		}
+		else if (!prioritize && this.selectedSlot + 1 < getSize())
+		{
+			this.mod.getPackManager().swapDuetAt(this.selectedSlot);
+			setSelected(this.selectedSlot + 1);
+			updateUpDownButtons();
+		}
+		
+	}
+	
+	public void toggleSelectedPack()
+	{
+		if (this.selectedSlot < 0 || this.selectedSlot >= getSize())
+			return;
+		
+		ATPack pack = getPack(this.selectedSlot);
+		this.mod.getPackManager().changePackStateAndSave(pack.getSysName(), !pack.isActive());
+		updateUpDownButtons();
+		
+	}
+	
+	public void updateUpDownButtons()
+	{
+		if (this.selectedSlot < 0 || this.selectedSlot >= getSize())
+		{
+			this.packEnable.enabled = false;
+			this.packUp.enabled = false;
+			this.packDown.enabled = false;
+			this.packEnable.displayString = "Enable";
+		}
+		else
+		{
+			this.packEnable.enabled = true;
+			this.packUp.enabled = true;
+			this.packDown.enabled = true;
+			
+			this.packEnable.displayString = getPack(this.selectedSlot).isActive() ? "Disable" : "Enable";
+			
+			if (this.selectedSlot == 0)
+			{
+				this.packUp.enabled = false;
+			}
+			if (this.selectedSlot == getSize() - 1)
+			{
+				this.packDown.enabled = false;
+			}
+		}
+		
+	}
+	
+	@Override
+	protected void keyTyped(char par1, int par2)
+	{
+		if (isShiftKeyDown() && par2 == 200)
+		{
+			moveSelectedPack(true);
+		}
+		else if (isShiftKeyDown() && par2 == 208)
+		{
+			moveSelectedPack(false);
+		}
+		else if (par1 == ' ')
+		{
+			toggleSelectedPack();
+		}
+		else if (par2 == 1)
+		{
+			this.mc.displayGuiScreen(this.parentScreen);
+		}
 	}
 	
 	public int getSize()

@@ -27,9 +27,7 @@ public class ATPack
 	private String sysName;
 	private String prettyName;
 	
-	private int totalSounds;
-	private int effectiveSounds;
-	private int orphanSounds;
+	private boolean isActivated;
 	
 	public ATPack(File directory)
 	{
@@ -66,11 +64,18 @@ public class ATPack
 		{
 			this.prettyName = info.getString("pack.prettyname");
 		}
-		
 	}
 	
 	public boolean isActive()
 	{
-		return true;
+		return this.isActivated;
+	}
+	
+	public void setActive(boolean active)
+	{
+		if (this.isActivated == active)
+			return;
+		
+		this.isActivated = active;
 	}
 }

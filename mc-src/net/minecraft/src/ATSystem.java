@@ -37,6 +37,8 @@ public class ATSystem
 	
 	private boolean replaceMusWithOggFiles;
 	
+	private boolean debugging;
+	
 	public ATSystem(HaddonImpl mod)
 	{
 		this.mod = mod;
@@ -107,6 +109,7 @@ public class ATSystem
 	
 	private void performSubstitutions()
 	{
+		log("Performing all substitutions: BEGIN");
 		try
 		{
 			Minecraft mc = this.mod.manager().getMinecraft();
@@ -122,7 +125,7 @@ public class ATSystem
 		{
 			e.printStackTrace();
 		}
-		
+		log("Performing all substitutions: END");
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -303,7 +306,16 @@ public class ATSystem
 	
 	public void debug(String contents)
 	{
-		System.out.println("(ATSystem) " + contents);
+		if (this.debugging)
+		{
+			System.out.println("(ATSystem) " + contents);
+		}
+		
+	}
+	
+	public void setDebugging(boolean enabled)
+	{
+		this.debugging = enabled;
 		
 	}
 }

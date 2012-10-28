@@ -7,6 +7,8 @@ import net.minecraft.client.Minecraft;
 import eu.ha3.easy.EdgeModel;
 import eu.ha3.easy.EdgeTrigger;
 import eu.ha3.mc.convenience.Ha3Signal;
+import eu.ha3.mc.haddon.SupportsEverythingReady;
+import eu.ha3.mc.haddon.SupportsKeyEvents;
 import eu.ha3.mc.haddon.SupportsTickEvents;
 import eu.ha3.util.property.simple.ConfigProperty;
 
@@ -26,8 +28,11 @@ import eu.ha3.util.property.simple.ConfigProperty;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class ATHaddon extends HaddonImpl implements SupportsTickEvents
+public class ATHaddon extends HaddonImpl implements SupportsTickEvents, SupportsEverythingReady, SupportsKeyEvents
 {
+	// Remember to change the thing in mod_Audiotori
+	public static final int VERSION = 0;
+	
 	private Ha3SoundCommunicator sndComms;
 	private ATPackManager atPackManager;
 	
@@ -36,6 +41,11 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents
 	
 	private boolean canFunction;
 	private boolean hasActivated;
+	private boolean debugging;
+	
+	private ATUpdateNotifier updateNotifier;
+	
+	private boolean firstTickPassed;
 	
 	@Override
 	public void onLoad()
@@ -54,10 +64,18 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents
 		}
 		
 		this.atPackManager = new ATPackManager(this);
+		this.updateNotifier = new ATUpdateNotifier(this);
 		
 		// Create default configuration
 		this.config = new ConfigProperty();
 		this.config.setProperty("start.enabled", true);
+		this.config.setProperty("debug.enabled", false);
+		this.config.setProperty("afterloadingscreen.enabled", false);
+		this.config.setProperty("packs.order", "");
+		this.config.setProperty("update_found.enabled", true);
+		this.config.setProperty("update_found.version", ATHaddon.VERSION);
+		this.config.setProperty("update_found.display.remaining.value", 0);
+		this.config.setProperty("update_found.display.count.value", 3);
 		this.config.commit();
 		
 		// Load configuration from source
@@ -70,6 +88,14 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents
 		{
 			e.printStackTrace();
 			throw new RuntimeException("Error caused config not to work: " + e.getMessage());
+		}
+		
+		this.updateNotifier.loadConfig(this.config);
+		
+		if (this.config.getBoolean("debug.enabled"))
+		{
+			this.debugging = true;
+			this.atPackManager.getSystem().setDebugging(true);
 		}
 		
 		this.sndComms = new Ha3SoundCommunicator(this, "AT_");
@@ -100,11 +126,12 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents
 			}
 		});
 		
+		manager().addKeyBinding(new KeyBinding("key.audiotori", 67), "Audiotori");
 		manager().hookTickEvents(true);
 		
 	}
 	
-	protected void openGUI()
+	public void openGUI()
 	{
 		manager().getMinecraft().displayGuiScreen(new ATGuiMenu((GuiScreen) util().getCurrentScreen(), this));
 	}
@@ -119,7 +146,7 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents
 	{
 		if (!this.hasActivated && this.config.getBoolean("start.enabled") && this.canFunction)
 		{
-			this.atPackManager.activate(true);
+			this.atPackManager.cacheAndActivate(true);
 			this.hasActivated = true;
 		}
 		else if (!this.config.getBoolean("start.enabled") && this.canFunction)
@@ -130,6 +157,12 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents
 		// CTRL-SHIFT-T
 		this.key.signalState(util().areKeysDown(29, 42, 20));
 		
+		if (!this.firstTickPassed)
+		{
+			this.firstTickPassed = true;
+			this.updateNotifier.attempt();
+			
+		}
 	}
 	
 	public void log(String contents)
@@ -140,7 +173,10 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents
 	
 	public void debug(String contents)
 	{
-		System.out.println("(Audiotori-debug) " + contents);
+		if (this.debugging)
+		{
+			System.out.println("(Audiotori-debug) " + contents);
+		}
 		
 	}
 	
@@ -188,6 +224,31 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents
 		
 		util().printChat(dest);
 		
+	}
+	
+	public boolean canFunction()
+	{
+		return this.canFunction;
+	}
+	
+	@Override
+	public void onEverythingReady()
+	{
+		if (this.config.getBoolean("afterloadingscreen.enabled")
+			&& this.config.getBoolean("start.enabled") && this.canFunction)
+		{
+			this.atPackManager.cacheAndActivate(true);
+		}
+		
+	}
+	
+	@Override
+	public void onKey(KeyBinding event)
+	{
+		if (!(util().getCurrentScreen() instanceof ATGuiMenu))
+		{
+			openGUI();
+		}
 	}
 	
 }
