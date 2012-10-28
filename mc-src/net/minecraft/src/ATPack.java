@@ -49,6 +49,11 @@ public class ATPack
 		return this.prettyName;
 	}
 	
+	public File getDirectory()
+	{
+		return this.directory;
+	}
+	
 	public void fetchInfo()
 	{
 		File metadata = new File(this.directory, "info.cfg");

@@ -45,7 +45,7 @@ public class ATPackManager
 		this.atDirectory = new File(Minecraft.getMinecraftDir(), "audiotori/");
 	}
 	
-	public void applyAllPacks()
+	public void cacheAllPacks()
 	{
 		this.packs.clear();
 		this.packOrder.clear();
@@ -67,28 +67,63 @@ public class ATPackManager
 		
 	}
 	
-	public void feedAndActivateAndSay(File[] files)
+	public void applyAllPacks(boolean silent)
+	{
+		List<File> filesAsList = new ArrayList<File>();
+		
+		for (String packName : this.packOrder)
+		{
+			ATPack pack = this.packs.get(packName);
+			if (pack.isActive())
+			{
+				filesAsList.add(pack.getDirectory());
+			}
+		}
+		
+		File[] files = filesAsList.toArray(new File[0]);
+		
+		if (silent)
+		{
+			feedAndActivate(files);
+		}
+		else
+		{
+			feedAndActivateAndSay(files);
+		}
+		
+	}
+	
+	private void feedAndActivateAndSay(File[] files)
 	{
 		StringBuilder order = new StringBuilder();
 		for (File file : files)
 		{
 			order.append(file.getName()).append(", ");
 		}
-		
 		this.mod.printChat(
 			Ha3Utility.COLOR_BRIGHTGREEN, "Activating in this order: ", Ha3Utility.COLOR_WHITE,
 			order.substring(0, order.length() - 2));
+		
 		feedAndActivate(files);
 	}
 	
-	public void feedAndActivate(File[] files)
+	private void feedAndActivate(File[] files)
 	{
 		this.atSystem.applySubstituantLocations(files, true);
 	}
 	
-	public void deactivate()
+	public void activate(boolean silent)
 	{
-		this.mod.printChat(Ha3Utility.COLOR_YELLOW + "Deactivating...");
+		cacheAllPacks();
+		applyAllPacks(silent);
+	}
+	
+	public void deactivate(boolean silent)
+	{
+		if (!silent)
+		{
+			this.mod.printChat(Ha3Utility.COLOR_YELLOW + "Deactivating...");
+		}
 		this.atSystem.clearSubstitutions();
 	}
 	

@@ -1,9 +1,5 @@
 package net.minecraft.src;
 
-import java.io.File;
-
-import net.minecraft.client.Minecraft;
-
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
                     Version 2, December 2004 
@@ -59,8 +55,6 @@ public class ATGuiMenu extends GuiScreen
 	{
 		this.packSlotContainer = new ATGuiSlotPack(this);
 		
-		StringTranslate stringtranslate = StringTranslate.getInstance();
-		
 		final int _GAP = 2;
 		final int _UNIT = 20;
 		final int _WIDTH = 155 * 2;
@@ -70,119 +64,17 @@ public class ATGuiMenu extends GuiScreen
 		final int _LEFT = this.width / 2 - _WIDTH / 2;
 		final int _RIGHT = this.width / 2 + _WIDTH / 2;
 		
-		/*Map<String, MAtExpansion> expansions = this.mod.getExpansionManager().getExpansions();
-		int id = 0;
-		
-
-		List<String> sortedNames = new ArrayList<String>(expansions.keySet());
-		Collections.sort(sortedNames);
-		
-		for (int expansionIndex = this.pageFromZero * this.IDS_PER_PAGE; expansionIndex < this.pageFromZero
-			* this.IDS_PER_PAGE + this.IDS_PER_PAGE
-			&& expansionIndex < sortedNames.size(); expansionIndex++)
-		{
-			final String uniqueIdentifier = sortedNames.get(expansionIndex);
-			final MAtExpansion expansion = expansions.get(uniqueIdentifier);
-			this.expansionList.add(expansion);
-			
-			HGuiSliderControl sliderControl =
-				new HGuiSliderControl(
-					id, _LEFT + _MIX, _MIX * (id + 1), _WIDTH - _MIX * 2, _UNIT, "", expansion.getVolume() * 0.5f);
-			sliderControl.setListener(new HSliderListener() {
-				@Override
-				public void sliderValueChanged(HGuiSliderControl slider, float value)
-				{
-					expansion.setVolume(value * 2);
-					if (value != 0f && !expansion.isRunning())
-					{
-						expansion.turnOn();
-					}
-					slider.updateDisplayString();
-					
-				}
-				
-				@Override
-				public void sliderPressed(HGuiSliderControl hGuiSliderControl)
-				{
-				}
-				
-				@Override
-				public void sliderReleased(HGuiSliderControl hGuiSliderControl)
-				{
-					if (MAtGuiMenu.this.mod.getConfig().getBoolean("sound.autopreview"))
-					{
-						expansion.playSample();
-					}
-				}
-			});
-			
-			sliderControl.setDisplayStringProvider(new HDisplayStringProvider() {
-				@Override
-				public String provideDisplayString()
-				{
-					String display = expansion.getFriendlyName() + ": ";
-					if (expansion.getVolume() == 0f)
-					{
-						if (expansion.isRunning())
-						{
-							display = display + "Will be disabled";
-						}
-						else
-						{
-							display = display + "Disabled";
-						}
-					}
-					else
-					{
-						display = display + (int) Math.floor(expansion.getVolume() * 100) + "%";
-					}
-					
-					return display;
-				}
-			});
-			sliderControl.updateDisplayString();
-			
-			this.controlList.add(sliderControl);
-			
-			this.controlList.add(new GuiButton(400 + id - 1, _RIGHT - _UNIT, _MIX * (id + 1), _UNIT, _UNIT, "?"));
-			
-			id++;
-			
-		}
-		
-		this.controlList.add(new GuiButton(220, _RIGHT - _UNIT, _MIX * (this.IDS_PER_PAGE + 2), _UNIT, _UNIT, this.mod
-			.getConfig().getBoolean("sound.autopreview") ? "^o^" : "^_^"));
-		
-		final int _PREVNEWTWIDTH = _WIDTH / 3;
-		
-		if (this.pageFromZero != 0)
-		{
-			this.controlList.add(new GuiButton(
-				201, _LEFT + _MIX, _MIX * (this.IDS_PER_PAGE + 2), _PREVNEWTWIDTH, _UNIT, stringtranslate
-					.translateKey("Previous")));
-		}
-		if (this.pageFromZero * this.IDS_PER_PAGE + this.IDS_PER_PAGE < sortedNames.size())
-		{
-			this.controlList.add(new GuiButton(
-				202, _RIGHT - _MIX - _PREVNEWTWIDTH, _MIX * (this.IDS_PER_PAGE + 2), _PREVNEWTWIDTH, _UNIT,
-				stringtranslate.translateKey("Next")));
-		}*/
-		
-		final int _ASPLIT = 2;
-		final int _AWID = _WIDTH / _ASPLIT - _GAP * (_ASPLIT - 1) / 2;
+		//final int _ASPLIT = ;
+		//final int _AWID = _WIDTH / _ASPLIT - _GAP * (_ASPLIT - 1) / 2;
 		
 		final int _SEPARATOR = 4;
 		final int _HEIGHT = this.height;
 		
-		this.controlList.add(new GuiButton(210, _LEFT, _HEIGHT - _SEPARATOR - _MIX * 2, _AWID, _UNIT, this.mod
-			.getConfig().getBoolean("start.enabled") ? "Start Enabled: ON" : "Start Enabled: OFF"));
-		
-		/*this.controlList.add(new GuiButton(
-			211, _LEFT + _AWID + _GAP, _SEPARATOR + _MIX * (this.IDS_PER_PAGE + 3), _AWID, _UNIT, this.mod
-				.getConfig().getBoolean("reversed.controls") ? "Menu: Hold Down Key" : "Menu: Press Key"));
-		*/
-		
 		final int _TURNOFFWIDTH = _WIDTH / 5;
+		
+		this.controlList.add(new GuiButton(210, _LEFT + _MIX, _HEIGHT - _SEPARATOR - _MIX * 2, (_WIDTH
+			- _MIX * 2 - _GAP * 2 - _TURNOFFWIDTH) / 2, _UNIT, this.mod.getConfig().getBoolean("start.enabled")
+			? "Start Enabled: ON" : "Start Enabled: OFF"));
 		
 		this.controlList.add(new GuiButton(200, _LEFT + _MIX, _HEIGHT - _SEPARATOR - _MIX * 1, _WIDTH
 			- _MIX * 2 - _GAP - _TURNOFFWIDTH, _UNIT, "Done"));
@@ -217,15 +109,11 @@ public class ATGuiMenu extends GuiScreen
 		}
 		else if (par1GuiButton.id == 212)
 		{
-			this.mod.getPackManager().deactivate();
+			this.mod.getPackManager().deactivate(false);
 		}
 		else if (par1GuiButton.id == 213)
 		{
-			File[] files =
-				{
-					new File(Minecraft.getMinecraftDir(), "audiotori/substitute/"),
-					new File(Minecraft.getMinecraftDir(), "audiotori/pony/") };
-			this.mod.getPackManager().feedAndActivateAndSay(files);
+			this.mod.getPackManager().activate(false);
 		}
 		else
 		{

@@ -61,28 +61,19 @@ public class ATGuiSlotPack extends GuiSlot
 			ATPack pack = this.menu.getPack(id);
 			
 			this.menu.drawString(this.menu.fontRenderer, (pack.getPrettyName() == pack.getSysName() ? "\u00A7o" : "")
-				+ pack.getPrettyName(), x + 1, y, 0xFFFFFF);
-			this.menu.drawString(this.menu.fontRenderer, pack.getSysName() + "/", x + 1, y + 10, 0x404040);
+				+ pack.getPrettyName(), x + 20, y, 0xFFFFFF);
+			this.menu.drawString(this.menu.fontRenderer, pack.getSysName() + "/", x + 20, y + 10, 0x404040);
 			
 			String status = pack.isActive() ? "ON" : "OFF";
 			int statusColor = pack.isActive() ? 0x0080FF : 0xC00000;
 			int statusWidth = this.menu.fontRenderer.getStringWidth(status);
-			this.menu.drawString(this.menu.fontRenderer, status, x + 215 - statusWidth, y, statusColor);
+			this.menu.drawString(this.menu.fontRenderer, status, x + 205 - statusWidth, y, statusColor);
 			
-			/*if (getSize() > 1)
-			{
-				if (this.mouseX >= x && this.mouseY >= y && this.mouseX <= x + 215 && this.mouseY <= y + ddd)
-				{
-					if (id == 0)
-					{
-						this.menu.inputTip("Top layer: May override sounds from other packs.");
-					}
-					else if (id == getSize() - 1)
-					{
-						this.menu.inputTip("Bottom layer: Layers above may override this sound pack.");
-					}
-				}
-			}*/
+			String priority = id + 1 + ".";
+			int priorityColor = pack.isActive() ? 0xE0A040 : 0xC0C0C0;
+			int priorityWidth = this.menu.fontRenderer.getStringWidth(priority);
+			this.menu.drawString(this.menu.fontRenderer, priority, x + 16 - priorityWidth, y, priorityColor);
+			
 		}
 		catch (ArrayIndexOutOfBoundsException e)
 		{

@@ -91,7 +91,6 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents
 			@Override
 			public void onTrueEdge()
 			{
-				ATHaddon.this.atPackManager.applyAllPacks();
 				openGUI();
 			}
 			
@@ -120,11 +119,11 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents
 	{
 		if (!this.hasActivated && this.config.getBoolean("start.enabled") && this.canFunction)
 		{
-			File[] files =
-				{
-					new File(Minecraft.getMinecraftDir(), "audiotori/substitute/"),
-					new File(Minecraft.getMinecraftDir(), "audiotori/pony/") };
-			this.atPackManager.feedAndActivate(files);
+			this.atPackManager.activate(true);
+			this.hasActivated = true;
+		}
+		else if (!this.config.getBoolean("start.enabled") && this.canFunction)
+		{
 			this.hasActivated = true;
 		}
 		
