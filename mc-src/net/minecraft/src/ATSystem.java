@@ -260,6 +260,7 @@ public class ATSystem
 		}
 		
 		// Install orphan sounds
+		int orphanCount = 0;
 		Minecraft mc = this.mod.manager().getMinecraft();
 		for (String name : notLoadedNames)
 		{
@@ -269,6 +270,7 @@ public class ATSystem
 				{
 					debug("Installing orphan resource " + name);
 					mc.installResource(name, this.substituantFiles.get(name));
+					orphanCount++;
 				}
 			}
 			
@@ -294,7 +296,8 @@ public class ATSystem
 			
 		}
 		
-		log("Performed " + loadedNames.size() + " substitutions.");
+		log("Performed " + loadedNames.size() + " substitutions (" + subLocations[0] + ").");
+		log("Performed " + orphanCount + " installations (" + subLocations[0] + ").");
 		
 	}
 	
