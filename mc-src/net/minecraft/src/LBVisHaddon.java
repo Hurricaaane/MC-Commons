@@ -90,12 +90,12 @@ public class LBVisHaddon extends HaddonImpl implements SupportsTickEvents, Suppo
 	
 	private void makePatterns()
 	{
-		this.patternStart = Pattern.compile("^(?:§.)?Block changes?");
-		this.patternChange = Pattern.compile("^(?:§.)?(\\d+) changes? found\\.");
-		this.patternPage = Pattern.compile("^(?:§.)?Page (\\d+)/(\\d+)");
+		this.patternStart = Pattern.compile("^(?:\u00A7.)?Block changes?");
+		this.patternChange = Pattern.compile("^(?:\u00A7.)?(\\d+) changes? found\\.");
+		this.patternPage = Pattern.compile("^(?:\u00A7.)?Page (\\d+)/(\\d+)");
 		this.patternLogLine =
 			Pattern
-				.compile("^(?:§.)?\\((\\d+)\\) (\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}) ([a-zA-Z0-9_]+) (.*?) at (-?[0-9]+):(-?[0-9]+):(-?[0-9]+)");
+				.compile("^(?:\u00A7.)?\\((\\d+)\\) (\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}) ([a-zA-Z0-9_]+) (.*?) at (-?[0-9]+):(-?[0-9]+):(-?[0-9]+)");
 		
 	}
 	
