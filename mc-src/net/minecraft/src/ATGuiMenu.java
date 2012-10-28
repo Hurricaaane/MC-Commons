@@ -222,7 +222,7 @@ public class ATGuiMenu extends GuiScreen
 		{
 			int var5 = par3 - 12;
 			int var6 = this.fontRenderer.getStringWidth(tipContents);
-			int var4 = par2 - var6 / 2;
+			int var4 = par2 /*- var6 / 2*/- 4;
 			
 			int computedX = var4;
 			int computedWidth = var6 + 3;
