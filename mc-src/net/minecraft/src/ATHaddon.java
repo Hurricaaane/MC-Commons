@@ -66,7 +66,7 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 		this.config.setProperty("debug.enabled", false);
 		this.config.setProperty("afterloadingscreen.enabled", false);
 		this.config.setProperty("packs.order", "");
-		this.config.setProperty("keybinding.enable", false);
+		this.config.setProperty("keybinding.enable", true);
 		this.config.setProperty("key.combo", "29,42,23"); // Remember to change it in the excaption handling
 		this.config.setProperty("update_found.enabled", true);
 		this.config.setProperty("update_found.version", ATHaddon.VERSION);
