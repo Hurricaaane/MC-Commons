@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -107,8 +108,43 @@ public class DebuggingHa3Haddon extends HaddonImpl
 		}
 		else
 		{
-			this.toggle = !this.toggle;
+			try
+			{
+				SoundPool soundPoolMusic =
+					(SoundPool) util().getPrivateValueLiteral(
+						net.minecraft.src.SoundManager.class, manager().getMinecraft().sndManager, "d", 3);
+				
+				System.out.println("private " + soundPoolMusic.toString());
+				
+				@SuppressWarnings("unchecked")
+				Map<String, ArrayList> nameToSoundPoolEntriesMapping =
+					(Map<String, ArrayList>) util().getPrivateValueLiteral(
+						net.minecraft.src.SoundPool.class, soundPoolMusic, "d", 1);
+				
+				for (Entry<String, ArrayList> entry : nameToSoundPoolEntriesMapping.entrySet())
+				{
+					//String cuteNameWithDots = entry.getKey();
+					ArrayList variousSounds = entry.getValue();
+					
+					for (int i = 0; i < variousSounds.size(); i++)
+					{
+						SoundPoolEntry sound = (SoundPoolEntry) variousSounds.get(i);
+						
+						System.out.println(sound.soundName
+							+ " " + sound.soundUrl.toString() + " " + sound.getClass().toString());
+						
+					}
+					
+				}
+			}
+			catch (PrivateAccessException e)
+			{
+				
+			}
+			
+			//this.toggle = !this.toggle;
 		}
+		
 	}
 	
 	protected void out()
