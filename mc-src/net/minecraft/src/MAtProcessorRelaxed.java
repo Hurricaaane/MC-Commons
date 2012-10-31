@@ -88,10 +88,13 @@ public class MAtProcessorRelaxed extends MAtProcessorModel
 		WorldInfo worldinfo = w.worldInfo;
 		EntityPlayerSP player = mc.thePlayer;
 		
-		int x = (int) Math.floor(player.posX);
-		int z = (int) Math.floor(player.posZ);
+		int x = MathHelper.floor_double(player.posX);
+		int z = MathHelper.floor_double(player.posZ);
 		
-		Integer biomeInt = this.biomeHash.get(w.getWorldChunkManager().getBiomeGenAt(x, z).biomeName);
+		Chunk chunk = mc.theWorld.getChunkFromBlockCoords(x, z);
+		BiomeGenBase biome = chunk.getBiomeGenForWorldCoords(x & 15, z & 15, mc.theWorld.getWorldChunkManager());
+		
+		Integer biomeInt = this.biomeHash.get(biome.biomeName);
 		
 		if (biomeInt == null)
 		{
@@ -150,7 +153,8 @@ public class MAtProcessorRelaxed extends MAtProcessorModel
 		}
 		
 		setValue(88, w.getMoonPhase(0));
-		setValue(93, w.getWorldChunkManager().getBiomeGenAt(x, z).biomeID);
+		
+		setValue(93, biome.biomeID);
 		
 	}
 	
