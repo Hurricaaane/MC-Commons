@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -158,6 +159,10 @@ public class ATSystem
 			(Map<String, ArrayList>) this.mod.util().getPrivateValueLiteral(
 				net.minecraft.src.SoundPool.class, soundPool, "d", 1);
 		
+		// allSoundPoolEntries
+		List allSoundPoolEntries =
+			(List) this.mod.util().getPrivateValueLiteral(net.minecraft.src.SoundPool.class, soundPool, "e", 2);
+		
 		for (Entry<String, ArrayList> entry : nameToSoundPoolEntriesMapping.entrySet())
 		{
 			ArrayList variousSounds = entry.getValue();
@@ -171,11 +176,33 @@ public class ATSystem
 					debug("Unsubstituing " + sound.soundName);
 					variousSounds.set(i, ((ATSoundSubstitute) sound).getOriginal());
 					i++;
+					
+					int indexInAllList = allSoundPoolEntries.indexOf(sound);
+					if (indexInAllList != -1)
+					{
+						allSoundPoolEntries.set(indexInAllList, ((ATSoundSubstitute) sound).getOriginal());
+					}
+					else
+					{
+						log(sound.soundName
+							+ " was present in sound mapping but not in the sound list (unsubstitution)!");
+					}
 				}
 				else if (sound instanceof ATSoundOrphan)
 				{
 					debug("Uninstalling " + sound.soundName);
 					variousSounds.remove(i);
+					
+					int indexInAllList = allSoundPoolEntries.indexOf(sound);
+					if (indexInAllList != -1)
+					{
+						allSoundPoolEntries.remove(indexInAllList);
+					}
+					else
+					{
+						log(sound.soundName
+							+ " was present in sound mapping but not in the sound list (uninstallation)!");
+					}
 				}
 				else
 				{
@@ -207,6 +234,10 @@ public class ATSystem
 			(Map<String, ArrayList>) this.mod.util().getPrivateValueLiteral(
 				net.minecraft.src.SoundPool.class, soundPool, "d", 1);
 		
+		// allSoundPoolEntries
+		List allSoundPoolEntries =
+			(List) this.mod.util().getPrivateValueLiteral(net.minecraft.src.SoundPool.class, soundPool, "e", 2);
+		
 		for (Entry<String, ArrayList> entry : nameToSoundPoolEntriesMapping.entrySet())
 		{
 			//String cuteNameWithDots = entry.getKey();
@@ -227,11 +258,25 @@ public class ATSystem
 							hasFoundSubstitute = true;
 							
 							debug(sound.soundName + " has a substitute in " + subLocation + "!");
-							variousSounds.set(
-								i,
+							
+							ATSoundSubstitute substitute =
 								new ATSoundSubstitute(sound, sound.soundName, this.substituantFiles.get(subLocation
-									+ sound.soundName)));
+									+ sound.soundName));
+							
+							variousSounds.set(i, substitute);
 							loadedNames.add(subLocation + sound.soundName);
+							
+							int indexInAllList = allSoundPoolEntries.indexOf(sound);
+							if (indexInAllList != -1)
+							{
+								allSoundPoolEntries.set(indexInAllList, substitute);
+							}
+							else
+							{
+								log(sound.soundName
+									+ " is present in sound mapping but not in the sound list (substitution)!");
+							}
+							
 						}
 						else
 						{
@@ -257,12 +302,26 @@ public class ATSystem
 								hasFoundSubstituteMus = true;
 								
 								debug(sound.soundName + " has a substitute in " + subLocation + "!");
-								variousSounds.set(
-									i,
-									new ATSoundSubstitute(sound, oggifiedSoundName, this.substituantFiles
-										.get(subLocation + oggifiedSoundName)));
+								
+								ATSoundSubstitute substitute =
+									new ATSoundSubstitute(
+										sound, oggifiedSoundName, this.substituantFiles.get(subLocation
+											+ oggifiedSoundName));
+								
+								variousSounds.set(i, substitute);
 								
 								loadedNames.add(subLocation + oggifiedSoundName);
+								
+								int indexInAllList = allSoundPoolEntries.indexOf(sound);
+								if (indexInAllList != -1)
+								{
+									allSoundPoolEntries.set(indexInAllList, substitute);
+								}
+								else
+								{
+									log(sound.soundName
+										+ " is present in sound mapping but not in the sound list (substitution)!");
+								}
 							}
 							else
 							{
@@ -313,7 +372,20 @@ public class ATSystem
 				{
 					if (notLoadedNames.contains(subLocation + sound.soundName))
 					{
-						variousSounds.set(i, new ATSoundOrphan(sound));
+						ATSoundOrphan orphan = new ATSoundOrphan(sound);
+						
+						variousSounds.set(i, orphan);
+						
+						int indexInAllList = allSoundPoolEntries.indexOf(sound);
+						if (indexInAllList != -1)
+						{
+							allSoundPoolEntries.set(indexInAllList, orphan);
+						}
+						else
+						{
+							log(sound.soundName
+								+ " is present in sound mapping but not in the sound list (installation)!");
+						}
 					}
 				}
 			}
