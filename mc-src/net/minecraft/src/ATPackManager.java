@@ -109,7 +109,8 @@ public class ATPackManager
 			}
 		}
 		
-		recalculateOrderAndSave();
+		// Don't remember why I called it twice...
+		//recalculateOrderAndSave();
 		
 		this.isCached = true;
 		
@@ -120,6 +121,7 @@ public class ATPackManager
 		if (!this.isCached)
 			return;
 		
+		// Is Ha3SoundCommunicator ready?
 		if (!this.mod.canFunction())
 			return;
 		
