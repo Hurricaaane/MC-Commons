@@ -38,6 +38,9 @@ public class ATGuiMenu extends GuiScreen
 	private GuiButton packEnable;
 	private GuiButton packUp;
 	private GuiButton packDown;
+	private GuiButton startEnabledButton;
+	private GuiButton turnOnOffButton;
+	private GuiButton hintButton;
 	
 	public ATGuiMenu(GuiScreen par1GuiScreen, ATHaddon haddon)
 	{
@@ -98,15 +101,37 @@ public class ATGuiMenu extends GuiScreen
 		this.packUp.enabled = false;
 		this.packDown.enabled = false;
 		
-		this.controlList.add(new GuiButton(
-			210, _RIGHT - _TURNOFFWIDTH - _MIX, _HEIGHT - _SEPARATOR - _MIX * 2, _TURNOFFWIDTH, _UNIT, this.mod
-				.getConfig().getBoolean("start.enabled") ? "Start: ON" : "Start: OFF"));
+		if (this.mod.getConfig().getBoolean("gui.hints.enabled"))
+		{
+			this.hintButton =
+				new GuiButton(
+					211, _RIGHT - _TURNOFFWIDTH * 2 - _MIX - _GAP, _HEIGHT - _SEPARATOR - _MIX * 2, _TURNOFFWIDTH,
+					_UNIT, this.mod.getConfig().getBoolean("gui.hints.enabled") ? "Hints: ON" : "Hints: OFF");
+		}
+		else
+		{
+			this.hintButton =
+				new GuiButton(
+					211, _RIGHT - _TURNOFFWIDTH - _MIX - _GAP - _UNIT, _HEIGHT - _SEPARATOR - _MIX * 2, _UNIT, _UNIT,
+					"?");
+		}
+		
+		this.startEnabledButton =
+			new GuiButton(
+				210, _RIGHT - _TURNOFFWIDTH - _MIX, _HEIGHT - _SEPARATOR - _MIX * 2, _TURNOFFWIDTH, _UNIT, this.mod
+					.getConfig().getBoolean("start.enabled") ? "Start: ON" : "Start: OFF");
+		
+		this.turnOnOffButton =
+			new GuiButton(
+				212, _RIGHT - _TURNOFFWIDTH - _MIX, _HEIGHT - _SEPARATOR - _MIX * 1, _TURNOFFWIDTH, _UNIT, "ON/OFF");
+		
+		this.controlList.add(this.hintButton);
+		this.controlList.add(this.startEnabledButton);
 		
 		this.controlList.add(new GuiButton(200, _LEFT + _MIX, _HEIGHT - _SEPARATOR - _MIX * 1, _WIDTH
 			- _MIX * 2 - _GAP - _TURNOFFWIDTH, _UNIT, "Done"));
 		
-		this.controlList.add(new GuiButton(
-			212, _RIGHT - _TURNOFFWIDTH - _MIX, _HEIGHT - _SEPARATOR - _MIX * 1, _TURNOFFWIDTH, _UNIT, "ON/OFF"));
+		this.controlList.add(this.turnOnOffButton);
 		
 		//this.screenTitle = stringtranslate.translateKey("controls.title");
 	}
@@ -128,6 +153,16 @@ public class ATGuiMenu extends GuiScreen
 			boolean newEnabledState = !this.mod.getConfig().getBoolean("start.enabled");
 			this.mod.getConfig().setProperty("start.enabled", newEnabledState);
 			button.displayString = newEnabledState ? "Start: ON" : "Start: OFF";
+			this.mod.saveConfig();
+		}
+		else if (button.id == 211)
+		{
+			boolean newHintState = !this.mod.getConfig().getBoolean("gui.hints.enabled");
+			this.mod.getConfig().setProperty("gui.hints.enabled", newHintState);
+			if (!button.displayString.equals("?"))
+			{
+				button.displayString = newHintState ? "Hints: ON" : "Hints: OFF";
+			}
 			this.mod.saveConfig();
 		}
 		else if (button.id == 220)
@@ -184,13 +219,13 @@ public class ATGuiMenu extends GuiScreen
 	 * Draws the screen and all the components in it.
 	 */
 	@Override
-	public void drawScreen(int par1, int par2, float par3)
+	public void drawScreen(int mouseX, int mouseY, float par3)
 	{
 		boolean isActivated = this.mod.getPackManager().isActivated();
 		int titleWidth = this.fontRenderer.getStringWidth(this.screenTitle);
 		
 		this.tip = null;
-		this.packSlotContainer.drawScreen(par1, par2, par3);
+		this.packSlotContainer.drawScreen(mouseX, mouseY, par3);
 		drawCenteredString(this.fontRenderer, this.screenTitle, this.width / 2 - titleWidth / 4, 8, isActivated
 			? 0xffffff : 0xD0D0D0);
 		
@@ -208,21 +243,63 @@ public class ATGuiMenu extends GuiScreen
 		drawCenteredString(this.fontRenderer, "Top layer (overrides)", this.width / 2, 20, 0xA0A0A0);
 		drawCenteredString(this.fontRenderer, "Bottom layer (compliants)", this.width / 2, this.height - 60, 0xA0A0A0);
 		
-		super.drawScreen(par1, par2, par3);
+		super.drawScreen(mouseX, mouseY, par3);
+		
+		if (this.mod.getConfig().getBoolean("gui.hints.enabled"))
+		{
+			if (isMouseHovering(mouseX, mouseY, this.packEnable))
+			{
+				inputTip("Enable/Disable selected pack (Shortcut: Double-click or press SPACE)");
+			}
+			else if (isMouseHovering(mouseX, mouseY, this.packUp))
+			{
+				inputTip("Increase priority (Shortcut: SHIFT + UP arrow)");
+			}
+			else if (isMouseHovering(mouseX, mouseY, this.packDown))
+			{
+				inputTip("Decrease priority (Shortcut: SHIFT + DOWN arrow)");
+			}
+			else if (isMouseHovering(mouseX, mouseY, this.packDown))
+			{
+				inputTip("Decrease priority (Shortcut: SHIFT + DOWN arrow)");
+			}
+			else if (isMouseHovering(mouseX, mouseY, this.startEnabledButton))
+			{
+				inputTip("Start Enabled: Should Audiotori start when Minecraft starts?");
+			}
+			else if (isMouseHovering(mouseX, mouseY, this.turnOnOffButton))
+			{
+				inputTip("Turn On or Off / Reload sound packs from disk");
+			}
+		}
+		if (isMouseHovering(mouseX, mouseY, this.hintButton))
+		{
+			inputTip("Should hints display when hovering buttons?");
+		}
 		
 		if (this.tip != null)
 		{
-			displayFloatingNote(this.tip, par1, par2);
+			displayFloatingNote(this.tip, mouseX, mouseY);
 		}
 	}
 	
-	private void displayFloatingNote(String tipContents, int par2, int par3)
+	private boolean isMouseHovering(int mx, int my, GuiButton button)
+	{
+		int x = button.xPosition;
+		int y = button.yPosition;
+		int w = button.width;
+		int h = button.height;
+		
+		return mx >= x && my >= y && mx <= x + w && my <= y + h;
+	}
+	
+	private void displayFloatingNote(String tipContents, int mouseX, int mouseY)
 	{
 		if (tipContents != null)
 		{
-			int var5 = par3 - 12;
+			int var5 = mouseY - 12;
 			int var6 = this.fontRenderer.getStringWidth(tipContents);
-			int var4 = par2 /*- var6 / 2*/- 4;
+			int var4 = mouseX /*- var6 / 2*/- 4;
 			
 			int computedX = var4;
 			int computedWidth = var6 + 3;
@@ -260,12 +337,14 @@ public class ATGuiMenu extends GuiScreen
 		{
 			this.mod.getPackManager().swapDuetAt(this.selectedSlot - 1);
 			setSelected(this.selectedSlot - 1);
+			this.packSlotContainer.func_77208_b(-this.packSlotContainer.slotHeight); // Readjust container if off limits
 			updateUpDownButtons();
 		}
 		else if (!prioritize && this.selectedSlot + 1 < getSize())
 		{
 			this.mod.getPackManager().swapDuetAt(this.selectedSlot);
 			setSelected(this.selectedSlot + 1);
+			this.packSlotContainer.func_77208_b(this.packSlotContainer.slotHeight);
 			updateUpDownButtons();
 		}
 		

@@ -65,6 +65,7 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 		this.config.setProperty("start.enabled", true);
 		this.config.setProperty("debug.enabled", false);
 		this.config.setProperty("afterloadingscreen.enabled", false);
+		this.config.setProperty("gui.hints.enabled", true);
 		this.config.setProperty("packs.order", "");
 		this.config.setProperty("keybinding.enable", true);
 		this.config.setProperty("key.combo", "29,42,23"); // Remember to change it in the excaption handling
@@ -161,10 +162,29 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 	{
 		if (!this.hasActivated && this.config.getBoolean("start.enabled") && this.canFunction)
 		{
+			/*Set<Thread> threads = Thread.getAllStackTraces().keySet();
+			
+			boolean hasTDR = false;
+			Iterator<Thread> iter = threads.iterator();
+			while (!hasTDR && iter.hasNext())
+			{
+				if (iter.next() instanceof ThreadDownloadResources)
+				{
+					hasTDR = true;
+				}
+			}
+			
+			if (!hasTDR)
+			{*/
 			this.atPackManager.cacheAndActivate(true);
 			this.hasActivated = true;
+			/*}
+			else
+			{
+				System.out.println("TDR found, waiting...");
+			}*/
 		}
-		else if (!this.config.getBoolean("start.enabled") && this.canFunction)
+		else if (!this.hasActivated && !this.config.getBoolean("start.enabled") && this.canFunction)
 		{
 			this.hasActivated = true;
 		}
