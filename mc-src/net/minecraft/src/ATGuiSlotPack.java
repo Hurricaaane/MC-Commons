@@ -33,11 +33,17 @@ public class ATGuiSlotPack extends GuiSlot
 	}
 	
 	@Override
-	protected void elementClicked(int elementId, boolean unknown)
+	protected void elementClicked(int elementId, boolean doubleClicked)
 	{
 		if (elementId < getSize())
 		{
 			this.menu.setSelected(elementId);
+		}
+		
+		if (doubleClicked)
+		{
+			this.menu.setSelected(elementId);
+			this.menu.toggleSelectedPack();
 		}
 	}
 	
