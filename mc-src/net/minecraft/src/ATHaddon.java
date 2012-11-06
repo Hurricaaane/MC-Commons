@@ -2,11 +2,14 @@ package net.minecraft.src;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import paulscode.sound.SoundSystem;
 import eu.ha3.easy.EdgeModel;
 import eu.ha3.easy.EdgeTrigger;
 import eu.ha3.mc.convenience.Ha3Signal;
+import eu.ha3.mc.haddon.PrivateAccessException;
 import eu.ha3.mc.haddon.SupportsEverythingReady;
 import eu.ha3.mc.haddon.SupportsKeyEvents;
 import eu.ha3.mc.haddon.SupportsTickEvents;
@@ -33,6 +36,10 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 	// Remember to change the thing in mod_Audiotori
 	public static final int VERSION = 0;
 	
+	private static final int REANALYSE_INITIAL_DELAY = 20 * 10;
+	private static final int REANALYSE_DURING_DELAY = 20 * 30;
+	private static final int RELOAD_DELAY = 20 * 5;
+	
 	private Ha3SoundCommunicator sndComms;
 	private ATPackManager atPackManager;
 	
@@ -46,6 +53,9 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 	private ATUpdateNotifier updateNotifier;
 	
 	private boolean firstTickPassed;
+	private int ticksUntilReanalyse;
+	private boolean reanalyseImpliesReload;
+	private int lastGenuineCount;
 	
 	private int[] splitKeys;
 	
@@ -176,17 +186,55 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 			
 			if (!hasTDR)
 			{*/
-			this.atPackManager.cacheAndActivate(true);
+			if (this.config.getBoolean("start.enabled"))
+			{
+				this.atPackManager.cacheAndActivate(true);
+			}
+			
 			this.hasActivated = true;
 			/*}
 			else
 			{
 				System.out.println("TDR found, waiting...");
 			}*/
+			
+			this.lastGenuineCount = countGenuineFromAllPools();
+			log("Counted " + this.lastGenuineCount + " genuine (original deck) sounds.");
+			
+			this.ticksUntilReanalyse = ATHaddon.REANALYSE_INITIAL_DELAY;
 		}
-		else if (!this.hasActivated && !this.config.getBoolean("start.enabled") && this.canFunction)
+		else if (this.hasActivated && this.canFunction && this.atPackManager.isActivated())
 		{
-			this.hasActivated = true;
+			if (this.ticksUntilReanalyse < 0)
+			{
+				int count = countGenuineFromAllPools();
+				if (count != this.lastGenuineCount)
+				{
+					log("Found a different genuine count (was "
+						+ this.lastGenuineCount + ", now is " + count + "). Preparing a reload...");
+					
+					this.lastGenuineCount = count;
+					this.reanalyseImpliesReload = true;
+					
+					this.ticksUntilReanalyse = ATHaddon.RELOAD_DELAY;
+				}
+				else
+				{
+					if (this.reanalyseImpliesReload)
+					{
+						log("Reapplying all packs...");
+						this.reanalyseImpliesReload = false;
+						this.atPackManager.applyAllPacks(true);
+					}
+					
+					this.ticksUntilReanalyse = ATHaddon.REANALYSE_DURING_DELAY;
+				}
+			}
+			else
+			{
+				this.ticksUntilReanalyse = this.ticksUntilReanalyse - 1;
+			}
+			
 		}
 		
 		// CTRL-SHIFT-T
@@ -198,6 +246,87 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 			this.updateNotifier.attempt();
 			
 		}
+	}
+	
+	private int countGenuineFromAllPools()
+	{
+		try
+		{
+			// Copy from ATSystem
+			SoundPool soundPoolSounds =
+				(SoundPool) util().getPrivateValueLiteral(
+					net.minecraft.src.SoundManager.class, manager().getMinecraft().sndManager, "b", 1);
+			SoundPool soundPoolStreaming =
+				(SoundPool) util().getPrivateValueLiteral(
+					net.minecraft.src.SoundManager.class, manager().getMinecraft().sndManager, "c", 2);
+			SoundPool soundPoolMusic =
+				(SoundPool) util().getPrivateValueLiteral(
+					net.minecraft.src.SoundManager.class, manager().getMinecraft().sndManager, "d", 3);
+			
+			return countGenuineFromAllPool(soundPoolSounds)
+				+ countGenuineFromAllPool(soundPoolStreaming) + countGenuineFromAllPool(soundPoolMusic);
+		}
+		catch (PrivateAccessException e)
+		{
+			// XXX ???
+			e.printStackTrace();
+			return 0;
+		}
+		
+	}
+	
+	private int countGenuineFromAllPool(SoundPool soundPool) throws PrivateAccessException
+	{
+		// Copy from ATSystem
+		@SuppressWarnings("rawtypes")
+		List allSoundPoolEntries =
+			(List) util().getPrivateValueLiteral(net.minecraft.src.SoundPool.class, soundPool, "e", 2);
+		
+		int installations = 0;
+		for (Object o : allSoundPoolEntries)
+		{
+			if (o instanceof ATSoundOrphan)
+			{
+				installations++;
+			}
+		}
+		
+		return allSoundPoolEntries.size() - installations;
+		
+	}
+	
+	public void playMusic()
+	{
+		SoundManager sndManager = manager().getMinecraft().sndManager;
+		
+		stopMusic();
+		
+		try
+		{
+			// XXX check me
+			// ticksBeforeMusic
+			util().setPrivateValueLiteral(SoundManager.class, sndManager, "j", 9, 0);
+			sndManager.playRandomMusicIfReady();
+		}
+		catch (PrivateAccessException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public void stopMusic()
+	{
+		SoundSystem system = this.sndComms.getSoundSystem();
+		if (system.playing("BgMusic"))
+		{
+			system.stop("BgMusic");
+		}
+	}
+	
+	public boolean isMusicPlaying()
+	{
+		SoundSystem system = this.sndComms.getSoundSystem();
+		return system.playing("BgMusic");
 	}
 	
 	public void log(String contents)

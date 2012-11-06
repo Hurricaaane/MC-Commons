@@ -41,6 +41,8 @@ public class ATGuiMenu extends GuiScreen
 	private GuiButton startEnabledButton;
 	private GuiButton turnOnOffButton;
 	private GuiButton hintButton;
+	private GuiButton playButton;
+	private GuiButton stopButton;
 	
 	public ATGuiMenu(GuiScreen par1GuiScreen, ATHaddon haddon)
 	{
@@ -129,7 +131,19 @@ public class ATGuiMenu extends GuiScreen
 		this.controlList.add(this.startEnabledButton);
 		
 		this.controlList.add(new GuiButton(200, _LEFT + _MIX, _HEIGHT - _SEPARATOR - _MIX * 1, _WIDTH
-			- _MIX * 2 - _GAP - _TURNOFFWIDTH, _UNIT, "Done"));
+			- _MIX * 2 - _GAP - _TURNOFFWIDTH - _UNIT * 2 - _GAP * 2, _UNIT, "Done"));
+		
+		this.playButton =
+			new GuiButton(
+				240, _RIGHT - _TURNOFFWIDTH - _MIX - _GAP * 2 - _UNIT * 2, _HEIGHT - _SEPARATOR - _MIX * 1, _UNIT,
+				_UNIT, "\u25b6");
+		this.stopButton =
+			new GuiButton(
+				241, _RIGHT - _TURNOFFWIDTH - _MIX - _GAP - _UNIT, _HEIGHT - _SEPARATOR - _MIX * 1, _UNIT, _UNIT,
+				"\u25a0");
+		
+		this.controlList.add(this.playButton);
+		this.controlList.add(this.stopButton);
 		
 		this.controlList.add(this.turnOnOffButton);
 		
@@ -146,7 +160,7 @@ public class ATGuiMenu extends GuiScreen
 		if (button.id == 200)
 		{
 			// This triggers onGuiClosed
-			this.mc.displayGuiScreen(this.parentScreen);
+			this.mod.util().closeCurrentScreen();
 		}
 		else if (button.id == 210)
 		{
@@ -188,6 +202,14 @@ public class ATGuiMenu extends GuiScreen
 			{
 				this.mod.getPackManager().deactivate(false);
 			}
+		}
+		else if (button.id == 240)
+		{
+			this.mod.playMusic();
+		}
+		else if (button.id == 241)
+		{
+			this.mod.stopMusic();
 		}
 		else
 		{
@@ -271,6 +293,21 @@ public class ATGuiMenu extends GuiScreen
 			{
 				inputTip("Turn On or Off / Reload sound packs from disk");
 			}
+			else if (isMouseHovering(mouseX, mouseY, this.playButton))
+			{
+				/*if (this.mod.isMusicPlaying())
+				{
+					inputTip("Stop playing the current music and roll a new one");
+				}
+				else
+				{*/
+				inputTip("Play random music");
+				//}
+			}
+			else if (isMouseHovering(mouseX, mouseY, this.stopButton))
+			{
+				inputTip("Stop music");
+			}
 		}
 		if (isMouseHovering(mouseX, mouseY, this.hintButton))
 		{
@@ -297,7 +334,7 @@ public class ATGuiMenu extends GuiScreen
 	{
 		if (tipContents != null)
 		{
-			int var5 = mouseY - 12;
+			int var5 = mouseY - 12 - 6;
 			int var6 = this.fontRenderer.getStringWidth(tipContents);
 			int var4 = mouseX /*- var6 / 2*/- 4;
 			
@@ -407,7 +444,7 @@ public class ATGuiMenu extends GuiScreen
 		}
 		else if (par2 == 1)
 		{
-			this.mc.displayGuiScreen(this.parentScreen);
+			this.mod.util().closeCurrentScreen();
 		}
 	}
 	
