@@ -40,6 +40,8 @@ public class ATSystem
 	
 	private boolean debugging;
 	
+	private int debuggingLevel;
+	
 	public ATSystem(HaddonImpl mod)
 	{
 		this.mod = mod;
@@ -206,6 +208,7 @@ public class ATSystem
 				}
 				else
 				{
+					debug("Passing " + sound.soundName, 2);
 					i++;
 				}
 				
@@ -405,16 +408,26 @@ public class ATSystem
 	
 	public void debug(String contents)
 	{
-		if (this.debugging)
+		debug(contents, 1);
+	}
+	
+	public void debug(String contents, int level)
+	{
+		if (this.debugging && this.debuggingLevel >= level)
 		{
 			System.out.println("(ATSystem) " + contents);
 		}
-		
 	}
 	
 	public void setDebugging(boolean enabled)
 	{
 		this.debugging = enabled;
+		
+	}
+	
+	public void setDebuggingLevel(int level)
+	{
+		this.debuggingLevel = level;
 		
 	}
 }

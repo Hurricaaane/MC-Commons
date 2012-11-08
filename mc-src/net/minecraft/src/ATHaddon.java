@@ -74,6 +74,7 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 		this.config = new ConfigProperty();
 		this.config.setProperty("start.enabled", true);
 		this.config.setProperty("debug.enabled", false);
+		this.config.setProperty("debug.level", 1);
 		this.config.setProperty("afterloadingscreen.enabled", false);
 		this.config.setProperty("gui.hints.enabled", true);
 		this.config.setProperty("packs.order", "");
@@ -119,6 +120,7 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 		{
 			this.debugging = true;
 			this.atPackManager.getSystem().setDebugging(true);
+			this.atPackManager.getSystem().setDebuggingLevel(this.config.getInteger("debug.level"));
 		}
 		
 		this.sndComms = new Ha3SoundCommunicator(this, "AT_");
