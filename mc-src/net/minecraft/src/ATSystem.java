@@ -88,7 +88,16 @@ public class ATSystem
 			}
 			else
 			{
-				this.substituantFiles.put(originURI.relativize(file.toURI()).toString(), file);
+				// Ignore all files that have no extension
+				// Ignore all files that begin with a dot
+				if (file.getName().contains(".") && !file.getName().startsWith("."))
+				{
+					this.substituantFiles.put(originURI.relativize(file.toURI()).toString(), file);
+				}
+				else
+				{
+					log("Found file called " + originURI.relativize(file.toURI()).toString() + ", ignoring.");
+				}
 			}
 			
 		}
