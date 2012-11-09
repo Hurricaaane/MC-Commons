@@ -96,7 +96,7 @@ public class ATSystem
 				}
 				else
 				{
-					log("Found file called " + originURI.relativize(file.toURI()).toString() + ", ignoring.");
+					debug("Found file called " + originURI.relativize(file.toURI()).toString() + ", ignoring.", 2);
 				}
 			}
 			
