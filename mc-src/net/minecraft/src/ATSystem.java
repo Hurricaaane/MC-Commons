@@ -84,7 +84,14 @@ public class ATSystem
 		{
 			if (file.isDirectory())
 			{
-				cacheSubstituants(originURI, file);
+				if (!file.getName().contains("."))
+				{
+					cacheSubstituants(originURI, file);
+				}
+				else
+				{
+					debug("Found directory called " + originURI.relativize(file.toURI()).toString() + ", ignoring.", 2);
+				}
 			}
 			else
 			{
