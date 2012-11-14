@@ -16,9 +16,9 @@ package net.minecraft.src;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class mod_MAtmos_forModLoader extends HaddonBridgeModLoader
+public class mod_MAtmos extends HaddonBridgeModLoader
 {
-	public mod_MAtmos_forModLoader()
+	public mod_MAtmos()
 	{
 		super(new MAtMod());
 		
