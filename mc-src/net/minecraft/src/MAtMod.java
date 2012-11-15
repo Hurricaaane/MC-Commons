@@ -43,7 +43,7 @@ public class MAtMod extends HaddonImpl
 	implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents, SupportsEverythingReady /*, Ha3Personalizable*/
 {
 	final static public MAtLogger LOGGER = new MAtLogger();
-	final static public int VERSION = 19; // Remember to change the thing on mod_Matmos_forModLoader
+	final static public int VERSION = 20; // Remember to change the thing on mod_Matmos
 	
 	private MAtModPhase phase;
 	private ConfigProperty config;

@@ -34,7 +34,7 @@ import eu.ha3.util.property.simple.ConfigProperty;
 public class ATHaddon extends HaddonImpl implements SupportsTickEvents, SupportsEverythingReady, SupportsKeyEvents
 {
 	// Remember to change the thing in mod_Audiotori
-	public static final int VERSION = 1;
+	public static final int VERSION = 2;
 	
 	private static final int REANALYSE_INITIAL_DELAY = 20 * 10;
 	private static final int REANALYSE_DURING_DELAY = 20 * 30;

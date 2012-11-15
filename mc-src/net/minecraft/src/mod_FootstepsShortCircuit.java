@@ -26,7 +26,7 @@ public class mod_FootstepsShortCircuit extends HaddonBridgeModLoader
 	@Override
 	public String getVersion()
 	{
-		return "r0 for 1.4.2";
+		return "r2 for 1.4.4";
 		
 	}
 	
