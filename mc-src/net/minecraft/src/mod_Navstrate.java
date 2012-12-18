@@ -58,6 +58,15 @@ public class mod_Navstrate extends BaseMod
 	
 	public mod_Navstrate()
 	{
+		
+	}
+	
+	@Override
+	public void load()
+	{
+		//if (true)
+		//	return;
+		
 		this.isOn = false;
 		this.needsRebuffering = true;
 		this.bufferSize = 256;
@@ -125,8 +134,8 @@ public class mod_Navstrate extends BaseMod
 		if (!this.isOn)
 			return true;
 		
-		if (!ModLoader.isGUIOpen(null) && !ModLoader.isGUIOpen(net.minecraft.src.GuiChat.class))
-			return true;
+		//if (!ModLoader.isGUIOpen(null) && !ModLoader.isGUIOpen(net.minecraft.src.GuiChat.class))
+		//	return true;
 		
 		int screenXshift = 32;
 		int screenYshift = 32;
@@ -567,13 +576,6 @@ public class mod_Navstrate extends BaseMod
 		this.gatherer = null;
 		
 		this.writeData.emptyMemory();
-		
-	}
-	
-	@Override
-	public void load()
-	{
-		// TODO Auto-generated method stub
 		
 	}
 	
