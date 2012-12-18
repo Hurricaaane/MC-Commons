@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Set;
 
 import net.minecraft.client.Minecraft;
@@ -45,10 +47,13 @@ public class DebuggingHa3Haddon extends HaddonImpl
 	private boolean toggle;
 	private RenderSpawnPoints renderRelay;
 	private RenderAim renderAim;
+	private Map<String, Object> pool;
 	
 	@Override
 	public void onLoad()
 	{
+		this.pool = new LinkedHashMap<String, Object>();
+		
 		this.button = new EdgeTrigger(new EdgeModel() {
 			@Override
 			public void onTrueEdge()
@@ -543,6 +548,46 @@ public class DebuggingHa3Haddon extends HaddonImpl
 	public void onChat(String contents)
 	{
 		System.err.println("(C) " + contents);
+		
+		if (contents.contains("startpooling"))
+		{
+			this.pool.put("pooling", true);
+			this.pool.put("poolingtoken", new Random().nextInt());
+			this.pool.put("poolingtime", System.currentTimeMillis());
+			manager().getMinecraft().thePlayer.sendChatMessage(this.pool.get("poolingtoken").toString());
+		}
+		if (this.pool.get("pooling") != null && (Boolean) this.pool.get("pooling") == true)
+		{
+			String trigger = this.pool.get("poolingtoken").toString();
+			if (contents.contains(trigger))
+			{
+				final long msSpent = System.currentTimeMillis() - (Long) this.pool.get("poolingtime");
+				
+				new Thread(new Runnable() {
+					@Override
+					public void run()
+					{
+						try
+						{
+							Thread.sleep(5000);
+						}
+						catch (InterruptedException e)
+						{
+							e.printStackTrace();
+						}
+						DebuggingHa3Haddon.this.pool.put("poolingtoken", new Random().nextInt());
+						DebuggingHa3Haddon.this.pool.put("poolingtime", System.currentTimeMillis());
+						manager().getMinecraft().thePlayer.addChatMessage("Sending ping... "
+							+ DebuggingHa3Haddon.this.pool.get("poolingtoken").toString());
+						manager().getMinecraft().thePlayer.sendChatMessage(DebuggingHa3Haddon.this.pool.get(
+							"poolingtoken").toString()
+							+ " (took " + msSpent + "ms last time)");
+						
+					}
+				}).start();
+				
+			}
+		}
 		
 	}
 	
