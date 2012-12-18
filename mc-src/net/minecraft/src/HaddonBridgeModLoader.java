@@ -1,5 +1,6 @@
 package net.minecraft.src;
 
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -10,6 +11,7 @@ import eu.ha3.mc.haddon.Bridge;
 import eu.ha3.mc.haddon.Haddon;
 import eu.ha3.mc.haddon.Manager;
 import eu.ha3.mc.haddon.SupportsChatEvents;
+import eu.ha3.mc.haddon.SupportsConnectEvents;
 import eu.ha3.mc.haddon.SupportsEverythingReady;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
 import eu.ha3.mc.haddon.SupportsGuiFrameEvents;
@@ -52,6 +54,7 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager, Bridge
 	private boolean supportsKey;
 	private boolean supportsIncomingMessages;
 	private boolean supportsEverythingReady;
+	private boolean supportsConnect;
 	
 	private Set<String> enlistedIncomingMessages;
 	private Set<String> enlistedOutgoingMessages;
@@ -87,6 +90,7 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager, Bridge
 		this.supportsKey = haddon instanceof SupportsKeyEvents;
 		this.supportsIncomingMessages = haddon instanceof SupportsIncomingMessages;
 		this.supportsEverythingReady = haddon instanceof SupportsEverythingReady;
+		this.supportsConnect = haddon instanceof SupportsConnectEvents;
 		
 		this.impl_continueTicking = this.supportsTick || this.supportsFrame;
 		this.impl_continueGuiTicking = this.supportsGuiTick || this.supportsGuiFrame;
@@ -375,12 +379,14 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager, Bridge
 	}
 	
 	@Override
-	public void clientCustomPayload(NetClientHandler var1, Packet250CustomPayload message)
+	public void receiveCustomPacket(Packet250CustomPayload message)
 	{
+		System.out.println("FFFFFFFFF "
+			+ message.channel + " <<>> " + new String(message.data, Charset.forName("UTF-8")));
 		if (!this.supportsIncomingMessages)
 			return;
 		
-		if (this.enlistedIncomingMessages.contains(message) || this.enlistedIncomingMessages.contains(null))
+		if (this.enlistedIncomingMessages.contains(message.channel) || this.enlistedIncomingMessages.contains(null))
 		{
 			((SupportsIncomingMessages) this.haddon).onIncomingMessage(message);
 			
@@ -401,6 +407,16 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager, Bridge
 		{
 			((SupportsEverythingReady) this.haddon).onEverythingReady();
 		}
+	}
+	
+	@Override
+	public void clientConnect(NetClientHandler handler)
+	{
+		if (this.supportsConnect)
+		{
+			((SupportsConnectEvents) this.haddon).onConnectEvent(handler);
+		}
+		
 	}
 	
 }
