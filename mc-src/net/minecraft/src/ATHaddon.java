@@ -79,7 +79,7 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 		this.config.setProperty("gui.hints.enabled", true);
 		this.config.setProperty("packs.order", "");
 		this.config.setProperty("keybinding.enable", true);
-		this.config.setProperty("stash.music", false);
+		this.config.setProperty("stash.music", true);
 		this.config.setProperty("key.combo", "29,42,23"); // Remember to change it in the excaption handling
 		this.config.setProperty("update_found.enabled", true);
 		this.config.setProperty("update_found.version", ATHaddon.VERSION);
@@ -268,8 +268,10 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 				(SoundPool) util().getPrivateValueLiteral(
 					net.minecraft.src.SoundManager.class, manager().getMinecraft().sndManager, "d", 3);
 			
+			int stashed = getPackManager().getSystem().getStashSize();
+			
 			return countGenuineFromAllPool(soundPoolSounds)
-				+ countGenuineFromAllPool(soundPoolStreaming) + countGenuineFromAllPool(soundPoolMusic);
+				+ countGenuineFromAllPool(soundPoolStreaming) + countGenuineFromAllPool(soundPoolMusic) + stashed;
 		}
 		catch (PrivateAccessException e)
 		{
@@ -291,6 +293,10 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 		for (Object o : allSoundPoolEntries)
 		{
 			if (o instanceof ATSoundOrphan)
+			{
+				installations++;
+			}
+			if (o instanceof ATSoundCumulation)
 			{
 				installations++;
 			}

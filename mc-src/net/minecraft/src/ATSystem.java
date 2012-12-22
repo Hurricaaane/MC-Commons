@@ -1,7 +1,10 @@
 package net.minecraft.src;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,6 +39,7 @@ public class ATSystem
 	private HaddonImpl mod;
 	
 	private Map<String, File> substituantFiles;
+	private List<Entry<String, File>> cumulantsFiles;
 	
 	private boolean replaceMusWithOggFiles;
 	
@@ -46,11 +50,13 @@ public class ATSystem
 	private Map<SoundPool, List<SoundPoolEntry>> stash;
 	
 	private boolean doStashForMusic;
+	int stashCount;
 	
 	public ATSystem(HaddonImpl mod)
 	{
 		this.mod = mod;
 		this.substituantFiles = new LinkedHashMap<String, File>();
+		this.cumulantsFiles = new ArrayList<Entry<String, File>>();
 		
 		this.replaceMusWithOggFiles = true;
 		
@@ -61,6 +67,16 @@ public class ATSystem
 	public Map<String, File> getSubstituantMap()
 	{
 		return this.substituantFiles;
+	}
+	
+	public List<Entry<String, File>> getCumulantsList()
+	{
+		return this.cumulantsFiles;
+	}
+	
+	public int getStashSize()
+	{
+		return this.stashCount;
 	}
 	
 	public void applySubstituantLocation(File location, boolean replaceMusWithOggFiles)
@@ -75,6 +91,7 @@ public class ATSystem
 		this.replaceMusWithOggFiles = replaceMusWithOggFiles;
 		
 		this.substituantFiles.clear();
+		this.cumulantsFiles.clear();
 		
 		for (File location : locations)
 		{
@@ -91,7 +108,7 @@ public class ATSystem
 		{
 			if (file.isDirectory())
 			{
-				if (!file.getName().contains("."))
+				if (!file.getName().contains(".") && !file.getName().contains(","))
 				{
 					cacheSubstituants(originURI, file);
 				}
@@ -107,6 +124,8 @@ public class ATSystem
 				if (file.getName().contains(".") && !file.getName().startsWith("."))
 				{
 					this.substituantFiles.put(originURI.relativize(file.toURI()).toString(), file);
+					this.cumulantsFiles.add(new AbstractMap.SimpleEntry<String, File>(originURI
+						.relativize(file.toURI()).toString(), file));
 				}
 				else
 				{
@@ -145,6 +164,13 @@ public class ATSystem
 			restoreSubstitutions(soundPoolSounds);
 			restoreSubstitutions(soundPoolStreaming);
 			restoreSubstitutions(soundPoolMusic);
+			
+			if (this.stashCount != 0)
+			{
+				log("Stash did not reset to zero!");
+				this.stashCount = 0;
+				
+			}
 		}
 		catch (PrivateAccessException e)
 		{
@@ -173,7 +199,7 @@ public class ATSystem
 			
 			performSubstitutions(soundPoolSounds, "sound3/");
 			performSubstitutions(soundPoolStreaming, "streaming/");
-			performSubstitutions(soundPoolMusic, musicDirectories);
+			performCumulations(soundPoolMusic, musicDirectories);
 			
 			// Stash after performing the substitutions
 			if (this.doStashForMusic)
@@ -201,6 +227,7 @@ public class ATSystem
 		if (!poolStash.isEmpty())
 		{
 			log("Trying to stash over an unstashed pool! This is an unexpected behavior!");
+			poolStash.clear();
 		}
 		
 		List allSoundPoolEntries =
@@ -217,6 +244,7 @@ public class ATSystem
 		if (poolStash.size() == allSoundPoolEntries.size())
 		{
 			log("Did not stash: No custom entries found.");
+			poolStash.clear();
 			return;
 		}
 		
@@ -226,6 +254,7 @@ public class ATSystem
 		}
 		
 		log("Stashed " + poolStash.size() + " original entries.");
+		this.stashCount = this.stashCount + poolStash.size();
 		
 	}
 	
@@ -244,6 +273,9 @@ public class ATSystem
 			allSoundPoolEntries.add(entry);
 		}
 		
+		log("Restored " + poolStash.size() + " entries from stash.");
+		
+		this.stashCount = this.stashCount - poolStash.size();
 		poolStash.clear();
 		
 	}
@@ -299,6 +331,21 @@ public class ATSystem
 					{
 						log(sound.soundName
 							+ " was present in sound mapping but not in the sound list (uninstallation)!");
+					}
+				}
+				else if (sound instanceof ATSoundCumulation)
+				{
+					debug("Uncumulating " + sound.soundName);
+					variousSounds.remove(i);
+					
+					int indexInAllList = allSoundPoolEntries.indexOf(sound);
+					if (indexInAllList != -1)
+					{
+						allSoundPoolEntries.remove(indexInAllList);
+					}
+					else
+					{
+						log(sound.soundName + " was present in sound mapping but not in the sound list (uncumulation)!");
 					}
 				}
 				else
@@ -499,6 +546,96 @@ public class ATSystem
 		
 		log("Performed " + loadedNames.size() + " substitutions (" + subLocations[0] + ").");
 		log("Performed " + orphanCount + " installations (" + subLocations[0] + ").");
+		
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void performCumulations(SoundPool soundPool, String[] subLocations) throws PrivateAccessException
+	{
+		List<Entry<String, File>> pairsToLoad = new ArrayList<Entry<String, File>>();
+		List<URL> cumulatedURLs = new ArrayList<URL>();
+		
+		// nameToSoundPoolEntriesMapping
+		Map<String, ArrayList> nameToSoundPoolEntriesMapping =
+			(Map<String, ArrayList>) this.mod.util().getPrivateValueLiteral(
+				net.minecraft.src.SoundPool.class, soundPool, "d", 1);
+		
+		// allSoundPoolEntries
+		List allSoundPoolEntries =
+			(List) this.mod.util().getPrivateValueLiteral(net.minecraft.src.SoundPool.class, soundPool, "e", 2);
+		
+		for (Entry<String, File> entry : this.cumulantsFiles)
+		{
+			for (String subLocation : subLocations)
+			{
+				if (entry.getKey().startsWith(subLocation))
+				{
+					pairsToLoad.add(entry);
+				}
+			}
+			
+		}
+		
+		// Install cumulated sounds
+		int orphanCount = 0;
+		Minecraft mc = this.mod.manager().getMinecraft();
+		for (Entry<String, File> pair : pairsToLoad)
+		{
+			String name = pair.getKey();
+			
+			if (!soundPool.isGetRandomSound || name.contains(".") && !isMadeOfDigits(soundNamePart(name)))
+			{
+				debug("Installing cumulative resource " + name);
+				
+				mc.installResource(name, pair.getValue());
+				orphanCount++;
+				try
+				{
+					cumulatedURLs.add(pair.getValue().toURI().toURL());
+				}
+				catch (MalformedURLException e)
+				{
+					// XXX ???
+					e.printStackTrace();
+				}
+			}
+			else
+			{
+				log("Did not install resource " + name + " because the name is invalid in this context!");
+			}
+			
+		}
+		
+		// Wrap cumulated sounds
+		for (Entry<String, ArrayList> entry : nameToSoundPoolEntriesMapping.entrySet())
+		{
+			//String cuteNameWithDots = entry.getKey();
+			ArrayList variousSounds = entry.getValue();
+			
+			for (int i = 0; i < variousSounds.size(); i++)
+			{
+				SoundPoolEntry sound = (SoundPoolEntry) variousSounds.get(i);
+				if (cumulatedURLs.contains(sound.soundUrl))
+				{
+					ATSoundCumulation cumulation = new ATSoundCumulation(sound);
+					
+					variousSounds.set(i, cumulation);
+					
+					int indexInAllList = allSoundPoolEntries.indexOf(sound);
+					if (indexInAllList != -1)
+					{
+						allSoundPoolEntries.set(indexInAllList, cumulation);
+					}
+					else
+					{
+						log(sound.soundName + " is present in sound mapping but not in the sound list (cumulation)!");
+					}
+				}
+			}
+			
+		}
+		
+		log("Performed " + orphanCount + " cumulations (" + subLocations[0] + ").");
 		
 	}
 	

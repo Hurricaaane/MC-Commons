@@ -127,7 +127,7 @@ public class ATGuiMenu extends GuiScreen
 		this.musicButton =
 			new GuiButton(213, _RIGHT - _TURNOFFWIDTH - _MIX - _GAP * 3 - _UNIT * 2 - _TURNOFFWIDTH, _HEIGHT
 				- _SEPARATOR - _MIX * 1, _TURNOFFWIDTH, _UNIT, this.mod.getConfig().getBoolean("stash.music")
-				? "BGM: PACKS" : "BGM: ANY");
+				? "BGM: PACKS" : "BGM: ALL");
 		
 		this.turnOnOffButton =
 			new GuiButton(
@@ -214,7 +214,7 @@ public class ATGuiMenu extends GuiScreen
 		{
 			boolean newStashState = !this.mod.getConfig().getBoolean("stash.music");
 			this.mod.getConfig().setProperty("stash.music", newStashState);
-			button.displayString = newStashState ? "BGM: PACKS" : "BGM: ANY";
+			button.displayString = newStashState ? "BGM: PACKS" : "BGM: ALL";
 			this.mod.saveConfig();
 			this.mod.getPackManager().getSystem().setStashForMusic(newStashState);
 			this.mod.getPackManager().applyAllPacks(true);
@@ -311,7 +311,7 @@ public class ATGuiMenu extends GuiScreen
 			}
 			else if (isMouseHovering(mouseX, mouseY, this.musicButton))
 			{
-				inputTip("PACKS: Only play custom background music during gameplay");
+				inputTip("PACKS: Only play custom music (if there are) / ALL: Play all music");
 			}
 			else if (isMouseHovering(mouseX, mouseY, this.playButton))
 			{
