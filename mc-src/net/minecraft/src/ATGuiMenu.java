@@ -43,6 +43,7 @@ public class ATGuiMenu extends GuiScreen
 	private GuiButton hintButton;
 	private GuiButton playButton;
 	private GuiButton stopButton;
+	private GuiButton musicButton;
 	
 	public ATGuiMenu(GuiScreen par1GuiScreen, ATHaddon haddon)
 	{
@@ -123,6 +124,11 @@ public class ATGuiMenu extends GuiScreen
 				210, _RIGHT - _TURNOFFWIDTH - _MIX, _HEIGHT - _SEPARATOR - _MIX * 2, _TURNOFFWIDTH, _UNIT, this.mod
 					.getConfig().getBoolean("start.enabled") ? "Start: ON" : "Start: OFF");
 		
+		this.musicButton =
+			new GuiButton(213, _RIGHT - _TURNOFFWIDTH - _MIX - _GAP * 3 - _UNIT * 2 - _TURNOFFWIDTH, _HEIGHT
+				- _SEPARATOR - _MIX * 1, _TURNOFFWIDTH, _UNIT, this.mod.getConfig().getBoolean("stash.music")
+				? "BGM: PACKS" : "BGM: ANY");
+		
 		this.turnOnOffButton =
 			new GuiButton(
 				212, _RIGHT - _TURNOFFWIDTH - _MIX, _HEIGHT - _SEPARATOR - _MIX * 1, _TURNOFFWIDTH, _UNIT, "ON/OFF");
@@ -131,7 +137,7 @@ public class ATGuiMenu extends GuiScreen
 		this.controlList.add(this.startEnabledButton);
 		
 		this.controlList.add(new GuiButton(200, _LEFT + _MIX, _HEIGHT - _SEPARATOR - _MIX * 1, _WIDTH
-			- _MIX * 2 - _GAP - _TURNOFFWIDTH - _UNIT * 2 - _GAP * 2, _UNIT, "Done"));
+			- _MIX * 2 - _GAP - _TURNOFFWIDTH - _UNIT * 2 - _GAP * 3 - _TURNOFFWIDTH, _UNIT, "Done"));
 		
 		this.playButton =
 			new GuiButton(
@@ -144,6 +150,7 @@ public class ATGuiMenu extends GuiScreen
 		
 		this.controlList.add(this.playButton);
 		this.controlList.add(this.stopButton);
+		this.controlList.add(this.musicButton);
 		
 		this.controlList.add(this.turnOnOffButton);
 		
@@ -202,6 +209,15 @@ public class ATGuiMenu extends GuiScreen
 			{
 				this.mod.getPackManager().deactivate(false);
 			}
+		}
+		else if (button.id == 213)
+		{
+			boolean newStashState = !this.mod.getConfig().getBoolean("stash.music");
+			this.mod.getConfig().setProperty("stash.music", newStashState);
+			button.displayString = newStashState ? "BGM: PACKS" : "BGM: ANY";
+			this.mod.saveConfig();
+			this.mod.getPackManager().getSystem().setStashForMusic(newStashState);
+			this.mod.getPackManager().applyAllPacks(true);
 		}
 		else if (button.id == 240)
 		{
@@ -292,6 +308,10 @@ public class ATGuiMenu extends GuiScreen
 			else if (isMouseHovering(mouseX, mouseY, this.turnOnOffButton))
 			{
 				inputTip("Turn On or Off / Reload sound packs from disk");
+			}
+			else if (isMouseHovering(mouseX, mouseY, this.musicButton))
+			{
+				inputTip("PACKS: Only play custom background music during gameplay");
 			}
 			else if (isMouseHovering(mouseX, mouseY, this.playButton))
 			{

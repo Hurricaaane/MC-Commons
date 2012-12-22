@@ -18,7 +18,7 @@ import java.util.Random;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class ATSoundOrphan extends SoundPoolEntry
+public class ATSoundOrphan extends SoundPoolEntry implements ATSoundWrapper
 {
 	private SoundPoolEntry generated;
 	
@@ -45,6 +45,12 @@ public class ATSoundOrphan extends SoundPoolEntry
 		}
 		return this.generated;
 		
+	}
+	
+	@Override
+	public SoundPoolEntry getSource()
+	{
+		return getGenerated();
 	}
 	
 }

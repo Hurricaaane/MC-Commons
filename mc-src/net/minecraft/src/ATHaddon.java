@@ -79,6 +79,7 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 		this.config.setProperty("gui.hints.enabled", true);
 		this.config.setProperty("packs.order", "");
 		this.config.setProperty("keybinding.enable", true);
+		this.config.setProperty("stash.music", false);
 		this.config.setProperty("key.combo", "29,42,23"); // Remember to change it in the excaption handling
 		this.config.setProperty("update_found.enabled", true);
 		this.config.setProperty("update_found.version", ATHaddon.VERSION);
@@ -122,6 +123,8 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 			this.atPackManager.getSystem().setDebugging(true);
 			this.atPackManager.getSystem().setDebuggingLevel(this.config.getInteger("debug.level"));
 		}
+		
+		this.atPackManager.getSystem().setStashForMusic(this.config.getBoolean("stash.music"));
 		
 		this.sndComms = new Ha3SoundCommunicator(this, "AT_");
 		this.sndComms.load(new Ha3Signal() {

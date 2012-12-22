@@ -20,7 +20,7 @@ import java.util.Random;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class ATSoundSubstitute extends SoundPoolEntry
+public class ATSoundSubstitute extends SoundPoolEntry implements ATSoundWrapper
 {
 	private SoundPoolEntry original;
 	
@@ -63,6 +63,12 @@ public class ATSoundSubstitute extends SoundPoolEntry
 			
 		}
 		return this.original;
+	}
+	
+	@Override
+	public SoundPoolEntry getSource()
+	{
+		return getOriginal();
 	}
 	
 }

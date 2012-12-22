@@ -3,6 +3,7 @@ package net.minecraft.src;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -42,12 +43,18 @@ public class ATSystem
 	
 	private int debuggingLevel;
 	
+	private Map<SoundPool, List<SoundPoolEntry>> stash;
+	
+	private boolean doStashForMusic;
+	
 	public ATSystem(HaddonImpl mod)
 	{
 		this.mod = mod;
 		this.substituantFiles = new LinkedHashMap<String, File>();
 		
 		this.replaceMusWithOggFiles = true;
+		
+		this.stash = new HashMap<SoundPool, List<SoundPoolEntry>>();
 		
 	}
 	
@@ -129,6 +136,12 @@ public class ATSystem
 				(SoundPool) this.mod.util().getPrivateValueLiteral(
 					net.minecraft.src.SoundManager.class, this.mod.manager().getMinecraft().sndManager, "d", 3);
 			
+			// Unstash before restoring: This prevents issues.
+			// Do not check is stashing is enabled before unstashing.
+			// This helps if the player disables stashing when it's already stashed.
+			
+			restoreOriginalFromStash(soundPoolMusic);
+			
 			restoreSubstitutions(soundPoolSounds);
 			restoreSubstitutions(soundPoolStreaming);
 			restoreSubstitutions(soundPoolMusic);
@@ -161,12 +174,78 @@ public class ATSystem
 			performSubstitutions(soundPoolSounds, "sound3/");
 			performSubstitutions(soundPoolStreaming, "streaming/");
 			performSubstitutions(soundPoolMusic, musicDirectories);
+			
+			// Stash after performing the substitutions
+			if (this.doStashForMusic)
+			{
+				stashOriginalFromSoundList(soundPoolMusic);
+			}
+			
 		}
 		catch (PrivateAccessException e)
 		{
 			e.printStackTrace();
 		}
 		log("Performing all substitutions: END");
+	}
+	
+	private void stashOriginalFromSoundList(SoundPool soundPool) throws PrivateAccessException
+	{
+		if (this.stash.get(soundPool) == null)
+		{
+			this.stash.put(soundPool, new ArrayList<SoundPoolEntry>());
+		}
+		
+		List<SoundPoolEntry> poolStash = this.stash.get(soundPool);
+		
+		if (!poolStash.isEmpty())
+		{
+			log("Trying to stash over an unstashed pool! This is an unexpected behavior!");
+		}
+		
+		List allSoundPoolEntries =
+			(List) this.mod.util().getPrivateValueLiteral(net.minecraft.src.SoundPool.class, soundPool, "e", 2);
+		
+		for (Object entry : allSoundPoolEntries)
+		{
+			if (!(entry instanceof ATSoundWrapper))
+			{
+				poolStash.add((SoundPoolEntry) entry);
+			}
+		}
+		
+		if (poolStash.size() == allSoundPoolEntries.size())
+		{
+			log("Did not stash: No custom entries found.");
+			return;
+		}
+		
+		for (SoundPoolEntry entry : poolStash)
+		{
+			allSoundPoolEntries.remove(entry);
+		}
+		
+		log("Stashed " + poolStash.size() + " original entries.");
+		
+	}
+	
+	private void restoreOriginalFromStash(SoundPool soundPool) throws PrivateAccessException
+	{
+		if (this.stash.get(soundPool) == null)
+			return;
+		
+		List<SoundPoolEntry> poolStash = this.stash.get(soundPool);
+		
+		List allSoundPoolEntries =
+			(List) this.mod.util().getPrivateValueLiteral(net.minecraft.src.SoundPool.class, soundPool, "e", 2);
+		
+		for (SoundPoolEntry entry : poolStash)
+		{
+			allSoundPoolEntries.add(entry);
+		}
+		
+		poolStash.clear();
+		
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -370,9 +449,16 @@ public class ATSystem
 			{
 				if (name.startsWith(subLocation))
 				{
-					debug("Installing orphan resource " + name);
-					mc.installResource(name, this.substituantFiles.get(name));
-					orphanCount++;
+					if (!soundPool.isGetRandomSound || name.contains(".") && !isMadeOfDigits(soundNamePart(name)))
+					{
+						debug("Installing orphan resource " + name);
+						mc.installResource(name, this.substituantFiles.get(name));
+						orphanCount++;
+					}
+					else
+					{
+						log("Did not install resource " + name + " because the name is invalid in this context!");
+					}
 				}
 			}
 			
@@ -416,6 +502,25 @@ public class ATSystem
 		
 	}
 	
+	private String soundNamePart(String name)
+	{
+		name = name.substring(0, name.indexOf("."));
+		name = name.substring(name.indexOf("/") + 1);
+		
+		return name;
+	}
+	
+	private boolean isMadeOfDigits(String name)
+	{
+		for (int i = 0; i < name.length(); i++)
+		{
+			if (!Character.isDigit(name.charAt(i)))
+				return false;
+		}
+		
+		return true;
+	}
+	
 	public void log(String contents)
 	{
 		System.out.println("(ATSystem) " + contents);
@@ -444,6 +549,12 @@ public class ATSystem
 	public void setDebuggingLevel(int level)
 	{
 		this.debuggingLevel = level;
+		
+	}
+	
+	public void setStashForMusic(boolean enabled)
+	{
+		this.doStashForMusic = enabled;
 		
 	}
 }
