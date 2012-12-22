@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -188,6 +189,31 @@ public class DebuggingHa3Haddon extends HaddonImpl
 		this.renderRelay.ensureExists();
 		this.renderAim.ensureExists();
 		this.button.signalState(util().areKeysDown(29, 42, 49));
+		
+		Minecraft mc = manager().getMinecraft();
+		EntityPlayer ply = mc.thePlayer;
+		
+		if (true)
+			return;
+		
+		if (util().getClientTick() % 20 != 0)
+			return;
+		
+		double x = ply.posX;
+		double y = ply.posY;
+		double z = ply.posZ;
+		double wadd = 16;
+		double hadd = 16;
+		
+		AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(x - wadd, y - hadd, z - wadd, x + wadd, y + hadd, z + wadd);
+		List ll = manager().getMinecraft().theWorld.getEntitiesWithinAABB(Entity.class, aabb);
+		for (Object o : ll)
+		{
+			Entity ee = (Entity) o;
+			System.out.println(ee.getClass().toString() + " " + ee.posX + "," + ee.posY + "," + ee.posZ);
+			
+		}
+		System.out.println(ll.size());
 		
 	}
 	
