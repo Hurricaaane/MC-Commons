@@ -1,6 +1,5 @@
 package net.minecraft.src;
 
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -379,10 +378,8 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager, Bridge
 	}
 	
 	@Override
-	public void receiveCustomPacket(Packet250CustomPayload message)
+	public void clientCustomPayload(NetClientHandler var1, Packet250CustomPayload message)
 	{
-		System.out.println("FFFFFFFFF "
-			+ message.channel + " <<>> " + new String(message.data, Charset.forName("UTF-8")));
 		if (!this.supportsIncomingMessages)
 			return;
 		
