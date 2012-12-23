@@ -26,7 +26,7 @@ public class mod_Audiotori extends HaddonBridgeModLoader
 	@Override
 	public String getVersion()
 	{
-		return "r2 for 1.4.4";
+		return "r3 for 1.4.6";
 		
 	}
 }

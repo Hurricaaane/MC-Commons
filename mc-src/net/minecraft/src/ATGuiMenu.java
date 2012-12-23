@@ -167,7 +167,7 @@ public class ATGuiMenu extends GuiScreen
 		if (button.id == 200)
 		{
 			// This triggers onGuiClosed
-			this.mod.util().closeCurrentScreen();
+			this.mc.displayGuiScreen(this.parentScreen);
 		}
 		else if (button.id == 210)
 		{
@@ -259,6 +259,7 @@ public class ATGuiMenu extends GuiScreen
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float par3)
 	{
+		int numberOfPacks = this.mod.getPackManager().getPackCount();
 		boolean isActivated = this.mod.getPackManager().isActivated();
 		int titleWidth = this.fontRenderer.getStringWidth(this.screenTitle);
 		
@@ -278,8 +279,18 @@ public class ATGuiMenu extends GuiScreen
 				"Minecraft sound is OFF", this.width / 2 + titleWidth / 4 + 10, 8, 0xFFFF00);
 		}
 		
-		drawCenteredString(this.fontRenderer, "Top layer (overrides)", this.width / 2, 20, 0xA0A0A0);
-		drawCenteredString(this.fontRenderer, "Bottom layer (compliants)", this.width / 2, this.height - 60, 0xA0A0A0);
+		if (numberOfPacks == 0)
+		{
+			drawCenteredString(
+				this.fontRenderer, "No sound packs installed! (.minecraft/audiotori/<sound pack>/)", this.width / 2,
+				20, 0xC00000);
+		}
+		else
+		{
+			drawCenteredString(this.fontRenderer, "Top layer (overrides)", this.width / 2, 20, 0xA0A0A0);
+			drawCenteredString(
+				this.fontRenderer, "Bottom layer (compliants)", this.width / 2, this.height - 60, 0xA0A0A0);
+		}
 		
 		super.drawScreen(mouseX, mouseY, par3);
 		

@@ -34,7 +34,7 @@ import eu.ha3.util.property.simple.ConfigProperty;
 public class ATHaddon extends HaddonImpl implements SupportsTickEvents, SupportsEverythingReady, SupportsKeyEvents
 {
 	// Remember to change the thing in mod_Audiotori
-	public static final int VERSION = 2;
+	public static final int VERSION = 3;
 	
 	private static final int REANALYSE_INITIAL_DELAY = 20 * 10;
 	private static final int REANALYSE_DURING_DELAY = 20 * 30;
@@ -316,7 +316,7 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 		{
 			// XXX check me
 			// ticksBeforeMusic
-			util().setPrivateValueLiteral(SoundManager.class, sndManager, "j", 9, 0);
+			util().setPrivateValueLiteral(SoundManager.class, sndManager, "k", 10, 0);
 			sndManager.playRandomMusicIfReady();
 		}
 		catch (PrivateAccessException e)
@@ -420,7 +420,7 @@ public class ATHaddon extends HaddonImpl implements SupportsTickEvents, Supports
 	@Override
 	public void onKey(KeyBinding event)
 	{
-		if (!(util().getCurrentScreen() instanceof ATGuiMenu))
+		if (util().isCurrentScreen(null))
 		{
 			openGUI();
 		}
