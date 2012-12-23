@@ -299,18 +299,18 @@ public class SkinningSystemMLP implements SkinningSystem
 			this.pony.checkSkin(bufferedimage);
 			
 			RenderEngine re = this.mc.renderEngine;
-			if (!eu.ha3.mc.convenience.Ha3StaticUtilities.classExists(
+			/*if (!eu.ha3.mc.convenience.Ha3StaticUtilities.classExists(
 				"com.minelittlepony.mc.patchworkers.AdvSkinPatchworker", this))
-			{
-				this.pony.texture = this.skinPath;
-				
-				re.setupTexture(bufferedimage, re.getTexture(this.pony.texture));
-				this.pony.skinUrl = null;
-			}
+			{*/
+			this.pony.texture = this.skinPath;
+			
+			re.setupTexture(bufferedimage, re.getTexture(this.pony.texture));
+			this.pony.skinUrl = null;
+			/*}
 			else
 			{
 				Pony.convertAndLoadPonySkinFromRawToUseable(this.pony, this.skinPath, bufferedimage, re);
-			}
+			}*/
 			
 		}
 		catch (IOException e)
