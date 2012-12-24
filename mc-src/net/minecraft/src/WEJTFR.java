@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 import eu.ha3.mc.haddon.SupportsConnectEvents;
 import eu.ha3.mc.haddon.SupportsIncomingMessages;
+import eu.ha3.mc.haddon.SupportsTickEvents;
 
 /**
  * WorldEdit JUST THE FUCKING RECTANGLE<br>
@@ -16,10 +17,18 @@ import eu.ha3.mc.haddon.SupportsIncomingMessages;
  * @author Hurry
  * 
  */
-public class WEJTFR extends HaddonImpl implements SupportsIncomingMessages, SupportsConnectEvents
+public class WEJTFR extends HaddonImpl implements SupportsIncomingMessages, SupportsConnectEvents, SupportsTickEvents
 {
 	private static final int protocolVersion = 2;
 	private RenderWE renderRelay;
+	
+	boolean visible;
+	int xa;
+	int ya;
+	int za;
+	int xb;
+	int yb;
+	int zb;
 	
 	@Override
 	public void onLoad()
@@ -29,6 +38,7 @@ public class WEJTFR extends HaddonImpl implements SupportsIncomingMessages, Supp
 		manager().enlistIncomingMessages("WECUI");
 		manager().enlistOutgoingMessages("WECUI"); // This does almost nothing
 		manager().addRenderable(this.renderRelay.getRenderEntityClass(), this.renderRelay.getRenderHook());
+		manager().hookTickEvents(true);
 	}
 	
 	@Override
@@ -36,7 +46,49 @@ public class WEJTFR extends HaddonImpl implements SupportsIncomingMessages, Supp
 	{
 		String properMessage = new String(message.data, Charset.forName("UTF-8"));
 		//this.controller.getEventManager().callEvent(channelevent);
-		System.out.println("WEJTFR " + properMessage);
+		//System.out.println("WEJTFR " + properMessage);
+		System.out.println(properMessage);
+		try
+		{
+			String[] parts = properMessage.split("\\|");
+			System.out.println(parts.length);
+			if (parts[0].equals("p"))
+			{
+				if (parts[1].equals("0"))
+				{
+					this.xa = Integer.parseInt(parts[2]);
+					this.ya = Integer.parseInt(parts[3]);
+					this.za = Integer.parseInt(parts[4]);
+					
+					if (parts[5].equals("-1"))
+					{
+						this.xb = this.xa;
+						this.yb = this.ya;
+						this.zb = this.za;
+					}
+					this.visible = true;
+				}
+				else if (parts[1].equals("1"))
+				{
+					this.xb = Integer.parseInt(parts[2]);
+					this.yb = Integer.parseInt(parts[3]);
+					this.zb = Integer.parseInt(parts[4]);
+					
+					if (parts[5].equals("-1"))
+					{
+						this.xa = this.xb;
+						this.ya = this.yb;
+						this.za = this.zb;
+					}
+					this.visible = true;
+				}
+			}
+		}
+		catch (Throwable e)
+		{
+			this.visible = false;
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
@@ -44,7 +96,8 @@ public class WEJTFR extends HaddonImpl implements SupportsIncomingMessages, Supp
 	{
 		byte[] buffer = ("v|" + WEJTFR.protocolVersion).getBytes(Charset.forName("UTF-8"));
 		manager().sendOutgoingMessage(new Packet250CustomPayload("WECUI", buffer));
-		System.out.println("WEJTFR Sent init...");
+		//System.out.println("WEJTFR Sent init...");
+		
 	}
 	
 	class RenderWE extends Ha3RenderRelay
@@ -57,55 +110,58 @@ public class WEJTFR extends HaddonImpl implements SupportsIncomingMessages, Supp
 		@Override
 		public void doRender(Entity entity, double dx, double dy, double dz, float f, float semi)
 		{
-			/*
+			if (!WEJTFR.this.visible)
+				return;
+			
 			beginTrace();
 			
-			double ax = 0, ay = 0, az = 0;
-			int count = 0;
+			int x = Math.min(WEJTFR.this.xa, WEJTFR.this.xb);
+			int y = Math.min(WEJTFR.this.ya, WEJTFR.this.yb);
+			int z = Math.min(WEJTFR.this.za, WEJTFR.this.zb);
+			int xxx = Math.max(WEJTFR.this.xa, WEJTFR.this.xb) + 1;
+			int yyy = Math.max(WEJTFR.this.ya, WEJTFR.this.yb) + 1;
+			int zzz = Math.max(WEJTFR.this.za, WEJTFR.this.zb) + 1;
 			
-			for (LBReport report : LBVisHaddon.this.reports)
-			{
-				//if (report.isValid())
-				for (LBChange change : report.getStoredChanges())
-				{
-					count++;
-					
-					ax = ax + change.getX();
-					ay = ay + change.getY();
-					az = az + change.getZ();
-					
-					if (change.getAction().startsWith("destroyed"))
-					{
-						traceColor(255, 0, 0);
-					}
-					else if (change.getAction().startsWith("created"))
-					{
-						traceColor(0, 0, 255);
-					}
-					else if (change.getAction().startsWith("replaced"))
-					{
-						traceColor(255, 255, 0);
-					}
-					
-					int x = change.getX();
-					int y = change.getY();
-					int z = change.getZ();
-					
-					GL11.glLineWidth(1.5f);
-					trace(dx, dy, dz, x, y, z, x + 1, y, z);
-					trace(dx, dy, dz, x + 1, y, z + 1, x + 1, y, z);
-					trace(dx, dy, dz, x + 1, y, z + 1, x, y, z + 1);
-					trace(dx, dy, dz, x, y, z + 1, x, y, z);
-					
-				}
-			}
+			traceColor(255, 0, 0);
+			GL11.glLineWidth(3f);
+			traceACube(
+				dx, dy, dz, WEJTFR.this.xa, WEJTFR.this.ya, WEJTFR.this.za, WEJTFR.this.xa + 1, WEJTFR.this.ya + 1,
+				WEJTFR.this.za + 1);
+			traceColor(0, 255, 0);
+			traceACube(
+				dx, dy, dz, WEJTFR.this.xb, WEJTFR.this.yb, WEJTFR.this.zb, WEJTFR.this.xb + 1, WEJTFR.this.yb + 1,
+				WEJTFR.this.zb + 1);
 			
-			ax = (float) ax / count;
-			ay = (float) ay / count;
-			az = (float) az / count;
+			traceColor(255, 0, 0);
+			GL11.glLineWidth(3f);
+			traceACube(dx, dy, dz, x, y, z, xxx, yyy, zzz);
+			
+			/*traceColor(255, 255, 0);
+			trace(dx, dy, dz, x, y, z, xxx, y, zzz);
+			trace(dx, dy, dz, xxx, y, z, x, y, zzz);
+			trace(dx, dy, dz, x, yyy, z, xxx, yyy, zzz);
+			trace(dx, dy, dz, xxx, yyy, z, x, yyy, zzz);*/
 			
 			finishTrace();
-			*/
+			
+		}
+		
+		private void traceACube(double dx, double dy, double dz, int x, int y, int z, int xxx, int yyy, int zzz)
+		{
+			trace(dx, dy, dz, xxx, y, z, x, y, z);
+			trace(dx, dy, dz, x, y, zzz, x, y, z);
+			trace(dx, dy, dz, xxx, y, z, xxx, y, zzz);
+			trace(dx, dy, dz, x, y, zzz, xxx, y, zzz);
+			
+			trace(dx, dy, dz, xxx, y, z, xxx, yyy, z);
+			trace(dx, dy, dz, x, y, zzz, x, yyy, zzz);
+			trace(dx, dy, dz, xxx, y, zzz, xxx, yyy, zzz);
+			trace(dx, dy, dz, x, y, z, x, yyy, z);
+			
+			trace(dx, dy, dz, xxx, yyy, z, x, yyy, z);
+			trace(dx, dy, dz, x, yyy, zzz, x, yyy, z);
+			trace(dx, dy, dz, xxx, yyy, z, xxx, yyy, zzz);
+			trace(dx, dy, dz, x, yyy, zzz, xxx, yyy, zzz);
 		}
 		
 		private void beginTrace()
@@ -115,6 +171,7 @@ public class WEJTFR extends HaddonImpl implements SupportsIncomingMessages, Supp
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
 			GL11.glDisable(GL11.GL_ALPHA_TEST);
+			GL11.glDisable(GL11.GL_LIGHTING);
 			
 			GL11.glEnable(GL11.GL_BLEND);
 			GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ZERO);
@@ -137,6 +194,7 @@ public class WEJTFR extends HaddonImpl implements SupportsIncomingMessages, Supp
 			GL11.glEnable(GL11.GL_ALPHA_TEST);
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
 			GL11.glEnable(GL11.GL_DEPTH_TEST);
+			GL11.glEnable(GL11.GL_LIGHTING);
 			
 			RenderHelper.enableStandardItemLighting();
 		}
@@ -170,6 +228,16 @@ public class WEJTFR extends HaddonImpl implements SupportsIncomingMessages, Supp
 		
 		private class MyRenderEntity extends HRenderEntity
 		{
+		}
+		
+	}
+	
+	@Override
+	public void onTick()
+	{
+		if (this.renderRelay.ensureExists())
+		{
+			System.out.println("Respawned Render Entity");
 		}
 		
 	}
