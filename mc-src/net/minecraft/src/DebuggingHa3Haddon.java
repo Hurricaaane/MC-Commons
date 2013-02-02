@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -16,6 +17,7 @@ import java.util.Set;
 
 import net.minecraft.client.Minecraft;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import eu.ha3.easy.EdgeModel;
@@ -23,6 +25,7 @@ import eu.ha3.easy.EdgeTrigger;
 import eu.ha3.mc.haddon.PrivateAccessException;
 import eu.ha3.mc.haddon.SupportsChatEvents;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
+import eu.ha3.mc.haddon.SupportsIncomingMessages;
 import eu.ha3.mc.haddon.SupportsTickEvents;
 
 /*
@@ -42,13 +45,16 @@ import eu.ha3.mc.haddon.SupportsTickEvents;
 */
 
 public class DebuggingHa3Haddon extends HaddonImpl
-	implements SupportsTickEvents, SupportsFrameEvents, SupportsChatEvents
+	implements SupportsTickEvents, SupportsFrameEvents, SupportsChatEvents, SupportsIncomingMessages
 {
 	private EdgeTrigger button;
 	private boolean toggle;
 	private RenderSpawnPoints renderRelay;
 	private RenderAim renderAim;
 	private Map<String, Object> pool;
+	
+	public static List<DebuggingVisibleSounds> sounds = new ArrayList<DebuggingVisibleSounds>();
+	public static Object sounds_LOCK = new Object();
 	
 	@Override
 	public void onLoad()
@@ -77,6 +83,26 @@ public class DebuggingHa3Haddon extends HaddonImpl
 		manager().hookChatEvents(true);
 		manager().addRenderable(this.renderRelay.getRenderEntityClass(), this.renderRelay.getRenderHook());
 		manager().addRenderable(this.renderAim.getRenderEntityClass(), this.renderAim.getRenderHook());
+		
+		try
+		{
+			Packet.packetIdToClassMap.addKey(62, DebuggingVisibleSounds.class);
+			
+			// packetClassToIdMap
+			HashMap map = (HashMap) util().getPrivateValueLiteral(Packet.class, null, "a", 1);
+			map.put(DebuggingVisibleSounds.class, 62);
+			
+		}
+		catch (PrivateAccessException e)
+		{
+			e.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		//manager().enlistIncomingMessages(null);
 		
 		/*try
 		{
@@ -186,12 +212,48 @@ public class DebuggingHa3Haddon extends HaddonImpl
 	@Override
 	public void onTick()
 	{
+		Minecraft mc = manager().getMinecraft();
+		EntityPlayer ply = mc.thePlayer;
+		//int light =
+		//	manager().getMinecraft().theWorld.getBlockLightValue((int) ply.posX, (int) ply.posY, (int) ply.posZ);
+		//System.out.println(light);
+		
+		int xx = (int) Math.floor(ply.posX);
+		int yy = (int) Math.floor(ply.posY);
+		int zz = (int) Math.floor(ply.posZ);
+		
+		//mc.theWorld.setBlockAndMetadataWithNotify(133, 0, xx, yy - 2, zz);
+		//sendPlaceBlock(ModLoader.getMinecraftInstance(), world, itemstack, i, j, k - 1, byte3, byte4);
+		
+		//boolean flag =
+		//	mc.playerController.onPlayerRightClick(
+		//		mc.thePlayer, mc.theWorld, mc.thePlayer.getItemInUse(), xx, yy - 2, zz, 1,
+		//		Vec3.createVectorHelper(xx, yy, zz));
+		
+		if (this.pool.get("fus") == null)
+		{
+			this.pool.put("fus", new EdgeTrigger(new EdgeModel() {
+				@Override
+				public void onTrueEdge()
+				{
+					//manager().getMinecraft().thePlayer.sendChatMessage("fus ro dah");
+					
+					NetClientHandler var1 = manager().getMinecraft().thePlayer.sendQueue;
+					var1.addToSendQueue(new Packet19EntityAction(manager().getMinecraft().thePlayer, 3));
+				}
+				
+				@Override
+				public void onFalseEdge()
+				{
+				}
+			}));
+		}
+		
+		((EdgeTrigger) this.pool.get("fus")).signalState(util().areKeysDown(Keyboard.KEY_ADD));
+		
 		this.renderRelay.ensureExists();
 		this.renderAim.ensureExists();
 		this.button.signalState(util().areKeysDown(29, 42, 49));
-		
-		Minecraft mc = manager().getMinecraft();
-		EntityPlayer ply = mc.thePlayer;
 		
 		if (true)
 			return;
@@ -316,7 +378,33 @@ public class DebuggingHa3Haddon extends HaddonImpl
 		@Override
 		public void doRender(Entity entity, double dx, double dy, double dz, float f, float semi)
 		{
-			boolean renderEnabled = false;
+			World w = manager().getMinecraft().theWorld;
+			Random r = new Random();
+			
+			List<DebuggingVisibleSounds> soundsCopy;
+			synchronized (DebuggingHa3Haddon.sounds_LOCK)
+			{
+				soundsCopy = new ArrayList<DebuggingVisibleSounds>(sounds);
+			}
+			
+			for (DebuggingVisibleSounds sound : soundsCopy)
+			{
+				boolean isFootsteps = false;
+				if (sound.getVolume() == 0.15f /*&& sound.getPitch() == 63*/)
+				{
+					isFootsteps = true;
+				}
+				for (int i = 0; i < (isFootsteps ? 20 : 2); i++)
+				{
+					w.spawnParticle(
+						"fireworksSpark", sound.getEffectX(), sound.getEffectY(), sound.getEffectZ(),
+						r.nextGaussian() * 0.05D, 0.05, r.nextGaussian() * 0.05D);
+				}
+			}
+			
+			sounds.clear();
+			
+			/*boolean renderEnabled = false;
 			
 			if (!renderEnabled)
 				return;
@@ -361,7 +449,7 @@ public class DebuggingHa3Haddon extends HaddonImpl
 						}
 					}
 			}
-			finishTrace();
+			finishTrace();*/
 		}
 		
 		private void beginTrace()
@@ -541,6 +629,11 @@ public class DebuggingHa3Haddon extends HaddonImpl
 		{
 			File f = new File("E:\\Dropbox\\Minecraft\\user\\mainline\\.minecraft\\mcsession.txt");
 			
+			if (args.length > 0 && args[0].equals("whitefire"))
+			{
+				f = new File("E:\\MinecraftSymlink\\mainline\\whitefire\\.minecraft\\mcsession.txt");
+			}
+			
 			if (f.exists())
 			{
 				BufferedReader reader = new BufferedReader(new FileReader(f));
@@ -614,6 +707,13 @@ public class DebuggingHa3Haddon extends HaddonImpl
 				
 			}
 		}
+		
+	}
+	
+	@Override
+	public void onIncomingMessage(Packet250CustomPayload message)
+	{
+		System.out.println("(IM) " + message.channel + " :: " + new String(message.data, Charset.forName("UTF-8")));
 		
 	}
 	
