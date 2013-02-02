@@ -83,6 +83,10 @@ public class WEJTFR extends HaddonImpl implements SupportsIncomingMessages, Supp
 					this.visible = true;
 				}
 			}
+			else if (parts[0].equals("s"))
+			{
+				this.visible = false;
+			}
 		}
 		catch (Throwable e)
 		{
