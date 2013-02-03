@@ -1,6 +1,11 @@
 package net.minecraft.src;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.channels.FileChannel;
 
 import net.minecraft.client.Minecraft;
 import eu.ha3.mc.convenience.Ha3StaticUtilities;
@@ -34,6 +39,7 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 	@Override
 	public void onLoad()
 	{
+		fixInstallation();
 		loadSounds();
 		
 		if (isInstalledMLP())
@@ -45,10 +51,97 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 			this.system = new CCBGeneralReader(this);
 		}
 		
+		File configFile = new File(Minecraft.getMinecraftDir(), "ccb.cfg");
+		if (configFile.exists())
+		{
+			log("Config file found. Loading...");
+			try
+			{
+				ConfigProperty config = new ConfigProperty();
+				config.setSource(configFile.getCanonicalPath());
+				config.load();
+				
+				CCBVariator var = new CCBVariator();
+				var.loadConfig(config);
+				
+				this.system.setVariator(new CCBVariator());
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			log("Loaded.");
+			
+		}
+		
 		manager().hookFrameEvents(true);
 		
 		this.update = new CCBUpdate(this);
 		this.update.attempt();
+	}
+	
+	private void fixInstallation()
+	{
+		File folder = new File(Minecraft.getMinecraftDir(), "resources/sound3/ccb_sounds");
+		if (!folder.exists())
+		{
+			log("Did not find folder resources/sound3/ccb_sounds/. Maybe this is the first installation?");
+			folder.mkdirs();
+		}
+		
+		String[] names = { "dash1.wav", "hoofstep1.wav", "land1.wav", "wing1.wav" };
+		
+		for (String name : names)
+		{
+			try
+			{
+				File file = new File(folder, name);
+				
+				if (!file.exists())
+				{
+					log("Did not find file " + name + ". Installing...");
+					URL toInstall = CCBHaddon.class.getResource("/ccb_sounds/" + name);
+					copyFile(new File(toInstall.getFile()), file);
+					
+				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			
+		}
+	}
+	
+	// from
+	// http://stackoverflow.com/questions/106770/standard-concise-way-to-copy-a-file-in-java
+	private static void copyFile(File sourceFile, File destFile) throws IOException
+	{
+		if (!destFile.exists())
+		{
+			destFile.createNewFile();
+		}
+		
+		FileChannel source = null;
+		FileChannel destination = null;
+		
+		try
+		{
+			source = new FileInputStream(sourceFile).getChannel();
+			destination = new FileOutputStream(destFile).getChannel();
+			destination.transferFrom(source, 0, source.size());
+		}
+		finally
+		{
+			if (source != null)
+			{
+				source.close();
+			}
+			if (destination != null)
+			{
+				destination.close();
+			}
+		}
 	}
 	
 	private boolean isInstalledMLP()
@@ -122,7 +215,7 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 				}
 				catch (Exception var9)
 				{
-					System.out.println("Failed to add " + par2Str + file.getName());
+					log("Failed to add " + par2Str + file.getName());
 				}
 			}
 		}
@@ -137,7 +230,7 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 	{
 	}
 	
-	public void log(String contents)
+	public static void log(String contents)
 	{
 		System.out.println("(CCB) " + contents);
 	}

@@ -93,7 +93,7 @@ public class CCBUpdate extends Thread
 				}
 				
 			}
-			this.mod.log("Update version found: " + maxvn);
+			CCBHaddon.log("Update version found: " + maxvn);
 			
 			try
 			{

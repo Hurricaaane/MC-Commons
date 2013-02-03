@@ -20,4 +20,6 @@ public interface CCBReader
 {
 	public void frame(EntityPlayer ply);
 	
+	public void setVariator(CCBVariator var);
+	
 }

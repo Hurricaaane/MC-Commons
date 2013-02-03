@@ -22,6 +22,8 @@ public class CCBGeneralReader implements CCBReader
 {
 	final protected CCBHaddon mod;
 	
+	protected CCBVariator VAR;
+	
 	protected boolean isPegasus;
 	
 	protected float dmwBase;
@@ -37,6 +39,13 @@ public class CCBGeneralReader implements CCBReader
 	public CCBGeneralReader(CCBHaddon mod)
 	{
 		this.mod = mod;
+		this.VAR = new CCBVariator();
+	}
+	
+	@Override
+	public void setVariator(CCBVariator variator)
+	{
+		this.VAR = variator;
 	}
 	
 	@Override
@@ -44,7 +53,6 @@ public class CCBGeneralReader implements CCBReader
 	{
 		simulateHoofsteps(ply);
 		simulateWings(ply);
-		
 	}
 	
 	protected void simulateWings(EntityPlayer ply)
@@ -58,27 +66,42 @@ public class CCBGeneralReader implements CCBReader
 			this.isFlying = !this.isFlying;
 			if (this.isFlying)
 			{
-				this.airborneTime = System.currentTimeMillis() + 700;
+				this.airborneTime = System.currentTimeMillis() + this.VAR.WING_JUMPING_REST_TIME;
 			}
 			
-			if (!this.isFlying && this.fallDistance > 3f || speed > 0.2f)
+			boolean hugeLanding = !this.isFlying && this.fallDistance > this.VAR.HUGEFALL_LANDING_DISTANCE_MIN;
+			boolean speedingJumpStateChange = speed > this.VAR.GROUND_AIR_STATE_SPEED;
+			
+			if (hugeLanding || speedingJumpStateChange)
 			{
-				float volume = 0.3f;
-				if (speed <= 0.2f)
+				float volume = this.VAR.GROUND_AIR_STATE_CHANGE_VOLUME;
+				
+				// If the pegasus has landed 
+				if (hugeLanding)
 				{
-					volume = 0.1f + 0.4f * scalex(this.fallDistance, 3f, 20f);
+					volume =
+						this.VAR.HUGEFALL_LANDING_VOLUME_MIN
+							+ (this.VAR.HUGEFALL_LANDING_VOLUME_MAX - this.VAR.HUGEFALL_LANDING_VOLUME_MIN)
+							* scalex(
+								this.fallDistance, this.VAR.HUGEFALL_LANDING_DISTANCE_MIN,
+								this.VAR.HUGEFALL_LANDING_DISTANCE_MAX - this.VAR.HUGEFALL_LANDING_DISTANCE_MIN);
+					if (speedingJumpStateChange && volume < this.VAR.GROUND_AIR_STATE_CHANGE_VOLUME)
+					{
+						volume = this.VAR.GROUND_AIR_STATE_CHANGE_VOLUME;
+					}
 				}
 				
 				if (!this.isFlying)
 				{
 					this.mod.manager().getMinecraft().theWorld.playSound(
-						ply.posX, ply.posY, ply.posZ, "ccb_sounds.airborne_land", volume, randomPitch(1f, 0.2f), false);
+						ply.posX, ply.posY, ply.posZ, "ccb_sounds.land", volume,
+						randomPitch(1f, this.VAR.LANDING_PITCH_RADIUS), false);
 				}
 				else
 				{
 					this.mod.manager().getMinecraft().theWorld.playSound(
-						ply.posX, ply.posY, ply.posZ, "ccb_sounds.pegasus_dashing", volume, randomPitch(1f, 0.1f),
-						false);
+						ply.posX, ply.posY, ply.posZ, "ccb_sounds.dash", volume,
+						randomPitch(1f, this.VAR.DASHING_PITCH_RADIUS), false);
 				}
 				
 			}
@@ -97,26 +120,31 @@ public class CCBGeneralReader implements CCBReader
 		// Only play wing sounds if pegasus
 		if (this.isPegasus && this.isFlying && System.currentTimeMillis() > this.airborneTime)
 		{
-			int period = 400;
-			if (volumetricSpeed > 0.2f)
+			int period = this.VAR.WING_SLOW;
+			if (volumetricSpeed > this.VAR.WING_SPEED_MIN)
 			{
-				period = (int) (period - 150 * scalex(volumetricSpeed, 0.2f, 0.3f));
-				
+				period =
+					(int) (period - (this.VAR.WING_SLOW - this.VAR.WING_FAST)
+						* scalex(volumetricSpeed, this.VAR.WING_SPEED_MIN, this.VAR.WING_SPEED_MAX));
 			}
 			
 			this.airborneTime = System.currentTimeMillis() + period;
 			
-			float volume = 0.5f;
+			float volume = this.VAR.WING_VOLUME;
 			long diffImmobile = System.currentTimeMillis() - this.immobileTime;
-			if (System.currentTimeMillis() - this.immobileTime > 20000)
+			if (System.currentTimeMillis() - this.immobileTime > this.VAR.WING_IMMOBILE_FADE_START)
 			{
-				volume = 0.5f * (1f - scalex(diffImmobile, 20000, 20000));
+				volume =
+					volume
+						* (1f - scalex(
+							diffImmobile, this.VAR.WING_IMMOBILE_FADE_START, this.VAR.WING_IMMOBILE_FADE_DURATION));
 			}
 			
 			if (volume > 0f)
 			{
 				this.mod.manager().getMinecraft().theWorld.playSound(
-					ply.posX, ply.posY, ply.posZ, "ccb_sounds.wing_flap", volume, randomPitch(1f, 0.05f), false);
+					ply.posX, ply.posY, ply.posZ, "ccb_sounds.wing", volume,
+					randomPitch(1f, this.VAR.WING_PITCH_RADIUS), false);
 			}
 			
 		}
@@ -136,45 +164,53 @@ public class CCBGeneralReader implements CCBReader
 		float dwm = distanceReference - this.dmwBase;
 		
 		float speed = (float) Math.sqrt(ply.motionX * ply.motionX + ply.motionZ * ply.motionZ);
-		float distance = 0.65f;
-		float volume = 0.1f;
+		float distance = this.VAR.WALK_DISTANCE;
+		float volume = this.VAR.WALK_VOLUME;
 		
 		if (ply.isOnLadder())
 		{
-			distance = 0.4f;
+			volume = this.VAR.LADDER_VOLUME;
+			distance = this.VAR.LADDER_DISTANCE;
 		}
 		else if (Math.abs(this.yPosition - ply.posY) > 0.4d)
 		{
 			// Regular stance on staircases (1-1-1-1-)
-			distance = 0.01f;
+			volume = this.VAR.STAIRCASE_VOLUME;
+			distance = this.VAR.STAIRCASE_DISTANCE;
 			this.dwmYChange = distanceReference;
 			
 		}
-		else if (speed > 0.13f)
+		else if (speed > this.VAR.SPEED_TO_GALLOP)
 		{
+			volume = this.VAR.GALLOP_VOLUME;
 			// Gallop stance (1-1-2--)
 			if (this.hoof == 3)
 			{
-				distance = 0.7f;
+				distance = this.VAR.GALLOP_DISTANCE_4;
 			}
 			else if (this.hoof == 2)
 			{
-				distance = 0.1f;
+				distance = this.VAR.GALLOP_DISTANCE_3;
+			}
+			else if (this.hoof == 1)
+			{
+				distance = this.VAR.GALLOP_DISTANCE_2;
 			}
 			else
 			{
-				distance = 0.25f;
+				distance = this.VAR.GALLOP_DISTANCE_1;
 			}
 		}
-		else if (speed > 0.08f)
+		else if (speed > this.VAR.SPEED_TO_WALK)
 		{
 			// Walking stance (2-2-)
 			// Prevent the 2-2 steps from happening on staircases
-			if (distanceReference - this.dwmYChange > 1f)
+			if (distanceReference - this.dwmYChange > this.VAR.STAIRCASE_ANTICHASE_DIFFERENCE)
 			{
 				if (this.hoof % 2 == 0)
 				{
-					distance = distance / 7f;
+					//distance = distance / 7f;
+					distance = distance * this.VAR.WALK_CHASING_FACTOR;
 				}
 			}
 			
@@ -182,8 +218,8 @@ public class CCBGeneralReader implements CCBReader
 		else
 		{
 			// Slow stance (1--1--1--1--)
-			distance = 0.75f;
-			volume = volume * speed / 0.08f;
+			distance = this.VAR.SLOW_DISTANCE;
+			volume = this.VAR.SLOW_VOLUME * speed / this.VAR.SPEED_TO_WALK;
 		}
 		
 		if (dwm > distance)
@@ -206,13 +242,17 @@ public class CCBGeneralReader implements CCBReader
 			}
 			if (block > 0)
 			{
-				ply.playStepSound(xx, yy, zz, block);
+				if (this.VAR.PLAY_BLOCKSTEPS)
+				{
+					ply.playStepSound(xx, yy, zz, block);
+				}
 				
-				if (!ply.isOnLadder())
+				volume = volume * this.VAR.HOOF_VOLUME_MULTIPLICATOR;
+				if (this.VAR.PLAY_HOOFSTEPS && volume > 0)
 				{
 					this.mod.manager().getMinecraft().theWorld.playSound(
-						ply.posX, ply.posY, ply.posZ, "ccb_sounds.hoof_relaxed_one", volume, randomPitch(1f, 0.1f),
-						false);
+						ply.posX, ply.posY, ply.posZ, "ccb_sounds.hoofstep", volume,
+						randomPitch(1f, this.VAR.HOOF_PITCH_RADIUS), false);
 				}
 			}
 			
@@ -240,13 +280,6 @@ public class CCBGeneralReader implements CCBReader
 	private float randomPitch(float base, float radius)
 	{
 		return base + new Random().nextFloat() * radius * 2 - radius;
-		
-	}
-	
-	@Override
-	public void setVariator(CCBVariator var)
-	{
-		// TODO Auto-generated method stub
 		
 	}
 	

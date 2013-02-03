@@ -1,5 +1,8 @@
 package net.minecraft.src;
 
+import java.lang.reflect.Field;
+import java.util.Set;
+
 import eu.ha3.util.property.simple.ConfigProperty;
 
 /*
@@ -20,8 +23,82 @@ import eu.ha3.util.property.simple.ConfigProperty;
 
 public class CCBVariator
 {
+	public int WING_JUMPING_REST_TIME = 700;
+	public int WING_SLOW = 550;
+	public int WING_FAST = 550 - 350;
+	public float WING_SPEED_MIN = 0.2f;
+	public float WING_SPEED_MAX = 0.2f + 0.25f;
+	public int WING_IMMOBILE_FADE_START = 20000;
+	public int WING_IMMOBILE_FADE_DURATION = 20000;
+	public float WING_VOLUME = 0.5f;
+	public float WING_PITCH_RADIUS = 0.05f;
+	
+	public float LANDING_PITCH_RADIUS = 0.2f;
+	public float DASHING_PITCH_RADIUS = 0.1f;
+	
+	public float GROUND_AIR_STATE_SPEED = 0.2f;
+	public float GROUND_AIR_STATE_CHANGE_VOLUME = 0.3f;
+	public float HUGEFALL_LANDING_VOLUME_MIN = 0.1f;
+	public float HUGEFALL_LANDING_VOLUME_MAX = 0.5f;
+	public float HUGEFALL_LANDING_DISTANCE_MIN = 3f;
+	public float HUGEFALL_LANDING_DISTANCE_MAX = 3f + 9f;
+	
+	public float WALK_DISTANCE = 0.65f;
+	public float WALK_CHASING_FACTOR = 1f / 7f;
+	public float SLOW_DISTANCE = 0.75f;
+	public float GALLOP_DISTANCE_1 = 0.25f;
+	public float GALLOP_DISTANCE_2 = 0.25f;
+	public float GALLOP_DISTANCE_3 = 0.1f;
+	public float GALLOP_DISTANCE_4 = 0.7f;
+	public float LADDER_DISTANCE = 0.4f;
+	public float STAIRCASE_DISTANCE = 0.01f;
+	public float STAIRCASE_ANTICHASE_DIFFERENCE = 1f;
+	
+	public float HOOF_VOLUME_MULTIPLICATOR = 1f;
+	public float HOOF_PITCH_RADIUS = 0.1f;
+	public float WALK_VOLUME = 0.1f;
+	public float SLOW_VOLUME = 0.1f;
+	public float GALLOP_VOLUME = 0.1f;
+	public float STAIRCASE_VOLUME = 0.1f;
+	public float LADDER_VOLUME = 0f;
+	
+	public float SPEED_TO_WALK = 0.08f;
+	public float SPEED_TO_GALLOP = 0.13f;
+	
+	public boolean PLAY_HOOFSTEPS = true;
+	public boolean PLAY_BLOCKSTEPS = true;
+	
 	public void loadConfig(ConfigProperty config)
 	{
+		Set<String> keys = config.getAllProperties().keySet();
 		
+		// I am feeling SUPER LAZY today
+		Field[] fields = CCBVariator.class.getDeclaredFields();
+		for (Field field : fields)
+		{
+			try
+			{
+				String fieldName = field.getName().toLowerCase();
+				if (keys.contains(fieldName))
+				{
+					if (field.getType() == Float.TYPE)
+					{
+						field.setFloat(this, config.getFloat(fieldName));
+					}
+					else if (field.getType() == Integer.TYPE)
+					{
+						field.setInt(this, config.getInteger(fieldName));
+					}
+					else if (field.getType() == Boolean.TYPE)
+					{
+						field.setBoolean(this, config.getBoolean(fieldName));
+					}
+				}
+			}
+			catch (Throwable e)
+			{
+				CCBHaddon.log(e.getClass().getName() + ": " + field.getName());
+			}
+		}
 	}
 }
