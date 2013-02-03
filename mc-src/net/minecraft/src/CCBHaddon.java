@@ -5,6 +5,7 @@ import java.io.File;
 import net.minecraft.client.Minecraft;
 import eu.ha3.mc.convenience.Ha3StaticUtilities;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
+import eu.ha3.util.property.simple.ConfigProperty;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -24,7 +25,11 @@ import eu.ha3.mc.haddon.SupportsFrameEvents;
 
 public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 {
+	public static final int VERSION = 0;
+	
 	private CCBReader system;
+	
+	private CCBUpdate update;
 	
 	@Override
 	public void onLoad()
@@ -41,6 +46,9 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 		}
 		
 		manager().hookFrameEvents(true);
+		
+		this.update = new CCBUpdate(this);
+		this.update.attempt();
 	}
 	
 	private boolean isInstalledMLP()
@@ -118,6 +126,24 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 				}
 			}
 		}
+	}
+	
+	public ConfigProperty getConfig()
+	{
+		return new ConfigProperty();
+	}
+	
+	public void printChat(Object... args)
+	{
+	}
+	
+	public void log(String contents)
+	{
+		System.out.println("(CCB) " + contents);
+	}
+	
+	public void saveConfig()
+	{
 	}
 	
 }
