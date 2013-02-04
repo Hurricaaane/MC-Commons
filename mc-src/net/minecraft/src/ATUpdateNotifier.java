@@ -64,7 +64,7 @@ public class ATUpdateNotifier extends Thread// implements Ha3Personalizable
 	{
 		try
 		{
-			URL url = new URL("http://ha3.eu/query/audiotori-main-version.xml");
+			URL url = new URL("http://q.mc.ha3.eu/query/audiotori-main-version.xml");
 			
 			InputStream contents = url.openStream();
 			
