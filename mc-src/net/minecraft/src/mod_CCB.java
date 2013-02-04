@@ -1,5 +1,8 @@
 package net.minecraft.src;
 
+import net.minecraft.client.Minecraft;
+import eu.ha3.mc.convenience.Ha3StaticUtilities;
+
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
                     Version 2, December 2004 
@@ -18,22 +21,33 @@ package net.minecraft.src;
 
 public class mod_CCB extends HaddonBridgeModLoader
 {
-	private static boolean DEV_MODE_USE_LL_COUNTERPART = false;
+	//private static boolean DEV_MODE_USE_LL_COUNTERPART = true;
 	
 	public mod_CCB()
 	{
-		super(!DEV_MODE_USE_LL_COUNTERPART ? new CCBHaddon() : new HaddonEmpty());
+		super(!isInstalledInDouble() ? new CCBHaddon() : new HaddonEmpty());
+		
+		if (isInstalledInDouble())
+		{
+			System.out.println("Detected CCB was installed in double. Not starting ModLoader version");
+		}
 	}
 	
-	/*private static boolean isPresentLiteModCounterpart()
+	private static boolean isInstalledInDouble()
 	{
-		return (Ha3StaticUtilities.classExists("LiteMod_CCB", this)
-			|| Ha3StaticUtilities.classExists("net.minecraft.src.LiteMod_CCB", this));
+		return isPresentLiteModCounterpart(Minecraft.getMinecraft()) && isInstalledLiteLoader(Minecraft.getMinecraft());
 	}
-	private static boolean isInstalledLiteLoader()
+	
+	private static boolean isPresentLiteModCounterpart(Minecraft mc)
 	{
-		return (Ha3StaticUtilities.classExists("com.mumfrey.liteloader.core.LiteLoader", this));
-	}*/
+		return Ha3StaticUtilities.classExists("LiteMod_CCB", mc)
+			|| Ha3StaticUtilities.classExists("net.minecraft.src.LiteMod_CCB", mc);
+	}
+	
+	private static boolean isInstalledLiteLoader(Minecraft mc)
+	{
+		return Ha3StaticUtilities.classExists("com.mumfrey.liteloader.core.LiteLoader", mc);
+	}
 	
 	@Override
 	public String getVersion()

@@ -36,10 +36,13 @@ public class CCBGeneralReader implements CCBReader
 	protected long immobileTime;
 	protected float fallDistance;
 	
+	private Random rand;
+	
 	public CCBGeneralReader(CCBHaddon mod)
 	{
 		this.mod = mod;
 		this.VAR = new CCBVariator();
+		this.rand = new Random();
 	}
 	
 	@Override
@@ -118,7 +121,7 @@ public class CCBGeneralReader implements CCBReader
 		}
 		
 		// Only play wing sounds if pegasus
-		if (this.isPegasus && this.isFlying && System.currentTimeMillis() > this.airborneTime)
+		if (!ply.isInWater() && this.isPegasus && this.isFlying && System.currentTimeMillis() > this.airborneTime)
 		{
 			int period = this.VAR.WING_SLOW;
 			if (volumetricSpeed > this.VAR.WING_SPEED_MIN)
@@ -247,12 +250,33 @@ public class CCBGeneralReader implements CCBReader
 					ply.playStepSound(xx, yy, zz, block);
 				}
 				
-				volume = volume * this.VAR.HOOF_VOLUME_MULTIPLICATOR;
-				if (this.VAR.PLAY_HOOFSTEPS && volume > 0)
+				if (ply.isInWater())
 				{
-					this.mod.manager().getMinecraft().theWorld.playSound(
-						ply.posX, ply.posY, ply.posZ, "ccb_sounds.hoofstep", volume,
-						randomPitch(1f, this.VAR.HOOF_PITCH_RADIUS), false);
+					float var39 =
+						MathHelper.sqrt_double(ply.motionX
+							* ply.motionX * 0.2d + ply.motionY * ply.motionY + ply.motionZ * ply.motionZ * 0.2d) * 0.35f;
+					
+					if (var39 > 1.0F)
+					{
+						var39 = 1.0F;
+					}
+					
+					ply.func_85030_a(
+						"liquid.swim", var39, 1.0f + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4f);
+				}
+				else
+				{
+					volume = volume * this.VAR.HOOF_VOLUME_MULTIPLICATOR;
+					if (this.VAR.PLAY_HOOFSTEPS && volume > 0)
+					{
+						String sound = this.mod.getSoundForMaterial(block);
+						if (!sound.equals("BLANK"))
+						{
+							this.mod.manager().getMinecraft().theWorld.playSound(
+								ply.posX, ply.posY, ply.posZ, sound, volume,
+								randomPitch(1f, this.VAR.HOOF_PITCH_RADIUS), false);
+						}
+					}
 				}
 			}
 			
@@ -279,7 +303,7 @@ public class CCBGeneralReader implements CCBReader
 	
 	private float randomPitch(float base, float radius)
 	{
-		return base + new Random().nextFloat() * radius * 2 - radius;
+		return base + this.rand.nextFloat() * radius * 2 - radius;
 		
 	}
 	

@@ -1,11 +1,13 @@
 package net.minecraft.src;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
-import java.nio.channels.FileChannel;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import net.minecraft.client.Minecraft;
 import eu.ha3.mc.convenience.Ha3StaticUtilities;
@@ -33,8 +35,10 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 	public static final int VERSION = 0;
 	
 	private CCBReader system;
-	
 	private CCBUpdate update;
+	
+	private ConfigProperty blockSound;
+	private Map<Integer, String> blockMap;
 	
 	@Override
 	public void onLoad()
@@ -74,10 +78,59 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 			
 		}
 		
+		this.blockSound = new ConfigProperty();
+		this.blockSound.setProperty("0", "ccb_sounds.hoofstep");
+		this.blockSound.setProperty("2", "ccb_sounds.softstep");
+		this.blockSound.setProperty("110", "ccb_sounds.softstep");
+		this.blockSound.setProperty("35", "ccb_sounds.softstep");
+		this.blockSound.setProperty("19", "ccb_sounds.softstep");
+		this.blockSound.setProperty("18", "ccb_sounds.softstep");
+		this.blockSound.setProperty("78", "ccb_sounds.softstep");
+		this.blockSound.setProperty("80", "ccb_sounds.softstep");
+		this.blockSound.setProperty("111", "ccb_sounds.softstep");
+		this.blockSound.setProperty("81", "ccb_sounds.softstep");
+		this.blockSound.setProperty("60", "ccb_sounds.softstep");
+		this.blockSound.commit();
+		
+		// Load configuration from source
+		try
+		{
+			this.blockSound.setSource(new File(Minecraft.getMinecraftDir(), "ccb_blockmap.cfg").getCanonicalPath());
+			this.blockSound.load();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			throw new RuntimeException("Error caused config not to work: " + e.getMessage());
+		}
+		
+		this.blockMap = new LinkedHashMap<Integer, String>();
+		createBlockMap();
+		
 		manager().hookFrameEvents(true);
 		
 		this.update = new CCBUpdate(this);
 		this.update.attempt();
+	}
+	
+	private void createBlockMap()
+	{
+		Map<String, String> properties = this.blockSound.getAllProperties();
+		for (Entry<String, String> entry : properties.entrySet())
+		{
+			try
+			{
+				int blockID = Integer.parseInt(entry.getKey());
+				this.blockMap.put(blockID, entry.getValue());
+				
+			}
+			catch (Exception e)
+			{
+				log("Error when registering block " + entry.getKey() + ": " + e.getMessage());
+			}
+			
+		}
+		
 	}
 	
 	private void fixInstallation()
@@ -89,10 +142,11 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 			folder.mkdirs();
 		}
 		
-		String[] names = { "dash1.wav", "hoofstep1.wav", "land1.wav", "wing1.wav" };
+		String[] names = { "dash1.wav", "hoofstep1.wav", "softstep1.wav", "land1.wav", "wing1.wav" };
 		
 		for (String name : names)
 		{
+			InputStream stream = null;
 			try
 			{
 				File file = new File(folder, name);
@@ -101,17 +155,38 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 				{
 					URL toInstall =
 						net.minecraft.client.Minecraft.class.getResource("/resources/sound/ccb_sounds/" + name);
-					File inJarFile = new File(toInstall.getFile());
+					stream = toInstall.openStream();
+					if (stream != null)
+					{
+						isToFile(stream, file);
+					}
+					
+					/*File inJarFile = new File(toInstall.getFile());
+					
 					if (inJarFile.exists())
 					{
 						log("Did not find file " + name + ". Installing...");
 						copyFile(new File(toInstall.getFile()), file);
-					}
+					}*/
 					
 				}
 			}
 			catch (Exception e)
 			{
+				CCBHaddon.log("Could not fix " + name + ": " + e.getMessage());
+			}
+			finally
+			{
+				try
+				{
+					if (stream != null)
+					{
+						stream.close();
+					}
+				}
+				catch (Exception e)
+				{
+				}
 			}
 			
 		}
@@ -119,7 +194,42 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 	
 	// from
 	// http://stackoverflow.com/questions/106770/standard-concise-way-to-copy-a-file-in-java
-	private static void copyFile(File sourceFile, File destFile) throws IOException
+	private static void isToFile(InputStream sourceStream, File destFile) throws IOException
+	{
+		if (!destFile.exists())
+		{
+			destFile.createNewFile();
+		}
+		
+		FileOutputStream fos = null;
+		
+		try
+		{
+			fos = new FileOutputStream(destFile);
+			
+			byte buffer[] = new byte[1024];
+			int length;
+			while ((length = sourceStream.read(buffer)) > 0)
+			{
+				fos.write(buffer, 0, length);
+			}
+		}
+		finally
+		{
+			if (sourceStream != null)
+			{
+				sourceStream.close();
+			}
+			if (fos != null)
+			{
+				fos.close();
+			}
+		}
+	}
+	
+	// from
+	// http://stackoverflow.com/questions/106770/standard-concise-way-to-copy-a-file-in-java
+	/*private static void copyFile(File sourceFile, File destFile) throws IOException
 	{
 		if (!destFile.exists())
 		{
@@ -146,7 +256,7 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 				destination.close();
 			}
 		}
-	}
+	}*/
 	
 	private boolean isInstalledMLP()
 	{
@@ -241,6 +351,11 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 	
 	public void saveConfig()
 	{
+	}
+	
+	public String getSoundForMaterial(int block)
+	{
+		return this.blockMap.containsKey(block) ? this.blockMap.get(block) : this.blockMap.get(0);
 	}
 	
 }
