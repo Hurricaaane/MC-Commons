@@ -64,7 +64,7 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 				CCBVariator var = new CCBVariator();
 				var.loadConfig(config);
 				
-				this.system.setVariator(new CCBVariator());
+				this.system.setVariator(var);
 			}
 			catch (Exception e)
 			{
@@ -85,7 +85,7 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 		File folder = new File(Minecraft.getMinecraftDir(), "resources/sound3/ccb_sounds");
 		if (!folder.exists())
 		{
-			log("Did not find folder resources/sound3/ccb_sounds/. Maybe this is the first installation?");
+			log("Did not find folder resources/sound3/ccb_sounds/. Attempting first installation");
 			folder.mkdirs();
 		}
 		
@@ -99,15 +99,19 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 				
 				if (!file.exists())
 				{
-					log("Did not find file " + name + ". Installing...");
-					URL toInstall = CCBHaddon.class.getResource("/ccb_sounds/" + name);
-					copyFile(new File(toInstall.getFile()), file);
+					URL toInstall =
+						net.minecraft.client.Minecraft.class.getResource("/resources/sound/ccb_sounds/" + name);
+					File inJarFile = new File(toInstall.getFile());
+					if (inJarFile.exists())
+					{
+						log("Did not find file " + name + ". Installing...");
+						copyFile(new File(toInstall.getFile()), file);
+					}
 					
 				}
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
 			}
 			
 		}
