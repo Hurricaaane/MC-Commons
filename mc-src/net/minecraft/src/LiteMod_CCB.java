@@ -184,7 +184,7 @@ public class LiteMod_CCB implements LiteMod, RenderListener, Manager, Bridge
 	@Override
 	public String getName()
 	{
-		return this.haddon.getClass().getName();
+		return CCBHaddon.class.getName();
 	}
 	
 	@Override

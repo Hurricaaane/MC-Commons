@@ -16,12 +16,24 @@ package net.minecraft.src;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class mod_ClopClopBox extends HaddonBridgeModLoader
+public class mod_CCB extends HaddonBridgeModLoader
 {
-	public mod_ClopClopBox()
+	private static boolean DEV_MODE_USE_LL_COUNTERPART = false;
+	
+	public mod_CCB()
 	{
-		super(new CCBHaddon());
+		super(!DEV_MODE_USE_LL_COUNTERPART ? new CCBHaddon() : new HaddonEmpty());
 	}
+	
+	/*private static boolean isPresentLiteModCounterpart()
+	{
+		return (Ha3StaticUtilities.classExists("LiteMod_CCB", this)
+			|| Ha3StaticUtilities.classExists("net.minecraft.src.LiteMod_CCB", this));
+	}
+	private static boolean isInstalledLiteLoader()
+	{
+		return (Ha3StaticUtilities.classExists("com.mumfrey.liteloader.core.LiteLoader", this));
+	}*/
 	
 	@Override
 	public String getVersion()
