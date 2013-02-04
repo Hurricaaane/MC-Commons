@@ -1,6 +1,10 @@
 package net.minecraft.src;
 
 import net.minecraft.client.Minecraft;
+
+import com.mumfrey.liteloader.LiteMod;
+import com.mumfrey.liteloader.RenderListener;
+
 import eu.ha3.mc.haddon.Bridge;
 import eu.ha3.mc.haddon.Haddon;
 import eu.ha3.mc.haddon.Manager;
@@ -24,10 +28,9 @@ import eu.ha3.mc.haddon.Utility;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class CCBBridgeLiteLoader
-	implements com.mumfrey.liteloader.LiteMod, com.mumfrey.liteloader.RenderListener, Manager, Bridge
+public class LiteMod_CCB implements LiteMod, RenderListener, Manager, Bridge
 {
-	private Haddon haddon;
+	private CCBHaddon haddon;
 	private Utility utility;
 	
 	private Minecraft mc;
@@ -36,20 +39,14 @@ public class CCBBridgeLiteLoader
 	
 	private boolean frameEnabled;
 	
-	public CCBBridgeLiteLoader()
+	public LiteMod_CCB()
 	{
-		this(new CCBHaddon());
-	}
-	
-	public CCBBridgeLiteLoader(Haddon haddon)
-	{
-		System.out.println("loaded");
-		this.haddon = haddon;
+		this.haddon = new CCBHaddon();
 		
 		this.utility = new HaddonUtilityModLoader(this);
-		haddon.setManager(this);
+		this.haddon.setManager(this);
 		
-		this.supportsFrame = haddon instanceof SupportsFrameEvents;
+		this.supportsFrame = this.haddon instanceof SupportsFrameEvents;
 		
 		this.mc = Minecraft.getMinecraft();
 	}
@@ -193,7 +190,7 @@ public class CCBBridgeLiteLoader
 	@Override
 	public String getVersion()
 	{
-		return "NOT IMPLEMENTED";
+		return "" + CCBHaddon.VERSION;
 	}
 	
 }
