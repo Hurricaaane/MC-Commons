@@ -47,7 +47,6 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		this.disableSmootherEvenDuringZooming = parseFloat(as[1]) == 1F ? true : false;
 		*/
 	
-	private File optionsFile;
 	private float smootherIntensityWhenIdle;
 	private float fovLevel;
 	private float fovLevelTransition;
@@ -72,9 +71,9 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	
 	private MinapticsVariator VAR;
 	private ConfigProperty memory;
+	private boolean isHolding;
 	
 	@Override
-	@SuppressWarnings("static-access")
 	public void onLoad()
 	{
 		this.mc = manager().getMinecraft();
@@ -130,16 +129,10 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		this.wasAlreadySmoothing = false;
 		
 		this.zoomTime = 0;
-		
 		this.eventNum = 0;
 		this.eventNumOnZoom = 0;
-		
 		this.lastTime = 0;
 		this.basePlayerPitch = 0;
-		
-		this.optionsFile = new File(this.mc.getMinecraftDir(), "minaptics_options.txt");
-		this.mouseFilterXAxis = new MinapticsMouseFilter();
-		this.mouseFilterYAxis = new MinapticsMouseFilter();
 		
 		this.fovLevelTransition = this.fovLevel;
 		this.fovLevelSetup = this.fovLevel;
@@ -150,6 +143,9 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		
 		if (this.VAR.SMOOTHER_ENABLE)
 		{
+			this.mouseFilterXAxis = new MinapticsMouseFilter();
+			this.mouseFilterYAxis = new MinapticsMouseFilter();
+			
 			updateSmootherStatus();
 			try
 			{
@@ -171,7 +167,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		
 	}
 	
-	public void setCameraZoom(float value)
+	private void setCameraZoom(float value)
 	{
 		try
 		{
@@ -199,7 +195,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		
 	}
 	
-	public void runtimeThink()
+	private void runtimeThink()
 	{
 		if (this.isZoomed)
 		{
@@ -233,7 +229,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		
 	}
 	
-	void zoomToggle()
+	private void zoomToggle()
 	{
 		this.isZoomed = !this.isZoomed;
 		
@@ -284,7 +280,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		this.keyManager.handleRuntime();
 	}
 	
-	void zoomDoBefore()
+	public void zoomDoBefore()
 	{
 		if (!util().isCurrentScreen(net.minecraft.src.GuiChat.class))
 		{
@@ -304,9 +300,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		
 	}
 	
-	private boolean isHolding;
-	
-	void zoomDoDuring(int timeKey)
+	public void zoomDoDuring(int timeKey)
 	{
 		if (timeKey >= 4 && !this.isHolding)
 		{
@@ -339,7 +333,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		
 	}
 	
-	void zoomDoAfter(int timeKey)
+	public void zoomDoAfter(int timeKey)
 	{
 		
 		if (timeKey >= 4)
@@ -363,7 +357,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		
 	}
 	
-	public void updateSmootherStatus()
+	private void updateSmootherStatus()
 	{
 		if (this.smootherLevel == 0F)
 		{
@@ -380,13 +374,13 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		
 	}
 	
-	public boolean shouldChangeFOV()
+	private boolean shouldChangeFOV()
 	{
 		return this.isZoomed || System.currentTimeMillis() - this.zoomTime < this.VAR.ZOOM_DURATION;
 		
 	}
 	
-	public float doChangeFOV(float inFov)
+	private float doChangeFOV(float inFov)
 	{
 		float baseLevel;
 		float delta = (System.currentTimeMillis() - this.lastTime) / 1000F;
@@ -420,13 +414,13 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		
 	}
 	
-	public void doForceSmoothCamera()
+	private void doForceSmoothCamera()
 	{
 		doForceSmoothCameraXAxis();
 		doForceSmoothCameraYAxis();
 	}
 	
-	public void doForceSmoothCameraXAxis()
+	private void doForceSmoothCameraXAxis()
 	{
 		float f2 = this.mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
 		f2 = f2 * f2 * f2 * 8F;
@@ -449,7 +443,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		
 	}
 	
-	public void doForceSmoothCameraYAxis()
+	private void doForceSmoothCameraYAxis()
 	{
 		float f2 = this.mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
 		f2 = f2 * f2 * f2 * 8F;
@@ -472,38 +466,32 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		
 	}
 	
-	public void doLetSmoothCamera()
+	private void doLetSmoothCamera()
 	{
 		doLetSmoothCameraXAxis();
 		doLetSmoothCameraYAxis();
 		
 	}
 	
-	public void doLetSmoothCameraXAxis()
+	private void doLetSmoothCameraXAxis()
 	{
 		this.mouseFilterXAxis.let();
 		
 	}
 	
-	public void doLetSmoothCameraYAxis()
+	private void doLetSmoothCameraYAxis()
 	{
 		this.mouseFilterYAxis.let();
 		
 	}
 	
-	public boolean shouldChangeSensitivity()
-	{
-		return this.isZoomed;
-		
-	}
-	
-	public float doChangeSensitivity(float f1)
+	private float doChangeSensitivity(float f1)
 	{
 		return f1 * (float) Math.max(0.5, this.fovLevelSetup);
 		
 	}
 	
-	public void saveMemory()
+	private void saveMemory()
 	{
 		// If there were changes...
 		if (this.memory.commit())
