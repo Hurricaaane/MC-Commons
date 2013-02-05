@@ -120,7 +120,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		//
 		
 		this.fovLevel = this.memory.getFloat("fov_level");
-		this.smootherIntensity = 0.5F;
+		this.smootherIntensity = 0.5f;
 		
 		this.wasMouseSensitivity = 0;
 		this.wasAlreadySmoothing = false;
@@ -197,7 +197,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		if (this.isZoomed)
 		{
 			this.mc.gameSettings.mouseSensitivity = doChangeSensitivity(this.wasMouseSensitivity);
-			if (this.smootherLevel == 0F)
+			if (this.smootherLevel == 0f)
 			{
 				doForceSmoothCamera();
 			}
@@ -205,15 +205,15 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		}
 		if (shouldChangeFOV())
 		{
-			float fov = 70F;
-			fov += this.mc.gameSettings.fovSetting * 40F;
+			float fov = 70f;
+			fov += this.mc.gameSettings.fovSetting * 40f;
 			
 			if (this.mc.thePlayer.isInsideOfMaterial(Material.water))
 			{
-				fov = fov * 60F / 70F;
+				fov = fov * 60f / 70f;
 			}
 			
-			setCameraZoom((1F - doChangeFOV(1F)) * -1 * fov);
+			setCameraZoom((1f - doChangeFOV(1f)) * -1 * fov);
 			
 		}
 		
@@ -234,9 +234,9 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		{
 			this.wasMouseSensitivity = this.mc.gameSettings.mouseSensitivity;
 			
-			if (this.smootherLevel != 0F || !this.VAR.SMOOTHER_WHILE_ZOOMED)
+			if (this.smootherLevel != 0f || !this.VAR.SMOOTHER_WHILE_ZOOMED)
 			{
-				if (this.smootherLevel == 0F)
+				if (this.smootherLevel == 0f)
 				{
 					this.wasAlreadySmoothing = this.mc.gameSettings.smoothCamera;
 				}
@@ -250,7 +250,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		{
 			this.mc.gameSettings.mouseSensitivity = this.wasMouseSensitivity;
 			
-			if (this.smootherLevel == 0F)
+			if (this.smootherLevel == 0f)
 			{
 				this.mc.gameSettings.smoothCamera = this.wasAlreadySmoothing;
 				
@@ -313,7 +313,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 			{
 				float diffPitch = this.basePlayerPitch - this.mc.thePlayer.rotationPitch;
 				
-				this.fovLevelSetup = this.fovLevel - diffPitch * 0.5F;
+				this.fovLevelSetup = this.fovLevel - diffPitch * 0.5f;
 				
 				if (this.fovLevelSetup < this.VAR.FOV_MIN)
 				{
@@ -355,7 +355,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	
 	private void updateSmootherStatus()
 	{
-		if (this.smootherLevel == 0F)
+		if (this.smootherLevel == 0f)
 		{
 			doLetSmoothCamera();
 			this.mc.gameSettings.smoothCamera = false;
@@ -379,13 +379,13 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	private float doChangeFOV(float inFov)
 	{
 		float baseLevel;
-		float delta = (System.currentTimeMillis() - this.lastTime) / 1000F;
+		float delta = (System.currentTimeMillis() - this.lastTime) / 1000f;
 		
-		delta = delta * 4F;
+		delta = delta * 4f;
 		
-		if (delta > 1F)
+		if (delta > 1f)
 		{
-			delta = 1F;
+			delta = 1f;
 		}
 		
 		this.lastTime = System.currentTimeMillis();
@@ -401,19 +401,19 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		
 		if (!this.isZoomed)
 		{
-			flushtrum = 1F - flushtrum;
+			flushtrum = 1f - flushtrum;
 		}
 		
 		flushtrum = flushtrum * flushtrum;
 		
-		return inFov * (1F - (1F - this.fovLevel) * flushtrum);
+		return inFov * (1f - (1f - this.fovLevel) * flushtrum);
 		
 	}
 	
 	private void doForceSmoothCamera()
 	{
 		float mixSensitivity = this.mc.gameSettings.mouseSensitivity * 0.6f + 0.2f;
-		mixSensitivity = mixSensitivity * mixSensitivity * mixSensitivity * 8F;
+		mixSensitivity = mixSensitivity * mixSensitivity * mixSensitivity * 8f;
 		float smoothBase =
 			this.smootherLevel == 0f ? this.VAR.SMOOTHER_INTENSITY_IDLE : (1f - this.smootherLevel * 0.999f)
 				* this.smootherIntensity;
@@ -424,9 +424,9 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		}
 		
 		float cSmooth = mixSensitivity * smoothBase;
-		if (cSmooth > 1F)
+		if (cSmooth > 1f)
 		{
-			cSmooth = 1F;
+			cSmooth = 1f;
 		}
 		
 		this.mouseFilterXAxis.force(cSmooth);
