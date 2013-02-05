@@ -25,7 +25,7 @@ public class MinapticsVariator
 {
 	public int ZOOM_KEY = 15;
 	public int ZOOM_DURATION = 300;
-	public int TWEAK_TRIGGER = 300;
+	public int TWEAK_TRIGGER = 4;
 	public float FOV_MIN = 0.001f;
 	public float FOV_MAX = 0.65f;
 	

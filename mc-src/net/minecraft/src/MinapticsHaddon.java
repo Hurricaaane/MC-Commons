@@ -72,6 +72,8 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	private ConfigProperty memory;
 	private boolean isHolding;
 	
+	private boolean trySave;
+	
 	@Override
 	public void onLoad()
 	{
@@ -188,6 +190,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	@Override
 	public void onFrame(float semi)
 	{
+		this.VAR.ZOOM_DURATION = 0;
 		runtimeThink();
 		
 	}
@@ -203,6 +206,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 			}
 			
 		}
+		
 		if (shouldChangeFOV())
 		{
 			float fov = 70f;
@@ -214,6 +218,15 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 			}
 			
 			setCameraZoom((1f - doChangeFOV(1f)) * -1 * fov);
+			
+		}
+		else
+		{
+			if (!this.isZoomed && this.trySave)
+			{
+				saveMemory();
+				this.trySave = false;
+			}
 			
 		}
 		
@@ -345,7 +358,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 			if (this.isZoomed && this.eventNumOnZoom != this.eventNum)
 			{
 				zoomToggle();
-				saveMemory();
+				this.trySave = true;
 			}
 			
 		}
@@ -374,7 +387,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	
 	private boolean shouldChangeFOV()
 	{
-		return this.isZoomed || System.currentTimeMillis() - this.zoomTime < this.VAR.ZOOM_DURATION;
+		return this.isHolding || System.currentTimeMillis() - this.zoomTime < this.VAR.ZOOM_DURATION + 200;
 		
 	}
 	
@@ -397,7 +410,12 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		baseLevel = this.fovLevelTransition;
 		
 		if (System.currentTimeMillis() - this.zoomTime > this.VAR.ZOOM_DURATION)
-			return inFov * baseLevel;
+		{
+			if (this.isZoomed)
+				return inFov * baseLevel;
+			else
+				return inFov * 1f;
+		}
 		
 		float flushtrum = (System.currentTimeMillis() - this.zoomTime) / (float) this.VAR.ZOOM_DURATION;
 		
