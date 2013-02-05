@@ -47,7 +47,6 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		this.disableSmootherEvenDuringZooming = parseFloat(as[1]) == 1F ? true : false;
 		*/
 	
-	private float smootherIntensityWhenIdle;
 	private float fovLevel;
 	private float fovLevelTransition;
 	private float fovLevelSetup;
@@ -119,8 +118,6 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		}
 		
 		//
-		
-		this.smootherIntensityWhenIdle = 4F;
 		
 		this.fovLevel = this.memory.getFloat("fov_level");
 		this.smootherIntensity = 0.5F;
@@ -335,7 +332,6 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	
 	public void zoomDoAfter(int timeKey)
 	{
-		
 		if (timeKey >= 4)
 		{
 			this.fovLevel = this.fovLevelSetup;
@@ -416,16 +412,10 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	
 	private void doForceSmoothCamera()
 	{
-		doForceSmoothCameraXAxis();
-		doForceSmoothCameraYAxis();
-	}
-	
-	private void doForceSmoothCameraXAxis()
-	{
-		float f2 = this.mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
-		f2 = f2 * f2 * f2 * 8F;
+		float mixSensitivity = this.mc.gameSettings.mouseSensitivity * 0.6f + 0.2f;
+		mixSensitivity = mixSensitivity * mixSensitivity * mixSensitivity * 8F;
 		float smoothBase =
-			this.smootherLevel == 0F ? this.smootherIntensityWhenIdle : (1F - this.smootherLevel * 0.999F)
+			this.smootherLevel == 0f ? this.VAR.SMOOTHER_INTENSITY_IDLE : (1f - this.smootherLevel * 0.999f)
 				* this.smootherIntensity;
 		
 		if (this.isZoomed)
@@ -433,56 +423,20 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 			smoothBase = smoothBase * 1 / this.fovLevelSetup;
 		}
 		
-		float cSmooth = f2 * smoothBase;
+		float cSmooth = mixSensitivity * smoothBase;
 		if (cSmooth > 1F)
 		{
 			cSmooth = 1F;
 		}
 		
 		this.mouseFilterXAxis.force(cSmooth);
-		
-	}
-	
-	private void doForceSmoothCameraYAxis()
-	{
-		float f2 = this.mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
-		f2 = f2 * f2 * f2 * 8F;
-		float smoothBase =
-			this.smootherLevel == 0F ? this.smootherIntensityWhenIdle : (1F - this.smootherLevel * 0.999F)
-				* this.smootherIntensity;
-		
-		if (this.isZoomed)
-		{
-			smoothBase = smoothBase * 1 / this.fovLevelSetup;
-		}
-		
-		float cSmooth = f2 * smoothBase;
-		if (cSmooth > 1F)
-		{
-			cSmooth = 1F;
-		}
-		
 		this.mouseFilterYAxis.force(cSmooth);
-		
 	}
 	
 	private void doLetSmoothCamera()
 	{
-		doLetSmoothCameraXAxis();
-		doLetSmoothCameraYAxis();
-		
-	}
-	
-	private void doLetSmoothCameraXAxis()
-	{
 		this.mouseFilterXAxis.let();
-		
-	}
-	
-	private void doLetSmoothCameraYAxis()
-	{
 		this.mouseFilterYAxis.let();
-		
 	}
 	
 	private float doChangeSensitivity(float f1)
@@ -501,31 +455,6 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 			// Write changes on disk.
 			this.memory.save();
 		}
-		
-		/*
-		try
-		{
-			PrintWriter printwriter = new PrintWriter(new FileWriter(this.optionsFile));
-			printwriter.println(new StringBuilder("key_zoom:").append(this.zoomKey).toString());
-			printwriter.println(new StringBuilder("fovlevel:").append(this.fovLevel).toString());
-			printwriter.println(new StringBuilder("smootherlevel:").append(this.smootherLevel).toString());
-			printwriter.println(new StringBuilder("smoothershape:").append(this.smootherIntensity).toString());
-			printwriter.println(new StringBuilder("zoomduration:").append(this.zoomDuration).toString());
-			printwriter.println(new StringBuilder("maximumzoomfield:").append(this.maxZoomField).toString());
-			printwriter.println(new StringBuilder("minimumzoomfield:").append(this.minZoomField).toString());
-			printwriter.println(new StringBuilder("smootherintensitywhenidle:")
-				.append(this.smootherIntensityWhenIdle).toString());
-			printwriter.println(new StringBuilder("disablesmootherevenduringzooming:").append(
-				this.disableSmootherEvenDuringZooming ? "true" : "false").toString());
-			
-			printwriter.close();
-			
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed to save MinapticsLite options");
-			exception.printStackTrace();
-		}*/
 		
 	}
 	

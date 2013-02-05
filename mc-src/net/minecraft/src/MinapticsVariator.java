@@ -31,6 +31,7 @@ public class MinapticsVariator
 	
 	public boolean SMOOTHER_ENABLE = false;
 	public boolean SMOOTHER_WHILE_ZOOMED = false;
+	public float SMOOTHER_INTENSITY_IDLE = 4f;
 	
 	public void loadConfig(ConfigProperty config)
 	{
