@@ -20,9 +20,9 @@ import eu.ha3.mc.convenience.Ha3KeyActions;
 
 public class MinapticsZoomBinding implements Ha3KeyActions
 {
-	MinapticsHaddon mod;
+	protected MinapticsHaddon mod;
 	
-	MinapticsZoomBinding(MinapticsHaddon mod)
+	public MinapticsZoomBinding(MinapticsHaddon mod)
 	{
 		super();
 		this.mod = mod;

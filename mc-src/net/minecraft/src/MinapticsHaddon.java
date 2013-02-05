@@ -70,8 +70,6 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	private float smootherLevel;
 	private float smootherIntensity;
 	
-	private boolean isSmootherSettingEvent;
-	
 	private MinapticsVariator VAR;
 	private ConfigProperty memory;
 	
@@ -128,8 +126,6 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		this.fovLevel = this.memory.getFloat("fov_level");
 		this.smootherIntensity = 0.5F;
 		
-		this.isSmootherSettingEvent = false;
-		
 		this.wasMouseSensitivity = 0;
 		this.wasAlreadySmoothing = false;
 		
@@ -152,20 +148,22 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		manager().addKeyBinding(zoomKeyBinding, "Zoom (Minaptics)");
 		this.keyManager.addKeyBinding(zoomKeyBinding, new MinapticsZoomBinding(this));
 		
-		updateSmootherStatus();
-		
-		try
+		if (this.VAR.SMOOTHER_ENABLE)
 		{
-			// mouseFilterXAxis
-			// mouseFilterYAxis
-			util().setPrivateValueLiteral(
-				net.minecraft.src.EntityRenderer.class, this.mc.entityRenderer, "v", 7, this.mouseFilterXAxis);
-			util().setPrivateValueLiteral(
-				net.minecraft.src.EntityRenderer.class, this.mc.entityRenderer, "w", 8, this.mouseFilterYAxis);
-		}
-		catch (PrivateAccessException e)
-		{
-			e.printStackTrace();
+			updateSmootherStatus();
+			try
+			{
+				// mouseFilterXAxis
+				// mouseFilterYAxis
+				util().setPrivateValueLiteral(
+					net.minecraft.src.EntityRenderer.class, this.mc.entityRenderer, "v", 7, this.mouseFilterXAxis);
+				util().setPrivateValueLiteral(
+					net.minecraft.src.EntityRenderer.class, this.mc.entityRenderer, "w", 8, this.mouseFilterYAxis);
+			}
+			catch (PrivateAccessException e)
+			{
+				e.printStackTrace();
+			}
 		}
 		
 		manager().hookFrameEvents(true);
@@ -197,7 +195,6 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	@Override
 	public void onFrame(float semi)
 	{
-		displayThink();
 		runtimeThink();
 		
 	}
@@ -285,79 +282,6 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	public void onTick()
 	{
 		this.keyManager.handleRuntime();
-		
-		if (this.isSmootherSettingEvent)
-		{
-			float rPitch = -this.mc.thePlayer.rotationPitch;
-			float scales = (rPitch + 90) / 180F;
-			
-			if (true)
-				throw new RuntimeException();
-			
-			if (scales == 0)
-			{
-				//this.disableSmootherEvenDuringZooming = true;
-			}
-			else
-			{
-				//this.disableSmootherEvenDuringZooming = false;
-			}
-			
-			if (scales < 0.02F)
-			{
-				scales = 0F;
-			}
-			else if (scales > 1F)
-			{
-				scales = 1F;
-			}
-			
-			this.smootherLevel = scales;
-			
-		}
-		
-	}
-	
-	public void displayThink()
-	{
-		if (!this.isSmootherSettingEvent)
-			return;
-		
-		if (!util().isCurrentScreen(null))
-		{
-			util().prepareDrawString();
-			util().drawString(
-				"Close your menu to start tweaking Minaptics.", 0.5f, 0.01f, 0, 0, '8', 255, 255, 255, 255, true);
-			
-		}
-		else
-		{
-			String intensity;
-			if (this.smootherLevel == 0F)
-			{
-				if (this.VAR.SMOOTHER_WHILE_ZOOMED)
-				{
-					intensity = "Disabled, even when zoomed in";
-				}
-				else
-				{
-					intensity = "Disabled";
-				}
-			}
-			else
-			{
-				intensity = "" + (int) (this.smootherLevel * 1000) / 10F;
-			}
-			
-			int height = this.mc.fontRenderer.FONT_HEIGHT;
-			
-			util().prepareDrawString();
-			util().drawString("Intensity+", 0.55f, 0.5f, 0, -height, '1', 255, 255, 0, 255, true);
-			util().drawString("Intensity-", 0.55f, 0.5f, 0, height, '7', 255, 255, 0, 255, true);
-			util().drawString(intensity, 0.55f, 0.5f, 0, 0, '4', 255, 255, 255, 255, true);
-			
-		}
-		
 	}
 	
 	void zoomDoBefore()
@@ -367,34 +291,10 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 			if (!util().isCurrentScreen(net.minecraft.src.GuiInventory.class)
 				&& !util().isCurrentScreen(net.minecraft.src.GuiContainerCreative.class))
 			{
-				if (this.isSmootherSettingEvent)
-				{
-					this.isSmootherSettingEvent = false;
-					saveMemory();
-					updateSmootherStatus();
-					
-				}
-				else if (!this.isZoomed)
+				if (!this.isZoomed)
 				{
 					zoomToggle();
 					this.eventNumOnZoom = this.eventNum;
-					
-				}
-				
-			}
-			else
-			// Smoother Event
-			{
-				this.isSmootherSettingEvent = !this.isSmootherSettingEvent;
-				if (this.isSmootherSettingEvent)
-				{
-					this.mc.gameSettings.smoothCamera = false;
-					doLetSmoothCamera();
-					
-				}
-				else
-				{
-					updateSmootherStatus();
 					
 				}
 				
@@ -408,9 +308,6 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	
 	void zoomDoDuring(int timeKey)
 	{
-		if (this.isSmootherSettingEvent)
-			return;
-		
 		if (timeKey >= 4 && !this.isHolding)
 		{
 			this.isHolding = true;
@@ -444,22 +341,19 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	
 	void zoomDoAfter(int timeKey)
 	{
-		if (!this.isSmootherSettingEvent)
+		
+		if (timeKey >= 4)
 		{
-			if (timeKey >= 4)
+			this.fovLevel = this.fovLevelSetup;
+			this.memory.setProperty("fov_level", this.fovLevelSetup);
+			
+		}
+		else
+		{
+			if (this.isZoomed && this.eventNumOnZoom != this.eventNum)
 			{
-				this.fovLevel = this.fovLevelSetup;
-				this.memory.setProperty("fov_level", this.fovLevelSetup);
-				
-			}
-			else
-			{
-				if (this.isZoomed && this.eventNumOnZoom != this.eventNum)
-				{
-					zoomToggle();
-					saveMemory();
-				}
-				
+				zoomToggle();
+				saveMemory();
 			}
 			
 		}
