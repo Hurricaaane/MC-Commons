@@ -184,6 +184,10 @@ public class CCBGeneralReader implements CCBReader
 			volume = this.VAR.LADDER_VOLUME;
 			distance = this.VAR.LADDER_DISTANCE;
 		}
+		else if (!ply.onGround && !ply.isInWater())
+		{
+			volume = 0;
+		}
 		else if (Math.abs(this.yPosition - ply.posY) > 0.4d)
 		{
 			// Regular stance on staircases (1-1-1-1-)
@@ -236,7 +240,10 @@ public class CCBGeneralReader implements CCBReader
 		
 		if (dwm > distance)
 		{
-			makeSoundForPlayerBlock(ply, volume, 0d);
+			if (volume > 0)
+			{
+				makeSoundForPlayerBlock(ply, volume, 0d);
+			}
 			
 			this.dmwBase = distanceReference;
 			
