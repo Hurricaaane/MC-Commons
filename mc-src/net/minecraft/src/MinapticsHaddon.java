@@ -234,29 +234,31 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		{
 			this.wasMouseSensitivity = this.mc.gameSettings.mouseSensitivity;
 			
-			if (this.smootherLevel != 0f || !this.VAR.SMOOTHER_WHILE_ZOOMED)
-			{
-				if (this.smootherLevel == 0f)
+			if (this.VAR.SMOOTHER_ENABLE)
+				if (this.smootherLevel != 0f || !this.VAR.SMOOTHER_WHILE_ZOOMED)
 				{
-					this.wasAlreadySmoothing = this.mc.gameSettings.smoothCamera;
+					if (this.smootherLevel == 0f)
+					{
+						this.wasAlreadySmoothing = this.mc.gameSettings.smoothCamera;
+					}
+					
+					this.mc.gameSettings.smoothCamera = true;
+					
 				}
-				
-				this.mc.gameSettings.smoothCamera = true;
-				
-			}
 			
 		}
 		else
 		{
 			this.mc.gameSettings.mouseSensitivity = this.wasMouseSensitivity;
 			
-			if (this.smootherLevel == 0f)
-			{
-				this.mc.gameSettings.smoothCamera = this.wasAlreadySmoothing;
-				
-				doLetSmoothCamera();
-				
-			}
+			if (this.VAR.SMOOTHER_ENABLE)
+				if (this.smootherLevel == 0f)
+				{
+					this.mc.gameSettings.smoothCamera = this.wasAlreadySmoothing;
+					
+					doLetSmoothCamera();
+					
+				}
 			
 		}
 		
@@ -412,6 +414,9 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	
 	private void doForceSmoothCamera()
 	{
+		if (!this.VAR.SMOOTHER_ENABLE)
+			return;
+		
 		float mixSensitivity = this.mc.gameSettings.mouseSensitivity * 0.6f + 0.2f;
 		mixSensitivity = mixSensitivity * mixSensitivity * mixSensitivity * 8f;
 		float smoothBase =
