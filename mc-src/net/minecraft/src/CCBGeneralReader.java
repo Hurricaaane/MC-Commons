@@ -108,6 +108,15 @@ public class CCBGeneralReader implements CCBReader
 				}
 				
 			}
+			if (this.VAR.PLAY_STEP_ON_JUMP && this.isFlying && ply.isJumping)
+			{
+				makeSoundForPlayerBlock(ply, this.VAR.JUMP_VOLUME, 0.5d);
+			}
+			else if (this.VAR.PLAY_STEP_ON_LAND_HARD
+				&& !this.isFlying && this.fallDistance > this.VAR.LAND_HARD_DISTANCE_MIN)
+			{
+				makeSoundForPlayerBlock(ply, this.VAR.JUMP_VOLUME, 0d);
+			}
 		}
 		
 		// Fall distance is used by non-pegasi
@@ -227,58 +236,7 @@ public class CCBGeneralReader implements CCBReader
 		
 		if (dwm > distance)
 		{
-			int xx = MathHelper.floor_double(ply.posX);
-			int yy = MathHelper.floor_double(ply.posY - 0.2d - ply.yOffset);
-			int zz = MathHelper.floor_double(ply.posZ);
-			
-			World world = this.mod.manager().getMinecraft().theWorld;
-			
-			int block = world.getBlockId(xx, yy, zz);
-			if (block == 0)
-			{
-				int mm = world.func_85175_e(xx, yy - 1, zz);
-				
-				if (mm == 11 || mm == 32 || mm == 21)
-				{
-					block = world.getBlockId(xx, yy - 1, zz);
-				}
-			}
-			if (block > 0)
-			{
-				if (this.VAR.PLAY_BLOCKSTEPS)
-				{
-					ply.playStepSound(xx, yy, zz, block);
-				}
-				
-				if (ply.isInWater())
-				{
-					float var39 =
-						MathHelper.sqrt_double(ply.motionX
-							* ply.motionX * 0.2d + ply.motionY * ply.motionY + ply.motionZ * ply.motionZ * 0.2d) * 0.35f;
-					
-					if (var39 > 1.0F)
-					{
-						var39 = 1.0F;
-					}
-					
-					ply.func_85030_a(
-						"liquid.swim", var39, 1.0f + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4f);
-				}
-				else
-				{
-					volume = volume * this.VAR.HOOF_VOLUME_MULTIPLICATOR;
-					if (this.VAR.PLAY_HOOFSTEPS && volume > 0)
-					{
-						String sound = this.mod.getSoundForMaterial(block);
-						if (!sound.equals("BLANK"))
-						{
-							this.mod.manager().getMinecraft().theWorld.playSound(
-								ply.posX, ply.posY, ply.posZ, sound, volume,
-								randomPitch(1f, this.VAR.HOOF_PITCH_RADIUS), false);
-						}
-					}
-				}
-			}
+			makeSoundForPlayerBlock(ply, volume, 0d);
 			
 			this.dmwBase = distanceReference;
 			
@@ -287,6 +245,160 @@ public class CCBGeneralReader implements CCBReader
 		
 		this.yPosition = ply.posY;
 		
+	}
+	
+	protected void makeSoundForPlayerBlock(EntityPlayer ply, float volume, double minus)
+	{
+		int xx = MathHelper.floor_double(ply.posX);
+		int yy = MathHelper.floor_double(ply.posY - 0.2d - ply.yOffset - minus);
+		int zz = MathHelper.floor_double(ply.posZ);
+		
+		boolean worked = makeSoundForBlock(ply, volume, xx, yy, zz);
+		
+		// If it didn't work, the player has walked over the air on the border of a block.
+		// ------ ------  --> z
+		//       | o    | < player is here
+		//  wool | air  |
+		// ------ ------
+		//       |
+		//       V z
+		if (!worked)
+		{
+			// Create a trigo. circle contained inside the block the player is over
+			double xdang = (ply.posX - xx) * 2 - 1;
+			double zdang = (ply.posZ - zz) * 2 - 1;
+			// -1   0   1
+			//   -------  -1
+			//  | o     |
+			//  |   +   |  0 --> x
+			//  |       |
+			//   -------   1
+			//      |
+			//      V z
+			
+			// If the player is at the edge of that
+			if (Math.sqrt(xdang * xdang + zdang * zdang) > 0.6)
+			{
+				// Find the maximum absolute value of X or Z
+				boolean isXdangMax = Math.abs(xdang) > Math.abs(zdang);
+				//  --------------------- ^ maxofZ-
+				// |  .               .  |
+				// |    .           .    |
+				// |  o   .       .      |
+				// |        .   .        |
+				// |          .          |
+				// < maxofX-     maxofX+ >
+				
+				// Take the maximum border to produce the sound
+				if (isXdangMax)
+				{
+					// If we are in the positive border, add 1, else subtract 1
+					if (xdang > 0)
+					{
+						worked = makeSoundForBlock(ply, volume, xx + 1, yy, zz);
+					}
+					else
+					{
+						worked = makeSoundForBlock(ply, volume, xx - 1, yy, zz);
+					}
+				}
+				else
+				{
+					if (zdang > 0)
+					{
+						worked = makeSoundForBlock(ply, volume, xx, yy, zz + 1);
+					}
+					else
+					{
+						worked = makeSoundForBlock(ply, volume, xx, yy, zz - 1);
+					}
+				}
+				
+				// If that didn't work, then maybe the footstep hit in the direction of walking
+				// Try with the other closest block
+				if (!worked)
+				{
+					// Take the maximum direction and try with the orthogonal direction of it
+					if (isXdangMax)
+					{
+						if (zdang > 0)
+						{
+							worked = makeSoundForBlock(ply, volume, xx, yy, zz + 1);
+						}
+						else
+						{
+							worked = makeSoundForBlock(ply, volume, xx, yy, zz - 1);
+						}
+					}
+					else
+					{
+						if (xdang > 0)
+						{
+							worked = makeSoundForBlock(ply, volume, xx + 1, yy, zz);
+						}
+						else
+						{
+							worked = makeSoundForBlock(ply, volume, xx - 1, yy, zz);
+						}
+					}
+				}
+				
+			}
+		}
+	}
+	
+	protected boolean makeSoundForBlock(EntityPlayer ply, float volume, int xx, int yy, int zz)
+	{
+		World world = this.mod.manager().getMinecraft().theWorld;
+		
+		int block = world.getBlockId(xx, yy, zz);
+		if (block == 0)
+		{
+			int mm = world.func_85175_e(xx, yy - 1, zz);
+			
+			if (mm == 11 || mm == 32 || mm == 21)
+			{
+				block = world.getBlockId(xx, yy - 1, zz);
+			}
+		}
+		if (block > 0)
+		{
+			if (this.VAR.PLAY_BLOCKSTEPS)
+			{
+				ply.playStepSound(xx, yy, zz, block);
+			}
+			
+			if (ply.isInWater())
+			{
+				float var39 =
+					MathHelper.sqrt_double(ply.motionX
+						* ply.motionX * 0.2d + ply.motionY * ply.motionY + ply.motionZ * ply.motionZ * 0.2d) * 0.35f;
+				
+				if (var39 > 1.0F)
+				{
+					var39 = 1.0F;
+				}
+				
+				ply.func_85030_a("liquid.swim", var39, 1.0f + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4f);
+			}
+			else
+			{
+				volume = volume * this.VAR.HOOF_VOLUME_MULTIPLICATOR;
+				if (this.VAR.PLAY_HOOFSTEPS && volume > 0)
+				{
+					String sound = this.mod.getSoundForMaterial(block);
+					if (!sound.equals("BLANK"))
+					{
+						this.mod.manager().getMinecraft().theWorld.playSound(
+							ply.posX, ply.posY, ply.posZ, sound, volume, randomPitch(1f, this.VAR.HOOF_PITCH_RADIUS),
+							false);
+					}
+				}
+			}
+		}
+		else
+			return false;
+		return true;
 	}
 	
 	private float scalex(float number, float min, float range)

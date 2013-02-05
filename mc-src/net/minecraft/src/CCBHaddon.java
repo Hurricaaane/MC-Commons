@@ -287,6 +287,7 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 		{
 			//nextStepDistance
 			util().setPrivateValueLiteral(Entity.class, ply, "c", 36, Integer.MAX_VALUE);
+			//util().setPrivateValueLiteral(Entity.class, ply, "c", 36, 0);
 			
 		}
 		catch (Exception e)

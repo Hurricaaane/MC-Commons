@@ -68,6 +68,12 @@ public class CCBVariator
 	public boolean PLAY_HOOFSTEPS = true;
 	public boolean PLAY_BLOCKSTEPS = true;
 	
+	public float JUMP_VOLUME = 0.1f;
+	public boolean PLAY_STEP_ON_JUMP = true;
+	public float LAND_HARD_VOLUME = 0.1f;
+	public float LAND_HARD_DISTANCE_MIN = 2f;
+	public boolean PLAY_STEP_ON_LAND_HARD = true;
+	
 	public void loadConfig(ConfigProperty config)
 	{
 		Set<String> keys = config.getAllProperties().keySet();
