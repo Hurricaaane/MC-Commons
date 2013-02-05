@@ -39,40 +39,35 @@ public class MinapticsLiteHaddon extends HaddonImpl
 	private MinapticsLiteMouseFilter mouseFilterXAxis;
 	private MinapticsLiteMouseFilter mouseFilterYAxis;
 	
-	final int zoomSafetyVariableRestore = 150;
+	private File optionsFile;
+	private float smootherIntensityWhenIdle;
+	private int zoomKey;
+	private float fovLevel;
+	private float fovLevelTransition;
+	private float fovLevelSetup;
+	private float minZoomField;
+	private float maxZoomField;
+	private boolean disableSmootherEvenDuringZooming;
 	
-	File optionsFile;
-	float smootherIntensityWhenIdle;
-	int zoomKey;
-	float fovLevel;
-	float fovLevelTransition;
-	float fovLevelSetup;
-	boolean fovLevelTransitionning;
-	float minZoomField;
-	float maxZoomField;
-	boolean disableSmootherEvenDuringZooming;
+	private boolean isZoomed;
+	private int eventNumOnZoom;
 	
-	boolean isZoomed;
-	int eventNumOnZoom;
+	private long zoomTime;
+	private int zoomDuration;
 	
-	long zoomTime;
-	int zoomDuration;
+	private long lastTime;
 	
-	long lastWorldTime;
-	long lastTime;
+	private float basePlayerPitch;
 	
-	float basePlayerPitch;
-	float basePlayerYaw;
+	private int eventNum;
 	
-	int eventNum;
+	private float wasMouseSensitivity;
+	private boolean wasAlreadySmoothing;
 	
-	float wasMouseSensitivity;
-	boolean wasAlreadySmoothing;
+	private float smootherLevel;
+	private float smootherIntensity;
 	
-	float smootherLevel;
-	float smootherIntensity;
-	
-	boolean isSmootherSettingEvent;
+	private boolean isSmootherSettingEvent;
 	
 	@Override
 	@SuppressWarnings("static-access")
@@ -91,7 +86,6 @@ public class MinapticsLiteHaddon extends HaddonImpl
 		this.smootherIntensity = 0.5F;
 		
 		this.isSmootherSettingEvent = false;
-		this.fovLevelTransitionning = false;
 		
 		this.disableSmootherEvenDuringZooming = true;
 		
@@ -103,10 +97,8 @@ public class MinapticsLiteHaddon extends HaddonImpl
 		this.eventNum = 0;
 		this.eventNumOnZoom = 0;
 		
-		this.lastWorldTime = 0;
 		this.lastTime = 0;
 		this.basePlayerPitch = 0;
-		this.basePlayerYaw = 0;
 		
 		this.optionsFile = new File(this.mc.getMinecraftDir(), "minaptics_options.txt");
 		this.mouseFilterXAxis = new MinapticsLiteMouseFilter();
@@ -380,10 +372,7 @@ public class MinapticsLiteHaddon extends HaddonImpl
 		{
 			this.isHolding = true;
 			
-			this.fovLevelTransitionning = true;
-			
 			this.basePlayerPitch = this.mc.thePlayer.rotationPitch;
-			this.basePlayerYaw = this.mc.thePlayer.rotationYaw;
 			this.lastTime = System.currentTimeMillis();
 			
 		}
@@ -428,7 +417,6 @@ public class MinapticsLiteHaddon extends HaddonImpl
 				}
 				
 			}
-			this.fovLevelTransitionning = false;
 			
 		}
 		this.isHolding = false;
@@ -690,7 +678,6 @@ public class MinapticsLiteHaddon extends HaddonImpl
 		{
 			System.out.println("Failed to save MinapticsLite options");
 			exception.printStackTrace();
-			
 		}
 		
 	}
