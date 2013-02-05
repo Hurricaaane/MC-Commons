@@ -1,11 +1,7 @@
 package net.minecraft.src;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import net.minecraft.client.Minecraft;
 import eu.ha3.mc.convenience.Ha3KeyManager;
@@ -40,21 +36,27 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	private MinapticsMouseFilter mouseFilterXAxis;
 	private MinapticsMouseFilter mouseFilterYAxis;
 	
+	/*
+		this.zoomKey = (int) parseFloat(as[1]);
+		this.zoomDuration = (int) parseFloat(as[1]);
+		this.maxZoomField = parseFloat(as[1]);
+		this.minZoomField = parseFloat(as[1]);
+		this.smootherLevel = parseFloat(as[1]);
+		this.smootherIntensity = parseFloat(as[1]);
+		this.smootherIntensityWhenIdle = parseFloat(as[1]);
+		this.disableSmootherEvenDuringZooming = parseFloat(as[1]) == 1F ? true : false;
+		*/
+	
 	private File optionsFile;
 	private float smootherIntensityWhenIdle;
-	private int zoomKey;
 	private float fovLevel;
 	private float fovLevelTransition;
 	private float fovLevelSetup;
-	private float minZoomField;
-	private float maxZoomField;
-	private boolean disableSmootherEvenDuringZooming;
 	
 	private boolean isZoomed;
 	private int eventNumOnZoom;
 	
 	private long zoomTime;
-	private int zoomDuration;
 	
 	private long lastTime;
 	
@@ -123,16 +125,10 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		
 		this.smootherIntensityWhenIdle = 4F;
 		
-		this.zoomKey = 15; // TAB
-		this.fovLevel = 0.3F;
-		this.zoomDuration = 300;
-		this.minZoomField = 0.001F;
-		this.maxZoomField = 0.65F;
+		this.fovLevel = this.memory.getFloat("fov_level");
 		this.smootherIntensity = 0.5F;
 		
 		this.isSmootherSettingEvent = false;
-		
-		this.disableSmootherEvenDuringZooming = true;
 		
 		this.wasMouseSensitivity = 0;
 		this.wasAlreadySmoothing = false;
@@ -149,11 +145,10 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		this.mouseFilterXAxis = new MinapticsMouseFilter();
 		this.mouseFilterYAxis = new MinapticsMouseFilter();
 		
-		loadOptions();
 		this.fovLevelTransition = this.fovLevel;
 		this.fovLevelSetup = this.fovLevel;
 		
-		KeyBinding zoomKeyBinding = new KeyBinding("key.zoom", this.zoomKey);
+		KeyBinding zoomKeyBinding = new KeyBinding("key.zoom", this.VAR.ZOOM_KEY);
 		manager().addKeyBinding(zoomKeyBinding, "Zoom (Minaptics)");
 		this.keyManager.addKeyBinding(zoomKeyBinding, new MinapticsZoomBinding(this));
 		
@@ -249,7 +244,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		{
 			this.wasMouseSensitivity = this.mc.gameSettings.mouseSensitivity;
 			
-			if (this.smootherLevel != 0F || !this.disableSmootherEvenDuringZooming)
+			if (this.smootherLevel != 0F || !this.VAR.SMOOTHER_WHILE_ZOOMED)
 			{
 				if (this.smootherLevel == 0F)
 				{
@@ -275,13 +270,13 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 			
 		}
 		
-		if (System.currentTimeMillis() - this.zoomTime > this.zoomDuration)
+		if (System.currentTimeMillis() - this.zoomTime > this.VAR.ZOOM_DURATION)
 		{
 			this.zoomTime = System.currentTimeMillis();
 		}
 		else
 		{
-			this.zoomTime = System.currentTimeMillis() * 2 - this.zoomTime - this.zoomDuration;
+			this.zoomTime = System.currentTimeMillis() * 2 - this.zoomTime - this.VAR.ZOOM_DURATION;
 		}
 		
 	}
@@ -296,13 +291,16 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 			float rPitch = -this.mc.thePlayer.rotationPitch;
 			float scales = (rPitch + 90) / 180F;
 			
+			if (true)
+				throw new RuntimeException();
+			
 			if (scales == 0)
 			{
-				this.disableSmootherEvenDuringZooming = true;
+				//this.disableSmootherEvenDuringZooming = true;
 			}
 			else
 			{
-				this.disableSmootherEvenDuringZooming = false;
+				//this.disableSmootherEvenDuringZooming = false;
 			}
 			
 			if (scales < 0.02F)
@@ -337,7 +335,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 			String intensity;
 			if (this.smootherLevel == 0F)
 			{
-				if (this.disableSmootherEvenDuringZooming)
+				if (this.VAR.SMOOTHER_WHILE_ZOOMED)
 				{
 					intensity = "Disabled, even when zoomed in";
 				}
@@ -372,7 +370,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 				if (this.isSmootherSettingEvent)
 				{
 					this.isSmootherSettingEvent = false;
-					saveOptions();
+					saveMemory();
 					updateSmootherStatus();
 					
 				}
@@ -429,13 +427,13 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 				
 				this.fovLevelSetup = this.fovLevel - diffPitch * 0.5F;
 				
-				if (this.fovLevelSetup < this.minZoomField)
+				if (this.fovLevelSetup < this.VAR.FOV_MIN)
 				{
-					this.fovLevelSetup = this.minZoomField;
+					this.fovLevelSetup = this.VAR.FOV_MIN;
 				}
-				else if (this.fovLevelSetup > this.maxZoomField)
+				else if (this.fovLevelSetup > this.VAR.FOV_MAX)
 				{
-					this.fovLevelSetup = this.maxZoomField;
+					this.fovLevelSetup = this.VAR.FOV_MAX;
 				}
 				
 			}
@@ -451,7 +449,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 			if (timeKey >= 4)
 			{
 				this.fovLevel = this.fovLevelSetup;
-				saveOptions();
+				this.memory.setProperty("fov_level", this.fovLevelSetup);
 				
 			}
 			else
@@ -459,6 +457,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 				if (this.isZoomed && this.eventNumOnZoom != this.eventNum)
 				{
 					zoomToggle();
+					saveMemory();
 				}
 				
 			}
@@ -489,7 +488,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	
 	public boolean shouldChangeFOV()
 	{
-		return this.isZoomed || System.currentTimeMillis() - this.zoomTime < this.zoomDuration;
+		return this.isZoomed || System.currentTimeMillis() - this.zoomTime < this.VAR.ZOOM_DURATION;
 		
 	}
 	
@@ -511,10 +510,10 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		
 		baseLevel = this.fovLevelTransition;
 		
-		if (System.currentTimeMillis() - this.zoomTime > this.zoomDuration)
+		if (System.currentTimeMillis() - this.zoomTime > this.VAR.ZOOM_DURATION)
 			return inFov * baseLevel;
 		
-		float flushtrum = (System.currentTimeMillis() - this.zoomTime) / (float) this.zoomDuration;
+		float flushtrum = (System.currentTimeMillis() - this.zoomTime) / (float) this.VAR.ZOOM_DURATION;
 		
 		if (!this.isZoomed)
 		{
@@ -531,7 +530,6 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	{
 		doForceSmoothCameraXAxis();
 		doForceSmoothCameraYAxis();
-		
 	}
 	
 	public void doForceSmoothCameraXAxis()
@@ -611,96 +609,18 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		
 	}
 	
-	public void loadOptions()
+	public void saveMemory()
 	{
-		try
+		// If there were changes...
+		if (this.memory.commit())
 		{
-			if (!this.optionsFile.exists())
-				return;
-			BufferedReader bufferedreader = new BufferedReader(new FileReader(this.optionsFile));
-			for (String s = ""; (s = bufferedreader.readLine()) != null;)
-			{
-				try
-				{
-					String as[] = s.split(":");
-					if (as[0].equals("key_zoom"))
-					{
-						this.zoomKey = (int) parseFloat(as[1]);
-						
-					}
-					if (as[0].equals("fovlevel"))
-					{
-						this.fovLevel = parseFloat(as[1]);
-						
-					}
-					if (as[0].equals("zoomduration"))
-					{
-						this.zoomDuration = (int) parseFloat(as[1]);
-						
-					}
-					if (as[0].equals("maximumzoomfield"))
-					{
-						this.maxZoomField = parseFloat(as[1]);
-						
-					}
-					if (as[0].equals("minimumzoomfield"))
-					{
-						this.minZoomField = parseFloat(as[1]);
-						
-					}
-					if (as[0].equals("smootherlevel"))
-					{
-						this.smootherLevel = parseFloat(as[1]);
-						
-					}
-					if (as[0].equals("smoothershape"))
-					{
-						this.smootherIntensity = parseFloat(as[1]);
-						
-					}
-					
-					if (as[0].equals("smootherintensitywhenidle"))
-					{
-						this.smootherIntensityWhenIdle = parseFloat(as[1]);
-						
-					}
-					if (as[0].equals("disablesmootherevenduringzooming"))
-					{
-						this.disableSmootherEvenDuringZooming = parseFloat(as[1]) == 1F ? true : false;
-						
-					}
-					
-				}
-				catch (Exception exception1)
-				{
-					System.out.println(new StringBuilder("Skipping bad option: ").append(s).toString());
-					
-				}
-			}
+			log("Saving configuration...");
 			
-			bufferedreader.close();
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed to load MinapticsLite options");
-			exception.printStackTrace();
-			
+			// Write changes on disk.
+			this.memory.save();
 		}
 		
-	}
-	
-	private float parseFloat(String s)
-	{
-		if (s.equals("true"))
-			return 1.0F;
-		if (s.equals("false"))
-			return 0.0F;
-		else
-			return Float.parseFloat(s);
-	}
-	
-	public void saveOptions()
-	{
+		/*
 		try
 		{
 			PrintWriter printwriter = new PrintWriter(new FileWriter(this.optionsFile));
@@ -723,7 +643,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		{
 			System.out.println("Failed to save MinapticsLite options");
 			exception.printStackTrace();
-		}
+		}*/
 		
 	}
 	
