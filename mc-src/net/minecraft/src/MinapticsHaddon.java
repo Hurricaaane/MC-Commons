@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 import net.minecraft.client.Minecraft;
@@ -12,6 +13,7 @@ import eu.ha3.mc.haddon.PrivateAccessException;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
 import eu.ha3.mc.haddon.SupportsKeyEvents;
 import eu.ha3.mc.haddon.SupportsTickEvents;
+import eu.ha3.util.property.simple.ConfigProperty;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
@@ -29,15 +31,14 @@ import eu.ha3.mc.haddon.SupportsTickEvents;
   0. You just DO WHAT THE FUCK YOU WANT TO.
  */
 
-public class MinapticsLiteHaddon extends HaddonImpl
-	implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents
+public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, SupportsTickEvents, SupportsKeyEvents
 {
 	private Minecraft mc;
 	
 	private Ha3KeyManager keyManager;
 	
-	private MinapticsLiteMouseFilter mouseFilterXAxis;
-	private MinapticsLiteMouseFilter mouseFilterYAxis;
+	private MinapticsMouseFilter mouseFilterXAxis;
+	private MinapticsMouseFilter mouseFilterYAxis;
 	
 	private File optionsFile;
 	private float smootherIntensityWhenIdle;
@@ -69,12 +70,56 @@ public class MinapticsLiteHaddon extends HaddonImpl
 	
 	private boolean isSmootherSettingEvent;
 	
+	private MinapticsVariator VAR;
+	private ConfigProperty memory;
+	
 	@Override
 	@SuppressWarnings("static-access")
 	public void onLoad()
 	{
 		this.mc = manager().getMinecraft();
 		this.keyManager = new Ha3KeyManager();
+		
+		this.memory = new ConfigProperty();
+		this.memory.setProperty("fov_level", 0.3f);
+		this.memory.commit();
+		
+		// Load memory from source
+		try
+		{
+			this.memory.setSource(new File(Minecraft.getMinecraftDir(), "minaptics_memory.cfg").getCanonicalPath());
+			this.memory.load();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			throw new RuntimeException("Error caused memory not to work: " + e.getMessage());
+		}
+		
+		this.VAR = new MinapticsVariator();
+		File configFile = new File(Minecraft.getMinecraftDir(), "minaptics.cfg");
+		if (configFile.exists())
+		{
+			log("Config file found. Loading...");
+			try
+			{
+				ConfigProperty config = new ConfigProperty();
+				config.setSource(configFile.getCanonicalPath());
+				config.load();
+				
+				MinapticsVariator var = new MinapticsVariator();
+				var.loadConfig(config);
+				
+				this.VAR = var;
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			log("Loaded.");
+		}
+		
+		//
 		
 		this.smootherIntensityWhenIdle = 4F;
 		
@@ -101,8 +146,8 @@ public class MinapticsLiteHaddon extends HaddonImpl
 		this.basePlayerPitch = 0;
 		
 		this.optionsFile = new File(this.mc.getMinecraftDir(), "minaptics_options.txt");
-		this.mouseFilterXAxis = new MinapticsLiteMouseFilter();
-		this.mouseFilterYAxis = new MinapticsLiteMouseFilter();
+		this.mouseFilterXAxis = new MinapticsMouseFilter();
+		this.mouseFilterYAxis = new MinapticsMouseFilter();
 		
 		loadOptions();
 		this.fovLevelTransition = this.fovLevel;
@@ -110,7 +155,7 @@ public class MinapticsLiteHaddon extends HaddonImpl
 		
 		KeyBinding zoomKeyBinding = new KeyBinding("key.zoom", this.zoomKey);
 		manager().addKeyBinding(zoomKeyBinding, "Zoom (Minaptics)");
-		this.keyManager.addKeyBinding(zoomKeyBinding, new MinapticsLiteZoomBinding(this));
+		this.keyManager.addKeyBinding(zoomKeyBinding, new MinapticsZoomBinding(this));
 		
 		updateSmootherStatus();
 		
@@ -679,6 +724,12 @@ public class MinapticsLiteHaddon extends HaddonImpl
 			System.out.println("Failed to save MinapticsLite options");
 			exception.printStackTrace();
 		}
+		
+	}
+	
+	public void log(String contents)
+	{
+		System.out.println("(Minaptics) " + contents);
 		
 	}
 	

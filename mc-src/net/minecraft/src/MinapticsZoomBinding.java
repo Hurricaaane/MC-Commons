@@ -1,5 +1,7 @@
 package net.minecraft.src;
 
+import eu.ha3.mc.convenience.Ha3KeyActions;
+
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
                     Version 2, December 2004 
@@ -16,18 +18,36 @@ package net.minecraft.src;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class mod_MinapticsLite extends HaddonBridgeModLoader
+public class MinapticsZoomBinding implements Ha3KeyActions
 {
-	public mod_MinapticsLite()
+	MinapticsHaddon mod;
+	
+	MinapticsZoomBinding(MinapticsHaddon mod)
 	{
-		super(new MinapticsLiteHaddon());
+		super();
+		this.mod = mod;
 		
 	}
 	
 	@Override
-	public String getVersion()
+	public void doBefore()
 	{
-		return "r17 for 1.4.6";
+		this.mod.zoomDoBefore();
+		
+	}
+	
+	@Override
+	public void doDuring(int curTime)
+	{
+		this.mod.zoomDoDuring(curTime);
+		
+	}
+	
+	@Override
+	public void doAfter(int curTime)
+	{
+		this.mod.zoomDoAfter(curTime);
+		
 	}
 	
 }

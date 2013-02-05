@@ -16,7 +16,7 @@ package net.minecraft.src;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class MinapticsLiteMouseFilter extends MouseFilter
+public class MinapticsMouseFilter extends MouseFilter
 {
 	private float field_22388_a;
 	private float field_22387_b;
@@ -25,7 +25,7 @@ public class MinapticsLiteMouseFilter extends MouseFilter
 	private boolean forceMode;
 	private float forceValue;
 	
-	public MinapticsLiteMouseFilter()
+	public MinapticsMouseFilter()
 	{
 		this.forceMode = false;
 		this.forceValue = 0F;
