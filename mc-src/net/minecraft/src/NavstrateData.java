@@ -1,11 +1,5 @@
 package net.minecraft.src;
 
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.ListIterator;
-
-import net.minecraft.client.Minecraft;
-
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
                     Version 2, December 2004 
@@ -24,151 +18,95 @@ import net.minecraft.client.Minecraft;
 
 public class NavstrateData
 {
-	int xSize;
-	int ySize;
-	int zSize;
+	public int xSize;
+	public int ySize;
+	public int zSize;
 	
-	int xPos;
-	int yPos;
-	int zPos;
+	public int xPos;
+	public int yPos;
+	public int zPos;
 	
 	public int data[][][];
-	public boolean explored[][][];
-	
-	public ArrayList<Integer> bufferedImageList;
-	public ArrayList<Integer[]> intArrayList;
-	public Integer[] intArraySwapper;
+	private boolean explored[][][];
 	
 	NavstrateData(int xS, int yS, int zS)
 	{
-		Minecraft mc = ModLoader.getMinecraftInstance();
+		this.xSize = xS;
+		this.ySize = yS;
+		this.zSize = zS;
 		
-		xSize = xS;
-		ySize = yS;
-		zSize = zS;
-		
-		xPos = 0;
-		yPos = 0;
-		zPos = 0;
+		this.xPos = 0;
+		this.yPos = 0;
+		this.zPos = 0;
 		
 		emptyMemory();
-		bufferedImageList = new ArrayList<Integer>();
-		intArrayList = new ArrayList<Integer[]>();
-		
-		for (int r = 0; r < 3; r++)
-		{
-			bufferedImageList.add(mc.renderEngine.allocateAndSetupTexture(new BufferedImage(xSize, zSize, 2)));
-			intArrayList.add(new Integer[xSize * zSize]);
-			
-		}
-		intArraySwapper = new Integer[xSize * zSize];
-		
 	}
 	
 	void emptyMemory()
 	{
-		data = new int[xSize][ySize][zSize];
+		this.data = new int[this.xSize][this.ySize][this.zSize];
 		emptyExploration();
-		
 	}
 	
 	void shiftData(int iShift, int jShift, int kShift)
 	{
-		int newData[][][] = new int[xSize][ySize][zSize];
-		for (int i = 0; i < xSize; i++)
-			for (int j = 0; j < ySize; j++)
-				for (int k = 0; k < zSize; k++)
+		int newData[][][] = new int[this.xSize][this.ySize][this.zSize];
+		for (int i = 0; i < this.xSize; i++)
+		{
+			for (int j = 0; j < this.ySize; j++)
+			{
+				for (int k = 0; k < this.zSize; k++)
 				{
 					if (isValidPos(i + iShift, j + jShift, k + kShift))
+					{
 						newData[i][j][k] = getData(i + iShift, j + jShift, k + kShift);
+					}
 					
 				}
-		data = newData;
-		
-		shiftImageBuffers(iShift, kShift);
+			}
+		}
+		this.data = newData;
 		
 	}
+	
 	void emptyExploration()
 	{
-		explored = new boolean[xSize][ySize][zSize];
+		this.explored = new boolean[this.xSize][this.ySize][this.zSize];
 		
 	}
 	
 	void setPos(int x, int y, int z)
 	{
-		xPos = x;
-		yPos = y;
-		zPos = z;
+		this.xPos = x;
+		this.yPos = y;
+		this.zPos = z;
 		
 	}
 	
 	boolean isValidPos(int x, int y, int z)
 	{
-		return (x >= 0) && (x < xSize) && (y >= 0) && (y < ySize) && (z >= 0) && (z < zSize);
+		return x >= 0 && x < this.xSize && y >= 0 && y < this.ySize && z >= 0 && z < this.zSize;
 		
 	}
 	
 	boolean isExplored(int x, int y, int z)
 	{
 		//Unsafe call
-		return explored[x][y][z];
+		return this.explored[x][y][z];
 		
 	}
 	
 	void setExplored(int x, int y, int z)
 	{
 		//Unsafe call
-		explored[x][y][z] = true;
+		this.explored[x][y][z] = true;
 		
 	}
 	
 	int getData(int x, int y, int z)
 	{
 		//Unsafe call
-		return data[x][y][z];
-		
-	}
-	
-	private void shiftImageBuffers(int iShift, int kShift)
-	{
-		for (ListIterator<Integer[]> iter = intArrayList.listIterator(); iter.hasNext();)
-		{
-			Integer[] oldArray = iter.next();
-			Integer[] newArray = intArraySwapper;
-			iter.set(newArray);
-			intArraySwapper = oldArray;
-			
-			try
-			{
-				for (int k = 0; k < zSize; k++)
-				{
-					if ((k < kShift) || ((kShift + k) > zSize))
-						for (int i = 0; i < xSize; i++)
-							newArray[k * xSize + i] = 0;
-					else
-						for (int i = 0; i < xSize; i++)
-						{
-							if ((i < iShift) || ((iShift + i) > xSize))
-								newArray[k * xSize + i] = 0;
-							
-							else
-							{
-								newArray[k * xSize + i] = oldArray[(k - kShift)
-								                                   * xSize + (i - iShift)];
-								
-							}
-							
-						}
-					
-				}
-			}
-			catch (Exception e)
-			{
-				//System.out.println(iShift);
-				//System.out.println(kShift);
-			}
-			
-		}
+		return this.data[x][y][z];
 		
 	}
 	

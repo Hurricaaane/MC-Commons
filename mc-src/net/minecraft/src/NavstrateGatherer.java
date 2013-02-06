@@ -32,38 +32,38 @@ public class NavstrateGatherer extends Thread
 	
 	public void setCaller(mod_Navstrate in)
 	{
-		caller = in;
+		this.caller = in;
 		
 	}
 	
 	public void setSleepTime(int in)
 	{
-		sleepTime = in;
+		this.sleepTime = in;
 		
 	}
 	
 	public void prepareAnalysis(NavstrateData data, int xPos, int yPos, int zPos, int stepLimit)
 	{
-		navData = data;
+		this.navData = data;
 		data.setPos(xPos, yPos, zPos);
 		data.emptyExploration();
 		
-		limit = stepLimit;
+		this.limit = stepLimit;
 		
-		stockCoords = new ArrayList<NavstrateCoord>();
+		this.stockCoords = new ArrayList<NavstrateCoord>();
 		
 	}
 	
 	NavstrateCoord obtainCoord(int x, int y, int z)
 	{
 		NavstrateCoord ret;
-		if (stockCoords.isEmpty())
+		if (this.stockCoords.isEmpty())
 		{
 			ret = new NavstrateCoord(x, y, z);
 		}
 		else
 		{
-			ret = stockCoords.remove(0);
+			ret = this.stockCoords.remove(0);
 			ret.set(x, y, z);
 		}
 		return ret;
@@ -72,33 +72,33 @@ public class NavstrateGatherer extends Thread
 	
 	void returnCoord(NavstrateCoord coord)
 	{
-		stockCoords.add(coord);
+		this.stockCoords.add(coord);
 		
 	}
 	
 	@Override
 	public void run()
 	{
-		if (caller == null)
+		if (this.caller == null)
 			return;
 		
-		if (navData == null)
+		if (this.navData == null)
 			return;
 		
 		Minecraft mc = ModLoader.getMinecraftInstance();
 		
-		int worldXcorner = navData.xPos - navData.xSize / 2;
-		int worldYcorner = navData.yPos - navData.ySize / 2;
-		int worldZcorner = navData.zPos - navData.zSize / 2;
+		int worldXcorner = this.navData.xPos - this.navData.xSize / 2;
+		int worldYcorner = this.navData.yPos - this.navData.ySize / 2;
+		int worldZcorner = this.navData.zPos - this.navData.zSize / 2;
 		
 		ArrayList<NavstrateCoord> toFind = new ArrayList<NavstrateCoord>();
 		ArrayList<NavstrateCoord> toFindNext = new ArrayList<NavstrateCoord>();
 		ArrayList<NavstrateCoord> coordSwap;
 		
-		toFindNext.add(obtainCoord(navData.xSize / 2, navData.ySize / 2, navData.zSize / 2));
+		toFindNext.add(obtainCoord(this.navData.xSize / 2, this.navData.ySize / 2, this.navData.zSize / 2));
 		
 		int step = 0;
-		while (!toFindNext.isEmpty() && step < limit)
+		while (!toFindNext.isEmpty() && step < this.limit)
 		{
 			coordSwap = toFind;
 			toFind = toFindNext;
@@ -107,16 +107,15 @@ public class NavstrateGatherer extends Thread
 			
 			try
 			{
-				Thread.sleep(sleepTime);
+				Thread.sleep(this.sleepTime);
 			}
 			catch (InterruptedException e)
 			{
 				//e.printStackTrace();
 			}
 			
-			while (!toFind.isEmpty())
+			for (NavstrateCoord coord : toFind)
 			{
-				NavstrateCoord coord = toFind.remove(0);
 				int i = coord.i;
 				int j = coord.j;
 				int k = coord.k;
@@ -131,56 +130,56 @@ public class NavstrateGatherer extends Thread
 				//navData.explored[i][j][k] = true;
 				
 				//TODO : Exceptions for custom height limit
-				if (jot >= 0 && jot < 256
-						&& !mc.theWorld.isBlockOpaqueCube(iot, jot, kot))
+				if (jot >= 0 && jot < 256 && !mc.theWorld.isBlockOpaqueCube(iot, jot, kot))
 				{
-					navData.data[i][j][k] = step;
+					this.navData.data[i][j][k] = step;
 					
-					if (navData.isValidPos(i - 1, j, k) && !navData.isExplored(i - 1, j, k))
+					if (this.navData.isValidPos(i - 1, j, k) && !this.navData.isExplored(i - 1, j, k))
 					{
 						toFindNext.add(obtainCoord(i - 1, j, k));
-						navData.setExplored(i - 1, j, k);
+						this.navData.setExplored(i - 1, j, k);
 					}
-					if (navData.isValidPos(i + 1, j, k) && !navData.isExplored(i + 1, j, k))
+					if (this.navData.isValidPos(i + 1, j, k) && !this.navData.isExplored(i + 1, j, k))
 					{
 						toFindNext.add(obtainCoord(i + 1, j, k));
-						navData.setExplored(i + 1, j, k);
+						this.navData.setExplored(i + 1, j, k);
 					}
 					
-					if (navData.isValidPos(i, j - 1, k) && !navData.isExplored(i, j - 1, k))
+					if (this.navData.isValidPos(i, j - 1, k) && !this.navData.isExplored(i, j - 1, k))
 					{
 						toFindNext.add(obtainCoord(i, j - 1, k));
-						navData.setExplored(i, j - 1, k);
+						this.navData.setExplored(i, j - 1, k);
 					}
-					if (navData.isValidPos(i, j + 1, k) && !navData.isExplored(i, j + 1, k))
+					if (this.navData.isValidPos(i, j + 1, k) && !this.navData.isExplored(i, j + 1, k))
 					{
 						toFindNext.add(obtainCoord(i, j + 1, k));
-						navData.setExplored(i, j + 1, k);
+						this.navData.setExplored(i, j + 1, k);
 					}
 					
-					if (navData.isValidPos(i, j, k - 1) && !navData.isExplored(i, j, k - 1))
+					if (this.navData.isValidPos(i, j, k - 1) && !this.navData.isExplored(i, j, k - 1))
 					{
 						toFindNext.add(obtainCoord(i, j, k - 1));
-						navData.setExplored(i, j, k - 1);
+						this.navData.setExplored(i, j, k - 1);
 					}
-					if (navData.isValidPos(i, j, k + 1) && !navData.isExplored(i, j, k + 1))
+					if (this.navData.isValidPos(i, j, k + 1) && !this.navData.isExplored(i, j, k + 1))
 					{
 						toFindNext.add(obtainCoord(i, j, k + 1));
-						navData.setExplored(i, j, k + 1);
+						this.navData.setExplored(i, j, k + 1);
 					}
 					
 				}
 				else
 				{
-					navData.data[i][j][k] = -step;
+					this.navData.data[i][j][k] = -step;
 					
 				}
 				
 			}
+			toFind.clear();
 			
 		}
 		
-		caller.finishSnapshot();
+		this.caller.finishSnapshot();
 		
 	}
 	

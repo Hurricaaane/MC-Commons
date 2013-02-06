@@ -76,7 +76,7 @@ public class mod_Navstrate extends BaseMod
 		this.mc = ModLoader.getMinecraftInstance();
 		this.worldTime = 0;
 		
-		this.readData = new NavstrateData(128, 48, 128);
+		//this.readData = new NavstrateData(128, 48, 128);
 		this.writeData = new NavstrateData(128, 48, 128);
 		this.gatherer = null;
 		
@@ -112,12 +112,10 @@ public class mod_Navstrate extends BaseMod
 		this.gatherer.setSleepTime(8);
 		this.gatherer.prepareAnalysis(this.writeData, x, y, z, this.stepLimit);
 		this.gatherer.start();
-		//System.out.println("start.");
 	}
 	
 	public synchronized void finishSnapshot()
 	{
-		//System.out.println("done.");
 		this.gatherer = null;
 	}
 	
@@ -133,9 +131,6 @@ public class mod_Navstrate extends BaseMod
 		
 		if (!this.isOn)
 			return true;
-		
-		//if (!ModLoader.isGUIOpen(null) && !ModLoader.isGUIOpen(net.minecraft.src.GuiChat.class))
-		//	return true;
 		
 		int screenXshift = 32;
 		int screenYshift = 32;
@@ -169,14 +164,10 @@ public class mod_Navstrate extends BaseMod
 			
 			for (int i = 0; i < width; i++)
 			{
-				//int ioffs = i - width / 2;
-				//int itrans = parData.xSize / 2 + px - parData.xPos + ioffs;
 				int itrans = itrans_prep + i;
 				
 				for (int k = 0; k < tall; k++)
 				{
-					//int koffs = k - tall / 2;
-					//int ktrans = parData.zSize / 2 + pz - parData.zPos + koffs;
 					int ktrans = ktrans_prep + k;
 					
 					if (parData.isValidPos(itrans, 0, ktrans))
@@ -297,15 +288,12 @@ public class mod_Navstrate extends BaseMod
 			
 		}
 		
-		/*setColor(255, 255, 0, 255);
-		setPixel(width / 2, tall / 2, width);
-		setPixel(width / 2 - 1, tall / 2, width);
-		setPixel(width / 2 + 1, tall / 2, width);
-		setPixel(width / 2, tall / 2 - 1, width);
-		setPixel(width / 2, tall / 2 + 1, width);*/
-		
 		this.mc.renderEngine
 			.createTextureFromBytes(this.intArray, this.bufferSize, this.bufferSize, this.bufferedImage);
+		
+		float displayMagnifier = 1f;
+		int widthDisplay = (int) (width * displayMagnifier);
+		int tallDisplay = (int) (tall * displayMagnifier);
 		
 		if (true)
 		{
@@ -315,13 +303,13 @@ public class mod_Navstrate extends BaseMod
 			GL11.glBlendFunc(770, 771);
 			//GL11.glShadeModel(7424 /*GL_FLAT*/);
 			
-			drawQuad(screenXshift, screenYshift, screenXshift + width, screenYshift + tall);
+			drawQuad(screenXshift, screenYshift, screenXshift + widthDisplay, screenYshift + tallDisplay);
 			
 		}
 		
 		GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
 		GL11.glBindTexture(3553, this.bufferedImage);
-		drawQuadUV(screenXshift, screenYshift, screenXshift + width, screenYshift + tall, width, tall);
+		drawQuadUV(screenXshift, screenYshift, screenXshift + widthDisplay, screenYshift + tallDisplay, width, tall);
 		GL11.glDisable(3553 /*GL_TEXTURE_2D*/);
 		
 		GL11.glShadeModel(7425 /*GL_SMOOTH*/);
@@ -537,16 +525,7 @@ public class mod_Navstrate extends BaseMod
 	public void setColor(int r, int g, int b, int a)
 	{
 		this.intColor = 0x00000000 | a << 24 | r << 16 | g << 8 | b;
-		//intColor = 0xFF00FF00;
-		
 	}
-	
-	/*public void setColor(int r, int g, int b, int a)
-	{
-		intColor = 0x00000000 | r << 24 | g << 16 | b << 8 | a;
-		//GL11.glColor4f(r / 255F, g / 255F, b / 255F, a / 255F);
-		
-	}*/
 	
 	public void toggle()
 	{
