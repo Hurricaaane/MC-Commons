@@ -240,10 +240,7 @@ public class CCBGeneralReader implements CCBReader
 		
 		if (dwm > distance)
 		{
-			if (volume > 0)
-			{
-				makeSoundForPlayerBlock(ply, volume, 0d);
-			}
+			makeSoundForPlayerBlock(ply, volume, 0d);
 			
 			this.dmwBase = distanceReference;
 			
