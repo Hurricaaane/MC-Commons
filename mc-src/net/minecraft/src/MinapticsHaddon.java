@@ -190,13 +190,6 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	@Override
 	public void onFrame(float semi)
 	{
-		this.VAR.ZOOM_DURATION = 0;
-		runtimeThink();
-		
-	}
-	
-	private void runtimeThink()
-	{
 		if (this.isZoomed)
 		{
 			this.mc.gameSettings.mouseSensitivity = doChangeSensitivity(this.wasMouseSensitivity);
