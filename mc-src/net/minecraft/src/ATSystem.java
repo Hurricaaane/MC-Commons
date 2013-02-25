@@ -108,7 +108,7 @@ public class ATSystem
 		{
 			if (file.isDirectory())
 			{
-				if (!file.getName().contains(".") && !file.getName().contains(","))
+				if (!file.getName().contains("."))
 				{
 					cacheSubstituants(originURI, file);
 				}

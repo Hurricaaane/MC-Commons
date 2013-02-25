@@ -58,7 +58,7 @@ public class ATPackManager
 		
 		for (File file : this.atDirectory.listFiles())
 		{
-			if (file.isDirectory())
+			if (file.isDirectory() && !file.getName().contains(","))
 			{
 				this.packs.put(file.getName(), new ATPack(file));
 				this.packOrder.add(file.getName());
