@@ -58,11 +58,18 @@ public class ATPackManager
 		
 		for (File file : this.atDirectory.listFiles())
 		{
-			if (file.isDirectory() && !file.getName().contains(","))
+			if (!file.getName().contains(","))
 			{
-				this.packs.put(file.getName(), new ATPack(file));
-				this.packOrder.add(file.getName());
-				
+				if (file.isDirectory() && !file.getName().contains("."))
+				{
+					this.packs.put(file.getName(), new ATPack(file));
+					this.packOrder.add(file.getName());
+				}
+				else if (file.isFile() && (file.getName().endsWith(".zip") || file.getName().endsWith(".audiotori")))
+				{
+					this.packs.put(file.getName(), new ATPack(file));
+					this.packOrder.add(file.getName());
+				}
 			}
 		}
 		

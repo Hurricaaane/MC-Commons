@@ -1,7 +1,7 @@
 package net.minecraft.src;
 
 import java.io.File;
-import java.net.MalformedURLException;
+import java.io.FileInputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.AbstractMap;
@@ -14,8 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
-import net.minecraft.client.Minecraft;
 import eu.ha3.mc.haddon.PrivateAccessException;
 
 /*
@@ -38,8 +39,8 @@ public class ATSystem
 {
 	private HaddonImpl mod;
 	
-	private Map<String, File> substituantFiles;
-	private List<Entry<String, File>> cumulantsFiles;
+	private Map<String, ATConversible> substituantFiles;
+	private List<Entry<String, ATConversible>> cumulantsFiles;
 	
 	private boolean replaceMusWithOggFiles;
 	
@@ -55,8 +56,8 @@ public class ATSystem
 	public ATSystem(HaddonImpl mod)
 	{
 		this.mod = mod;
-		this.substituantFiles = new LinkedHashMap<String, File>();
-		this.cumulantsFiles = new ArrayList<Entry<String, File>>();
+		this.substituantFiles = new LinkedHashMap<String, ATConversible>();
+		this.cumulantsFiles = new ArrayList<Entry<String, ATConversible>>();
 		
 		this.replaceMusWithOggFiles = true;
 		
@@ -64,12 +65,12 @@ public class ATSystem
 		
 	}
 	
-	public Map<String, File> getSubstituantMap()
+	public Map<String, ATConversible> getSubstituantMap()
 	{
 		return this.substituantFiles;
 	}
 	
-	public List<Entry<String, File>> getCumulantsList()
+	public List<Entry<String, ATConversible>> getCumulantsList()
 	{
 		return this.cumulantsFiles;
 	}
@@ -104,32 +105,100 @@ public class ATSystem
 	
 	private void cacheSubstituants(URI originURI, File directory)
 	{
-		for (File file : directory.listFiles())
+		if (directory.isDirectory())
 		{
-			if (file.isDirectory())
+			for (File file : directory.listFiles())
 			{
-				if (!file.getName().contains("."))
+				if (file.isDirectory())
 				{
-					cacheSubstituants(originURI, file);
+					if (!file.getName().contains("."))
+					{
+						cacheSubstituants(originURI, file);
+					}
+					else
+					{
+						debug(
+							"Found directory called " + originURI.relativize(file.toURI()).toString() + ", ignoring.",
+							2);
+					}
 				}
 				else
 				{
-					debug("Found directory called " + originURI.relativize(file.toURI()).toString() + ", ignoring.", 2);
+					// Ignore all files that have no extension
+					// Ignore all files that begin with a dot
+					if (file.getName().contains(".") && !file.getName().startsWith("."))
+					{
+						ATConversible conv = new ATConversible(file);
+						
+						this.substituantFiles.put(originURI.relativize(file.toURI()).toString(), conv);
+						this.cumulantsFiles.add(new AbstractMap.SimpleEntry<String, ATConversible>(originURI
+							.relativize(file.toURI()).toString(), conv));
+					}
+					else
+					{
+						debug("Found file called " + originURI.relativize(file.toURI()).toString() + ", ignoring.", 2);
+					}
+				}
+				
+			}
+		}
+		else if (directory.isFile())
+		{
+			ZipInputStream zis = null;
+			try
+			{
+				URL zipUrl = directory.toURI().toURL();
+				
+				FileInputStream fis = new FileInputStream(directory);
+				zis = new ZipInputStream(fis);
+				
+				ZipEntry entry = zis.getNextEntry();
+				while (entry != null)
+				{
+					if (!entry.isDirectory())
+					{
+						String entryName = entry.getName();
+						if (!entryName.startsWith(".") && !entryName.contains("/."))
+						{
+							// Ignore all files that have no extension
+							// Ignore all files that begin with a dot
+							
+							String fileName = entryName.substring(entryName.lastIndexOf("/") + 1);
+							
+							if (fileName.contains(".") && !fileName.startsWith("."))
+							{
+								URL fileUrl = new URL(String.format("jar:%s!/%s", zipUrl, entryName));
+								ATConversible conv = new ATConversible(fileUrl);
+								
+								this.substituantFiles.put(entryName, conv);
+								this.cumulantsFiles.add(new AbstractMap.SimpleEntry<String, ATConversible>(
+									entryName, conv));
+							}
+							else
+							{
+								debug("Found file inside zip called " + fileName + ", ignoring.", 2);
+							}
+						}
+					}
+					
+					entry = zis.getNextEntry();
 				}
 			}
-			else
+			catch (Exception e)
 			{
-				// Ignore all files that have no extension
-				// Ignore all files that begin with a dot
-				if (file.getName().contains(".") && !file.getName().startsWith("."))
+				e.printStackTrace();
+			}
+			finally
+			{
+				try
 				{
-					this.substituantFiles.put(originURI.relativize(file.toURI()).toString(), file);
-					this.cumulantsFiles.add(new AbstractMap.SimpleEntry<String, File>(originURI
-						.relativize(file.toURI()).toString(), file));
+					if (zis != null)
+					{
+						zis.close();
+					}
 				}
-				else
+				catch (Exception e)
 				{
-					debug("Found file called " + originURI.relativize(file.toURI()).toString() + ", ignoring.", 2);
 				}
 			}
 			
@@ -489,7 +558,6 @@ public class ATSystem
 		
 		// Install orphan sounds
 		int orphanCount = 0;
-		Minecraft mc = this.mod.manager().getMinecraft();
 		for (String name : notLoadedNames)
 		{
 			for (String subLocation : subLocations)
@@ -499,7 +567,7 @@ public class ATSystem
 					if (!soundPool.isGetRandomSound || name.contains(".") && !isMadeOfDigits(soundNamePart(name)))
 					{
 						debug("Installing orphan resource " + name);
-						mc.installResource(name, this.substituantFiles.get(name));
+						installResource(name, this.substituantFiles.get(name));
 						orphanCount++;
 					}
 					else
@@ -549,10 +617,54 @@ public class ATSystem
 		
 	}
 	
+	private void installResource(String name, ATConversible conv)
+	{
+		if (conv.isFile())
+		{
+			this.mod.getManager().getMinecraft().installResource(name, conv.getFile());
+		}
+		else
+		{
+			try
+			{
+				int quant = name.indexOf("/");
+				String pool = name.substring(0, quant);
+				name = name.substring(quant + 1);
+				
+				if (pool.equalsIgnoreCase("sound3"))
+				{
+					SoundPool soundPoolSounds =
+						(SoundPool) this.mod.util().getPrivateValueLiteral(
+							net.minecraft.src.SoundManager.class, this.mod.manager().getMinecraft().sndManager, "b", 1);
+					soundPoolSounds.addSound(name, conv.getURL());
+				}
+				else if (pool.equalsIgnoreCase("streaming"))
+				{
+					SoundPool soundPoolStreaming =
+						(SoundPool) this.mod.util().getPrivateValueLiteral(
+							net.minecraft.src.SoundManager.class, this.mod.manager().getMinecraft().sndManager, "c", 2);
+					soundPoolStreaming.addSound(name, conv.getURL());
+				}
+				else if (pool.equalsIgnoreCase("music") || pool.equalsIgnoreCase("newmusic"))
+				{
+					SoundPool soundPoolMusic =
+						(SoundPool) this.mod.util().getPrivateValueLiteral(
+							net.minecraft.src.SoundManager.class, this.mod.manager().getMinecraft().sndManager, "d", 3);
+					soundPoolMusic.addSound(name, conv.getURL());
+				}
+			}
+			catch (PrivateAccessException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void performCumulations(SoundPool soundPool, String[] subLocations) throws PrivateAccessException
 	{
-		List<Entry<String, File>> pairsToLoad = new ArrayList<Entry<String, File>>();
+		List<Entry<String, ATConversible>> pairsToLoad = new ArrayList<Entry<String, ATConversible>>();
 		List<URL> cumulatedURLs = new ArrayList<URL>();
 		
 		// nameToSoundPoolEntriesMapping
@@ -564,7 +676,7 @@ public class ATSystem
 		List allSoundPoolEntries =
 			(List) this.mod.util().getPrivateValueLiteral(net.minecraft.src.SoundPool.class, soundPool, "e", 2);
 		
-		for (Entry<String, File> entry : this.cumulantsFiles)
+		for (Entry<String, ATConversible> entry : this.cumulantsFiles)
 		{
 			for (String subLocation : subLocations)
 			{
@@ -578,8 +690,7 @@ public class ATSystem
 		
 		// Install cumulated sounds
 		int orphanCount = 0;
-		Minecraft mc = this.mod.manager().getMinecraft();
-		for (Entry<String, File> pair : pairsToLoad)
+		for (Entry<String, ATConversible> pair : pairsToLoad)
 		{
 			String name = pair.getKey();
 			
@@ -587,17 +698,9 @@ public class ATSystem
 			{
 				debug("Installing cumulative resource " + name);
 				
-				mc.installResource(name, pair.getValue());
+				installResource(name, pair.getValue());
 				orphanCount++;
-				try
-				{
-					cumulatedURLs.add(pair.getValue().toURI().toURL());
-				}
-				catch (MalformedURLException e)
-				{
-					// XXX ???
-					e.printStackTrace();
-				}
+				cumulatedURLs.add(pair.getValue().asURL());
 			}
 			else
 			{

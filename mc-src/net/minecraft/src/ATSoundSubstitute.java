@@ -2,6 +2,7 @@ package net.minecraft.src;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Random;
 
 /*
@@ -51,6 +52,48 @@ public class ATSoundSubstitute extends SoundPoolEntry implements ATSoundWrapper
 		{
 		}
 		
+	}
+	
+	public ATSoundSubstitute(SoundPoolEntry original, String newSoundName, ATConversible conv)
+	{
+		super(original.soundName, original.soundUrl);
+		
+		this.original = original;
+		
+		if (conv.isFile())
+		{
+			try
+			{
+				File substituant = conv.getFile();
+				if (substituant.exists())
+				{
+					// Why is there a random bullcrap here?
+					// For some reason, sometimes sounds get somehow cached somewhere I'm
+					// not sure of. This random bullcrap prevents cached sounds of previous
+					// loading sequences to replace this one
+					this.soundName = new Random().nextInt(99999) + newSoundName;
+					this.soundUrl = substituant.toURI().toURL();
+				}
+				else
+				{
+					System.out.println("(ATS) Tried to substitute "
+						+ original.soundName + " but the file " + substituant.toString() + " does not exist!");
+				}
+			}
+			catch (MalformedURLException e)
+			{
+			}
+		}
+		else
+		{
+			URL substituant = conv.getURL();
+			// Why is there a random bullcrap here?
+			// For some reason, sometimes sounds get somehow cached somewhere I'm
+			// not sure of. This random bullcrap prevents cached sounds of previous
+			// loading sequences to replace this one
+			this.soundName = new Random().nextInt(99999) + newSoundName;
+			this.soundUrl = substituant;
+		}
 	}
 	
 	public SoundPoolEntry getOriginal()

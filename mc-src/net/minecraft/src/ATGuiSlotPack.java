@@ -68,7 +68,7 @@ public class ATGuiSlotPack extends GuiSlot
 			
 			this.menu.drawString(this.menu.fontRenderer, (pack.getPrettyName() == pack.getSysName() ? "\u00A7o" : "")
 				+ pack.getPrettyName(), x + 20, y, 0xFFFFFF);
-			this.menu.drawString(this.menu.fontRenderer, pack.getSysName() + "/", x + 20, y + 10, 0x404040);
+			this.menu.drawString(this.menu.fontRenderer, pack.getLocationPrintName(), x + 20, y + 10, 0x404040);
 			
 			this.menu.drawString(
 				this.menu.fontRenderer, pack.getMadeForVersion(),

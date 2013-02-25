@@ -1,8 +1,11 @@
 package net.minecraft.src;
 
 import java.io.File;
-
-import eu.ha3.util.property.simple.ConfigProperty;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -22,10 +25,11 @@ import eu.ha3.util.property.simple.ConfigProperty;
 
 public class ATPack
 {
-	private File directory;
+	private File container;
 	
 	private String sysName;
 	
+	private String locationPrintName;
 	private String prettyName;
 	private String author;
 	private String url;
@@ -34,10 +38,11 @@ public class ATPack
 	
 	private boolean isActivated;
 	
-	public ATPack(File directory)
+	public ATPack(File container)
 	{
-		this.directory = directory;
-		this.sysName = directory.getName();
+		this.container = container;
+		this.sysName = container.getName();
+		this.locationPrintName = container.getName() + (this.container.isDirectory() ? "/" : "");
 		
 		this.prettyName = this.sysName;
 		this.author = "";
@@ -51,32 +56,87 @@ public class ATPack
 		return this.sysName;
 	}
 	
+	public String getLocationPrintName()
+	{
+		return this.locationPrintName;
+	}
+	
 	public File getDirectory()
 	{
-		return this.directory;
+		return this.container;
 	}
 	
 	public void fetchInfo()
 	{
-		File metadata = new File(this.directory, "info.cfg");
-		if (!metadata.exists())
-			return;
+		InputStream is = null;
+		ZipFile zip = null;
 		
-		ConfigProperty info = new ConfigProperty();
-		info.setProperty("pack.prettyname", this.sysName);
-		info.setProperty("pack.author", "");
-		info.setProperty("pack.url", "");
-		info.setProperty("pack.description", "");
-		info.setProperty("pack.madeforversion", "???");
-		info.setSource(metadata.getAbsolutePath());
-		if (info.load())
+		try
 		{
-			this.prettyName = info.getString("pack.prettyname");
-			this.author = info.getString("pack.author");
-			this.url = info.getString("pack.url");
-			this.description = info.getString("pack.description");
-			this.madeForVersion = info.getString("pack.madeforversion");
+			if (this.container.isDirectory())
+			{
+				File metadata = new File(this.container, "info.cfg");
+				if (!metadata.exists())
+					return;
+				is = new FileInputStream(metadata);
+			}
+			else
+			{
+				zip = new ZipFile(this.container);
+				ZipEntry entry = zip.getEntry("info.cfg");
+				if (entry == null)
+					return;
+				
+				is = zip.getInputStream(entry);
+			}
+			if (is == null)
+				return;
+			
+			ATConfigFromStream info = new ATConfigFromStream();
+			info.setProperty("pack.prettyname", this.sysName);
+			info.setProperty("pack.author", "");
+			info.setProperty("pack.url", "");
+			info.setProperty("pack.description", "");
+			info.setProperty("pack.madeforversion", "???");
+			if (info.loadFromStream(is))
+			{
+				this.prettyName = info.getString("pack.prettyname");
+				this.author = info.getString("pack.author");
+				this.url = info.getString("pack.url");
+				this.description = info.getString("pack.description");
+				this.madeForVersion = info.getString("pack.madeforversion");
+			}
 		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			if (is != null)
+			{
+				try
+				{
+					is.close();
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+			if (zip != null)
+			{
+				try
+				{
+					zip.close();
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		
 	}
 	
 	public boolean isActive()
