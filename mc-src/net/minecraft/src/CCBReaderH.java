@@ -256,7 +256,7 @@ public class CCBReaderH implements CCBReader
 				volume = volume * this.VAR.MATSTEPS_VOLUME_MULTIPLICATOR;
 				if (this.VAR.PLAY_MATSTEPS && volume > 0)
 				{
-					String sound = this.mod.getSoundForMaterial(block, event);
+					String sound = this.mod.getSoundForBlock(block, world.getBlockMetadata(xx, yy, zz), event);
 					
 					if (sound != null && !sound.equals("BLANK"))
 					{

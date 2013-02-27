@@ -78,18 +78,16 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 			
 		}
 		
+		final int softBlocks[] = { 2, 18, 19, 35, 60, 78, 80, 81, 110, 111 };
+		
 		this.blockSound = new ConfigProperty();
-		this.blockSound.setProperty("0", "ccb_sounds.hoofstep");
-		this.blockSound.setProperty("2", "ccb_sounds.softstep");
-		this.blockSound.setProperty("110", "ccb_sounds.softstep");
-		this.blockSound.setProperty("35", "ccb_sounds.softstep");
-		this.blockSound.setProperty("19", "ccb_sounds.softstep");
-		this.blockSound.setProperty("18", "ccb_sounds.softstep");
-		this.blockSound.setProperty("78", "ccb_sounds.softstep");
-		this.blockSound.setProperty("80", "ccb_sounds.softstep");
-		this.blockSound.setProperty("111", "ccb_sounds.softstep");
-		this.blockSound.setProperty("81", "ccb_sounds.softstep");
-		this.blockSound.setProperty("60", "ccb_sounds.softstep");
+		this.blockSound.setProperty("0", "default_material");
+		for (int block : softBlocks)
+		{
+			this.blockSound.setProperty(Integer.toString(block), "soft");
+		}
+		this.blockSound.setProperty("default_material.step", "ccb_sounds.hoofstep");
+		this.blockSound.setProperty("soft.step", "ccb_sounds.softstep");
 		this.blockSound.commit();
 		
 		// Load configuration from source
@@ -354,18 +352,40 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 	{
 	}
 	
-	public String getSoundForMaterial(int block, CCBEventType event)
+	public String getSoundForBlock(int block, int meta, CCBEventType event)
 	{
+		String material = null;
+		if (this.blockMap.containsKey(block + ":" + meta))
+		{
+			material = this.blockMap.get(block + ":" + meta);
+		}
+		else if (this.blockMap.containsKey(Integer.toString(block)))
+		{
+			material = this.blockMap.get(Integer.toString(block));
+		}
+		else
+		{
+			material = this.blockMap.get("0");
+		}
+		
+		return getSoundForMaterial(material, event);
+		
+	}
+	
+	public String getSoundForMaterial(String material, CCBEventType event)
+	{
+		if (material == null)
+			return null;
+		
 		if (event == CCBEventType.STEP)
-			return this.blockMap.containsKey(Integer.toString(block))
-				? this.blockMap.get(Integer.toString(block)) : this.blockMap.get("0");
+			return this.blockMap.get(material + ".step");
 		else if (event == CCBEventType.JUMP)
-			return this.blockMap.containsKey(block + "_jump")
-				? this.blockMap.get(block + "_jump") : getSoundForMaterial(block, CCBEventType.STEP);
+			return this.blockMap.containsKey(material + ".jump")
+				? this.blockMap.get(material + ".jump") : getSoundForMaterial(material, CCBEventType.STEP);
 		else
 			//if (event == CCBEventType.LAND)
-			return this.blockMap.containsKey(block + "_land")
-				? this.blockMap.get(block + "_land") : getSoundForMaterial(block, CCBEventType.STEP);
+			return this.blockMap.containsKey(material + ".land")
+				? this.blockMap.get(material + ".land") : getSoundForMaterial(material, CCBEventType.STEP);
 		
 	}
 	
