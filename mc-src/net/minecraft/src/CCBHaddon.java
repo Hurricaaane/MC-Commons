@@ -48,11 +48,11 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 		
 		if (isInstalledMLP())
 		{
-			this.system = new CCBMLPReader(this);
+			this.system = new CCBReaderMLP(this);
 		}
 		else
 		{
-			this.system = new CCBGeneralReader(this);
+			this.system = new CCBReader4P(this);
 		}
 		
 		File configFile = new File(Minecraft.getMinecraftDir(), "ccb.cfg");

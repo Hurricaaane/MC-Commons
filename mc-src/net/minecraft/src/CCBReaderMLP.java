@@ -16,9 +16,9 @@ package net.minecraft.src;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class CCBMLPReader extends CCBGeneralReader
+public class CCBReaderMLP extends CCBReader4P
 {
-	public CCBMLPReader(CCBHaddon mod)
+	public CCBReaderMLP(CCBHaddon mod)
 	{
 		super(mod);
 	}

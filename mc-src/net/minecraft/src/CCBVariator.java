@@ -57,7 +57,7 @@ public class CCBVariator
 	public float STAIRCASE_DISTANCE = 0.01f;
 	public float STAIRCASE_ANTICHASE_DIFFERENCE = 1f;
 	
-	public float HOOF_VOLUME_MULTIPLICATOR = 1f;
+	public float MATSTEPS_VOLUME_MULTIPLICATOR = 1f;
 	public float HOOF_PITCH_RADIUS = 0.1f;
 	public float WALK_VOLUME = 0.1f;
 	public float SLOW_VOLUME = 0.1f;
@@ -69,7 +69,7 @@ public class CCBVariator
 	public float SPEED_TO_GALLOP = 0.13f;
 	
 	public boolean PLAY_OVERRIDES = false;
-	public boolean PLAY_HOOFSTEPS = true;
+	public boolean PLAY_MATSTEPS = true;
 	public boolean PLAY_BLOCKSTEPS = true;
 	
 	public float JUMP_VOLUME = 0.1f;
