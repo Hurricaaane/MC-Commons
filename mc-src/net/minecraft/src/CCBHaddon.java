@@ -38,7 +38,7 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 	private CCBUpdate update;
 	
 	private ConfigProperty blockSound;
-	private Map<Integer, String> blockMap;
+	private Map<String, String> blockMap;
 	
 	@Override
 	public void onLoad()
@@ -104,7 +104,7 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 			throw new RuntimeException("Error caused config not to work: " + e.getMessage());
 		}
 		
-		this.blockMap = new LinkedHashMap<Integer, String>();
+		this.blockMap = new LinkedHashMap<String, String>();
 		createBlockMap();
 		
 		manager().hookFrameEvents(true);
@@ -120,8 +120,8 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 		{
 			try
 			{
-				int blockID = Integer.parseInt(entry.getKey());
-				this.blockMap.put(blockID, entry.getValue());
+				// blockID = Integer.parseInt(entry.getKey());
+				this.blockMap.put(entry.getKey(), entry.getValue());
 				
 			}
 			catch (Exception e)
@@ -354,9 +354,19 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 	{
 	}
 	
-	public String getSoundForMaterial(int block)
+	public String getSoundForMaterial(int block, CCBEventType event)
 	{
-		return this.blockMap.containsKey(block) ? this.blockMap.get(block) : this.blockMap.get(0);
+		if (event == CCBEventType.STEP)
+			return this.blockMap.containsKey(Integer.toString(block))
+				? this.blockMap.get(Integer.toString(block)) : this.blockMap.get("0");
+		else if (event == CCBEventType.JUMP)
+			return this.blockMap.containsKey(block + "_jump")
+				? this.blockMap.get(block + "_jump") : getSoundForMaterial(block, CCBEventType.STEP);
+		else
+			//if (event == CCBEventType.LAND)
+			return this.blockMap.containsKey(block + "_land")
+				? this.blockMap.get(block + "_land") : getSoundForMaterial(block, CCBEventType.STEP);
+		
 	}
 	
 }
