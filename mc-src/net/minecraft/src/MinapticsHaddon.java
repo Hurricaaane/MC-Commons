@@ -36,17 +36,6 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	private MinapticsMouseFilter mouseFilterXAxis;
 	private MinapticsMouseFilter mouseFilterYAxis;
 	
-	/*
-		this.zoomKey = (int) parseFloat(as[1]);
-		this.zoomDuration = (int) parseFloat(as[1]);
-		this.maxZoomField = parseFloat(as[1]);
-		this.minZoomField = parseFloat(as[1]);
-		this.smootherLevel = parseFloat(as[1]);
-		this.smootherIntensity = parseFloat(as[1]);
-		this.smootherIntensityWhenIdle = parseFloat(as[1]);
-		this.disableSmootherEvenDuringZooming = parseFloat(as[1]) == 1F ? true : false;
-		*/
-	
 	private float fovLevel;
 	private float fovLevelTransition;
 	private float fovLevelSetup;
@@ -124,14 +113,14 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		this.fovLevel = this.memory.getFloat("fov_level");
 		this.smootherIntensity = 0.5f;
 		
-		this.wasMouseSensitivity = 0;
+		/*this.wasMouseSensitivity = 0;
 		this.wasAlreadySmoothing = false;
 		
 		this.zoomTime = 0;
 		this.eventNum = 0;
 		this.eventNumOnZoom = 0;
 		this.lastTime = 0;
-		this.basePlayerPitch = 0;
+		this.basePlayerPitch = 0;*/
 		
 		this.fovLevelTransition = this.fovLevel;
 		this.fovLevelSetup = this.fovLevel;
@@ -380,7 +369,8 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	
 	private boolean shouldChangeFOV()
 	{
-		return this.isHolding || System.currentTimeMillis() - this.zoomTime < this.VAR.ZOOM_DURATION + 200;
+		return this.isHolding
+			|| this.isZoomed || System.currentTimeMillis() - this.zoomTime < this.VAR.ZOOM_DURATION + 200;
 		
 	}
 	
