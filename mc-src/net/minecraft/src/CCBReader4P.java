@@ -161,78 +161,81 @@ public class CCBReader4P extends CCBReaderH
 			this.dwmYChange = 0;
 		}
 		
-		float dwm = distanceReference - this.dmwBase;
-		
-		float speed = (float) Math.sqrt(ply.motionX * ply.motionX + ply.motionZ * ply.motionZ);
-		float distance = this.VAR.WALK_DISTANCE;
-		float volume = this.VAR.WALK_VOLUME;
-		
-		if (ply.isOnLadder())
+		if (ply.onGround || ply.isInWater() || ply.isOnLadder())
 		{
-			volume = this.VAR.LADDER_VOLUME;
-			distance = this.VAR.LADDER_DISTANCE;
-		}
-		else if (!ply.onGround && !ply.isInWater())
-		{
-			volume = 0;
-		}
-		else if (Math.abs(this.yPosition - ply.posY) > 0.4d)
-		{
-			// Regular stance on staircases (1-1-1-1-)
-			volume = this.VAR.STAIRCASE_VOLUME;
-			distance = this.VAR.STAIRCASE_DISTANCE;
-			this.dwmYChange = distanceReference;
+			float dwm = distanceReference - this.dmwBase;
 			
-		}
-		else if (speed > this.VAR.SPEED_TO_GALLOP)
-		{
-			volume = this.VAR.GALLOP_VOLUME;
-			// Gallop stance (1-1-2--)
-			if (this.hoof == 3)
+			float speed = (float) Math.sqrt(ply.motionX * ply.motionX + ply.motionZ * ply.motionZ);
+			float distance = this.VAR.WALK_DISTANCE;
+			float volume = this.VAR.WALK_VOLUME;
+			
+			if (ply.isOnLadder())
 			{
-				distance = this.VAR.GALLOP_DISTANCE_4;
+				volume = this.VAR.LADDER_VOLUME;
+				distance = this.VAR.LADDER_DISTANCE;
 			}
-			else if (this.hoof == 2)
+			/*else if (!ply.onGround && !ply.isInWater())
 			{
-				distance = this.VAR.GALLOP_DISTANCE_3;
+				volume = 0;
+			}*/
+			else if (Math.abs(this.yPosition - ply.posY) > 0.4d)
+			{
+				// Regular stance on staircases (1-1-1-1-)
+				volume = this.VAR.STAIRCASE_VOLUME;
+				distance = this.VAR.STAIRCASE_DISTANCE;
+				this.dwmYChange = distanceReference;
+				
 			}
-			else if (this.hoof == 1)
+			else if (speed > this.VAR.SPEED_TO_GALLOP)
 			{
-				distance = this.VAR.GALLOP_DISTANCE_2;
+				volume = this.VAR.GALLOP_VOLUME;
+				// Gallop stance (1-1-2--)
+				if (this.hoof == 3)
+				{
+					distance = this.VAR.GALLOP_DISTANCE_4;
+				}
+				else if (this.hoof == 2)
+				{
+					distance = this.VAR.GALLOP_DISTANCE_3;
+				}
+				else if (this.hoof == 1)
+				{
+					distance = this.VAR.GALLOP_DISTANCE_2;
+				}
+				else
+				{
+					distance = this.VAR.GALLOP_DISTANCE_1;
+				}
+			}
+			else if (speed > this.VAR.SPEED_TO_WALK)
+			{
+				// Walking stance (2-2-)
+				// Prevent the 2-2 steps from happening on staircases
+				if (distanceReference - this.dwmYChange > this.VAR.STAIRCASE_ANTICHASE_DIFFERENCE)
+				{
+					if (this.hoof % 2 == 0)
+					{
+						//distance = distance / 7f;
+						distance = distance * this.VAR.WALK_CHASING_FACTOR;
+					}
+				}
+				
 			}
 			else
 			{
-				distance = this.VAR.GALLOP_DISTANCE_1;
+				// Slow stance (1--1--1--1--)
+				distance = this.VAR.SLOW_DISTANCE;
+				volume = this.VAR.SLOW_VOLUME * speed / this.VAR.SPEED_TO_WALK;
 			}
-		}
-		else if (speed > this.VAR.SPEED_TO_WALK)
-		{
-			// Walking stance (2-2-)
-			// Prevent the 2-2 steps from happening on staircases
-			if (distanceReference - this.dwmYChange > this.VAR.STAIRCASE_ANTICHASE_DIFFERENCE)
+			
+			if (dwm > distance)
 			{
-				if (this.hoof % 2 == 0)
-				{
-					//distance = distance / 7f;
-					distance = distance * this.VAR.WALK_CHASING_FACTOR;
-				}
+				makeSoundForPlayerBlock(ply, volume, 0d, CCBEventType.STEP);
+				
+				this.dmwBase = distanceReference;
+				
+				this.hoof = (this.hoof + 1) % 4;
 			}
-			
-		}
-		else
-		{
-			// Slow stance (1--1--1--1--)
-			distance = this.VAR.SLOW_DISTANCE;
-			volume = this.VAR.SLOW_VOLUME * speed / this.VAR.SPEED_TO_WALK;
-		}
-		
-		if (dwm > distance)
-		{
-			makeSoundForPlayerBlock(ply, volume, 0d, CCBEventType.STEP);
-			
-			this.dmwBase = distanceReference;
-			
-			this.hoof = (this.hoof + 1) % 4;
 		}
 		
 		this.yPosition = ply.posY;
