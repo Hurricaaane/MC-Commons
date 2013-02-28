@@ -301,13 +301,13 @@ public class SkinningSystemMLP implements SkinningSystem
 			RenderEngine re = this.mc.renderEngine;
 			
 			// Dev mode
-			Pony.convertAndLoadPonySkinFromRawToUseable(this.pony, this.skinPath, bufferedimage, re);
+			//Pony.convertAndLoadPonySkinFromRawToUseable(this.pony, this.skinPath, bufferedimage, re);
 			
 			// Live mode
-			/*this.pony.texture = this.skinPath;
+			this.pony.texture = this.skinPath;
 			
 			re.setupTexture(bufferedimage, re.getTexture(this.pony.texture));
-			this.pony.skinUrl = null;*/
+			this.pony.skinUrl = null;
 			
 			// TRASH
 			/*if (!eu.ha3.mc.convenience.Ha3StaticUtilities.classExists(
