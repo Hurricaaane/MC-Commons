@@ -355,9 +355,10 @@ public class CCBHaddon extends HaddonImpl implements SupportsFrameEvents
 	public String getSoundForBlock(int block, int meta, CCBEventType event)
 	{
 		String material = null;
-		if (this.blockMap.containsKey(block + ":" + meta))
+		
+		if (this.blockMap.containsKey(block + "_" + meta))
 		{
-			material = this.blockMap.get(block + ":" + meta);
+			material = this.blockMap.get(block + "_" + meta);
 		}
 		else if (this.blockMap.containsKey(Integer.toString(block)))
 		{
