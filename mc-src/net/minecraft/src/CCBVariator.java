@@ -24,7 +24,7 @@ import eu.ha3.util.property.simple.ConfigProperty;
 public class CCBVariator
 {
 	public boolean FORCE_HUMANOID = false;
-	public float HUMAN_DISTANCE = 0.85f;
+	public float HUMAN_DISTANCE = 0.80f;
 	
 	public int WING_JUMPING_REST_TIME = 700;
 	public int WING_SLOW = 550;
