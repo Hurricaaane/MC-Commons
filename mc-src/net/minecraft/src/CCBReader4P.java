@@ -22,7 +22,6 @@ public class CCBReader4P extends CCBReaderH
 	
 	// Hoofsteps
 	protected int hoof;
-	protected double yPosition;
 	
 	// Flying
 	protected long airborneTime;

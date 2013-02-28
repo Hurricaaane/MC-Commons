@@ -28,6 +28,7 @@ public class CCBReaderH implements CCBReader
 	// Footsteps
 	protected float dmwBase;
 	protected float dwmYChange;
+	protected double yPosition;
 	
 	// Airborne
 	protected boolean isFlying;
@@ -63,32 +64,44 @@ public class CCBReaderH implements CCBReader
 			this.dwmYChange = 0;
 		}
 		
-		float dwm = distanceReference - this.dmwBase;
-		
-		//float speed = (float) Math.sqrt(ply.motionX * ply.motionX + ply.motionZ * ply.motionZ);
-		float distance = this.VAR.WALK_DISTANCE;
-		float volume = this.VAR.WALK_VOLUME;
-		
-		if (ply.isOnLadder())
+		if (ply.onGround || ply.isInWater() || ply.isOnLadder())
 		{
-			volume = this.VAR.LADDER_VOLUME;
-			distance = this.VAR.LADDER_DISTANCE;
-		}
-		else if (!ply.onGround && !ply.isInWater())
-		{
-			volume = 0;
-		}
-		else
-		{
-			distance = this.VAR.HUMAN_DISTANCE;
-		}
-		
-		if (dwm > distance)
-		{
-			makeSoundForPlayerBlock(ply, volume, 0d, CCBEventType.STEP);
+			float dwm = distanceReference - this.dmwBase;
 			
-			this.dmwBase = distanceReference;
+			//float speed = (float) Math.sqrt(ply.motionX * ply.motionX + ply.motionZ * ply.motionZ);
+			float distance = this.VAR.WALK_DISTANCE;
+			float volume = this.VAR.WALK_VOLUME;
+			
+			if (ply.isOnLadder())
+			{
+				volume = this.VAR.LADDER_VOLUME;
+				distance = this.VAR.LADDER_DISTANCE;
+			}
+			/*else if (!ply.onGround && !ply.isInWater())
+			{
+				volume = 0;
+			}*/
+			else if (Math.abs(this.yPosition - ply.posY) > 0.4d)
+			{
+				volume = this.VAR.STAIRCASE_VOLUME;
+				distance = this.VAR.STAIRCASE_DISTANCE;
+				this.dwmYChange = distanceReference;
+				
+			}
+			else
+			{
+				distance = this.VAR.HUMAN_DISTANCE;
+			}
+			
+			if (dwm > distance)
+			{
+				makeSoundForPlayerBlock(ply, volume, 0d, CCBEventType.STEP);
+				
+				this.dmwBase = distanceReference;
+			}
 		}
+		
+		this.yPosition = ply.posY;
 		
 	}
 	
@@ -254,28 +267,32 @@ public class CCBReaderH implements CCBReader
 			else
 			{
 				volume = volume * this.VAR.MATSTEPS_VOLUME_MULTIPLICATOR;
-				if (this.VAR.PLAY_MATSTEPS && volume > 0)
+				if (volume > 0)
 				{
-					String sound = this.mod.getSoundForBlock(block, world.getBlockMetadata(xx, yy, zz), event);
-					
-					if (sound != null && !sound.equals("BLANK"))
+					if (this.VAR.PLAY_MATSTEPS)
 					{
-						this.mod.manager().getMinecraft().theWorld.playSound(
-							ply.posX, ply.posY, ply.posZ, sound, volume, randomPitch(1f, this.VAR.HOOF_PITCH_RADIUS),
-							false);
+						String sound = this.mod.getSoundForBlock(block, world.getBlockMetadata(xx, yy, zz), event);
+						
+						if (sound != null && !sound.equals("BLANK"))
+						{
+							this.mod.manager().getMinecraft().theWorld.playSound(
+								ply.posX, ply.posY, ply.posZ, sound, volume,
+								randomPitch(1f, this.VAR.HOOF_PITCH_RADIUS), false);
+						}
+						
+						if (sound != null && !sound.equals("DEFAULT"))
+						{
+							overrode = true;
+						}
 					}
 					
-					if (sound != null && !sound.equals("DEFAULT"))
+					if (this.VAR.PLAY_BLOCKSTEPS && (!this.VAR.PLAY_OVERRIDES || !overrode))
 					{
-						overrode = true;
+						ply.playStepSound(xx, yy, zz, block);
 					}
 				}
 			}
 			
-			if (this.VAR.PLAY_BLOCKSTEPS && (!this.VAR.PLAY_OVERRIDES || !overrode))
-			{
-				ply.playStepSound(xx, yy, zz, block);
-			}
 		}
 		else
 			return false;
