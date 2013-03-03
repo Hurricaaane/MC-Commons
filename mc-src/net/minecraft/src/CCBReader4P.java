@@ -89,6 +89,7 @@ public class CCBReader4P extends CCBReaderH
 					}
 				}
 				
+				volume = volume * this.VAR.GLOBAL_VOLUME_MULTIPLICATOR;
 				if (!this.isFlying)
 				{
 					this.mod.manager().getMinecraft().theWorld.playSound(
@@ -142,6 +143,7 @@ public class CCBReader4P extends CCBReaderH
 			
 			if (volume > 0f)
 			{
+				volume = volume * this.VAR.GLOBAL_VOLUME_MULTIPLICATOR;
 				this.mod.manager().getMinecraft().theWorld.playSound(
 					ply.posX, ply.posY, ply.posZ, "ccb_sounds.wing", volume,
 					randomPitch(1f, this.VAR.WING_PITCH_RADIUS), false);
@@ -230,6 +232,7 @@ public class CCBReader4P extends CCBReaderH
 			
 			if (dwm > distance)
 			{
+				volume = volume * this.VAR.GLOBAL_VOLUME_MULTIPLICATOR;
 				makeSoundForPlayerBlock(ply, volume, 0d, CCBEventType.STEP);
 				
 				this.dmwBase = distanceReference;

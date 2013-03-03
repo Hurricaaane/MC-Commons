@@ -95,6 +95,7 @@ public class CCBReaderH implements CCBReader
 			
 			if (dwm > distance)
 			{
+				volume = volume * this.VAR.GLOBAL_VOLUME_MULTIPLICATOR;
 				makeSoundForPlayerBlock(ply, volume, 0d, CCBEventType.STEP);
 				
 				this.dmwBase = distanceReference;
@@ -125,19 +126,22 @@ public class CCBReaderH implements CCBReader
 	{
 		if (this.VAR.PLAY_STEP_ON_JUMP && this.isFlying && ply.isJumping)
 		{
-			makeSoundForPlayerBlock(ply, this.VAR.JUMP_VOLUME, 0.5d, CCBEventType.JUMP);
+			makeSoundForPlayerBlock(
+				ply, this.VAR.JUMP_VOLUME * this.VAR.GLOBAL_VOLUME_MULTIPLICATOR, 0.5d, CCBEventType.JUMP);
 		}
 		else if (this.VAR.PLAY_STEP_ON_LAND_HARD
 			&& !this.isFlying && this.fallDistance > this.VAR.LAND_HARD_DISTANCE_MIN)
 		{
-			makeSoundForPlayerBlock(ply, this.VAR.LAND_HARD_VOLUME, 0d, CCBEventType.LAND);
+			makeSoundForPlayerBlock(
+				ply, this.VAR.LAND_HARD_VOLUME * this.VAR.GLOBAL_VOLUME_MULTIPLICATOR, 0d, CCBEventType.LAND);
 		}
 	}
 	
 	protected void makeSoundForPlayerBlock(EntityPlayer ply, float volume, double minus, CCBEventType event)
 	{
 		int xx = MathHelper.floor_double(ply.posX);
-		int yy = MathHelper.floor_double(ply.posY - 0.2d - ply.yOffset - minus);
+		int yy = MathHelper.floor_double(ply.posY - 0.1d - ply.yOffset - minus); // Support for trapdoors
+		//int yy = MathHelper.floor_double(ply.posY - 0.2d - ply.yOffset - minus);
 		int zz = MathHelper.floor_double(ply.posZ);
 		
 		boolean worked = makeSoundForBlock(ply, volume, xx, yy, zz, event);
@@ -251,6 +255,7 @@ public class CCBReaderH implements CCBReader
 		if (block > 0)
 		{
 			boolean overrode = false;
+			
 			if (ply.isInWater())
 			{
 				float var39 =
@@ -277,7 +282,7 @@ public class CCBReaderH implements CCBReader
 						{
 							this.mod.manager().getMinecraft().theWorld.playSound(
 								ply.posX, ply.posY, ply.posZ, sound, volume,
-								randomPitch(1f, this.VAR.HOOF_PITCH_RADIUS), false);
+								randomPitch(1f, this.VAR.MATSTEP_PITCH_RADIUS), false);
 						}
 						
 						if (sound != null && !sound.equals("DEFAULT"))

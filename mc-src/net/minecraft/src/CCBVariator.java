@@ -51,19 +51,20 @@ public class CCBVariator
 	public float SLOW_DISTANCE = 0.75f;
 	public float GALLOP_DISTANCE_1 = 0.25f;
 	public float GALLOP_DISTANCE_2 = 0.25f;
-	public float GALLOP_DISTANCE_3 = 0.1f;
+	public float GALLOP_DISTANCE_3 = 0.05f;
 	public float GALLOP_DISTANCE_4 = 0.7f;
 	public float LADDER_DISTANCE = 0.4f;
 	public float STAIRCASE_DISTANCE = 0.01f;
 	public float STAIRCASE_ANTICHASE_DIFFERENCE = 1f;
 	
-	public float MATSTEPS_VOLUME_MULTIPLICATOR = 1f;
-	public float HOOF_PITCH_RADIUS = 0.1f;
-	public float WALK_VOLUME = 0.1f;
-	public float SLOW_VOLUME = 0.1f;
-	public float GALLOP_VOLUME = 0.1f;
-	public float STAIRCASE_VOLUME = 0.1f;
-	public float LADDER_VOLUME = 0f;
+	public float GLOBAL_VOLUME_MULTIPLICATOR = 1f;
+	public float MATSTEPS_VOLUME_MULTIPLICATOR = 0.25f;
+	public float MATSTEP_PITCH_RADIUS = 1f;
+	public float WALK_VOLUME = 1f;
+	public float SLOW_VOLUME = 1f;
+	public float GALLOP_VOLUME = 1f;
+	public float STAIRCASE_VOLUME = 1f;
+	public float LADDER_VOLUME = 1f;
 	
 	public float SPEED_TO_WALK = 0.08f;
 	public float SPEED_TO_GALLOP = 0.13f;
@@ -72,10 +73,10 @@ public class CCBVariator
 	public boolean PLAY_MATSTEPS = true;
 	public boolean PLAY_BLOCKSTEPS = true;
 	
-	public float JUMP_VOLUME = 0.1f;
+	public float JUMP_VOLUME = 1f;
 	public boolean PLAY_STEP_ON_JUMP = true;
-	public float LAND_HARD_VOLUME = 0.1f;
-	public float LAND_HARD_DISTANCE_MIN = 2f;
+	public float LAND_HARD_VOLUME = 1f;
+	public float LAND_HARD_DISTANCE_MIN = 0.9f; //2f
 	public boolean PLAY_STEP_ON_LAND_HARD = true;
 	
 	public void loadConfig(ConfigProperty config)
