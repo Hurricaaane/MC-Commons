@@ -10,14 +10,9 @@ import java.util.Map;
 
 import net.minecraft.client.Minecraft;
 import net.sf.json.JSONObject;
-
-import org.lwjgl.opengl.GL11;
-
 import eu.ha3.easy.EdgeModel;
 import eu.ha3.easy.EdgeTrigger;
-import eu.ha3.mc.haddon.PrivateAccessException;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
-import eu.ha3.mc.haddon.SupportsTickEvents;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
@@ -35,80 +30,21 @@ import eu.ha3.mc.haddon.SupportsTickEvents;
   0. You just DO WHAT THE FUCK YOU WANT TO. 
 */
 
-public class DVHaddon extends HaddonImpl implements SupportsFrameEvents, SupportsTickEvents, EdgeModel
+public class DVHaddon extends HaddonImpl implements SupportsFrameEvents, EdgeModel
 {
 	private EdgeTrigger key;
-	private DVGuiCapture capturer;
-	
-	private int acc;
-	
-	private boolean isRunning;
 	
 	@Override
 	public void onLoad()
 	{
 		this.key = new EdgeTrigger(this);
-		this.capturer = new DVGuiCapture(manager().getMinecraft());
-		
 		manager().hookFrameEvents(true);
-		manager().hookTickEvents(true);
-	}
-	
-	@Override
-	public void onTick()
-	{
-		if (this.isRunning)
-		{
-			this.acc = this.acc + 1;
-		}
-		
 	}
 	
 	@Override
 	public void onFrame(float f)
 	{
 		this.key.signalState(util().areKeysDown(29, 42, 32));
-		
-		if (this.isRunning)
-		{
-			try
-			{
-				GL11.glEnable(3042 /*GL_BLEND*/);
-				GL11.glDisable(3008 /*GL_ALPHA_TEST*/);
-				GL11.glDisable(3553 /*GL_TEXTURE_2D*/);
-				GL11.glBlendFunc(770, 771);
-				
-				int size = 256;
-				
-				Tessellator tessellator = Tessellator.instance;
-				tessellator.startDrawingQuads();
-				tessellator.setColorRGBA(0, 255, 0, 255);
-				tessellator.addVertex(0, 0, 0.0D);
-				tessellator.addVertex(0, size, 0.0D);
-				tessellator.addVertex(size, size, 0.0D);
-				tessellator.addVertex(size, 0, 0.0D);
-				tessellator.draw();
-				
-				GL11.glDisable(3042 /*GL_BLEND*/);
-				GL11.glEnable(3008 /*GL_ALPHA_TEST*/);
-				GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
-				
-				int speado = this.acc;
-				
-				int mod = 16;
-				
-				int id = speado / mod % 136;
-				int meta = speado % mod;
-				
-				this.capturer.render(new ItemStack(id, 1, meta));
-				util().drawString(id + "", 0.55f, 0.5f, 0, 0, '6', 255, 255, 0, 255, false);
-				util().drawString(meta + "", 0.55f, 0.5f, 0, 16, '6', 0, 255, 0, 255, false);
-			}
-			catch (Exception e)
-			{
-			}
-			
-		}
 	}
 	
 	@Override
@@ -120,8 +56,6 @@ public class DVHaddon extends HaddonImpl implements SupportsFrameEvents, Support
 	public void onFalseEdge()
 	{
 		generateDataTable();
-		//this.capturer.render();
-		//this.isRunning = !this.isRunning;
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -130,7 +64,6 @@ public class DVHaddon extends HaddonImpl implements SupportsFrameEvents, Support
 		Map toJsonify = new LinkedHashMap();
 		toJsonify.put("minecraft_blocks", generateDTItems(0, 256, "item"));
 		toJsonify.put("minecraft_items", generateDTItems(256, 4096, "item"));
-		toJsonify.put("minecraft_recipes", generateRecipes("item"));
 		
 		JSONObject jsonObject = JSONObject.fromObject(toJsonify);
 		System.out.println(jsonObject);
@@ -149,7 +82,7 @@ public class DVHaddon extends HaddonImpl implements SupportsFrameEvents, Support
 		
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	/*@SuppressWarnings({ "unchecked", "rawtypes" })
 	private Object generateRecipes(String atSuffix)
 	{
 		List<Map> listOfMaps = new ArrayList<Map>();
@@ -223,15 +156,48 @@ public class DVHaddon extends HaddonImpl implements SupportsFrameEvents, Support
 		Object[] arrayOfMaps = listOfMaps.toArray();
 		
 		return arrayOfMaps;
+	}*/
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private Object generateDTItems(int fromInclusive, int toExclusive, String atSuffix)
+	{
+		Item[] itemsList = Item.itemsList;
+		
+		List<ItemStack> allItemVariants = new ArrayList<ItemStack>();
+		
+		for (Item item : itemsList)
+		{
+			if (item != null)
+			{
+				int id = item.shiftedIndex;
+				if (id >= fromInclusive && id < toExclusive)
+				{
+					item.getSubItems(id, (CreativeTabs) null, allItemVariants);
+				}
+				
+			}
+		}
+		
+		Map<String, Map> itemMap = new LinkedHashMap<String, Map>();
+		for (ItemStack stack : allItemVariants)
+		{
+			Map map = new LinkedHashMap();
+			map.put("handler", "I");
+			
+			String name = populateMapWithStackInfo(map, stack, atSuffix);
+			
+			itemMap.put(name, map);
+			
+		}
+		
+		return itemMap;
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void populateMapWithStackInfo(Map map, ItemStack stack, String atSuffix)
+	private String populateMapWithStackInfo(Map map, ItemStack stack, String atSuffix)
 	{
 		int id = stack.itemID;
 		int md = stack.getItemDamage();
-		
-		map.put("id", id + ":" + md);
 		
 		boolean subs = stack.getHasSubtypes();
 		
@@ -249,7 +215,15 @@ public class DVHaddon extends HaddonImpl implements SupportsFrameEvents, Support
 		}
 		name = name + "@" + atSuffix + "-" + id + "-" + md;
 		
-		if (id == 373) // Potions need to be treated differently
+		map.put("id", id);
+		map.put("md", md);
+		
+		if (subs)
+		{
+			map.put("hassubtypes", true);
+		}
+		
+		/*if (id == 373) // Potions need to be treated differently
 		{
 			map.put("name", name);
 		}
@@ -260,88 +234,8 @@ public class DVHaddon extends HaddonImpl implements SupportsFrameEvents, Support
 		else
 		{
 			map.put("name", name);
-		}
+		}*/
 		
-		//map.put("indice", ":" + md);
-		if (subs)
-		{
-			map.put("hassubtypes", true);
-		}
-	}
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private Object generateDTItems(int fromIncluded, int toExcluded, String atSuffix)
-	{
-		Item[] itemsList = Item.itemsList;
-		
-		List<ItemStack> allItemVariants = new ArrayList<ItemStack>();
-		
-		for (Item item : itemsList)
-		{
-			if (item != null)
-			{
-				int id = item.shiftedIndex;
-				if (id >= fromIncluded && id < toExcluded)
-				{
-					item.getSubItems(id, (CreativeTabs) null, allItemVariants);
-				}
-				
-			}
-		}
-		
-		List<Map> listOfMaps = new ArrayList<Map>();
-		for (ItemStack stack : allItemVariants)
-		{
-			/*int id = stack.itemID;
-			int md = stack.getItemDamage();
-			boolean subs = stack.getHasSubtypes();*/
-			
-			Map map = new LinkedHashMap();
-			map.put("handler", "I");
-			
-			populateMapWithStackInfo(map, stack, atSuffix);
-			
-			/*if (subs)
-			{
-				map.put("illus", "/images-dir/item-100-" + id + "-d" + md + ".png");
-			}
-			else
-			{
-				map.put("illus", "/images-dir/item-100-" + id + ".png");
-			}*/
-			
-			listOfMaps.add(map);
-			
-			boolean first = true;
-			
-			/*List infoList = stack.getItemNameandInformation();
-			for (Object objInfo : infoList)
-			{
-				String info = (String) objInfo;
-				//System.out.println(info);
-				
-				if (first)
-				{
-					String rawName = stack.getItem().getLocalItemName(stack);
-					first = false;
-					
-					if (!info.equals(StatCollector.translateToLocal(rawName + ".name").trim()) && !rawName.equals(""))
-					{
-						System.out.println("!!! :: " + info);
-						
-					}
-				}
-				else
-				{
-					System.out.println(info);
-				}
-			}*/
-			
-		}
-		
-		Object[] arrayOfMaps = listOfMaps.toArray();
-		
-		return arrayOfMaps;
-		
+		return name;
 	}
 }
