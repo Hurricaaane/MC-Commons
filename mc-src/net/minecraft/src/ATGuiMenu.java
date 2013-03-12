@@ -96,9 +96,9 @@ public class ATGuiMenu extends GuiScreen
 			new GuiButton(222, _LEFT + _ADD + _MIX + _TURNOFFWIDTH + _GAP + (_GAP + _UPDOWNWIDTH) * 1, _HEIGHT
 				- _SEPARATOR - _MIX * 2, _UPDOWNWIDTH, _UNIT, "Down");
 		
-		this.controlList.add(this.packEnable);
-		this.controlList.add(this.packUp);
-		this.controlList.add(this.packDown);
+		this.buttonList.add(this.packEnable);
+		this.buttonList.add(this.packUp);
+		this.buttonList.add(this.packDown);
 		
 		this.packEnable.enabled = false;
 		this.packUp.enabled = false;
@@ -133,10 +133,10 @@ public class ATGuiMenu extends GuiScreen
 			new GuiButton(
 				212, _RIGHT - _TURNOFFWIDTH - _MIX, _HEIGHT - _SEPARATOR - _MIX * 1, _TURNOFFWIDTH, _UNIT, "ON/OFF");
 		
-		this.controlList.add(this.hintButton);
-		this.controlList.add(this.startEnabledButton);
+		this.buttonList.add(this.hintButton);
+		this.buttonList.add(this.startEnabledButton);
 		
-		this.controlList.add(new GuiButton(200, _LEFT + _MIX, _HEIGHT - _SEPARATOR - _MIX * 1, _WIDTH
+		this.buttonList.add(new GuiButton(200, _LEFT + _MIX, _HEIGHT - _SEPARATOR - _MIX * 1, _WIDTH
 			- _MIX * 2 - _GAP - _TURNOFFWIDTH - _UNIT * 2 - _GAP * 3 - _TURNOFFWIDTH, _UNIT, "Done"));
 		
 		this.playButton =
@@ -148,11 +148,11 @@ public class ATGuiMenu extends GuiScreen
 				241, _RIGHT - _TURNOFFWIDTH - _MIX - _GAP - _UNIT, _HEIGHT - _SEPARATOR - _MIX * 1, _UNIT, _UNIT,
 				"\u25a0");
 		
-		this.controlList.add(this.playButton);
-		this.controlList.add(this.stopButton);
-		this.controlList.add(this.musicButton);
+		this.buttonList.add(this.playButton);
+		this.buttonList.add(this.stopButton);
+		this.buttonList.add(this.musicButton);
 		
-		this.controlList.add(this.turnOnOffButton);
+		this.buttonList.add(this.turnOnOffButton);
 		
 		//this.screenTitle = stringtranslate.translateKey("controls.title");
 	}

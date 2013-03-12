@@ -42,11 +42,11 @@ public class BindingsCompactGUI extends GuiScreen
 		
 		for (int j = 0; j < this.options.keyBindings.length; j++)
 		{
-			this.controlList.add(new GuiSmallButton(
+			this.buttonList.add(new GuiSmallButton(
 				j, i + j % 2 * 160, this.height / 12 + 16 * (j >> 1), 70, 20, this.options.getOptionDisplayString(j)));
 		}
 		
-		this.controlList.add(new GuiButton(200, this.width / 2 - 100, this.height / 6 + 168, stringtranslate
+		this.buttonList.add(new GuiButton(200, this.width / 2 - 100, this.height / 6 + 168, stringtranslate
 			.translateKey("gui.done")));
 		this.screenTitle = stringtranslate.translateKey("controls.title");
 	}
@@ -60,7 +60,7 @@ public class BindingsCompactGUI extends GuiScreen
 	{
 		for (int i = 0; i < this.options.keyBindings.length; i++)
 		{
-			((GuiButton) this.controlList.get(i)).displayString = this.options.getOptionDisplayString(i);
+			((GuiButton) this.buttonList.get(i)).displayString = this.options.getOptionDisplayString(i);
 		}
 		
 		if (par1GuiButton.id == 200)
@@ -85,7 +85,7 @@ public class BindingsCompactGUI extends GuiScreen
 		if (this.buttonId >= 0)
 		{
 			this.options.setKeyBinding(this.buttonId, -100 + par3);
-			((GuiButton) this.controlList.get(this.buttonId)).displayString =
+			((GuiButton) this.buttonList.get(this.buttonId)).displayString =
 				this.options.getOptionDisplayString(this.buttonId);
 			this.buttonId = -1;
 			KeyBinding.resetKeyBindingArrayAndHash();
@@ -106,7 +106,7 @@ public class BindingsCompactGUI extends GuiScreen
 		if (this.buttonId >= 0)
 		{
 			this.options.setKeyBinding(this.buttonId, par2);
-			((GuiButton) this.controlList.get(this.buttonId)).displayString =
+			((GuiButton) this.buttonList.get(this.buttonId)).displayString =
 				this.options.getOptionDisplayString(this.buttonId);
 			this.buttonId = -1;
 			KeyBinding.resetKeyBindingArrayAndHash();
@@ -152,16 +152,16 @@ public class BindingsCompactGUI extends GuiScreen
 			
 			if (this.buttonId == j)
 			{
-				((GuiButton) this.controlList.get(k)).displayString = "\247f> \247e??? \247f<";
+				((GuiButton) this.buttonList.get(k)).displayString = "\247f> \247e??? \247f<";
 			}
 			else if (flag)
 			{
-				((GuiButton) this.controlList.get(k)).displayString =
+				((GuiButton) this.buttonList.get(k)).displayString =
 					new StringBuilder().append("\247c").append(this.options.getOptionDisplayString(k)).toString();
 			}
 			else
 			{
-				((GuiButton) this.controlList.get(k)).displayString = this.options.getOptionDisplayString(k);
+				((GuiButton) this.buttonList.get(k)).displayString = this.options.getOptionDisplayString(k);
 			}
 			
 			drawString(
