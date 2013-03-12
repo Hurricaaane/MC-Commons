@@ -169,7 +169,7 @@ public class DVHaddon extends HaddonImpl implements SupportsFrameEvents, EdgeMod
 		{
 			if (item != null)
 			{
-				int id = item.shiftedIndex;
+				int id = item.itemID;
 				if (id >= fromInclusive && id < toExclusive)
 				{
 					item.getSubItems(id, (CreativeTabs) null, allItemVariants);
@@ -201,7 +201,7 @@ public class DVHaddon extends HaddonImpl implements SupportsFrameEvents, EdgeMod
 		
 		boolean subs = stack.getHasSubtypes();
 		
-		String rawName = stack.getItem().getLocalItemName(stack);
+		String rawName = stack.getItem().getLocalizedName(stack);
 		String name = rawName;
 		
 		if (name == null || name.equals("null") || name.equals(""))
