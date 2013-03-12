@@ -245,7 +245,7 @@ public class CCBReaderH implements CCBReader
 		int block = world.getBlockId(xx, yy, zz);
 		if (block == 0)
 		{
-			int mm = world.func_85175_e(xx, yy - 1, zz);
+			int mm = world.blockGetRenderType(xx, yy - 1, zz);
 			
 			if (mm == 11 || mm == 32 || mm == 21)
 			{
@@ -267,7 +267,7 @@ public class CCBReaderH implements CCBReader
 					var39 = 1.0F;
 				}
 				
-				ply.func_85030_a("liquid.swim", var39, 1.0f + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4f);
+				ply.playSound("liquid.swim", var39, 1.0f + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4f);
 			}
 			else
 			{
