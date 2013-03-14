@@ -636,21 +636,21 @@ public class ATSystem
 					SoundPool soundPoolSounds =
 						(SoundPool) this.mod.util().getPrivateValueLiteral(
 							net.minecraft.src.SoundManager.class, this.mod.manager().getMinecraft().sndManager, "b", 1);
-					addSoundAccessor(soundPoolSounds, name, conv.getURL());
+					soundPoolSounds.addSound(name, conv.getURL());
 				}
 				else if (pool.equalsIgnoreCase("streaming"))
 				{
 					SoundPool soundPoolStreaming =
 						(SoundPool) this.mod.util().getPrivateValueLiteral(
 							net.minecraft.src.SoundManager.class, this.mod.manager().getMinecraft().sndManager, "c", 2);
-					addSoundAccessor(soundPoolStreaming, name, conv.getURL());
+					soundPoolStreaming.addSound(name, conv.getURL());
 				}
 				else if (pool.equalsIgnoreCase("music") || pool.equalsIgnoreCase("newmusic"))
 				{
 					SoundPool soundPoolMusic =
 						(SoundPool) this.mod.util().getPrivateValueLiteral(
 							net.minecraft.src.SoundManager.class, this.mod.manager().getMinecraft().sndManager, "d", 3);
-					addSoundAccessor(soundPoolMusic, name, conv.getURL());
+					soundPoolMusic.addSound(name, conv.getURL());
 				}
 			}
 			catch (PrivateAccessException e)
@@ -659,43 +659,6 @@ public class ATSystem
 			}
 		}
 		
-	}
-	
-	public SoundPoolEntry addSoundAccessor(SoundPool accessedPool, String par1Str, URL url)
-		throws PrivateAccessException
-	{
-		// nameToSoundPoolEntriesMapping
-		Map<String, ArrayList> nameToSoundPoolEntriesMapping =
-			(Map<String, ArrayList>) this.mod.util().getPrivateValueLiteral(
-				net.minecraft.src.SoundPool.class, accessedPool, "d", 1);
-		
-		// allSoundPoolEntries
-		List allSoundPoolEntries =
-			(List) this.mod.util().getPrivateValueLiteral(net.minecraft.src.SoundPool.class, accessedPool, "e", 2);
-		
-		String var3 = par1Str;
-		par1Str = par1Str.substring(0, par1Str.indexOf("."));
-		
-		if (accessedPool.isGetRandomSound)
-		{
-			while (Character.isDigit(par1Str.charAt(par1Str.length() - 1)))
-			{
-				par1Str = par1Str.substring(0, par1Str.length() - 1);
-			}
-		}
-		
-		par1Str = par1Str.replaceAll("/", ".");
-		
-		if (!nameToSoundPoolEntriesMapping.containsKey(par1Str))
-		{
-			nameToSoundPoolEntriesMapping.put(par1Str, new ArrayList());
-		}
-		
-		SoundPoolEntry var4 = new SoundPoolEntry(var3, url);
-		((List) nameToSoundPoolEntriesMapping.get(par1Str)).add(var4);
-		allSoundPoolEntries.add(var4);
-		++accessedPool.numberOfSoundPoolEntries;
-		return var4;
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
