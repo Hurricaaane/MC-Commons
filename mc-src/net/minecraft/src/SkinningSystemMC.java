@@ -6,8 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import javax.imageio.ImageIO;
 
@@ -101,7 +99,7 @@ public class SkinningSystemMC implements SkinningSystem
 			this.mc.thePlayer.texture = this.skinPath;
 			
 			RenderEngine re = this.mc.renderEngine;
-			re.setupTexture(bufferedimage, getTextureAccessor(re, this.mc.thePlayer.texture));
+			re.setupTexture(bufferedimage, re.getTexture(this.mc.thePlayer.texture));
 			this.mc.thePlayer.skinUrl = null;
 			
 		}
@@ -136,56 +134,6 @@ public class SkinningSystemMC implements SkinningSystem
 		else
 		{
 			this.haddon.addMessageToStack("Error: (?)", 2);
-		}
-		
-	}
-	
-	private int getTextureAccessor(RenderEngine renderEngine, String str)
-	{
-		return getTextureAccessor(renderEngine, str, false);
-	}
-	
-	private int getTextureAccessor(RenderEngine renderEngine, String str, boolean alt)
-	{
-		Method meth;
-		try
-		{
-			if (alt)
-			{
-				meth = renderEngine.getClass().getDeclaredMethod("getTexture", String.class);
-			}
-			else
-			{
-				meth = renderEngine.getClass().getDeclaredMethod("aaaaa", String.class);
-			}
-			meth.setAccessible(true);
-			Object r = meth.invoke(str);
-			
-			return (Integer) r;
-		}
-		catch (NoSuchMethodException e)
-		{
-			return getTextureAccessor(renderEngine, str, true);
-		}
-		catch (SecurityException e)
-		{
-			e.printStackTrace();
-			throw new RuntimeException();
-		}
-		catch (IllegalArgumentException e)
-		{
-			e.printStackTrace();
-			throw new RuntimeException();
-		}
-		catch (IllegalAccessException e)
-		{
-			e.printStackTrace();
-			throw new RuntimeException();
-		}
-		catch (InvocationTargetException e)
-		{
-			e.printStackTrace();
-			throw new RuntimeException();
 		}
 		
 	}
