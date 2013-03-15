@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
+import eu.ha3.easy.EdgeModel;
+import eu.ha3.easy.EdgeTrigger;
 import eu.ha3.mc.convenience.Ha3KeyManager;
 import eu.ha3.mc.haddon.PrivateAccessException;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
@@ -63,6 +65,8 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	
 	private boolean trySave;
 	
+	private EdgeTrigger changeFOVEdge;
+	
 	@Override
 	public void onLoad()
 	{
@@ -72,6 +76,19 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		this.memory = new ConfigProperty();
 		this.memory.setProperty("fov_level", 0.3f);
 		this.memory.commit();
+		
+		this.changeFOVEdge = new EdgeTrigger(new EdgeModel() {
+			@Override
+			public void onTrueEdge()
+			{
+			}
+			
+			@Override
+			public void onFalseEdge()
+			{
+				fixFov();
+			}
+		});
 		
 		// Load memory from source
 		try
@@ -189,18 +206,11 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 			
 		}
 		
-		if (shouldChangeFOV())
+		boolean shouldChangeFOV = shouldChangeFOV();
+		
+		if (shouldChangeFOV)
 		{
-			float fov = 70f;
-			fov += this.mc.gameSettings.fovSetting * 40f;
-			
-			if (this.mc.thePlayer.isInsideOfMaterial(Material.water))
-			{
-				fov = fov * 60f / 70f;
-			}
-			
-			setCameraZoom((1f - doChangeFOV(1f)) * -1 * fov);
-			
+			fixFov();
 		}
 		else
 		{
@@ -209,9 +219,23 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 				saveMemory();
 				this.trySave = false;
 			}
-			
 		}
 		
+		this.changeFOVEdge.signalState(shouldChangeFOV);
+		
+	}
+	
+	private void fixFov()
+	{
+		float fov = 70f;
+		fov += this.mc.gameSettings.fovSetting * 40f;
+		
+		if (this.mc.thePlayer.isInsideOfMaterial(Material.water))
+		{
+			fov = fov * 60f / 70f;
+		}
+		
+		setCameraZoom((1f - doChangeFOV(1f)) * -1 * fov);
 	}
 	
 	@Override
@@ -276,27 +300,28 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	
 	public void zoomDoBefore()
 	{
-		if (!util().isCurrentScreen(net.minecraft.src.GuiChat.class))
+		if (util().isCurrentScreen(net.minecraft.src.GuiChat.class))
+			return;
+		
+		if (util().isCurrentScreen(net.minecraft.src.GuiInventory.class)
+			|| util().isCurrentScreen(net.minecraft.src.GuiContainerCreative.class))
+			return;
+		
+		if (!this.isZoomed)
 		{
-			if (!util().isCurrentScreen(net.minecraft.src.GuiInventory.class)
-				&& !util().isCurrentScreen(net.minecraft.src.GuiContainerCreative.class))
-			{
-				if (!this.isZoomed)
-				{
-					zoomToggle();
-					this.eventNumOnZoom = this.eventNum;
-					
-				}
-				
-			}
+			zoomToggle();
+			this.eventNumOnZoom = this.eventNum;
 			
 		}
-		
+		else if (!this.VAR.SLIDER_ENABLE && this.isZoomed)
+		{
+			zoomToggle();
+		}
 	}
 	
 	public void zoomDoDuring(int timeKey)
 	{
-		if (timeKey >= 4 && !this.isHolding)
+		if (this.VAR.SLIDER_ENABLE && !this.VAR.NOTOGGLE_ENABLE && timeKey >= 4 && !this.isHolding)
 		{
 			this.isHolding = true;
 			
@@ -304,7 +329,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 			this.lastTime = System.currentTimeMillis();
 			
 		}
-		else if (timeKey >= 4)
+		else if (timeKey >= 4 && this.isHolding)
 		{
 			if (this.mc.gameSettings.thirdPersonView == 0)
 			{
@@ -329,7 +354,11 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	
 	public void zoomDoAfter(int timeKey)
 	{
-		if (timeKey >= 4)
+		if (!this.VAR.SLIDER_ENABLE && this.VAR.NOTOGGLE_ENABLE)
+		{
+			zoomToggle();
+		}
+		else if (timeKey >= 4)
 		{
 			this.fovLevel = this.fovLevelSetup;
 			this.memory.setProperty("fov_level", this.fovLevelSetup);
@@ -369,8 +398,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	
 	private boolean shouldChangeFOV()
 	{
-		return this.isHolding
-			|| this.isZoomed || System.currentTimeMillis() - this.zoomTime < this.VAR.ZOOM_DURATION + 200;
+		return this.isHolding || this.isZoomed || System.currentTimeMillis() - this.zoomTime < this.VAR.ZOOM_DURATION;
 		
 	}
 	
@@ -392,7 +420,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		
 		baseLevel = this.fovLevelTransition;
 		
-		if (System.currentTimeMillis() - this.zoomTime > this.VAR.ZOOM_DURATION)
+		if (System.currentTimeMillis() - this.zoomTime >= this.VAR.ZOOM_DURATION)
 		{
 			if (this.isZoomed)
 				return inFov * baseLevel;
