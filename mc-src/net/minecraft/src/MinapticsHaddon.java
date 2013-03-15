@@ -321,7 +321,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 	
 	public void zoomDoDuring(int timeKey)
 	{
-		if (this.VAR.SLIDER_ENABLE && !this.VAR.NOTOGGLE_ENABLE && timeKey >= 4 && !this.isHolding)
+		if (this.VAR.SLIDER_ENABLE && !this.VAR.NOTOGGLE_ENABLE && timeKey >= this.VAR.TWEAK_TRIGGER && !this.isHolding)
 		{
 			this.isHolding = true;
 			
@@ -329,7 +329,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 			this.lastTime = System.currentTimeMillis();
 			
 		}
-		else if (timeKey >= 4 && this.isHolding)
+		else if (timeKey >= this.VAR.TWEAK_TRIGGER && this.isHolding)
 		{
 			if (this.mc.gameSettings.thirdPersonView == 0)
 			{
@@ -358,7 +358,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		{
 			zoomToggle();
 		}
-		else if (timeKey >= 4)
+		else if (timeKey >= this.VAR.TWEAK_TRIGGER)
 		{
 			this.fovLevel = this.fovLevelSetup;
 			this.memory.setProperty("fov_level", this.fovLevelSetup);
