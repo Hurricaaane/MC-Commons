@@ -24,12 +24,12 @@ import eu.ha3.util.property.simple.ConfigProperty;
 public class MinapticsVariator
 {
 	public int ZOOM_KEY = 15;
-	public int ZOOM_DURATION = 0;
+	public int ZOOM_DURATION = 300;
 	public int TWEAK_TRIGGER = 4;
 	public float FOV_MIN = 0.001f;
 	public float FOV_MAX = 0.65f;
 	
-	public boolean SLIDER_ENABLE = false;
+	public boolean SLIDER_ENABLE = true;
 	public boolean NOTOGGLE_ENABLE = false;
 	
 	public boolean SMOOTHER_ENABLE = false;
