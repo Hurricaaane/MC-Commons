@@ -492,7 +492,7 @@ public class MinapticsHaddon extends HaddonImpl implements SupportsFrameEvents, 
 		
 	}
 	
-	public void log(String contents)
+	public static void log(String contents)
 	{
 		System.out.println("(Minaptics) " + contents);
 		
