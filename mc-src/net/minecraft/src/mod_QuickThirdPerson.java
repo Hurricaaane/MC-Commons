@@ -27,7 +27,7 @@ public class mod_QuickThirdPerson extends HaddonBridgeModLoader
 	@Override
 	public String getVersion()
 	{
-		return "r3 for 1.4.6";
+		return "r4 for 1.5.0";
 		
 	}
 	
