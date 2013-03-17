@@ -41,7 +41,7 @@ public class MinapticsVariator
 		Set<String> keys = config.getAllProperties().keySet();
 		
 		// I am feeling SUPER LAZY today
-		Field[] fields = CCBVariator.class.getDeclaredFields();
+		Field[] fields = MinapticsVariator.class.getDeclaredFields();
 		for (Field field : fields)
 		{
 			try
@@ -65,7 +65,7 @@ public class MinapticsVariator
 			}
 			catch (Throwable e)
 			{
-				CCBHaddon.log(e.getClass().getName() + ": " + field.getName());
+				MinapticsHaddon.log(e.getClass().getName() + ": " + field.getName());
 			}
 		}
 	}
