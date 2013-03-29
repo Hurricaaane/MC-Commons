@@ -289,6 +289,7 @@ public class DebuggingHa3Haddon extends HaddonImpl
 		
 		try
 		{
+			//thirdpersondistancetemp
 			float value = 3f;
 			util().setPrivateValue(
 				net.minecraft.src.EntityRenderer.class, manager().getMinecraft().entityRenderer, 14, value);

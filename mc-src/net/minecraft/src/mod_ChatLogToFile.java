@@ -38,7 +38,7 @@ public class mod_ChatLogToFile extends BaseMod
 	@Override
 	public String getVersion()
 	{
-		return "r4 for 1.5.0";
+		return "r5 for 1.5.1";
 		
 	}
 	

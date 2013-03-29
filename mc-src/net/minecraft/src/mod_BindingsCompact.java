@@ -10,7 +10,7 @@ public class mod_BindingsCompact extends HaddonBridgeModLoader
 	@Override
 	public String getVersion()
 	{
-		return "r5 for 1.5.0";
+		return "r6 for 1.5.1";
 		
 	}
 	
