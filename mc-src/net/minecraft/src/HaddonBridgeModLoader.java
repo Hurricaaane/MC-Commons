@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.src.Minecraft;
 import eu.ha3.mc.haddon.Bridge;
 import eu.ha3.mc.haddon.Haddon;
 import eu.ha3.mc.haddon.Manager;
