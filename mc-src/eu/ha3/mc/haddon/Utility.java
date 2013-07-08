@@ -1,5 +1,7 @@
 package eu.ha3.mc.haddon;
 
+import java.io.File;
+
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
                     Version 2, December 2004 
@@ -105,6 +107,13 @@ public interface Utility
 	 * @return World height
 	 */
 	public int getWorldHeight();
+	
+	/**
+	 * Returns the Minecraft directory
+	 * 
+	 * @return Minecraft directory
+	 */
+	public File getMinecraftDir();
 	
 	public Object getCurrentScreen();
 	

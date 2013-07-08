@@ -1,6 +1,6 @@
 package net.minecraft.src;
 
-import net.minecraft.client.Minecraft;
+import java.io.File;
 
 import org.lwjgl.input.Keyboard;
 
@@ -254,5 +254,11 @@ public class HaddonUtilityImpl implements Utility
 			this.manager.getMinecraft().fontRenderer.drawString(text, xPos, yPos, color);
 		}
 		
+	}
+	
+	@Override
+	public File getMinecraftDir()
+	{
+		return Minecraft.getMinecraft().mcDataDir;
 	}
 }
