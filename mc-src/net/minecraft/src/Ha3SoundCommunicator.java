@@ -25,17 +25,12 @@ public class Ha3SoundCommunicator
 {
 	private Haddon mod;
 	
-	private SoundManager sndManager;
-	private SoundSystem sndSystem;
-	
-	private Ha3SoundThread soundThread;
-	
 	private String prefix;
 	private int maxIDs;
 	
 	private int lastSoundID;
 	
-	Ha3SoundCommunicator(Haddon haddon, String prefix)
+	public Ha3SoundCommunicator(Haddon haddon, String prefix)
 	{
 		this.mod = haddon;
 		this.prefix = prefix;
@@ -52,84 +47,39 @@ public class Ha3SoundCommunicator
 		
 	}
 	
+	@Deprecated
 	public boolean isUseable()
 	{
-		return this.sndSystem != null && this.sndManager != null;
-		
+		return true;
 	}
 	
-	/**
-	 * Calling this creates a thread if the sound communicator is not yet ready.
-	 * 
-	 * @param onSuccess
-	 * @param onFailure
-	 */
+	@Deprecated
 	public void load(Ha3Signal onSuccess, Ha3Signal onFailure)
 	{
-		if (!isUseable())
-		{
-			this.soundThread = new Ha3SoundThread(this, onSuccess, onFailure);
-			this.soundThread.start();
-			
-		}
-		
-	}
-	
-	public boolean loadSoundManager()
-	{
-		if (this.sndManager == null)
-		{
-			this.sndManager = this.mod.getManager().getMinecraft().sndManager;
-		}
-		
-		return this.sndManager != null;
+		onSuccess.signal();
 		
 	}
 	
 	public SoundSystem getSoundSystem()
 	{
-		SoundSystem soundSystemBeforeLoading = this.sndSystem;
-		
-		// Ensure the sound system is always the same as the soundManager references
 		try
 		{
-			loadSoundSystem();
+			return (SoundSystem) this.mod
+				.getManager()
+				.getUtility()
+				.getPrivateValueLiteral(
+					net.minecraft.src.SoundManager.class, this.mod.getManager().getMinecraft().sndManager, "a", 1);
 		}
 		catch (PrivateAccessException e)
 		{
 			e.printStackTrace();
+			return null;
 		}
-		
-		if (soundSystemBeforeLoading != this.sndSystem)
-		{
-			System.err.println("(Ha3SoundCommunicator) WARNING: SoundSystem was altered during runtime.");
-			System.err.println("(Ha3SoundCommunicator) Behavior cannot be predicted at this point.");
-		}
-		
-		return this.sndSystem;
-		
 	}
 	
 	public SoundManager getSoundManager()
 	{
-		return this.sndManager;
-		
-	}
-	
-	public boolean loadSoundSystem() throws PrivateAccessException
-	{
-		if (this.sndSystem == null)
-		{
-			// sndSystem
-			this.sndSystem =
-				(SoundSystem) this.mod
-					.getManager()
-					.getUtility()
-					.getPrivateValueLiteral(
-						net.minecraft.src.SoundManager.class, this.mod.getManager().getMinecraft().sndManager, "a", 0);
-		}
-		
-		return this.sndSystem != null;
+		return this.mod.getManager().getMinecraft().sndManager;
 		
 	}
 	
@@ -138,7 +88,7 @@ public class Ha3SoundCommunicator
 		if (!isUseable())
 			return;
 		
-		this.sndManager.playSound(sound, x, y, z, vol, pitch);
+		getSoundManager().playSound(sound, x, y, z, vol, pitch);
 		
 	}
 	
@@ -146,6 +96,9 @@ public class Ha3SoundCommunicator
 	{
 		if (!isUseable())
 			return;
+		
+		SoundManager sndManager = getSoundManager();
+		SoundSystem sndSystem = getSoundSystem();
 		
 		try
 		{
@@ -159,7 +112,7 @@ public class Ha3SoundCommunicator
 			SoundPoolEntry soundpoolentry =
 				((SoundPool) this.mod
 					.getManager().getUtility()
-					.getPrivateValueLiteral(net.minecraft.src.SoundManager.class, this.sndManager, "b", 1))
+					.getPrivateValueLiteral(net.minecraft.src.SoundManager.class, sndManager, "b", 3))
 					.getRandomSoundFromSoundPool(sound);
 			if (soundpoolentry != null && vol > 0.0F)
 			{
@@ -170,17 +123,16 @@ public class Ha3SoundCommunicator
 				{
 					rollf *= vol;
 				}
-				this.sndSystem
-					.newSource(
-						vol > 1.0F, sourceName, soundpoolentry.soundUrl, soundpoolentry.soundName, false, x, y, z, 2,
-						rollf);
-				this.sndSystem.setPitch(sourceName, pitch);
+				sndSystem.newSource(
+					vol > 1.0F, sourceName, soundpoolentry.func_110457_b() /* soundURL */,
+					soundpoolentry.func_110458_a() /* soundName */, false, x, y, z, 2, rollf);
+				sndSystem.setPitch(sourceName, pitch);
 				if (vol > 1.0F)
 				{
 					vol = 1.0F;
 				}
-				this.sndSystem.setVolume(sourceName, vol * soundVolume);
-				this.sndSystem.play(sourceName);
+				sndSystem.setVolume(sourceName, vol * soundVolume);
+				sndSystem.play(sourceName);
 			}
 			
 		}
@@ -197,6 +149,9 @@ public class Ha3SoundCommunicator
 		if (!isUseable())
 			return;
 		
+		SoundManager sndManager = getSoundManager();
+		SoundSystem sndSystem = getSoundSystem();
+		
 		try
 		{
 			float soundVolume = this.mod.getManager().getMinecraft().gameSettings.soundVolume;
@@ -209,24 +164,24 @@ public class Ha3SoundCommunicator
 			SoundPoolEntry soundpoolentry =
 				((SoundPool) this.mod
 					.getManager().getUtility()
-					.getPrivateValueLiteral(net.minecraft.src.SoundManager.class, this.sndManager, "b", 1))
+					.getPrivateValueLiteral(net.minecraft.src.SoundManager.class, sndManager, "b", 3))
 					.getRandomSoundFromSoundPool(sound);
 			if (soundpoolentry != null && vol > 0.0F)
 			{
 				this.lastSoundID = (this.lastSoundID + 1) % this.maxIDs;
 				String sourceName = this.prefix + this.lastSoundID;
 				
-				this.sndSystem.newSource(
-					vol > 1.0F, sourceName, soundpoolentry.soundUrl, soundpoolentry.soundName, false, x, y, z, attnm,
-					rollf);
-				this.sndSystem.setPitch(sourceName, pitch);
+				sndSystem.newSource(
+					vol > 1.0F, sourceName, soundpoolentry.func_110457_b(), soundpoolentry.func_110458_a(), false, x,
+					y, z, attnm, rollf);
+				sndSystem.setPitch(sourceName, pitch);
 				
 				if (vol > 1.0F)
 				{
 					vol = 1.0F;
 				}
-				this.sndSystem.setVolume(sourceName, vol * soundVolume);
-				this.sndSystem.play(sourceName);
+				sndSystem.setVolume(sourceName, vol * soundVolume);
+				sndSystem.play(sourceName);
 			}
 			
 		}
