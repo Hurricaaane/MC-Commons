@@ -146,9 +146,6 @@ public class Ha3SoundCommunicator
 	
 	public void playSound(String sound, float x, float y, float z, float vol, float pitch, int attnm, float rollf)
 	{
-		if (!isUseable())
-			return;
-		
 		SoundManager sndManager = getSoundManager();
 		SoundSystem sndSystem = getSoundSystem();
 		
@@ -166,6 +163,7 @@ public class Ha3SoundCommunicator
 					.getManager().getUtility()
 					.getPrivateValueLiteral(net.minecraft.src.SoundManager.class, sndManager, "b", 3))
 					.getRandomSoundFromSoundPool(sound);
+			
 			if (soundpoolentry != null && vol > 0.0F)
 			{
 				this.lastSoundID = (this.lastSoundID + 1) % this.maxIDs;

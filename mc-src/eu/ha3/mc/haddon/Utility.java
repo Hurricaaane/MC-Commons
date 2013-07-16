@@ -109,11 +109,11 @@ public interface Utility
 	public int getWorldHeight();
 	
 	/**
-	 * Returns the Minecraft directory
+	 * Returns the Mods directory
 	 * 
-	 * @return Minecraft directory
+	 * @return Mods directory
 	 */
-	public File getMinecraftDir();
+	public File getModsFolder();
 	
 	public Object getCurrentScreen();
 	

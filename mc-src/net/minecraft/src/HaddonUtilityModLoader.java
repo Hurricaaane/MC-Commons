@@ -1,5 +1,7 @@
 package net.minecraft.src;
 
+import java.io.File;
+
 import eu.ha3.mc.haddon.Manager;
 
 /*
@@ -21,6 +23,7 @@ import eu.ha3.mc.haddon.Manager;
 public class HaddonUtilityModLoader extends HaddonUtilityImpl
 {
 	protected long ticksRan;
+	protected File modsFolder;
 	
 	public HaddonUtilityModLoader(Manager manager)
 	{
@@ -31,7 +34,26 @@ public class HaddonUtilityModLoader extends HaddonUtilityImpl
 	public long getClientTick()
 	{
 		return ((HaddonBridgeModLoader) this.manager).bridgeTicksRan();
+	}
+	
+	@Override
+	public File getModsFolder()
+	{
+		if (this.modsFolder != null)
+			return this.modsFolder;
 		
+		File versionsDir = new File(Minecraft.getMinecraft().mcDataDir, "versions");
+		File version = new File(versionsDir, Minecraft.func_110431_a(Minecraft.getMinecraft()));
+		
+		if (versionsDir.exists() && versionsDir.isDirectory() && version.exists() && version.isDirectory())
+		{
+			this.modsFolder = new File(version, "/mods/");
+		}
+		else
+		{
+			this.modsFolder = new File(Minecraft.getMinecraft().mcDataDir, "mods");
+		}
+		return this.modsFolder;
 	}
 	
 }

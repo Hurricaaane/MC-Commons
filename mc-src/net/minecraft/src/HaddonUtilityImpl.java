@@ -257,7 +257,7 @@ public class HaddonUtilityImpl implements Utility
 	}
 	
 	@Override
-	public File getMinecraftDir()
+	public File getModsFolder()
 	{
 		return Minecraft.getMinecraft().mcDataDir;
 	}
