@@ -6,9 +6,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.TreeSet;
 
 import eu.ha3.util.property.contract.ConfigSource;
 import eu.ha3.util.property.contract.PropertyHolder;
@@ -83,11 +86,17 @@ public class ConfigProperty implements PropertyHolder, Versionnable, ConfigSourc
 		try
 		{
 			File userFile = new File(this.path);
-			Properties props = new Properties();
+			@SuppressWarnings("serial")
+			Properties props = new Properties() {
+				@Override
+				public synchronized Enumeration<Object> keys()
+				{
+					return Collections.enumeration(new TreeSet<Object>(super.keySet()));
+				}
+			};
 			for (Entry<String, String> property : this.mixed.getAllProperties().entrySet())
 			{
 				props.setProperty(property.getKey(), property.getValue());
-				
 			}
 			
 			props.store(new FileWriter(userFile), "");
