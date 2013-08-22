@@ -68,7 +68,7 @@ public class Ha3SoundCommunicator
 				.getManager()
 				.getUtility()
 				.getPrivateValueLiteral(
-					net.minecraft.src.SoundManager.class, this.mod.getManager().getMinecraft().sndManager, "a", 1);
+					net.minecraft.src.SoundManager.class, this.mod.getManager().getMinecraft().sndManager, "b", 1);
 		}
 		catch (PrivateAccessException e)
 		{
@@ -112,7 +112,7 @@ public class Ha3SoundCommunicator
 			SoundPoolEntry soundpoolentry =
 				((SoundPool) this.mod
 					.getManager().getUtility()
-					.getPrivateValueLiteral(net.minecraft.src.SoundManager.class, sndManager, "b", 3))
+					.getPrivateValueLiteral(net.minecraft.src.SoundManager.class, sndManager, "d", 3))
 					.getRandomSoundFromSoundPool(sound);
 			if (soundpoolentry != null && vol > 0.0F)
 			{
@@ -161,7 +161,7 @@ public class Ha3SoundCommunicator
 			SoundPoolEntry soundpoolentry =
 				((SoundPool) this.mod
 					.getManager().getUtility()
-					.getPrivateValueLiteral(net.minecraft.src.SoundManager.class, sndManager, "b", 3))
+					.getPrivateValueLiteral(net.minecraft.src.SoundManager.class, sndManager, "d", 3))
 					.getRandomSoundFromSoundPool(sound);
 			
 			if (soundpoolentry != null && vol > 0.0F)
