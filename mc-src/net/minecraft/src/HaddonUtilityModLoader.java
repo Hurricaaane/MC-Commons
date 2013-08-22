@@ -42,6 +42,15 @@ public class HaddonUtilityModLoader extends HaddonUtilityImpl
 		if (this.modsFolder != null)
 			return this.modsFolder;
 		
+		if (classExists("cpw.mods.fml.client.FMLClientHandler", this))
+		{
+			// Use FML interpretation of mods/
+			this.modsFolder = new File(Minecraft.getMinecraft().mcDataDir, "mods");
+			return this.modsFolder;
+		}
+		
+		// Use ModLoader interpretation of mods/
+		
 		File versionsDir = new File(Minecraft.getMinecraft().mcDataDir, "versions");
 		File version = new File(versionsDir, Minecraft.func_110431_a(Minecraft.getMinecraft()));
 		
@@ -54,6 +63,35 @@ public class HaddonUtilityModLoader extends HaddonUtilityImpl
 			this.modsFolder = new File(Minecraft.getMinecraft().mcDataDir, "mods");
 		}
 		return this.modsFolder;
+	}
+	
+	/**
+	 * Checks if a certain class name exists in a certain object context's class
+	 * loader.
+	 * 
+	 * @param className
+	 * @param context
+	 * @return
+	 */
+	public static boolean classExists(String className, Object context)
+	{
+		boolean canWork = false;
+		try
+		{
+			canWork = Class.forName(className, false, context.getClass().getClassLoader()) != null;
+			
+		}
+		//catch (ClassNotFoundException e)
+		//{
+		//}
+		catch (Exception e)
+		{
+			// Normally throws checked ClassNotFoundException
+			// This also throws unckecked security exceptions
+		}
+		
+		return canWork;
+		
 	}
 	
 }
