@@ -1,7 +1,7 @@
 package eu.ha3.mc.haddon;
 
-import net.minecraft.src.Minecraft;
 import net.minecraft.src.KeyBinding;
+import net.minecraft.src.Minecraft;
 import net.minecraft.src.Packet250CustomPayload;
 
 /*

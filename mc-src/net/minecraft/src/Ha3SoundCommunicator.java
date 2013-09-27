@@ -1,7 +1,6 @@
 package net.minecraft.src;
 
 import paulscode.sound.SoundSystem;
-import eu.ha3.mc.convenience.Ha3Signal;
 import eu.ha3.mc.haddon.Haddon;
 import eu.ha3.mc.haddon.PrivateAccessException;
 
@@ -47,19 +46,6 @@ public class Ha3SoundCommunicator
 		
 	}
 	
-	@Deprecated
-	public boolean isUseable()
-	{
-		return true;
-	}
-	
-	@Deprecated
-	public void load(Ha3Signal onSuccess, Ha3Signal onFailure)
-	{
-		onSuccess.signal();
-		
-	}
-	
 	public SoundSystem getSoundSystem()
 	{
 		try
@@ -85,21 +71,12 @@ public class Ha3SoundCommunicator
 	
 	public void playSoundViaManager(String sound, float x, float y, float z, float vol, float pitch)
 	{
-		if (!isUseable())
-			return;
-		
 		getSoundManager().playSound(sound, x, y, z, vol, pitch);
 		
 	}
 	
 	public void playSound(String sound, float x, float y, float z, float vol, float pitch)
 	{
-		if (!isUseable())
-			return;
-		
-		SoundManager sndManager = getSoundManager();
-		SoundSystem sndSystem = getSoundSystem();
-		
 		try
 		{
 			float soundVolume = this.mod.getManager().getMinecraft().gameSettings.soundVolume;
@@ -112,10 +89,12 @@ public class Ha3SoundCommunicator
 			SoundPoolEntry soundpoolentry =
 				((SoundPool) this.mod
 					.getManager().getUtility()
-					.getPrivateValueLiteral(net.minecraft.src.SoundManager.class, sndManager, "d", 3))
+					.getPrivateValueLiteral(net.minecraft.src.SoundManager.class, getSoundManager(), "d", 3))
 					.getRandomSoundFromSoundPool(sound);
 			if (soundpoolentry != null && vol > 0.0F)
 			{
+				SoundSystem sndSystem = getSoundSystem();
+				
 				this.lastSoundID = (this.lastSoundID + 1) % this.maxIDs;
 				String sourceName = this.prefix + this.lastSoundID;
 				float rollf = 16F;
@@ -185,10 +164,8 @@ public class Ha3SoundCommunicator
 		}
 		catch (PrivateAccessException e)
 		{
-			; // XXX Hidden exception
-			
+			e.printStackTrace();
 		}
-		
 	}
 	
 }

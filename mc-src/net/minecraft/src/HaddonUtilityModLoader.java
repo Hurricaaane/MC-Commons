@@ -52,7 +52,7 @@ public class HaddonUtilityModLoader extends HaddonUtilityImpl
 		// Use ModLoader interpretation of mods/
 		
 		File versionsDir = new File(Minecraft.getMinecraft().mcDataDir, "versions");
-		File version = new File(versionsDir, Minecraft.func_110431_a(Minecraft.getMinecraft()));
+		File version = new File(versionsDir, Minecraft.getVersion(Minecraft.getMinecraft()));
 		
 		if (versionsDir.exists() && versionsDir.isDirectory() && version.exists() && version.isDirectory())
 		{
