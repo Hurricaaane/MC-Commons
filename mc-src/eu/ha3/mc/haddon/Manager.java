@@ -1,7 +1,6 @@
 package eu.ha3.mc.haddon;
 
 import net.minecraft.src.KeyBinding;
-import net.minecraft.src.Minecraft;
 import net.minecraft.src.Packet250CustomPayload;
 
 /*
@@ -22,13 +21,6 @@ import net.minecraft.src.Packet250CustomPayload;
 
 public interface Manager
 {
-	/**
-	 * Gets the Minecraft instance.
-	 * 
-	 * @return
-	 */
-	public Minecraft getMinecraft();
-	
 	/**
 	 * Gets the utility object dedicated to this manager.
 	 * 

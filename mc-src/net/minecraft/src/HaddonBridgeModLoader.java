@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.src.Minecraft;
 import eu.ha3.mc.haddon.Bridge;
 import eu.ha3.mc.haddon.Haddon;
 import eu.ha3.mc.haddon.Manager;
@@ -42,8 +41,6 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager, Bridge
 {
 	private Haddon haddon;
 	private Utility utility;
-	
-	private Minecraft mc;
 	
 	private boolean supportsTick;
 	private boolean supportsFrame;
@@ -97,8 +94,6 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager, Bridge
 		this.nextTick = -1;
 		this.lastGuiTick = -1;
 		
-		this.mc = ModLoader.getMinecraftInstance();
-		
 		this.enlistedOutgoingMessages = new HashSet<String>();
 		if (this.supportsIncomingMessages)
 		{
@@ -142,13 +137,6 @@ public class HaddonBridgeModLoader extends BaseMod implements Manager, Bridge
 		{
 			ModLoader.setInGUIHook(this, true, false);
 		}
-		
-	}
-	
-	@Override
-	public Minecraft getMinecraft()
-	{
-		return this.mc;
 		
 	}
 	

@@ -137,7 +137,7 @@ public class HaddonUtilityImpl implements Utility
 	@Override
 	public Object getCurrentScreen()
 	{
-		return this.manager.getMinecraft().currentScreen;
+		return Minecraft.getMinecraft().currentScreen;
 		
 	}
 	
@@ -160,14 +160,14 @@ public class HaddonUtilityImpl implements Utility
 	@Override
 	public void closeCurrentScreen()
 	{
-		this.manager.getMinecraft().displayGuiScreen(null);
+		Minecraft.getMinecraft().displayGuiScreen(null);
 		
 	}
 	
 	@Override
 	public void printChat(Object... args)
 	{
-		if (this.manager.getMinecraft().thePlayer == null)
+		if (Minecraft.getMinecraft().thePlayer == null)
 			return;
 		
 		StringBuilder builder = new StringBuilder();
@@ -175,7 +175,7 @@ public class HaddonUtilityImpl implements Utility
 		{
 			builder.append(o);
 		}
-		this.manager.getMinecraft().thePlayer.addChatMessage(builder.toString());
+		Minecraft.getMinecraft().thePlayer.addChatMessage(builder.toString());
 		
 	}
 	
@@ -201,7 +201,7 @@ public class HaddonUtilityImpl implements Utility
 	@Override
 	public void prepareDrawString()
 	{
-		Minecraft mc = this.manager.getMinecraft();
+		Minecraft mc = Minecraft.getMinecraft();
 		
 		this.drawString_scaledRes = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
 		this.drawString_screenWidth = this.drawString_scaledRes.getScaledWidth();
@@ -220,7 +220,7 @@ public class HaddonUtilityImpl implements Utility
 			prepareDrawString();
 		}
 		
-		Minecraft mc = this.manager.getMinecraft();
+		Minecraft mc = Minecraft.getMinecraft();
 		
 		int xPos = (int) Math.floor(px * this.drawString_screenWidth) + offx;
 		int yPos = (int) Math.floor(py * this.drawString_screenHeight) + offy;
@@ -247,11 +247,11 @@ public class HaddonUtilityImpl implements Utility
 		
 		if (hasShadow)
 		{
-			this.manager.getMinecraft().fontRenderer.drawStringWithShadow(text, xPos, yPos, color);
+			Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(text, xPos, yPos, color);
 		}
 		else
 		{
-			this.manager.getMinecraft().fontRenderer.drawString(text, xPos, yPos, color);
+			Minecraft.getMinecraft().fontRenderer.drawString(text, xPos, yPos, color);
 		}
 		
 	}

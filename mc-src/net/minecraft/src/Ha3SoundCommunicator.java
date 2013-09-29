@@ -54,7 +54,7 @@ public class Ha3SoundCommunicator
 				.getManager()
 				.getUtility()
 				.getPrivateValueLiteral(
-					net.minecraft.src.SoundManager.class, this.mod.getManager().getMinecraft().sndManager, "b", 1);
+					net.minecraft.src.SoundManager.class, Minecraft.getMinecraft().sndManager, "b", 1);
 		}
 		catch (PrivateAccessException e)
 		{
@@ -65,21 +65,19 @@ public class Ha3SoundCommunicator
 	
 	public SoundManager getSoundManager()
 	{
-		return this.mod.getManager().getMinecraft().sndManager;
-		
+		return Minecraft.getMinecraft().sndManager;
 	}
 	
 	public void playSoundViaManager(String sound, float x, float y, float z, float vol, float pitch)
 	{
 		getSoundManager().playSound(sound, x, y, z, vol, pitch);
-		
 	}
 	
 	public void playSound(String sound, float x, float y, float z, float vol, float pitch)
 	{
 		try
 		{
-			float soundVolume = this.mod.getManager().getMinecraft().gameSettings.soundVolume;
+			float soundVolume = Minecraft.getMinecraft().gameSettings.soundVolume;
 			
 			if (soundVolume == 0.0F)
 				return;
@@ -130,7 +128,7 @@ public class Ha3SoundCommunicator
 		
 		try
 		{
-			float soundVolume = this.mod.getManager().getMinecraft().gameSettings.soundVolume;
+			float soundVolume = Minecraft.getMinecraft().gameSettings.soundVolume;
 			
 			if (soundVolume == 0.0F)
 				return;
