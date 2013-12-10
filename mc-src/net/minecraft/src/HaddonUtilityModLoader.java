@@ -2,6 +2,7 @@ package net.minecraft.src;
 
 import java.io.File;
 
+import net.minecraft.client.Minecraft;
 import eu.ha3.mc.haddon.Manager;
 
 /*
@@ -42,7 +43,7 @@ public class HaddonUtilityModLoader extends HaddonUtilityImpl
 		if (this.modsFolder != null)
 			return this.modsFolder;
 		
-		if (classExists("cpw.mods.fml.client.FMLClientHandler", this))
+		/*if (classExists("cpw.mods.fml.client.FMLClientHandler", this))
 		{
 			// Use FML interpretation of mods/
 			this.modsFolder = new File(Minecraft.getMinecraft().mcDataDir, "mods");
@@ -62,6 +63,10 @@ public class HaddonUtilityModLoader extends HaddonUtilityImpl
 		{
 			this.modsFolder = new File(Minecraft.getMinecraft().mcDataDir, "mods");
 		}
+		return this.modsFolder;*/
+		
+		// Always use FML interpretation of mods/ folder
+		this.modsFolder = new File(Minecraft.getMinecraft().mcDataDir, "mods");
 		return this.modsFolder;
 	}
 	
@@ -79,7 +84,6 @@ public class HaddonUtilityModLoader extends HaddonUtilityImpl
 		try
 		{
 			canWork = Class.forName(className, false, context.getClass().getClassLoader()) != null;
-			
 		}
 		//catch (ClassNotFoundException e)
 		//{
