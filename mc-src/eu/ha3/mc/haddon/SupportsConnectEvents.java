@@ -1,7 +1,5 @@
 package eu.ha3.mc.haddon;
 
-import net.minecraft.src.NetClientHandler;
-
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
                     Version 2, December 2004 

@@ -1,6 +1,6 @@
 package eu.ha3.mc.convenience;
 
-import net.minecraft.src.Minecraft;
+import net.minecraft.client.Minecraft;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 

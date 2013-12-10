@@ -1,169 +1,93 @@
 package net.minecraft.src;
 
+import net.minecraft.client.audio.SoundManager;
 import paulscode.sound.SoundSystem;
 import eu.ha3.mc.haddon.Haddon;
-import eu.ha3.mc.haddon.PrivateAccessException;
 
-/*
-            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
-                    Version 2, December 2004
-
- Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
-
- Everyone is permitted to copy and distribute verbatim or modified
- copies of this license document, and changing it is allowed as long
- as the name is changed.
-
-            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
-   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-
-  0. You just DO WHAT THE FUCK YOU WANT TO.
- */
-
+@Deprecated
 public class Ha3SoundCommunicator
 {
-	private Haddon mod;
-	
-	private String prefix;
-	private int maxIDs;
-	
-	private int lastSoundID;
-	
 	public Ha3SoundCommunicator(Haddon haddon, String prefix)
 	{
-		this.mod = haddon;
-		this.prefix = prefix;
-		this.maxIDs = 256;
-		
+		System.err
+			.println("Ha3SoundCommunicator is deprecated: Calling any of its methods will result in a forced crash.");
 	}
 	
+	private void error()
+	{
+		throw new RuntimeException(
+			"Ha3SoundCommunicator is deprecated: Calling any of its methods results in a forced crash.");
+	}
+	
+	@Deprecated
 	public void setMaxIDs(int max)
 	{
-		if (max <= 0)
-			throw new IllegalArgumentException();
-		
-		this.maxIDs = max;
-		
+		error();
 	}
 	
+	@Deprecated
 	public SoundSystem getSoundSystem()
 	{
-		try
-		{
-			return (SoundSystem) this.mod
-				.getManager()
-				.getUtility()
-				.getPrivateValueLiteral(
-					net.minecraft.src.SoundManager.class, Minecraft.getMinecraft().sndManager, "b", 1);
-		}
-		catch (PrivateAccessException e)
-		{
-			e.printStackTrace();
-			return null;
-		}
+		error();
+		return null;
 	}
 	
+	@Deprecated
 	public SoundManager getSoundManager()
 	{
-		return Minecraft.getMinecraft().sndManager;
+		error();
+		return null;
 	}
 	
+	/**
+	 * Plays a sound by passing it to actual sound manager method.
+	 * 
+	 * @param sound
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param vol
+	 * @param pitch
+	 */
+	@Deprecated
 	public void playSoundViaManager(String sound, float x, float y, float z, float vol, float pitch)
 	{
-		getSoundManager().playSound(sound, x, y, z, vol, pitch);
+		error();
 	}
 	
+	/**
+	 * Play a sound according to this sound communicator rules.
+	 * 
+	 * @param sound
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param vol
+	 * @param pitch
+	 */
+	@Deprecated
 	public void playSound(String sound, float x, float y, float z, float vol, float pitch)
 	{
-		try
-		{
-			float soundVolume = Minecraft.getMinecraft().gameSettings.soundVolume;
-			
-			if (soundVolume == 0.0F)
-				return;
-			
-			// soundPoolSounds
-			// XXX Get rid of private value getting on runtime
-			SoundPoolEntry soundpoolentry =
-				((SoundPool) this.mod
-					.getManager().getUtility()
-					.getPrivateValueLiteral(net.minecraft.src.SoundManager.class, getSoundManager(), "d", 3))
-					.getRandomSoundFromSoundPool(sound);
-			if (soundpoolentry != null && vol > 0.0F)
-			{
-				SoundSystem sndSystem = getSoundSystem();
-				
-				this.lastSoundID = (this.lastSoundID + 1) % this.maxIDs;
-				String sourceName = this.prefix + this.lastSoundID;
-				float rollf = 16F;
-				if (vol > 1.0F)
-				{
-					rollf *= vol;
-				}
-				sndSystem.newSource(
-					vol > 1.0F, sourceName, soundpoolentry.func_110457_b() /* soundURL */,
-					soundpoolentry.func_110458_a() /* soundName */, false, x, y, z, 2, rollf);
-				sndSystem.setPitch(sourceName, pitch);
-				if (vol > 1.0F)
-				{
-					vol = 1.0F;
-				}
-				sndSystem.setVolume(sourceName, vol * soundVolume);
-				sndSystem.play(sourceName);
-			}
-			
-		}
-		catch (PrivateAccessException e)
-		{
-			; // XXX Hidden exception
-			
-		}
-		
+		error();
 	}
 	
+	/**
+	 * Play a sound according to this sound communicator rules, with a custom
+	 * roll factor.
+	 * 
+	 * @param sound
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param vol
+	 * @param pitch
+	 * @param attnm
+	 * @param rollf
+	 */
+	@Deprecated
 	public void playSound(String sound, float x, float y, float z, float vol, float pitch, int attnm, float rollf)
 	{
-		SoundManager sndManager = getSoundManager();
-		SoundSystem sndSystem = getSoundSystem();
-		
-		try
-		{
-			float soundVolume = Minecraft.getMinecraft().gameSettings.soundVolume;
-			
-			if (soundVolume == 0.0F)
-				return;
-			
-			// soundPoolSounds
-			// XXX Get rid of private value getting on runtime
-			SoundPoolEntry soundpoolentry =
-				((SoundPool) this.mod
-					.getManager().getUtility()
-					.getPrivateValueLiteral(net.minecraft.src.SoundManager.class, sndManager, "d", 3))
-					.getRandomSoundFromSoundPool(sound);
-			
-			if (soundpoolentry != null && vol > 0.0F)
-			{
-				this.lastSoundID = (this.lastSoundID + 1) % this.maxIDs;
-				String sourceName = this.prefix + this.lastSoundID;
-				
-				sndSystem.newSource(
-					vol > 1.0F, sourceName, soundpoolentry.func_110457_b(), soundpoolentry.func_110458_a(), false, x,
-					y, z, attnm, rollf);
-				sndSystem.setPitch(sourceName, pitch);
-				
-				if (vol > 1.0F)
-				{
-					vol = 1.0F;
-				}
-				sndSystem.setVolume(sourceName, vol * soundVolume);
-				sndSystem.play(sourceName);
-			}
-			
-		}
-		catch (PrivateAccessException e)
-		{
-			e.printStackTrace();
-		}
+		error();
 	}
 	
 }

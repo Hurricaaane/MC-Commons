@@ -1,7 +1,6 @@
 package eu.ha3.mc.haddon;
 
-import net.minecraft.src.KeyBinding;
-import net.minecraft.src.Packet250CustomPayload;
+import net.minecraft.client.settings.KeyBinding;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 

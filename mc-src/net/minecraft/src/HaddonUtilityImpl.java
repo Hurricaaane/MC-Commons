@@ -2,6 +2,9 @@ package net.minecraft.src;
 
 import java.io.File;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
+
 import org.lwjgl.input.Keyboard;
 
 import eu.ha3.mc.haddon.Manager;

@@ -1,6 +1,6 @@
 package eu.ha3.mc.haddon;
 
-import net.minecraft.src.GuiScreen;
+import net.minecraft.client.gui.GuiScreen;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
