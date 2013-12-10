@@ -33,8 +33,9 @@ import com.mumfrey.liteloader.core.LiteLoader;
 import eu.ha3.mc.haddon.implem.HaddonUtilityImpl;
 
 /*
---filenotes-placeholder
+--filenotes-placeholder 
 */
+/* x-placeholder-wtfplv2 */
 
 public class LiteBase implements LiteMod, Manager, Bridge
 {
