@@ -1,8 +1,8 @@
-package net.minecraft.src;
+package eu.ha3.mc.quick;
 
 /* x-placeholder-wtfplv2 */
 
-public class Ha3Utility
+public class ChatColorsSimple
 {
 	final public static String COLOR_BLACK = "\u00A70";
 	final public static String COLOR_DARKBLUE = "\u00A71";
@@ -20,25 +20,4 @@ public class Ha3Utility
 	final public static String COLOR_PINK = "\u00A7d";
 	final public static String COLOR_YELLOW = "\u00A7e";
 	final public static String COLOR_WHITE = "\u00A7f";
-	
-	/*private static final Ha3Utility instance = new Ha3Utility();
-	
-	private FontRenderer pixFont;
-	
-	private Ha3Utility()
-	{
-		pixFont = new FontRenderer(par1GameSettings, par2Str, par3RenderEngine, par4)
-	}
-	
-	public static Ha3Utility getInstance()
-	{
-		return instance;
-		
-	}
-	public Ha3Utility getInstance()
-	{
-		return instance;
-		
-	}*/
-	
 }

@@ -1,4 +1,4 @@
-package net.minecraft.src;
+package eu.ha3.mc.haddon.implem;
 
 import java.io.File;
 
@@ -7,7 +7,6 @@ import net.minecraft.client.gui.ScaledResolution;
 
 import org.lwjgl.input.Keyboard;
 
-import eu.ha3.mc.haddon.Manager;
 import eu.ha3.mc.haddon.PrivateAccessException;
 import eu.ha3.mc.haddon.Utility;
 
@@ -17,18 +16,13 @@ public class HaddonUtilityImpl implements Utility
 {
 	final private static int WORLD_HEIGHT = 256;
 	
-	protected Manager manager;
+	protected long ticksRan;
+	protected File modsFolder;
 	
-	//private Timer mc_timer;
-	//private int ticksRan = 0;
-	
-	public HaddonUtilityImpl(Manager manager)
+	public HaddonUtilityImpl()
 	{
-		this.manager = manager;
-		
 		// Initialize reflection (Call the static constructor)
 		HaddonUtilitySingleton.getInstance();
-		
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -101,29 +95,6 @@ public class HaddonUtilityImpl implements Utility
 	}
 	
 	@Override
-	public long getClientTick()
-	{
-		/*if (this.mc_timer == null)
-		{
-			try
-			{
-				this.mc_timer = (Timer) getPrivateValueLiteral(Minecraft.class, this.manager.getMinecraft(), "T", 9);
-			}
-			catch (PrivateAccessException e)
-			{
-				throw new RuntimeException("Cannot retreive timer from Minecraft!");
-			}
-		}
-		
-		this.ticksRan = this.ticksRan + this.mc_timer.elapsedTicks;
-		
-		return this.ticksRan;*/
-		
-		throw new RuntimeException("getClientTick() doesn't work");
-		
-	}
-	
-	@Override
 	public Object getCurrentScreen()
 	{
 		return Minecraft.getMinecraft().currentScreen;
@@ -164,7 +135,9 @@ public class HaddonUtilityImpl implements Utility
 		{
 			builder.append(o);
 		}
-		Minecraft.getMinecraft().thePlayer.addChatMessage(builder.toString());
+		// XXX 2014-01-03 : 1.7.2 UNSURE
+		//Minecraft.getMinecraft().thePlayer.addChatMessage(builder.toString());
+		Minecraft.getMinecraft().ingameGUI.getChatGUI().func_146239_a(builder.toString());
 		
 	}
 	
@@ -246,8 +219,18 @@ public class HaddonUtilityImpl implements Utility
 	}
 	
 	@Override
+	public long getClientTick()
+	{
+		throw new RuntimeException();
+	}
+	
+	@Override
 	public File getModsFolder()
 	{
-		return Minecraft.getMinecraft().mcDataDir;
+		if (this.modsFolder != null)
+			return this.modsFolder;
+		
+		this.modsFolder = new File(Minecraft.getMinecraft().mcDataDir, "mods");
+		return this.modsFolder;
 	}
 }
