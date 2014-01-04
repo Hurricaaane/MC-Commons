@@ -1,4 +1,4 @@
-package eu.ha3.mc.haddon;
+package eu.ha3.mc.haddon.supporting;
 
 import net.minecraft.client.gui.GuiScreen;
 

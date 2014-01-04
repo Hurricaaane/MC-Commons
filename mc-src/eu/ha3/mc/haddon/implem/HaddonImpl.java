@@ -1,5 +1,6 @@
 package eu.ha3.mc.haddon.implem;
 
+import eu.ha3.mc.haddon.Caster;
 import eu.ha3.mc.haddon.Haddon;
 import eu.ha3.mc.haddon.Utility;
 
@@ -8,6 +9,7 @@ import eu.ha3.mc.haddon.Utility;
 public abstract class HaddonImpl implements Haddon
 {
 	private Utility utility;
+	private Caster caster;
 	
 	@Override
 	public Utility getUtility()
@@ -21,6 +23,18 @@ public abstract class HaddonImpl implements Haddon
 		this.utility = utility;
 	}
 	
+	@Override
+	public Caster getCaster()
+	{
+		return this.caster;
+	}
+	
+	@Override
+	public void setCaster(Caster caster)
+	{
+		this.caster = caster;
+	}
+	
 	/**
 	 * Convenience shortener for getUtility()
 	 * 
@@ -29,5 +43,15 @@ public abstract class HaddonImpl implements Haddon
 	public Utility util()
 	{
 		return getUtility();
+	}
+	
+	/**
+	 * Convenience shortener for getCaster()
+	 * 
+	 * @return
+	 */
+	public Caster caster()
+	{
+		return getCaster();
 	}
 }

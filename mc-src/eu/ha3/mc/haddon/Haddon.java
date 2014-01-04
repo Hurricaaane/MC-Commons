@@ -5,24 +5,51 @@ package eu.ha3.mc.haddon;
 public interface Haddon
 {
 	/**
-	 * Triggered depending on the Manager implementation during the addon
-	 * loading process.
+	 * Triggered during the addon loading process.
 	 * 
 	 */
 	public void onLoad();
 	
 	/**
-	 * Get the utility object dedicated to this addon.
+	 * Returns the name of the mod.
+	 * 
+	 * @return
+	 */
+	public String getName();
+	
+	/**
+	 * Returns the version.
+	 * 
+	 * @return
+	 */
+	public String getVersion();
+	
+	/**
+	 * Returns the utility object dedicated to this haddon.
 	 * 
 	 * @return
 	 */
 	public Utility getUtility();
 	
 	/**
-	 * Sets the utility object dedicated to this addon.
+	 * Sets the utility object dedicated to this haddon.
 	 * 
 	 * @return
 	 */
 	public void setUtility(Utility utility);
+	
+	/**
+	 * Returns the caster object dedicated to this haddon.
+	 * 
+	 * @return
+	 */
+	public Caster getCaster();
+	
+	/**
+	 * Sets the caster object dedicated to this haddon.
+	 * 
+	 * @return
+	 */
+	public void setCaster(Caster utility);
 	
 }
