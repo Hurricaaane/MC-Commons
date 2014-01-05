@@ -1,4 +1,4 @@
-package eu.ha3.mc.litemod;
+package eu.ha3.mc.haddon.litemod;
 
 import java.io.File;
 
