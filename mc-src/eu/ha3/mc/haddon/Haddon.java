@@ -15,14 +15,14 @@ public interface Haddon
 	 * 
 	 * @return
 	 */
-	public String getName();
+	public String getHaddonName();
 	
 	/**
 	 * Returns the version.
 	 * 
 	 * @return
 	 */
-	public String getVersion();
+	public String getHaddonVersion();
 	
 	/**
 	 * Returns the utility object dedicated to this haddon.

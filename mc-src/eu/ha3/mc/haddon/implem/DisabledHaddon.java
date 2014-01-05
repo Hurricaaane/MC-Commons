@@ -22,13 +22,13 @@ public class DisabledHaddon extends HaddonImpl
 	}
 	
 	@Override
-	public String getName()
+	public String getHaddonName()
 	{
 		return this.name;
 	}
 	
 	@Override
-	public String getVersion()
+	public String getHaddonVersion()
 	{
 		return this.version;
 	}
