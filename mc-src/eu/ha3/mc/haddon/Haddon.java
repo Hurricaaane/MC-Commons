@@ -43,13 +43,13 @@ public interface Haddon
 	 * 
 	 * @return
 	 */
-	public Caster getCaster();
+	public Operator getOperator();
 	
 	/**
 	 * Sets the caster object dedicated to this haddon.
 	 * 
 	 * @return
 	 */
-	public void setCaster(Caster utility);
+	public void setOperator(Operator operator);
 	
 }

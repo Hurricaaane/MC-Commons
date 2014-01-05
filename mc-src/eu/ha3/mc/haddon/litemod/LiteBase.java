@@ -8,8 +8,8 @@ import com.mumfrey.liteloader.InitCompleteListener;
 import com.mumfrey.liteloader.LiteMod;
 import com.mumfrey.liteloader.core.LiteLoader;
 
-import eu.ha3.mc.haddon.Caster;
 import eu.ha3.mc.haddon.Haddon;
+import eu.ha3.mc.haddon.OperatorCaster;
 import eu.ha3.mc.haddon.implem.HaddonUtilityImpl;
 import eu.ha3.mc.haddon.supporting.SupportsFrameEvents;
 import eu.ha3.mc.haddon.supporting.SupportsTickEvents;
@@ -18,7 +18,7 @@ import eu.ha3.mc.haddon.supporting.SupportsTickEvents;
 --filenotes-placeholder
 */
 
-public class LiteBase implements LiteMod, InitCompleteListener, Caster
+public class LiteBase implements LiteMod, InitCompleteListener, OperatorCaster
 {
 	protected Haddon haddon;
 	protected boolean shouldTick;
@@ -37,7 +37,7 @@ public class LiteBase implements LiteMod, InitCompleteListener, Caster
 		this.shouldTick = this.suTick || this.suFrame;
 		
 		this.haddon.setUtility(new HaddonUtilityImpl());
-		this.haddon.setCaster(this);
+		this.haddon.setOperator(this);
 	}
 	
 	@Override

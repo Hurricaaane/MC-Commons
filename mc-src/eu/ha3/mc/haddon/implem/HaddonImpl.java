@@ -1,7 +1,7 @@
 package eu.ha3.mc.haddon.implem;
 
-import eu.ha3.mc.haddon.Caster;
 import eu.ha3.mc.haddon.Haddon;
+import eu.ha3.mc.haddon.Operator;
 import eu.ha3.mc.haddon.Utility;
 
 /* x-placeholder-wtfplv2 */
@@ -9,7 +9,7 @@ import eu.ha3.mc.haddon.Utility;
 public abstract class HaddonImpl implements Haddon
 {
 	private Utility utility;
-	private Caster caster;
+	private Operator operator;
 	
 	@Override
 	public Utility getUtility()
@@ -24,15 +24,15 @@ public abstract class HaddonImpl implements Haddon
 	}
 	
 	@Override
-	public Caster getCaster()
+	public Operator getOperator()
 	{
-		return this.caster;
+		return this.operator;
 	}
 	
 	@Override
-	public void setCaster(Caster caster)
+	public void setOperator(Operator operator)
 	{
-		this.caster = caster;
+		this.operator = operator;
 	}
 	
 	/**
@@ -50,8 +50,8 @@ public abstract class HaddonImpl implements Haddon
 	 * 
 	 * @return
 	 */
-	public Caster caster()
+	public Operator op()
 	{
-		return getCaster();
+		return getOperator();
 	}
 }
