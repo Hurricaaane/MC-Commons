@@ -1,9 +1,12 @@
 package eu.ha3.mc.haddon.implem;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.util.ChatComponentText;
 
 import org.lwjgl.input.Keyboard;
 
@@ -23,6 +26,31 @@ public class HaddonUtilityImpl implements Utility
 	{
 		// Initialize reflection (Call the static constructor)
 		HaddonUtilitySingleton.getInstance();
+	}
+	
+	/**
+	 * Forces a private value to be set, first using the literal string of the
+	 * field, and if it fails, the Zero Offset method.
+	 * 
+	 * @param classToPerformOn
+	 *            Class of the object being manipulated
+	 * @param instanceToPerformOn
+	 *            Object being manipulated
+	 * @param obfPriority
+	 *            Literal string of the field, when obfuscated
+	 * @param zeroOffsetsDebug
+	 *            Offsets from zero as a fallback
+	 * @param newValue
+	 *            New value to override
+	 * @return
+	 * @throws PrivateAccessException
+	 *             When the method fails twice
+	 */
+	public void setPrivate(
+		Object newValue, Class classToPerformOn, Object instanceToPerformOn, int zeroOffsetsDebug,
+		String... moreToLessImportantLiteral) throws PrivateAccessException
+	{
+		
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -137,7 +165,8 @@ public class HaddonUtilityImpl implements Utility
 		}
 		// XXX 2014-01-03 : 1.7.2 UNSURE
 		//Minecraft.getMinecraft().thePlayer.addChatMessage(builder.toString());
-		Minecraft.getMinecraft().ingameGUI.getChatGUI().func_146239_a(builder.toString());
+		//Minecraft.getMinecraft().ingameGUI.getChatGUI().func_146239_a(builder.toString());
+		Minecraft.getMinecraft().thePlayer.func_146105_b(new ChatComponentText(builder.toString()));
 		
 	}
 	
@@ -215,7 +244,6 @@ public class HaddonUtilityImpl implements Utility
 		{
 			Minecraft.getMinecraft().fontRenderer.drawString(text, xPos, yPos, color);
 		}
-		
 	}
 	
 	@Override
@@ -232,5 +260,40 @@ public class HaddonUtilityImpl implements Utility
 		
 		this.modsFolder = new File(Minecraft.getMinecraft().mcDataDir, "mods");
 		return this.modsFolder;
+	}
+	
+	private Map<String, PrivateEntry> getters = new HashMap<String, PrivateEntry>();
+	private Map<String, PrivateEntry> setters = new HashMap<String, PrivateEntry>();
+	
+	@SuppressWarnings("rawtypes")
+	@Override
+	public void registerPrivateGetter(
+		String name, Class classToPerformOn, int zeroOffsets, String... lessToMoreImportantFieldName)
+	{
+		this.getters.put(
+			name, new HaddonPrivateEntry(name, classToPerformOn, zeroOffsets, lessToMoreImportantFieldName));
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@Override
+	public void registerPrivateSetter(
+		String name, Class classToPerformOn, int zeroOffsets, String... lessToMoreImportantFieldName)
+	{
+		this.setters.put(
+			name, new HaddonPrivateEntry(name, classToPerformOn, zeroOffsets, lessToMoreImportantFieldName));
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Object getPrivate(Object instance, String name) throws PrivateAccessException
+	{
+		return this.getters.get(name).get(instance);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@Override
+	public void setPrivate(Object instance, String name, Object value) throws PrivateAccessException
+	{
+		this.setters.get(name).set(instance, value);
 	}
 }

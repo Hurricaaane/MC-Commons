@@ -1,5 +1,6 @@
 package eu.ha3.mc.convenience;
 
+
 /* x-placeholder-wtfplv2 */
 
 public class Ha3StaticUtilities
@@ -30,7 +31,5 @@ public class Ha3StaticUtilities
 		}
 		
 		return canWork;
-		
 	}
-	
 }

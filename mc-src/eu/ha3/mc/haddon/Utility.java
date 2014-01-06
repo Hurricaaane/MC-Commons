@@ -8,6 +8,64 @@ import java.io.File;
 public interface Utility
 {
 	/**
+	 * Register a Private Access getter on a certain name, that operates on a
+	 * certain Class in a certain Object instance. The last two arguments are
+	 * increasingly of priority: The rightmost argument is evaluated first.<br>
+	 * When used by getPrivate(...):<br>
+	 * The rightmost fieldname (if not null) is used first. If it doesn't work,
+	 * the arguments left to it are used. If everything fails, it uses the
+	 * zeroOffsets, that is the nth field (0th being the first field).
+	 * zeroOffsets is ignored if it is a negative number. If none worked, this
+	 * throws a PrivateAccessException containing the name of that getter.
+	 * 
+	 * @param name
+	 * @param classToPerformOn
+	 * @param instanceToPerformOn
+	 * @param zeroOffsets
+	 * @param lessToMoreImportant
+	 */
+	public void registerPrivateGetter(
+		String name, Class classToPerformOn, int zeroOffsets, String... lessToMoreImportantFieldName);
+	
+	/**
+	 * Register a Private Access setter on a certain name, that operates on a
+	 * certain Class in a certain Object instance. The last two arguments are
+	 * increasingly of priority: The rightmost argument is evaluated first.<br>
+	 * When used by getPrivate(...):<br>
+	 * The rightmost fieldname (if not null) is used first. If it doesn't work,
+	 * the arguments left to it are used. If everything fails, it uses the
+	 * zeroOffsets, that is the nth field (0th being the first field).
+	 * zeroOffsets is ignored if it is a negative number. If none worked, this
+	 * throws a PrivateAccessException containing the name of that setter.
+	 * 
+	 * @param name
+	 * @param classToPerformOn
+	 * @param instanceToPerformOn
+	 * @param zeroOffsets
+	 * @param lessToMoreImportant
+	 */
+	public void registerPrivateSetter(
+		String name, Class classToPerformOn, int zeroOffsets, String... lessToMoreImportantFieldName);
+	
+	/**
+	 * Gets a registered Private field
+	 * 
+	 * @param name
+	 * @return
+	 * @throws PrivateAccessException
+	 */
+	public Object getPrivate(Object instance, String name) throws PrivateAccessException;
+	
+	/**
+	 * Sets a registered Private field
+	 * 
+	 * @param name
+	 * @param object
+	 * @throws PrivateAccessException
+	 */
+	public void setPrivate(Object instance, String name, Object value) throws PrivateAccessException;
+	
+	/**
 	 * Forces a private value to be read, using the Zero Offset method.
 	 * 
 	 * @param classToPerformOn
@@ -20,6 +78,7 @@ public interface Utility
 	 * @throws PrivateAccessException
 	 *             When the method fails
 	 */
+	@Deprecated
 	public Object getPrivateValue(Class classToPerformOn, Object instanceToPerformOn, int zeroOffsets)
 		throws PrivateAccessException;
 	
@@ -38,6 +97,7 @@ public interface Utility
 	 * @throws PrivateAccessException
 	 *             When the method fails
 	 */
+	@Deprecated
 	public void setPrivateValue(Class classToPerformOn, Object instanceToPerformOn, int zeroOffsets, Object newValue)
 		throws PrivateAccessException;
 	
@@ -57,6 +117,7 @@ public interface Utility
 	 * @throws PrivateAccessException
 	 *             When the method fails twice
 	 */
+	@Deprecated
 	public Object getPrivateValueLiteral(
 		Class classToPerformOn, Object instanceToPerformOn, String obfPriority, int zeroOffsetsDebug)
 		throws PrivateAccessException;
@@ -79,6 +140,7 @@ public interface Utility
 	 * @throws PrivateAccessException
 	 *             When the method fails twice
 	 */
+	@Deprecated
 	public void setPrivateValueLiteral(
 		Class classToPerformOn, Object instanceToPerformOn, String obfPriority, int zeroOffsetsDebug, Object newValue)
 		throws PrivateAccessException;
