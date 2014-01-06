@@ -1,5 +1,6 @@
 package eu.ha3.mc.haddon;
 
+
 /* x-placeholder-wtfplv2 */
 
 public interface Haddon
@@ -9,20 +10,6 @@ public interface Haddon
 	 * 
 	 */
 	public void onLoad();
-	
-	/**
-	 * Returns the name of the mod.
-	 * 
-	 * @return
-	 */
-	public String getHaddonName();
-	
-	/**
-	 * Returns the version.
-	 * 
-	 * @return
-	 */
-	public String getHaddonVersion();
 	
 	/**
 	 * Returns the utility object dedicated to this haddon.
@@ -51,5 +38,14 @@ public interface Haddon
 	 * @return
 	 */
 	public void setOperator(Operator operator);
+	
+	//
+	
+	/**
+	 * Returns the identity of this Haddon.
+	 * 
+	 * @return
+	 */
+	public Identity getIdentity();
 	
 }

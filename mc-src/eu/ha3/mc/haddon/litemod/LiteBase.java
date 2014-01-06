@@ -43,13 +43,13 @@ public class LiteBase implements LiteMod, InitCompleteListener, OperatorCaster
 	@Override
 	public String getName()
 	{
-		return this.haddon.getHaddonName();
+		return this.haddon.getIdentity().getHaddonName();
 	}
 	
 	@Override
 	public String getVersion()
 	{
-		return this.haddon.getHaddonVersion();
+		return this.haddon.getIdentity().getHaddonHumanVersion();
 	}
 	
 	@Override

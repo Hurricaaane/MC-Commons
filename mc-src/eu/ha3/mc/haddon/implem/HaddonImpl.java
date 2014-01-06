@@ -8,6 +8,11 @@ import eu.ha3.mc.haddon.Utility;
 
 public abstract class HaddonImpl implements Haddon
 {
+	//protected String NAME = "_MOD_NAME_NOT_DEFINED";
+	//protected int VERSION = -1;
+	//protected String FOR = "0.0.0";
+	//protected String ADDRESS = "http://example.org";
+	
 	private Utility utility;
 	private Operator operator;
 	
