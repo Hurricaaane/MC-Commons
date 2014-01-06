@@ -20,12 +20,12 @@ import eu.ha3.mc.haddon.supporting.SupportsTickEvents;
 
 public class LiteBase implements LiteMod, InitCompleteListener, OperatorCaster
 {
-	protected Haddon haddon;
-	protected boolean shouldTick;
-	protected boolean suTick;
-	protected boolean suFrame;
-	protected int tickCounter;
+	protected final Haddon haddon;
+	protected final boolean shouldTick;
+	protected final boolean suTick;
+	protected final boolean suFrame;
 	
+	protected int tickCounter;
 	protected boolean enableTick;
 	protected boolean enableFrame;
 	
