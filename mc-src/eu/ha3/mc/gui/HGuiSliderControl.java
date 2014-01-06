@@ -29,18 +29,25 @@ public class HGuiSliderControl extends GuiButton implements HDisplayStringHolder
 	public void setListener(HSliderListener listener)
 	{
 		this.listener = listener;
-		
 	}
 	
 	/**
 	 * Returns 0 if the button is disabled, 1 if the mouse is NOT hovering over
 	 * this button and 2 if it IS hovering over this button.
 	 */
+	
+	@Override
+	protected int func_146114_a(boolean p_146114_1_)
+	{
+		return 0;
+	}
+	
+	/*
 	@Override
 	protected int getHoverState(boolean par1)
 	{
 		return 0;
-	}
+	}*/
 	
 	/**
 	 * Fired when the mouse button is dragged. Equivalent of
@@ -122,12 +129,20 @@ public class HGuiSliderControl extends GuiButton implements HDisplayStringHolder
 	 * MouseListener.mouseReleased(MouseEvent e).
 	 */
 	@Override
-	public void mouseReleased(int par1, int par2)
+	public void func_146118_a(int p_146118_1_, int p_146118_2_)
 	{
 		this.isBeingDragged = false;
 		
 		this.listener.sliderReleased(this);
 	}
+	
+	/*@Override
+	public void mouseReleased(int par1, int par2)
+	{
+		this.isBeingDragged = false;
+		
+		this.listener.sliderReleased(this);
+	}*/
 	
 	@Override
 	public void updateDisplayString()
