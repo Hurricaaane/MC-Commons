@@ -1,6 +1,7 @@
 package eu.ha3.mc.quick.update;
 
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -8,9 +9,15 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import eu.ha3.mc.quick.chat.ChatColorsSimple;
 import eu.ha3.mc.quick.chat.Chatter;
@@ -26,6 +33,8 @@ import eu.ha3.util.property.simple.ConfigProperty;
  */
 public class UpdateNotifier extends Thread
 {
+	private final boolean USE_JSON = true;
+	
 	private final NotifiableHaddon haddon;
 	private final String queryLocation;
 	
@@ -62,34 +71,58 @@ public class UpdateNotifier extends Thread
 			
 			InputStream contents = url.openStream();
 			
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document doc = db.parse(contents);
-			
-			XPathFactory xpf = XPathFactory.newInstance();
-			XPath xp = xpf.newXPath();
-			
-			NodeList nl = doc.getElementsByTagName("release");
-			
-			int maxvn = 0;
-			for (int i = 0; i < nl.getLength(); i++)
+			int solvedVersion = 0;
+			String solvedMinecraftVersion = "";
+			if (this.USE_JSON)
 			{
-				Node release = nl.item(i);
-				String versionnumber = xp.evaluate("./version", release);
-				if (versionnumber != null)
-				{
-					int vn = Integer.parseInt(versionnumber);
-					if (vn > maxvn)
-					{
-						maxvn = vn;
-					}
-					
-				}
+				StringWriter writer = new StringWriter();
+				IOUtils.copy(contents, writer);
+				String jasonString = writer.toString();
 				
+				JsonObject jason = new JsonParser().parse(jasonString).getAsJsonObject();
+				JsonArray versions = jason.get("versions").getAsJsonArray();
+				for (JsonElement element : versions.getAsJsonArray())
+				{
+					JsonObject o = element.getAsJsonObject();
+					int vn = o.get("number").getAsInt();
+					if (vn > solvedVersion)
+					{
+						solvedVersion = vn;
+						if (o.has("for"))
+						{
+							solvedMinecraftVersion = o.get("for").getAsString();
+						}
+					}
+				}
+			}
+			else
+			{
+				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+				DocumentBuilder db = dbf.newDocumentBuilder();
+				Document doc = db.parse(contents);
+				
+				XPathFactory xpf = XPathFactory.newInstance();
+				XPath xp = xpf.newXPath();
+				
+				NodeList nl = doc.getElementsByTagName("release");
+				
+				for (int i = 0; i < nl.getLength(); i++)
+				{
+					Node release = nl.item(i);
+					String versionnumber = xp.evaluate("./version", release);
+					if (versionnumber != null)
+					{
+						int vn = Integer.parseInt(versionnumber);
+						if (vn > solvedVersion)
+						{
+							solvedVersion = vn;
+						}
+					}
+				}
 			}
 			
 			System.out.println("(UN: "
-				+ this.haddon.getIdentity().getHaddonName() + ") Update version found: " + maxvn + " (running "
+				+ this.haddon.getIdentity().getHaddonName() + ") Update version found: " + solvedVersion + " (running "
 				+ currentVersionNumber + ")");
 			
 			try
@@ -102,15 +135,15 @@ public class UpdateNotifier extends Thread
 				return;
 			}
 			
-			if (maxvn > currentVersionNumber)
+			if (solvedVersion > currentVersionNumber)
 			{
 				ConfigProperty config = this.haddon.getConfig();
 				Chatter chatter = this.haddon.getChatter();
 				
 				boolean needsSave = false;
-				if (maxvn != this.lastFound)
+				if (solvedVersion != this.lastFound)
 				{
-					this.lastFound = maxvn;
+					this.lastFound = solvedVersion;
 					this.displayRemaining = this.displayCount;
 					
 					needsSave = true;
@@ -123,13 +156,40 @@ public class UpdateNotifier extends Thread
 					this.displayRemaining = this.displayRemaining - 1;
 					config.setProperty("update_found.display.remaining.value", this.displayRemaining);
 					
-					int vc = maxvn - currentVersionNumber;
-					chatter.printChat(
-						ChatColorsSimple.COLOR_GOLD, "A ", ChatColorsSimple.COLOR_WHITE, "r" + maxvn,
-						ChatColorsSimple.COLOR_GOLD, " update is available (You're ", ChatColorsSimple.COLOR_WHITE, vc,
-						ChatColorsSimple.COLOR_GOLD, " version" + (vc > 1 ? "s" : "") + " late). ");
-					chatter.printChatShort(ChatColorsSimple.COLOR_BRIGHTGREEN
-						+ ChatColorsSimple.THEN_UNDERLINE + " " + this.haddon.getIdentity().getHaddonAddress());
+					int vc = solvedVersion - currentVersionNumber;
+					if (solvedMinecraftVersion.equals(""))
+					{
+						chatter.printChat(
+							ChatColorsSimple.COLOR_GOLD, "An update is available: ", ChatColorsSimple.COLOR_WHITE, "r"
+								+ solvedVersion, ChatColorsSimple.COLOR_GOLD, "  (You're ",
+							ChatColorsSimple.COLOR_WHITE, vc, ChatColorsSimple.COLOR_GOLD, " version"
+								+ (vc > 1 ? "s" : "") + " late). ");
+						//chatter.printChat(
+						//	ChatColorsSimple.COLOR_GOLD, "A ", ChatColorsSimple.COLOR_WHITE, "r" + solvedVersion,
+						//	ChatColorsSimple.COLOR_GOLD, " update is available (You're ", ChatColorsSimple.COLOR_WHITE,
+						//	vc, ChatColorsSimple.COLOR_GOLD, " version" + (vc > 1 ? "s" : "") + " late). ");
+					}
+					else if (solvedMinecraftVersion.equals(this.haddon.getIdentity().getHaddonMinecraftVersion()))
+					{
+						chatter.printChat(
+							ChatColorsSimple.COLOR_GOLD, "An update is available for your version of Minecraft: ",
+							ChatColorsSimple.COLOR_WHITE, "r" + solvedVersion, ChatColorsSimple.COLOR_GOLD,
+							"  (You're ", ChatColorsSimple.COLOR_WHITE, vc, ChatColorsSimple.COLOR_GOLD, " version"
+								+ (vc > 1 ? "s" : "") + " late). ");
+					}
+					else
+					{
+						chatter.printChat(
+							ChatColorsSimple.COLOR_GOLD, "An update is available for ", ChatColorsSimple.COLOR_GOLD,
+							ChatColorsSimple.THEN_ITALIC + "another" + ChatColorsSimple.THEN_RESET,
+							ChatColorsSimple.COLOR_GOLD, " version of Minecraft: ", ChatColorsSimple.COLOR_WHITE, "r"
+								+ solvedVersion, " for " + solvedMinecraftVersion, ChatColorsSimple.COLOR_GOLD,
+							"  (You're ", ChatColorsSimple.COLOR_WHITE, vc, ChatColorsSimple.COLOR_GOLD, " version"
+								+ (vc > 1 ? "s" : "") + " late). ");
+					}
+					chatter.printChatShort(/*ChatColorsSimple.COLOR_BRIGHTGREEN
+											+ ChatColorsSimple.THEN_UNDERLINE + " " +*/this.haddon
+						.getIdentity().getHaddonAddress());
 					
 					if (this.displayRemaining > 0)
 					{
