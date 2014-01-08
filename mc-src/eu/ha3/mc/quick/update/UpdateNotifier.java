@@ -1,7 +1,6 @@
 package eu.ha3.mc.quick.update;
 
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -75,9 +74,7 @@ public class UpdateNotifier extends Thread
 			String solvedMinecraftVersion = "";
 			if (this.USE_JSON)
 			{
-				StringWriter writer = new StringWriter();
-				IOUtils.copy(contents, writer);
-				String jasonString = writer.toString();
+				String jasonString = IOUtils.toString(contents, "UTF-8");
 				
 				JsonObject jason = new JsonParser().parse(jasonString).getAsJsonObject();
 				JsonArray versions = jason.get("versions").getAsJsonArray();
