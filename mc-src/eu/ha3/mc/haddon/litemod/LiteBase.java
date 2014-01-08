@@ -36,7 +36,13 @@ public class LiteBase implements LiteMod, InitCompleteListener, OperatorCaster
 		this.suFrame = haddon instanceof SupportsFrameEvents;
 		this.shouldTick = this.suTick || this.suFrame;
 		
-		this.haddon.setUtility(new HaddonUtilityImpl());
+		this.haddon.setUtility(new HaddonUtilityImpl() {
+			@Override
+			public long getClientTick()
+			{
+				return getTicks();
+			}
+		});
 		this.haddon.setOperator(this);
 	}
 	

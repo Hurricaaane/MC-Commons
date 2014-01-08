@@ -15,7 +15,7 @@ import eu.ha3.mc.haddon.Utility;
 
 /* x-placeholder-wtfplv2 */
 
-public class HaddonUtilityImpl implements Utility
+public abstract class HaddonUtilityImpl implements Utility
 {
 	final private static int WORLD_HEIGHT = 256;
 	
@@ -252,12 +252,6 @@ public class HaddonUtilityImpl implements Utility
 		{
 			Minecraft.getMinecraft().fontRenderer.drawString(text, xPos, yPos, color);
 		}
-	}
-	
-	@Override
-	public long getClientTick()
-	{
-		throw new RuntimeException();
 	}
 	
 	@Override
