@@ -1,8 +1,10 @@
 package eu.ha3.mc.haddon.litemod;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.entity.Render;
 
 import com.mumfrey.liteloader.RenderListener;
+import com.mumfrey.liteloader.util.ModUtilities;
 
 import eu.ha3.mc.haddon.Haddon;
 import eu.ha3.mc.haddon.OperatorRenderer;
@@ -41,6 +43,13 @@ public class LiteRender extends LiteBase implements OperatorRenderer, RenderList
 	public void onSetupCameraTransform()
 	{
 		((SupportsRenderEvents) this.haddon).onSetupCameraTransform();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public void addRenderable(@SuppressWarnings("rawtypes") Class renderClass, Object renderable)
+	{
+		ModUtilities.addRenderer(renderClass, (Render) renderable);
 	}
 	
 }

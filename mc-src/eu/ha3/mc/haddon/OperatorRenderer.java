@@ -5,11 +5,11 @@ package eu.ha3.mc.haddon;
 */
 
 /**
- * This operator is capable of managing rendering adapter flow controls.
+ * This operator is capable of managing rendering flow controls.
  * 
  * @author Hurry
  * 
  */
-public interface OperatorRenderer
+public interface OperatorRenderer extends Operator, Renderer
 {
 }
