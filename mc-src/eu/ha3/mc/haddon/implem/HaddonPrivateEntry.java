@@ -1,5 +1,10 @@
 package eu.ha3.mc.haddon.implem;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import eu.ha3.mc.haddon.PrivateAccessException;
 
 /*
@@ -13,6 +18,7 @@ public class HaddonPrivateEntry implements PrivateEntry
 	private final Class target;
 	private final int zero;
 	private final String[] fieldNames;
+	private final List<String> fieldNamesMoreToLess_depleting;
 	
 	@SuppressWarnings("rawtypes")
 	public HaddonPrivateEntry(String name, Class target, int zero, String... lessToMoreImportantFieldName)
@@ -21,6 +27,8 @@ public class HaddonPrivateEntry implements PrivateEntry
 		this.target = target;
 		this.zero = zero;
 		this.fieldNames = lessToMoreImportantFieldName.clone();
+		this.fieldNamesMoreToLess_depleting = new ArrayList<String>(Arrays.asList(this.fieldNames));
+		Collections.reverse(this.fieldNamesMoreToLess_depleting);
 	}
 	
 	@Override
@@ -51,18 +59,19 @@ public class HaddonPrivateEntry implements PrivateEntry
 	@Override
 	public Object get(Object instance) throws PrivateAccessException
 	{
-		int i = this.fieldNames.length - 1;
-		while (i >= 0)
+		while (!this.fieldNamesMoreToLess_depleting.isEmpty())
 		{
 			try
 			{
 				return HaddonUtilitySingleton.getInstance().getPrivateValueViaName(
-					this.target, instance, this.fieldNames[i]);
+					this.target, instance, this.fieldNamesMoreToLess_depleting.get(0));
 			}
 			catch (PrivateAccessException e)
 			{
+				HaddonUtilitySingleton.LOGGER.info("(Haddon) PrivateEntry "
+					+ this.name + " cannot resolve " + this.fieldNamesMoreToLess_depleting.get(0));
+				this.fieldNamesMoreToLess_depleting.remove(0);
 			}
-			i = i - 1;
 		}
 		if (this.zero >= 0)
 		{
@@ -72,6 +81,8 @@ public class HaddonPrivateEntry implements PrivateEntry
 			}
 			catch (PrivateAccessException e)
 			{
+				HaddonUtilitySingleton.LOGGER.info("(Haddon) PrivateEntry "
+					+ this.name + " cannot resolve zero-index " + this.zero);
 			}
 		}
 		
