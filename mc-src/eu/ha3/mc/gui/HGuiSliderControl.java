@@ -31,36 +31,25 @@ public class HGuiSliderControl extends GuiButton implements HDisplayStringHolder
 		this.listener = listener;
 	}
 	
-	/**
-	 * Returns 0 if the button is disabled, 1 if the mouse is NOT hovering over
-	 * this button and 2 if it IS hovering over this button.
-	 */
-	
 	@Override
-	protected int func_146114_a(boolean p_146114_1_)
+	protected int getHoverState(boolean p_146114_1_)
 	{
 		return 0;
 	}
 	
-	/*
-	@Override
-	protected int getHoverState(boolean par1)
-	{
-		return 0;
-	}*/
-	
-	/**
-	 * Fired when the mouse button is dragged. Equivalent of
-	 * MouseListener.mouseDragged(MouseEvent e).
-	 */
 	@Override
 	protected void mouseDragged(Minecraft par1Minecraft, int par2, int par3)
 	{
-		if (this.drawButton)
+		if (this.field_146125_m) // drawButton
 		{
+			int x = this.field_146128_h;
+			int y = this.field_146129_i;
+			int w = this.field_146120_f;
+			int h = this.field_146121_g;
+			
 			if (this.isBeingDragged)
 			{
-				float value = (float) (par2 - (this.xPosition + 4)) / (this.width - 8);
+				float value = (float) (par2 - (x + 4)) / (w - 8);
 				
 				if (value < 0.0F)
 				{
@@ -81,23 +70,19 @@ public class HGuiSliderControl extends GuiButton implements HDisplayStringHolder
 			}
 			
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-			drawTexturedModalRect(
-				this.xPosition + (int) (this.value * (this.width - 8)), this.yPosition, 0, 66, 4, this.height);
-			drawTexturedModalRect(
-				this.xPosition + (int) (this.value * (this.width - 8)) + 4, this.yPosition, 196, 66, 4, this.height);
+			drawTexturedModalRect(x + (int) (this.value * (w - 8)), y, 0, 66, 4, h);
+			drawTexturedModalRect(x + (int) (this.value * (w - 8)) + 4, y, 196, 66, 4, h);
 		}
 	}
 	
-	/**
-	 * Returns true if the mouse has been pressed on this control. Equivalent of
-	 * MouseListener.mousePressed(MouseEvent e).
-	 */
 	@Override
 	public boolean mousePressed(Minecraft par1Minecraft, int par2, int par3)
 	{
 		if (super.mousePressed(par1Minecraft, par2, par3))
 		{
-			float value = (float) (par2 - (this.xPosition + 4)) / (this.width - 8);
+			int x = this.field_146128_h;
+			int w = this.field_146120_f;
+			float value = (float) (par2 - (x + 4)) / (w - 8);
 			
 			if (value < 0.0F)
 			{
@@ -124,25 +109,13 @@ public class HGuiSliderControl extends GuiButton implements HDisplayStringHolder
 			return false;
 	}
 	
-	/**
-	 * Fired when the mouse button is released. Equivalent of
-	 * MouseListener.mouseReleased(MouseEvent e).
-	 */
 	@Override
-	public void func_146118_a(int p_146118_1_, int p_146118_2_)
+	public void mouseReleased(int p_146118_1_, int p_146118_2_)
 	{
 		this.isBeingDragged = false;
 		
 		this.listener.sliderReleased(this);
 	}
-	
-	/*@Override
-	public void mouseReleased(int par1, int par2)
-	{
-		this.isBeingDragged = false;
-		
-		this.listener.sliderReleased(this);
-	}*/
 	
 	@Override
 	public void updateDisplayString()

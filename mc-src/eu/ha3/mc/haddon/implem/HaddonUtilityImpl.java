@@ -171,11 +171,7 @@ public abstract class HaddonUtilityImpl implements Utility
 		{
 			builder.append(o);
 		}
-		// XXX 2014-01-03 : 1.7.2 UNSURE
-		//Minecraft.getMinecraft().thePlayer.addChatMessage(builder.toString());
-		//Minecraft.getMinecraft().ingameGUI.getChatGUI().func_146239_a(builder.toString());
-		Minecraft.getMinecraft().thePlayer.func_146105_b(new ChatComponentText(builder.toString()));
-		
+		Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(builder.toString()));
 	}
 	
 	@Override
