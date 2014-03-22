@@ -6,7 +6,6 @@ package eu.ha3.easy;
  * Simplistic edge triggered device.
  * 
  * @author Hurry
- * 
  */
 public class EdgeTrigger
 {
@@ -28,6 +27,7 @@ public class EdgeTrigger
 	 * Create an edge trigger.
 	 * 
 	 * @param model
+	 * @param initialState
 	 */
 	public EdgeTrigger(EdgeModel model, boolean initialState)
 	{

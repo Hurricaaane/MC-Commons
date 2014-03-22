@@ -1,13 +1,11 @@
 package eu.ha3.mc.haddon;
 
-
 /* x-placeholder-wtfplv2 */
 
 public interface Haddon
 {
 	/**
 	 * Triggered during the addon loading process.
-	 * 
 	 */
 	public void onLoad();
 	
@@ -21,7 +19,7 @@ public interface Haddon
 	/**
 	 * Sets the utility object dedicated to this haddon.
 	 * 
-	 * @return
+	 * @param utility
 	 */
 	public void setUtility(Utility utility);
 	
@@ -35,7 +33,7 @@ public interface Haddon
 	/**
 	 * Sets the caster object dedicated to this haddon.
 	 * 
-	 * @return
+	 * @param operator
 	 */
 	public void setOperator(Operator operator);
 	

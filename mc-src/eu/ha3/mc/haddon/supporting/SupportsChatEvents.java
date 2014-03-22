@@ -9,7 +9,7 @@ public interface SupportsChatEvents
 	/**
 	 * Triggered when the OperatorChatter receives chat while it's enabled.
 	 * 
-	 * @param contents
+	 * @param chat
 	 * @param message
 	 */
 	public void onChat(IChatComponent chat, String message);
