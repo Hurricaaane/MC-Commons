@@ -5,14 +5,14 @@ import net.minecraft.util.IChatComponent;
 import com.mumfrey.liteloader.ChatListener;
 
 import eu.ha3.mc.haddon.Haddon;
-import eu.ha3.mc.haddon.OperatorChatter;
+import eu.ha3.mc.haddon.OperatorChatWatcher;
 import eu.ha3.mc.haddon.supporting.SupportsChatEvents;
 
 /*
 --filenotes-placeholder
 */
 
-public class LiteChat extends LiteBase implements OperatorChatter, ChatListener
+public class LiteChat extends LiteBase implements OperatorChatWatcher, ChatListener
 {
 	protected final boolean suChat;
 	

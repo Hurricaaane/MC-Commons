@@ -10,7 +10,7 @@ package eu.ha3.mc.haddon;
  * @author Hurry
  * 
  */
-public interface OperatorChatter extends Operator, Chatter
+public interface OperatorChatWatcher extends Operator, ChatWatcher
 {
 	
 }

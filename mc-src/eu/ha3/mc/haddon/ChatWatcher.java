@@ -4,7 +4,7 @@ package eu.ha3.mc.haddon;
 --filenotes-placeholder
 */
 
-public interface Chatter
+public interface ChatWatcher
 {
 	/**
 	 * Enable the functionality of (SupportsChatEvents)onChat() while
