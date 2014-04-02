@@ -101,8 +101,8 @@ public class Ha3SoundCommunicator
 					rollf *= vol;
 				}
 				sndSystem.newSource(
-					vol > 1.0F, sourceName, soundpoolentry.func_110457_b() /* soundURL */,
-					soundpoolentry.func_110458_a() /* soundName */, false, x, y, z, 2, rollf);
+					vol > 1.0F, sourceName, soundpoolentry.getSoundUrl() /* soundURL */,
+					soundpoolentry.getSoundName() /* soundName */, false, x, y, z, 2, rollf);
 				sndSystem.setPitch(sourceName, pitch);
 				if (vol > 1.0F)
 				{
@@ -147,7 +147,7 @@ public class Ha3SoundCommunicator
 				String sourceName = this.prefix + this.lastSoundID;
 				
 				sndSystem.newSource(
-					vol > 1.0F, sourceName, soundpoolentry.func_110457_b(), soundpoolentry.func_110458_a(), false, x,
+					vol > 1.0F, sourceName, soundpoolentry.getSoundUrl(), soundpoolentry.getSoundName(), false, x,
 					y, z, attnm, rollf);
 				sndSystem.setPitch(sourceName, pitch);
 				
