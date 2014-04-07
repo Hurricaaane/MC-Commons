@@ -4,7 +4,7 @@ import java.io.File;
 
 import net.minecraft.src.Minecraft;
 import eu.ha3.mc.haddon.Manager;
-import eu.ha3.mc.haddon.litemod.HaddonBridgeModLoader;
+import eu.ha3.mc.haddon.litemod.LiteBase;
 
 /* x-placeholder-wtfplv2 */
 
@@ -21,7 +21,7 @@ public class HaddonUtilityModLoader extends HaddonUtilityImpl
 	@Override
 	public long getClientTick()
 	{
-		return ((HaddonBridgeModLoader) this.manager).bridgeTicksRan();
+		return ((LiteBase) this.manager).bridgeTicksRan();
 	}
 	
 	@Override
