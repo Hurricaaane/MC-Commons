@@ -112,7 +112,7 @@ public class HaddonUtilityImpl implements Utility
 			}
 			catch (PrivateAccessException e)
 			{
-				throw new RuntimeException("Cannot retreive timer from Minecraft!");
+				throw new RuntimeException("Cannot retrieve timer from Minecraft!");
 			}
 		}
 		
