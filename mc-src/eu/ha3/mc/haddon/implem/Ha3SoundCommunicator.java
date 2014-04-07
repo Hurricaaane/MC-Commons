@@ -1,5 +1,9 @@
-package net.minecraft.src;
+package eu.ha3.mc.haddon.implem;
 
+import net.minecraft.src.Minecraft;
+import net.minecraft.src.SoundManager;
+import net.minecraft.src.SoundPoolEntry;
+import net.minecraft.src.SoundPool;
 import paulscode.sound.SoundSystem;
 import eu.ha3.mc.haddon.Haddon;
 import eu.ha3.mc.haddon.PrivateAccessException;

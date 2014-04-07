@@ -1,10 +1,15 @@
-package net.minecraft.src;
+package eu.ha3.mc.haddon.litemod;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.src.GuiScreen;
+import net.minecraft.src.KeyBinding;
+import net.minecraft.src.Minecraft;
+import net.minecraft.src.NetClientHandler;
+import net.minecraft.src.Packet250CustomPayload;
 import eu.ha3.mc.haddon.Bridge;
 import eu.ha3.mc.haddon.Haddon;
 import eu.ha3.mc.haddon.Manager;
@@ -20,6 +25,7 @@ import eu.ha3.mc.haddon.SupportsKeyEvents;
 import eu.ha3.mc.haddon.SupportsTickEvents;
 import eu.ha3.mc.haddon.UnsupportedInterfaceException;
 import eu.ha3.mc.haddon.Utility;
+import eu.ha3.mc.haddon.implem.HaddonUtilityModLoader;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 

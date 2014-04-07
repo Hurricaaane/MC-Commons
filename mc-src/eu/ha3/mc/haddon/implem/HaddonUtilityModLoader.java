@@ -1,8 +1,10 @@
-package net.minecraft.src;
+package eu.ha3.mc.haddon.implem;
 
 import java.io.File;
 
+import net.minecraft.src.Minecraft;
 import eu.ha3.mc.haddon.Manager;
+import eu.ha3.mc.haddon.litemod.HaddonBridgeModLoader;
 
 /*
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 

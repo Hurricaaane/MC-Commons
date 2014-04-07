@@ -1,4 +1,4 @@
-package net.minecraft.src;
+package eu.ha3.mc.haddon.implem;
 
 import eu.ha3.mc.haddon.Haddon;
 import eu.ha3.mc.haddon.Manager;

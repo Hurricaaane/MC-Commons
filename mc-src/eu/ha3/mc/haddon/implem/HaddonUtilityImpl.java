@@ -1,9 +1,11 @@
-package net.minecraft.src;
+package eu.ha3.mc.haddon.implem;
 
 import java.io.File;
 
 import org.lwjgl.input.Keyboard;
 
+import net.minecraft.src.Minecraft;
+import net.minecraft.src.ScaledResolution;
 import eu.ha3.mc.haddon.Manager;
 import eu.ha3.mc.haddon.PrivateAccessException;
 import eu.ha3.mc.haddon.Utility;
@@ -32,6 +34,8 @@ public class HaddonUtilityImpl implements Utility
 	
 	//private Timer mc_timer;
 	//private int ticksRan = 0;
+	protected long ticksRan;
+ 	protected File modsFolder;
 	
 	public HaddonUtilityImpl(Manager manager)
 	{
@@ -259,6 +263,11 @@ public class HaddonUtilityImpl implements Utility
 	@Override
 	public File getModsFolder()
 	{
-		return Minecraft.getMinecraft().mcDataDir;
+		if (this.modsFolder != null)
+	 		return this.modsFolder;
+			 		
+ 		this.modsFolder = new File(Minecraft.getMinecraft().mcDataDir, "mods");
+ 		return this.modsFolder;
+ 		//return Minecraft.getMinecraft().mcDataDir;
 	}
 }
