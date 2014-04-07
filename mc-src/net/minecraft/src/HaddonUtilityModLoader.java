@@ -42,26 +42,8 @@ public class HaddonUtilityModLoader extends HaddonUtilityImpl
 		if (this.modsFolder != null)
 			return this.modsFolder;
 		
-		if (classExists("cpw.mods.fml.client.FMLClientHandler", this))
-		{
-			// Use FML interpretation of mods/
-			this.modsFolder = new File(Minecraft.getMinecraft().mcDataDir, "mods");
-			return this.modsFolder;
-		}
-		
-		// Use ModLoader interpretation of mods/
-		
-		File versionsDir = new File(Minecraft.getMinecraft().mcDataDir, "versions");
-		File version = new File(versionsDir, Minecraft.getVersion(Minecraft.getMinecraft()));
-		
-		if (versionsDir.exists() && versionsDir.isDirectory() && version.exists() && version.isDirectory())
-		{
-			this.modsFolder = new File(version, "/mods/");
-		}
-		else
-		{
-			this.modsFolder = new File(Minecraft.getMinecraft().mcDataDir, "mods");
-		}
+		// else use this 
+		this.modsFolder = new File(Minecraft.getMinecraft().mcDataDir, "mods");
 		return this.modsFolder;
 	}
 	
