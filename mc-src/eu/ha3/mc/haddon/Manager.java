@@ -42,26 +42,6 @@ public interface Manager
 	 * 
 	 * @param enable
 	 */
-	public void hookGuiTickEvents(boolean enable);
-	
-	/**
-	 * Enable or disable the Gui Frame events.
-	 * 
-	 * If the addon doesn't implement SupportsGuiFrameEvents, the method will
-	 * throw a UnsupportedInterfaceException.
-	 * 
-	 * @param enable
-	 */
-	public void hookGuiFrameEvents(boolean enable);
-	
-	/**
-	 * Enable or disable the Chat events.
-	 * 
-	 * If the addon doesn't implement SupportsTickEvents, the method will throw
-	 * a UnsupportedInterfaceException.
-	 * 
-	 * @param enable
-	 */
 	public void hookChatEvents(boolean enable);
 	
 	/**
