@@ -26,6 +26,7 @@ import eu.ha3.mc.haddon.implem.HaddonUtilityModLoader;
 
 import com.mumfrey.liteloader.InitCompleteListener;
 import com.mumfrey.liteloader.LiteMod;
+import com.mumfrey.liteloader.Tickable;
 import com.mumfrey.liteloader.core.LiteLoader;
 
 import eu.ha3.mc.haddon.implem.HaddonUtilityImpl;
@@ -35,7 +36,7 @@ import eu.ha3.mc.haddon.implem.HaddonUtilityImpl;
 */
 /* x-placeholder-wtfplv2 */
 
-public class LiteBase implements LiteMod, Bridge, InitCompleteListener
+public class LiteBase implements Tickable, Bridge, InitCompleteListener
 {
 	private Utility utility;
 	protected final Haddon haddon;
