@@ -8,36 +8,86 @@ import java.io.File;
 public interface Utility
 {
 	/**
+	 * Register a Private Access getter on a certain name, that operates on a
+	 * certain Class in a certain Object instance. The last two arguments are
+	 * increasingly of priority: The rightmost argument is evaluated first.<br>
+	 * When used by getPrivate(...):<br>
+	 * The rightmost fieldname (if not null) is used first. If it doesn't work,
+	 * the arguments left to it are used. If everything fails, it uses the
+	 * zeroOffsets, that is the nth field (0th being the first field).
+	 * zeroOffsets is ignored if it is a negative number. If none worked, this
+	 * throws a PrivateAccessException containing the name of that getter.
+	 * 
+	 * @param name
+	 * @param classToPerformOn
+	 * @param zeroOffsets
+	 * @param lessToMoreImportantFieldName
+	 */
+	public void registerPrivateGetter(
+		String name, Class classToPerformOn, int zeroOffsets, String... lessToMoreImportantFieldName);
+	
+	/**
+	 * Register a Private Access setter on a certain name, that operates on a
+	 * certain Class in a certain Object instance. The last two arguments are
+	 * increasingly of priority: The rightmost argument is evaluated first.<br>
+	 * When used by getPrivate(...):<br>
+	 * The rightmost fieldname (if not null) is used first. If it doesn't work,
+	 * the arguments left to it are used. If everything fails, it uses the
+	 * zeroOffsets, that is the nth field (0th being the first field).
+	 * zeroOffsets is ignored if it is a negative number. If none worked, this
+	 * throws a PrivateAccessException containing the name of that setter.
+	 * 
+	 * @param name
+	 * @param classToPerformOn
+	 * @param zeroOffsets
+	 * @param lessToMoreImportantFieldName
+	 */
+	public void registerPrivateSetter(
+		String name, Class classToPerformOn, int zeroOffsets, String... lessToMoreImportantFieldName);
+	
+	/**
+	 * Gets a registered Private field
+	 * 
+	 * @param instance
+	 * @param name
+	 * @return
+	 * @throws PrivateAccessException
+	 */
+	public Object getPrivate(Object instance, String name) throws PrivateAccessException;
+	
+	/**
+	 * Sets a registered Private field
+	 * 
+	 * @param instance
+	 * @param name
+	 * @param value
+	 * @throws PrivateAccessException
+	 */
+	public void setPrivate(Object instance, String name, Object value) throws PrivateAccessException;
+	
+	/**
 	 * Forces a private value to be read, using the Zero Offset method.
 	 * 
-	 * @param classToPerformOn
-	 *            Class of the object being manipulated
-	 * @param instanceToPerformOn
-	 *            Object being manipulated
-	 * @param zeroOffsets
-	 *            Offsets from zero
+	 * @param classToPerformOn Class of the object being manipulated
+	 * @param instanceToPerformOn Object being manipulated
+	 * @param zeroOffsets Offsets from zero
 	 * @return Object to be read
-	 * @throws PrivateAccessException
-	 *             When the method fails
+	 * @throws PrivateAccessException When the method fails
 	 */
+	@Deprecated
 	public Object getPrivateValue(Class classToPerformOn, Object instanceToPerformOn, int zeroOffsets)
 		throws PrivateAccessException;
 	
 	/**
 	 * Forces a private value to be set, using the Zero Offset method.
 	 * 
-	 * @param classToPerformOn
-	 *            Class of the object being manipulated
-	 * @param instanceToPerformOn
-	 *            Object being manipulated
-	 * @param zeroOffsets
-	 *            Offsets from zero
-	 * @param newValue
-	 *            New value to override
-	 * @return
-	 * @throws PrivateAccessException
-	 *             When the method fails
+	 * @param classToPerformOn Class of the object being manipulated
+	 * @param instanceToPerformOn Object being manipulated
+	 * @param zeroOffsets Offsets from zero
+	 * @param newValue New value to override
+	 * @throws PrivateAccessException When the method fails
 	 */
+	@Deprecated
 	public void setPrivateValue(Class classToPerformOn, Object instanceToPerformOn, int zeroOffsets, Object newValue)
 		throws PrivateAccessException;
 	
@@ -45,18 +95,14 @@ public interface Utility
 	 * Forces a private value to be read, first using the literal string of the
 	 * field, and if it fails, the Zero Offset method.
 	 * 
-	 * @param classToPerformOn
-	 *            Class of the object being manipulated
-	 * @param instanceToPerformOn
-	 *            Object being manipulated
-	 * @param obfPriority
-	 *            Literal string of the field, when obfuscated
-	 * @param zeroOffsetsDebug
-	 *            Offsets from zero as a fallback
+	 * @param classToPerformOn Class of the object being manipulated
+	 * @param instanceToPerformOn Object being manipulated
+	 * @param obfPriority Literal string of the field, when obfuscated
+	 * @param zeroOffsetsDebug Offsets from zero as a fallback
 	 * @return Object to be read.
-	 * @throws PrivateAccessException
-	 *             When the method fails twice
+	 * @throws PrivateAccessException When the method fails twice
 	 */
+	@Deprecated
 	public Object getPrivateValueLiteral(
 		Class classToPerformOn, Object instanceToPerformOn, String obfPriority, int zeroOffsetsDebug)
 		throws PrivateAccessException;
@@ -65,20 +111,14 @@ public interface Utility
 	 * Forces a private value to be set, first using the literal string of the
 	 * field, and if it fails, the Zero Offset method.
 	 * 
-	 * @param classToPerformOn
-	 *            Class of the object being manipulated
-	 * @param instanceToPerformOn
-	 *            Object being manipulated
-	 * @param obfPriority
-	 *            Literal string of the field, when obfuscated
-	 * @param zeroOffsetsDebug
-	 *            Offsets from zero as a fallback
-	 * @param newValue
-	 *            New value to override
-	 * @return
-	 * @throws PrivateAccessException
-	 *             When the method fails twice
+	 * @param classToPerformOn Class of the object being manipulated
+	 * @param instanceToPerformOn Object being manipulated
+	 * @param obfPriority Literal string of the field, when obfuscated
+	 * @param zeroOffsetsDebug Offsets from zero as a fallback
+	 * @param newValue New value to override
+	 * @throws PrivateAccessException When the method fails twice
 	 */
+	@Deprecated
 	public void setPrivateValueLiteral(
 		Class classToPerformOn, Object instanceToPerformOn, String obfPriority, int zeroOffsetsDebug, Object newValue)
 		throws PrivateAccessException;
@@ -129,11 +169,9 @@ public interface Utility
 	 * @param py
 	 * @param offx
 	 * @param offy
-	 * @param alignment
-	 *            Number from 1 to 9 corresponding to numpad position on a
+	 * @param alignment Number from 1 to 9 corresponding to numpad position on a
 	 *            keyboard (not a phone).
-	 * @param cr
-	 *            Red color 0-255
+	 * @param cr Red color 0-255
 	 * @param cg
 	 * @param cb
 	 * @param ca

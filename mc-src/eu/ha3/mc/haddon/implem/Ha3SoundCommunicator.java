@@ -55,7 +55,6 @@ public class Ha3SoundCommunicator
 		try
 		{
 			return (SoundSystem) this.mod
-				.getManager()
 				.getUtility()
 				.getPrivateValueLiteral(
 					net.minecraft.src.SoundManager.class, Minecraft.getMinecraft().sndManager, "b", 1);
@@ -90,7 +89,7 @@ public class Ha3SoundCommunicator
 			// XXX Get rid of private value getting on runtime
 			SoundPoolEntry soundpoolentry =
 				((SoundPool) this.mod
-					.getManager().getUtility()
+					.getUtility()
 					.getPrivateValueLiteral(net.minecraft.src.SoundManager.class, getSoundManager(), "d", 3))
 					.getRandomSoundFromSoundPool(sound);
 			if (soundpoolentry != null && vol > 0.0F)
@@ -141,7 +140,7 @@ public class Ha3SoundCommunicator
 			// XXX Get rid of private value getting on runtime
 			SoundPoolEntry soundpoolentry =
 				((SoundPool) this.mod
-					.getManager().getUtility()
+					.getUtility()
 					.getPrivateValueLiteral(net.minecraft.src.SoundManager.class, sndManager, "d", 3))
 					.getRandomSoundFromSoundPool(sound);
 			

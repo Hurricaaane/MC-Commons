@@ -11,8 +11,9 @@ import net.minecraft.src.KeyBinding;
 import net.minecraft.src.Minecraft;
 import net.minecraft.src.NetClientHandler;
 import net.minecraft.src.Packet250CustomPayload;
-import eu.ha3.mc.haddon.Bridge;
 import eu.ha3.mc.haddon.Haddon;
+import eu.ha3.mc.haddon.Manager;
+import eu.ha3.mc.haddon.OperatorCaster;
 import eu.ha3.mc.haddon.SupportsChatEvents;
 import eu.ha3.mc.haddon.SupportsConnectEvents;
 import eu.ha3.mc.haddon.SupportsFrameEvents;
@@ -22,7 +23,6 @@ import eu.ha3.mc.haddon.SupportsKeyEvents;
 import eu.ha3.mc.haddon.SupportsTickEvents;
 import eu.ha3.mc.haddon.UnsupportedInterfaceException;
 import eu.ha3.mc.haddon.Utility;
-import eu.ha3.mc.haddon.implem.HaddonUtilityModLoader;
 
 import com.mumfrey.liteloader.InitCompleteListener;
 import com.mumfrey.liteloader.LiteMod;
@@ -36,7 +36,7 @@ import eu.ha3.mc.haddon.implem.HaddonUtilityImpl;
 */
 /* x-placeholder-wtfplv2 */
 
-public class LiteBase implements Tickable, Bridge, InitCompleteListener
+public class LiteBase implements Tickable, InitCompleteListener, OperatorCaster
 {
 	private Utility utility;
 	protected final Haddon haddon;
@@ -48,31 +48,25 @@ public class LiteBase implements Tickable, Bridge, InitCompleteListener
 	protected boolean enableTick;
 	protected boolean enableFrame;
 
-	private boolean supportsChat;
-	private boolean supportsKey;
-	private boolean chatEnabled;
-
 	private long ticksRan;
 	
 	public LiteBase(Haddon haddon)
 	{
 		this.haddon = haddon;
+		this.suTick = haddon instanceof SupportsTickEvents;
+		this.suFrame = haddon instanceof SupportsFrameEvents;
+		this.shouldTick = this.suTick || this.suFrame;
 		
-		this.utility = new HaddonUtilityModLoader(this);
-		haddon.setManager(this);
+		this.haddon.setUtility(new HaddonUtilityImpl() {
+			@Override
+			public long getClientTick()
+			{
+				return getTicks();
+			}
+		});
 		
-		this.supportsTick = haddon instanceof SupportsTickEvents;
-		this.supportsFrame = haddon instanceof SupportsFrameEvents;
-		this.supportsChat = haddon instanceof SupportsChatEvents;
-		this.supportsKey = haddon instanceof SupportsKeyEvents;
-		
-	}
-	
-	@Override
-	public Haddon getHaddon()
-	{
-		return this.haddon;
-		
+		this.haddon.setOperator(this);
+
 	}
 	
 	@Override
@@ -133,14 +127,8 @@ public class LiteBase implements Tickable, Bridge, InitCompleteListener
 		this.chatEnabled = enable;
 		
 	}*/
-	
-	@Override
-	public String getVersion()
-	{
-		return "REMOVE ME FROM IMPL"; //TODO
-	}
-	
-	@Override
+
+//	@Override
 	public Utility getUtility()
 	{
 		return this.utility;

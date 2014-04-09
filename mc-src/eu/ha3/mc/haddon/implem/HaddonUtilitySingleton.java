@@ -57,7 +57,7 @@ public class HaddonUtilitySingleton
 		}
 		catch (IllegalAccessException illegalaccessexception)
 		{
-			throw new RuntimeException("getPrivateValue critical failure: IllegalAccess");
+			throw new PrivateAccessException("getPrivateValue has failed: IllegalAccess");
 			
 		}
 		catch (IllegalArgumentException e)
@@ -93,7 +93,7 @@ public class HaddonUtilitySingleton
 		}
 		catch (IllegalAccessException illegalaccessexception)
 		{
-			throw new RuntimeException("getPrivateValue critical failure: IllegalAccess");
+			throw new PrivateAccessException("setPrivateValue has failed: IllegalAccess");
 			
 		}
 		catch (IllegalArgumentException e)
@@ -122,24 +122,21 @@ public class HaddonUtilitySingleton
 		}
 		catch (IllegalAccessException illegalaccessexception)
 		{
-			throw new RuntimeException("getPrivateValue critical failure: IllegalAccess");
+			throw new PrivateAccessException("getPrivateValue has failed: IllegalAccess");
 			
 		}
 		catch (IllegalArgumentException e)
 		{
-			LOGGER.fine("getPrivateValue has failed: IllegalArgument on field " + obf);
 			throw new PrivateAccessException("getPrivateValue has failed: IllegalArgument");
 			
 		}
 		catch (SecurityException e)
 		{
-			LOGGER.fine("getPrivateValue has failed: Security on field " + obf);
 			throw new PrivateAccessException("getPrivateValue has failed: Security");
 			
 		}
 		catch (NoSuchFieldException e)
 		{
-			LOGGER.fine("getPrivateValue has failed: NoSuchField on field " + obf);
 			throw new PrivateAccessException("getPrivateValue has failed: NoSuchField");
 			
 		}
@@ -165,24 +162,21 @@ public class HaddonUtilitySingleton
 		}
 		catch (IllegalAccessException illegalaccessexception)
 		{
-			throw new RuntimeException("getPrivateValue critical failure: IllegalAccess");
+			throw new PrivateAccessException("setPrivateValue has failed: IllegalAccess");
 			
 		}
 		catch (IllegalArgumentException e)
 		{
-			LOGGER.fine("setPrivateValue has failed: IllegalArgument on field " + obf);
 			throw new PrivateAccessException("setPrivateValue has failed: IllegalArgument");
 			
 		}
 		catch (SecurityException e)
 		{
-			LOGGER.fine("setPrivateValue has failed: Security on field " + obf);
 			throw new PrivateAccessException("setPrivateValue has failed: Security");
 			
 		}
 		catch (NoSuchFieldException e)
 		{
-			LOGGER.fine("setPrivateValue has failed: NoSuchField on field " + obf);
 			throw new PrivateAccessException("setPrivateValue has failed: NoSuchField");
 			
 		}

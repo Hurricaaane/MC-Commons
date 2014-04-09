@@ -1,35 +1,63 @@
 package eu.ha3.mc.haddon.implem;
 
 import java.io.File;
-
-import org.lwjgl.input.Keyboard;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.src.Minecraft;
 import net.minecraft.src.ScaledResolution;
-import eu.ha3.mc.haddon.Manager;
+
+import org.lwjgl.input.Keyboard;
+
 import eu.ha3.mc.haddon.PrivateAccessException;
 import eu.ha3.mc.haddon.Utility;
 
 /* x-placeholder-wtfplv2 */
 
-public class HaddonUtilityImpl implements Utility
+public abstract class HaddonUtilityImpl implements Utility
 {
 	final private static int WORLD_HEIGHT = 256;
 	
-	protected Manager manager;
+	private Map<String, PrivateEntry> getters = new HashMap<String, PrivateEntry>();
+	private Map<String, PrivateEntry> setters = new HashMap<String, PrivateEntry>();
 	
-	//private Timer mc_timer;
-	//private int ticksRan = 0;
 	protected long ticksRan;
- 	protected File modsFolder;
+	protected File modsFolder;
 	
-	public HaddonUtilityImpl(Manager manager)
+	public HaddonUtilityImpl()
 	{
-		this.manager = manager;
-		
 		// Initialize reflection (Call the static constructor)
 		HaddonUtilitySingleton.getInstance();
-		
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@Override
+	public void registerPrivateGetter(
+		String name, Class classToPerformOn, int zeroOffsets, String... lessToMoreImportantFieldName)
+	{
+		this.getters.put(
+			name, new HaddonPrivateEntry(name, classToPerformOn, zeroOffsets, lessToMoreImportantFieldName));
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@Override
+	public void registerPrivateSetter(
+		String name, Class classToPerformOn, int zeroOffsets, String... lessToMoreImportantFieldName)
+	{
+		this.setters.put(
+			name, new HaddonPrivateEntry(name, classToPerformOn, zeroOffsets, lessToMoreImportantFieldName));
+	}
+	
+	@Override
+	public Object getPrivate(Object instance, String name) throws PrivateAccessException
+	{
+		return this.getters.get(name).get(instance);
+	}
+	
+	@Override
+	public void setPrivate(Object instance, String name, Object value) throws PrivateAccessException
+	{
+		this.setters.get(name).set(instance, value);
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -102,29 +130,6 @@ public class HaddonUtilityImpl implements Utility
 	}
 	
 	@Override
-	public long getClientTick()
-	{
-		/*if (this.mc_timer == null)
-		{
-			try
-			{
-				this.mc_timer = (Timer) getPrivateValueLiteral(Minecraft.class, this.manager.getMinecraft(), "T", 9);
-			}
-			catch (PrivateAccessException e)
-			{
-				throw new RuntimeException("Cannot retrieve timer from Minecraft!");
-			}
-		}
-		
-		this.ticksRan = this.ticksRan + this.mc_timer.elapsedTicks;
-		
-		return this.ticksRan;*/
-		
-		throw new RuntimeException("getClientTick() doesn't work");
-		
-	}
-	
-	@Override
 	public Object getCurrentScreen()
 	{
 		return Minecraft.getMinecraft().currentScreen;
@@ -166,7 +171,6 @@ public class HaddonUtilityImpl implements Utility
 			builder.append(o);
 		}
 		Minecraft.getMinecraft().thePlayer.addChatMessage(builder.toString());
-		
 	}
 	
 	@Override
@@ -243,17 +247,16 @@ public class HaddonUtilityImpl implements Utility
 		{
 			Minecraft.getMinecraft().fontRenderer.drawString(text, xPos, yPos, color);
 		}
-		
 	}
 	
 	@Override
 	public File getModsFolder()
 	{
 		if (this.modsFolder != null)
-	 		return this.modsFolder;
-			 		
- 		this.modsFolder = new File(Minecraft.getMinecraft().mcDataDir, "mods");
- 		return this.modsFolder;
- 		//return Minecraft.getMinecraft().mcDataDir;
+			return this.modsFolder;
+		
+		this.modsFolder = new File(Minecraft.getMinecraft().mcDataDir, "mods");
+		return this.modsFolder;
 	}
+	
 }

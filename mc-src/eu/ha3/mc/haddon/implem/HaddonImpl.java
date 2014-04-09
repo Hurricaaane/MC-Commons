@@ -1,26 +1,43 @@
 package eu.ha3.mc.haddon.implem;
 
 import eu.ha3.mc.haddon.Haddon;
-import eu.ha3.mc.haddon.Manager;
+import eu.ha3.mc.haddon.Operator;
 import eu.ha3.mc.haddon.Utility;
 
 /* x-placeholder-wtfplv2 */
 
 public abstract class HaddonImpl implements Haddon
 {
-	private Manager manager;
+	//protected String NAME = "_MOD_NAME_NOT_DEFINED";
+	//protected int VERSION = -1;
+	//protected String FOR = "0.0.0";
+	//protected String ADDRESS = "http://example.org";
+	
+	private Utility utility;
+	private Operator operator;
 	
 	@Override
-	public Manager getManager()
+	public Utility getUtility()
 	{
-		return this.manager;
+		return this.utility;
 	}
 	
 	@Override
-	public void setManager(Manager manager)
+	public void setUtility(Utility utility)
 	{
-		this.manager = manager;
-		
+		this.utility = utility;
+	}
+	
+	@Override
+	public Operator getOperator()
+	{
+		return this.operator;
+	}
+	
+	@Override
+	public void setOperator(Operator operator)
+	{
+		this.operator = operator;
 	}
 	
 	/**
@@ -30,19 +47,16 @@ public abstract class HaddonImpl implements Haddon
 	 */
 	public Utility util()
 	{
-		return getManager().getUtility();
-		
+		return getUtility();
 	}
 	
 	/**
-	 * Convenience shortener for getManager()
+	 * Convenience shortener for getCaster()
 	 * 
 	 * @return
 	 */
-	public Manager manager()
+	public Operator op()
 	{
-		return getManager();
-		
+		return getOperator();
 	}
-	
 }
