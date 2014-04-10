@@ -86,74 +86,12 @@ public class LiteBase implements Tickable, InitCompleteListener, OperatorCaster
 	{
 		this.haddon.onLoad();
 	}
-	//TODO: figure out chatting
-	
-/*	@Override
-	public void clientChat(String contents)
-	{
-		if (this.supportsChat && this.chatEnabled)
-		{
-			((SupportsChatEvents) this.haddon).onChat(contents);
-		}
-		
-	}*/
-	//TODO: Figure hooks out
-/*	@Override
-	public void hookTickEvents(boolean enable)
-	{
-		if (!this.supportsTick)
-			throw new UnsupportedInterfaceException();
-		
-		this.tickEnabled = enable;
-		
-	}
-	
-	@Override
-	public void hookFrameEvents(boolean enable)
-	{
-		if (!this.supportsFrame)
-			throw new UnsupportedInterfaceException();
-		
-		this.frameEnabled = enable;
-		
-	}
-	
-	@Override
-	public void hookChatEvents(boolean enable)
-	{
-		if (!this.supportsChat)
-			throw new UnsupportedInterfaceException();
-		
-		this.chatEnabled = enable;
-		
-	}*/
 
-//	@Override
 	public Utility getUtility()
 	{
 		return this.utility;
 		
 	}
-	
-	// TODO: Figure out Keybindings
-/*	@Override
-	public void addKeyBinding(KeyBinding keyBindingIn, String localization)
-	{
-		ModLoader.addLocalization(keyBindingIn.keyDescription, localization);
-		ModLoader.registerKey(this, keyBindingIn, true);
-		
-	}
-	
-	@Override
-	public void keyboardEvent(KeyBinding event)
-	{
-		if (!this.supportsKey)
-			return;
-		
-		((SupportsKeyEvents) this.haddon).onKey(event);
-		
-	}
-	*/
 	
 	public long bridgeTicksRan()
 	{
