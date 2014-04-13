@@ -31,7 +31,7 @@ public class KeyWatcher implements SupportsTickEvents
 	public void onTick()
 	{
 		for (KeyBinding key : this.keys)
-			if (key.isPressed())
+			if (key.pressed)
 			{
 				this.watcher.onKey(key);
 			}
