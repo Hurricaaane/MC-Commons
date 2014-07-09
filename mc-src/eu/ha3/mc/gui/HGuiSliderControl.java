@@ -32,7 +32,7 @@ public class HGuiSliderControl extends GuiButton implements HDisplayStringHolder
 	}
 	
 	@Override
-	protected int getHoverState(boolean p_146114_1_)
+	public int getHoverState(boolean p_146114_1_)
 	{
 		return 0;
 	}
@@ -40,12 +40,12 @@ public class HGuiSliderControl extends GuiButton implements HDisplayStringHolder
 	@Override
 	protected void mouseDragged(Minecraft par1Minecraft, int par2, int par3)
 	{
-		if (this.field_146125_m) // drawButton
+		if (this.visible) // drawButton
 		{
-			int x = this.field_146128_h;
-			int y = this.field_146129_i;
-			int w = this.field_146120_f;
-			int h = this.field_146121_g;
+			int x = this.xPosition;
+			int y = this.yPosition;
+			int w = this.width;
+			int h = this.height;
 			
 			if (this.isBeingDragged)
 			{
@@ -80,8 +80,8 @@ public class HGuiSliderControl extends GuiButton implements HDisplayStringHolder
 	{
 		if (super.mousePressed(par1Minecraft, par2, par3))
 		{
-			int x = this.field_146128_h;
-			int w = this.field_146120_f;
+			int x = this.xPosition;
+			int w = this.width;
 			float value = (float) (par2 - (x + 4)) / (w - 8);
 			
 			if (value < 0.0F)
