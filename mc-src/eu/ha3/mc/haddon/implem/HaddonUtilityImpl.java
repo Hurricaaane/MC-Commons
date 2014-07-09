@@ -198,10 +198,10 @@ public abstract class HaddonUtilityImpl implements Utility
 	{
 		Minecraft mc = Minecraft.getMinecraft();
 		
-		this.drawString_scaledRes = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+		this.drawString_scaledRes = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 		this.drawString_screenWidth = this.drawString_scaledRes.getScaledWidth();
 		this.drawString_screenHeight = this.drawString_scaledRes.getScaledHeight();
-		this.drawString_textHeight = mc.fontRenderer.FONT_HEIGHT;
+		this.drawString_textHeight = mc.fontRendererObj.FONT_HEIGHT;
 		
 	}
 	
@@ -222,11 +222,11 @@ public abstract class HaddonUtilityImpl implements Utility
 		
 		if (alignment == '2' || alignment == '5' || alignment == '8')
 		{
-			xPos = xPos - mc.fontRenderer.getStringWidth(text) / 2;
+			xPos = xPos - mc.fontRendererObj.getStringWidth(text) / 2;
 		}
 		else if (alignment == '3' || alignment == '6' || alignment == '9')
 		{
-			xPos = xPos - mc.fontRenderer.getStringWidth(text);
+			xPos = xPos - mc.fontRendererObj.getStringWidth(text);
 		}
 		
 		if (alignment == '4' || alignment == '5' || alignment == '6')
@@ -242,11 +242,11 @@ public abstract class HaddonUtilityImpl implements Utility
 		
 		if (hasShadow)
 		{
-			Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(text, xPos, yPos, color);
+			Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(text, xPos, yPos, color);
 		}
 		else
 		{
-			Minecraft.getMinecraft().fontRenderer.drawString(text, xPos, yPos, color);
+			Minecraft.getMinecraft().fontRendererObj.drawString(text, xPos, yPos, color);
 		}
 	}
 	

@@ -32,7 +32,7 @@ public class HGuiSliderControl extends GuiButton implements HDisplayStringHolder
 	}
 	
 	@Override
-	protected int getHoverState(boolean p_146114_1_)
+	public int getHoverState(boolean p_146114_1_)
 	{
 		return 0;
 	}
@@ -40,16 +40,11 @@ public class HGuiSliderControl extends GuiButton implements HDisplayStringHolder
 	@Override
 	protected void mouseDragged(Minecraft par1Minecraft, int par2, int par3)
 	{
-		if (this.field_146125_m) // drawButton
+		if (this.visible) // drawButton
 		{
-			int x = this.field_146128_h;
-			int y = this.field_146129_i;
-			int w = this.field_146120_f;
-			int h = this.field_146121_g;
-			
 			if (this.isBeingDragged)
 			{
-				float value = (float) (par2 - (x + 4)) / (w - 8);
+				float value = (float) (par2 - (this.xPosition + 4)) / (this.width - 8);
 				
 				if (value < 0.0F)
 				{
@@ -70,8 +65,10 @@ public class HGuiSliderControl extends GuiButton implements HDisplayStringHolder
 			}
 			
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-			drawTexturedModalRect(x + (int) (this.value * (w - 8)), y, 0, 66, 4, h);
-			drawTexturedModalRect(x + (int) (this.value * (w - 8)) + 4, y, 196, 66, 4, h);
+			drawTexturedModalRect(
+					this.xPosition + (int) (this.value * (this.width - 8)), this.yPosition, 0, 66, 4, this.height);
+			drawTexturedModalRect(
+					this.xPosition + (int) (this.value * (this.width - 8)) + 4, this.yPosition, 196, 66, 4, this.height);
 		}
 	}
 	
@@ -80,9 +77,7 @@ public class HGuiSliderControl extends GuiButton implements HDisplayStringHolder
 	{
 		if (super.mousePressed(par1Minecraft, par2, par3))
 		{
-			int x = this.field_146128_h;
-			int w = this.field_146120_f;
-			float value = (float) (par2 - (x + 4)) / (w - 8);
+			float value = (float) (par2 - (this.xPosition + 4)) / (this.width - 8);
 			
 			if (value < 0.0F)
 			{
