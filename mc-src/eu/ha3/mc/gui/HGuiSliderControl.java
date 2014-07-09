@@ -41,7 +41,7 @@ public class HGuiSliderControl extends GuiButton implements HDisplayStringHolder
 	protected void mouseDragged(Minecraft par1Minecraft, int par2, int par3)
 	{
 		if (this.visible) // drawButton
-		{			
+		{
 			if (this.isBeingDragged)
 			{
 				float value = (float) (par2 - (this.xPosition + 4)) / (this.width - 8);
