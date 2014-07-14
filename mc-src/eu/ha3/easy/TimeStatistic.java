@@ -6,8 +6,9 @@ import java.util.Locale;
 
 public class TimeStatistic
 {
-	private long startTime;
-	private Locale locale;
+	private final Locale locale;
+	
+	protected long startTime;
 	
 	public TimeStatistic(Locale locale)
 	{
